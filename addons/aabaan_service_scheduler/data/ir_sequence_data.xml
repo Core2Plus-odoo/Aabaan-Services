@@ -1,0 +1,9 @@
+<odoo>
+    <record id="seq_aabaan_service_contract" model="ir.sequence">
+        <field name="name">Aabaan Service Contract</field>
+        <field name="code">aabaan.service.contract</field>
+        <field name="prefix">SC/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

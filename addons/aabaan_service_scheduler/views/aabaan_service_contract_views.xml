@@ -22,7 +22,16 @@
         <field name="model">aabaan.service.contract</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button name="action_generate_visits" type="object" string="Generate Visits" class="btn-primary"
+                        invisible="visit_ids"/>
+                </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_visits" type="object" class="oe_stat_button" icon="fa-calendar">
+                            <field name="visit_count" string="Visits" widget="statinfo"/>
+                        </button>
+                    </div>
                     <group>
                         <group>
                             <field name="name"/>
@@ -36,7 +45,7 @@
                             <field name="start_date"/>
                             <field name="end_date"/>
                             <field name="frequency"/>
-                            <field name="custom_visit_count"/>
+                            <field name="custom_visit_count" invisible="frequency != 'custom'"/>
                             <field name="contract_value"/>
                             <field name="billing_cycle_amount"/>
                             <field name="auto_renew"/>
