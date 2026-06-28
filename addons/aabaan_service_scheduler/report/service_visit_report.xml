@@ -1,0 +1,43 @@
+<odoo>
+    <record id="action_report_aabaan_service_visit" model="ir.actions.report">
+        <field name="name">Service Visit Report</field>
+        <field name="model">aabaan.service.visit</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">aabaan_service_scheduler.report_service_visit</field>
+        <field name="report_file">aabaan_service_scheduler.report_service_visit</field>
+        <field name="binding_model_id" ref="model_aabaan_service_visit"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_service_visit">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Service Visit Report</h2>
+                        <table class="table table-sm">
+                            <tr><td><strong>Visit</strong></td><td><span t-field="doc.name"/></td></tr>
+                            <tr><td><strong>Customer</strong></td><td><span t-field="doc.partner_id"/></td></tr>
+                            <tr><td><strong>Service</strong></td><td><span t-field="doc.service_type"/></td></tr>
+                            <tr>
+                                <td><strong>Scheduled</strong></td>
+                                <td><span t-field="doc.planned_start"/> <span> - </span> <span t-field="doc.planned_end"/></td>
+                            </tr>
+                            <tr><td><strong>Technicians</strong></td><td><span t-esc="', '.join(doc.technician_ids.mapped('name'))"/></td></tr>
+                            <tr><td><strong>Area</strong></td><td><span t-field="doc.area"/></td></tr>
+                            <tr><td><strong>Status</strong></td><td><span t-field="doc.state"/></td></tr>
+                        </table>
+                        <h4>Before Service</h4>
+                        <p><span t-field="doc.before_notes"/></p>
+                        <h4>After Service</h4>
+                        <p><span t-field="doc.after_notes"/></p>
+                        <h4>Materials Used</h4>
+                        <p><span t-field="doc.materials_used"/></p>
+                        <h4>Recommendation</h4>
+                        <p><span t-field="doc.next_recommendation"/></p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,168 @@
+<odoo>
+    <record id="view_aabaan_service_visit_tree" model="ir.ui.view">
+        <field name="name">aabaan.service.visit.tree</field>
+        <field name="model">aabaan.service.visit</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="state == 'done'" decoration-danger="state == 'missed'" decoration-muted="state == 'cancelled'">
+                <field name="planned_date"/>
+                <field name="planned_start"/>
+                <field name="planned_end"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="service_type"/>
+                <field name="area"/>
+                <field name="emirate"/>
+                <field name="technician_ids" widget="many2many_tags"/>
+                <field name="priority"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_aabaan_service_visit_kanban" model="ir.ui.view">
+        <field name="name">aabaan.service.visit.kanban</field>
+        <field name="model">aabaan.service.visit</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="planned_date"/>
+                <field name="service_type"/>
+                <field name="area"/>
+                <field name="technician_ids"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <strong><field name="name"/></strong>
+                            <div><field name="partner_id"/></div>
+                            <div><field name="planned_date"/></div>
+                            <div><field name="area"/></div>
+                            <div><field name="technician_ids" widget="many2many_tags"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_aabaan_service_visit_calendar" model="ir.ui.view">
+        <field name="name">aabaan.service.visit.calendar</field>
+        <field name="model">aabaan.service.visit</field>
+        <field name="arch" type="xml">
+            <calendar string="Service Scheduler" date_start="planned_start" date_stop="planned_end" color="color" mode="week">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="technician_ids"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_aabaan_service_visit_form" model="ir.ui.view">
+        <field name="name">aabaan.service.visit.form</field>
+        <field name="model">aabaan.service.visit</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_schedule" type="object" string="Schedule" class="btn-primary"/>
+                    <button name="action_start" type="object" string="Start"/>
+                    <button name="action_done" type="object" string="Done" class="btn-primary"/>
+                    <button name="action_missed" type="object" string="Missed"/>
+                    <button name="action_reschedule_next_week" type="object" string="Next Week"/>
+                    <button name="action_cancel" type="object" string="Cancel"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,scheduled,in_progress,done,missed,cancelled"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="contract_id"/>
+                            <field name="partner_id"/>
+                            <field name="service_type"/>
+                            <field name="product_id"/>
+                            <field name="priority"/>
+                        </group>
+                        <group>
+                            <field name="planned_date"/>
+                            <field name="planned_start"/>
+                            <field name="planned_end"/>
+                            <field name="duration_hours"/>
+                            <field name="technician_ids" widget="many2many_tags"/>
+                            <field name="emirate"/>
+                            <field name="area"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Service Report">
+                            <group>
+                                <field name="completion_date"/>
+                                <field name="materials_used"/>
+                            </group>
+                            <field name="before_notes" placeholder="Before service notes"/>
+                            <field name="after_notes" placeholder="After service notes"/>
+                            <field name="next_recommendation"/>
+                            <field name="customer_signature" widget="image"/>
+                        </page>
+                        <page string="Calendar">
+                            <field name="calendar_event_id"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_aabaan_service_visit_search" model="ir.ui.view">
+        <field name="name">aabaan.service.visit.search</field>
+        <field name="model">aabaan.service.visit</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="technician_ids"/>
+                <filter name="today" string="Today" domain="[('planned_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="to_schedule" string="To Schedule" domain="[('state', '=', 'draft')]"/>
+                <filter name="scheduled" string="Scheduled" domain="[('state', '=', 'scheduled')]"/>
+                <filter name="missed" string="Missed" domain="[('state', '=', 'missed')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_technician" string="Technician" context="{'group_by': 'technician_ids'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by': 'planned_date'}"/>
+                    <filter name="group_service" string="Service Type" context="{'group_by': 'service_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_aabaan_service_visit" model="ir.actions.act_window">
+        <field name="name">Service Visits</field>
+        <field name="res_model">aabaan.service.visit</field>
+        <field name="view_mode">kanban,calendar,tree,form</field>
+        <field name="search_view_id" ref="view_aabaan_service_visit_search"/>
+    </record>
+
+    <record id="action_aabaan_service_visit_today" model="ir.actions.act_window">
+        <field name="name">Today</field>
+        <field name="res_model">aabaan.service.visit</field>
+        <field name="view_mode">kanban,calendar,tree,form</field>
+        <field name="search_view_id" ref="view_aabaan_service_visit_search"/>
+        <field name="context">{'search_default_today': 1}</field>
+    </record>
+
+    <record id="action_aabaan_service_visit_to_schedule" model="ir.actions.act_window">
+        <field name="name">To Schedule</field>
+        <field name="res_model">aabaan.service.visit</field>
+        <field name="view_mode">kanban,tree,form,calendar</field>
+        <field name="search_view_id" ref="view_aabaan_service_visit_search"/>
+        <field name="context">{'search_default_to_schedule': 1}</field>
+    </record>
+
+    <record id="action_aabaan_service_visit_missed" model="ir.actions.act_window">
+        <field name="name">Missed</field>
+        <field name="res_model">aabaan.service.visit</field>
+        <field name="view_mode">tree,kanban,form,calendar</field>
+        <field name="search_view_id" ref="view_aabaan_service_visit_search"/>
+        <field name="context">{'search_default_missed': 1}</field>
+    </record>
+</odoo>
