@@ -116,6 +116,12 @@ one company; once a second company is added they appear automatically and the
 CEO Dashboard becomes a consolidated multi-company view with no further
 changes required.
 
+## Technician workflow guide
+
+See [`docs/TECHNICIAN_GUIDE.md`](docs/TECHNICIAN_GUIDE.md) for the
+field-technician/supervisor workflow per visit state, the field checklist to
+complete before marking a visit Done, and the supervisor approval checklist.
+
 ## Go-live checklist
 
 See [`docs/GO_LIVE_CHECKLIST.md`](docs/GO_LIVE_CHECKLIST.md).
