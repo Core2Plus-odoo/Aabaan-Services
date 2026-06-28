@@ -1,0 +1,62 @@
+<odoo>
+    <record id="view_aabaan_assign_technician_wizard_form" model="ir.ui.view">
+        <field name="name">aabaan.assign.technician.wizard.form</field>
+        <field name="model">aabaan.assign.technician.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="visit_ids" widget="many2many_tags" readonly="1"/>
+                    <field name="technician_ids" widget="many2many_tags"/>
+                </group>
+                <footer>
+                    <button name="action_assign" type="object" string="Assign" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_aabaan_assign_technician_wizard" model="ir.actions.act_window">
+        <field name="name">Assign Technicians</field>
+        <field name="res_model">aabaan.assign.technician.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_aabaan_service_visit"/>
+        <field name="binding_view_types">list</field>
+    </record>
+
+    <record id="view_aabaan_auto_schedule_wizard_form" model="ir.ui.view">
+        <field name="name">aabaan.auto.schedule.wizard.form</field>
+        <field name="model">aabaan.auto.schedule.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                        <field name="default_start_hour"/>
+                    </group>
+                    <group>
+                        <field name="service_type"/>
+                        <field name="emirate"/>
+                        <field name="area"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="technician_ids" widget="many2many_tags"/>
+                </group>
+                <footer>
+                    <button name="action_auto_schedule" type="object" string="Auto Schedule" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_aabaan_auto_schedule_wizard" model="ir.actions.act_window">
+        <field name="name">Auto Schedule Visits</field>
+        <field name="res_model">aabaan.auto.schedule.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

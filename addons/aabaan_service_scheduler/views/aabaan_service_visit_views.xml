@@ -13,7 +13,56 @@
                 <field name="technician_ids" widget="many2many_tags"/>
                 <field name="priority"/>
                 <field name="state"/>
+                <field name="approved"/>
             </list>
+        </field>
+    </record>
+
+    <record id="view_aabaan_service_visit_kanban" model="ir.ui.view">
+        <field name="name">aabaan.service.visit.kanban</field>
+        <field name="model">aabaan.service.visit</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="technician_ids">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="planned_date"/>
+                <field name="state"/>
+                <field name="priority"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <strong><field name="name"/></strong>
+                            <div><field name="partner_id"/></div>
+                            <div><field name="planned_date"/></div>
+                            <div><field name="state"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_aabaan_service_visit_search" model="ir.ui.view">
+        <field name="name">aabaan.service.visit.search</field>
+        <field name="model">aabaan.service.visit</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="technician_ids"/>
+                <field name="area"/>
+                <field name="emirate"/>
+                <filter name="today" string="Today" domain="[('planned_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="to_schedule" string="To Schedule" domain="[('state', '=', 'draft')]"/>
+                <filter name="scheduled" string="Scheduled" domain="[('state', '=', 'scheduled')]"/>
+                <filter name="missed" string="Missed" domain="[('state', '=', 'missed')]"/>
+                <filter name="pending_approval" string="Pending Approval" domain="[('state', '=', 'done'), ('approved', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_technician" string="Technician" context="{'group_by': 'technician_ids'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by': 'planned_date'}"/>
+                </group>
+            </search>
         </field>
     </record>
 
@@ -22,6 +71,11 @@
         <field name="model">aabaan.service.visit</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary"
+                        invisible="state != 'done' or approved"
+                        groups="aabaan_service_scheduler.group_aabaan_service_supervisor,sales_team.group_sale_manager"/>
+                </header>
                 <sheet>
                     <group>
                         <group>
@@ -50,6 +104,11 @@
                         <field name="after_notes"/>
                         <field name="next_recommendation"/>
                     </group>
+                    <group>
+                        <field name="approved" readonly="1"/>
+                        <field name="approved_by" readonly="1"/>
+                        <field name="approved_date" readonly="1"/>
+                    </group>
                 </sheet>
             </form>
         </field>
@@ -59,5 +118,23 @@
         <field name="name">Service Visits</field>
         <field name="res_model">aabaan.service.visit</field>
         <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_aabaan_service_visit_search"/>
+    </record>
+
+    <record id="action_aabaan_service_visit_team_status" model="ir.actions.act_window">
+        <field name="name">Team Status</field>
+        <field name="res_model">aabaan.service.visit</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_aabaan_service_visit_search"/>
+        <field name="context">{'search_default_today': 1}</field>
+    </record>
+
+    <record id="action_aabaan_service_visit_approvals" model="ir.actions.act_window">
+        <field name="name">Approvals</field>
+        <field name="res_model">aabaan.service.visit</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_aabaan_service_visit_search"/>
+        <field name="domain">[('state', '=', 'done'), ('approved', '=', False)]</field>
+        <field name="context">{'search_default_pending_approval': 1}</field>
     </record>
 </odoo>
