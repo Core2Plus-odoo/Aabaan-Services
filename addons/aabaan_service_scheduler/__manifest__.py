@@ -1,7 +1,7 @@
 {
     "name": "Aabaan Service Scheduler",
     "summary": "Easy scheduling for pest control and water tank service visits",
-    "version": "19.0.1.1.1",
+    "version": "19.0.1.2.0",
     "category": "Services",
     "author": "Core2Plus",
     "license": "LGPL-3",

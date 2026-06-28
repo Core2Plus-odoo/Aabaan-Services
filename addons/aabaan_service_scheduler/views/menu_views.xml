@@ -4,6 +4,8 @@
     <menuitem id="menu_aabaan_service_visits" name="Service Visits" parent="menu_aabaan_service_root" action="action_aabaan_service_visit" sequence="20"/>
     <menuitem id="menu_aabaan_service_team_status" name="Team Status" parent="menu_aabaan_service_root" action="action_aabaan_service_visit_team_status" sequence="30"
         groups="group_aabaan_service_supervisor,sales_team.group_sale_manager"/>
+    <menuitem id="menu_aabaan_service_dashboard" name="Scheduling Dashboard" parent="menu_aabaan_service_root" action="action_aabaan_service_visit_dashboard" sequence="25"
+        groups="group_aabaan_service_supervisor,sales_team.group_sale_manager"/>
     <menuitem id="menu_aabaan_service_approvals" name="Approvals" parent="menu_aabaan_service_root" action="action_aabaan_service_visit_approvals" sequence="40"
         groups="group_aabaan_service_supervisor,sales_team.group_sale_manager"/>
     <menuitem id="menu_aabaan_service_auto_schedule" name="Auto Schedule" parent="menu_aabaan_service_root" action="action_aabaan_auto_schedule_wizard" sequence="50"
