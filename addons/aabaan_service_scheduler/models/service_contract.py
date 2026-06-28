@@ -28,7 +28,6 @@ class AabaanServiceContract(models.Model):
     )
     partner_id = fields.Many2one("res.partner", string="Customer", required=True, tracking=True)
     phone = fields.Char(related="partner_id.phone", readonly=True)
-    mobile = fields.Char(related="partner_id.mobile", readonly=True)
     service_type = fields.Selection(SERVICE_TYPES, required=True, default="pest_control", tracking=True)
     product_id = fields.Many2one("product.product", string="Default Service")
     group_name = fields.Char(string="Service Group")
