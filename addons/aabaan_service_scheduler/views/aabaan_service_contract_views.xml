@@ -5,6 +5,7 @@
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
                 <field name="partner_id"/>
                 <field name="service_type"/>
                 <field name="start_date"/>
@@ -25,6 +26,7 @@
                     <group>
                         <group>
                             <field name="name"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
                             <field name="partner_id"/>
                             <field name="phone"/>
                             <field name="service_type"/>
@@ -53,9 +55,34 @@
         </field>
     </record>
 
+    <record id="view_aabaan_service_contract_search" model="ir.ui.view">
+        <field name="name">aabaan.service.contract.search</field>
+        <field name="model">aabaan.service.contract</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="emirate"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <filter name="active" string="Active" domain="[('state', '=', 'active')]"/>
+                <filter name="expiring_soon" string="Expiring in 30 Days"
+                    domain="[('state', '=', 'active'), ('end_date', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <filter name="expired" string="Expired" domain="[('state', '=', 'expired')]"/>
+                <filter name="auto_renew" string="Auto-Renew" domain="[('auto_renew', '=', True)]"/>
+                <separator/>
+                <filter name="group_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                <filter name="group_service_type" string="Service Type" context="{'group_by': 'service_type'}"/>
+                <filter name="group_emirate" string="Emirate" context="{'group_by': 'emirate'}"/>
+                <filter name="group_salesperson" string="Salesperson" context="{'group_by': 'salesperson_id'}"/>
+            </search>
+        </field>
+    </record>
+
     <record id="action_aabaan_service_contract" model="ir.actions.act_window">
         <field name="name">Service Contracts</field>
         <field name="res_model">aabaan.service.contract</field>
         <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_aabaan_service_contract_search"/>
     </record>
 </odoo>

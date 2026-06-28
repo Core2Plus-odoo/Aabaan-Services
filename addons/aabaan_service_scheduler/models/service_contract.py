@@ -9,6 +9,9 @@ class AabaanServiceContract(models.Model):
     _order = "start_date desc, name desc"
 
     name = fields.Char(string="Contract Reference", required=True, copy=False, default="New")
+    company_id = fields.Many2one(
+        "res.company", required=True, default=lambda self: self.env.company
+    )
     partner_id = fields.Many2one("res.partner", string="Customer", required=True)
     phone = fields.Char(related="partner_id.phone", readonly=True)
     service_type = fields.Selection(SERVICE_TYPES, required=True, default="pest_control")
