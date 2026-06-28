@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_aabaan_service_contract_user,aabaan.service.contract.user,model_aabaan_service_contract,base.group_user,1,1,1,0
+access_aabaan_service_contract_manager,aabaan.service.contract.manager,model_aabaan_service_contract,sales_team.group_sale_manager,1,1,1,1
+access_aabaan_service_visit_user,aabaan.service.visit.user,model_aabaan_service_visit,base.group_user,1,1,1,0
+access_aabaan_service_visit_manager,aabaan.service.visit.manager,model_aabaan_service_visit,sales_team.group_sale_manager,1,1,1,1
