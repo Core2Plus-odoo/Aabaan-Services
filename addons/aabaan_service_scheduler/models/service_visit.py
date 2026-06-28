@@ -1,4 +1,5 @@
-from odoo import fields, models
+from odoo import _, fields, models
+from odoo.exceptions import AccessError, UserError
 
 from .service_constants import SERVICE_TYPES
 
@@ -37,6 +38,9 @@ class AabaanServiceVisit(models.Model):
     after_notes = fields.Text()
     materials_used = fields.Text()
     next_recommendation = fields.Text()
+    approved = fields.Boolean(string="Supervisor Approved", default=False, copy=False)
+    approved_by = fields.Many2one("res.users", string="Approved By", readonly=True, copy=False)
+    approved_date = fields.Datetime(string="Approved On", readonly=True, copy=False)
 
     def action_schedule(self):
         self.write({"state": "scheduled"})
@@ -52,3 +56,11 @@ class AabaanServiceVisit(models.Model):
 
     def action_cancel(self):
         self.write({"state": "cancelled"})
+
+    def action_approve(self):
+        if not self.env.user.has_group("aabaan_service_scheduler.group_aabaan_service_supervisor") and not self.env.user.has_group("sales_team.group_sale_manager"):
+            raise AccessError(_("Only a Technician Supervisor or Sales Manager can approve a service visit."))
+        for visit in self:
+            if visit.state != "done":
+                raise UserError(_("Only completed visits can be approved."))
+        self.write({"approved": True, "approved_by": self.env.uid, "approved_date": fields.Datetime.now()})
