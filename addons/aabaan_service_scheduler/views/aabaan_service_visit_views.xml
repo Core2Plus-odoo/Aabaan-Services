@@ -42,6 +42,20 @@
         </field>
     </record>
 
+    <record id="view_aabaan_service_visit_calendar" model="ir.ui.view">
+        <field name="name">aabaan.service.visit.calendar</field>
+        <field name="model">aabaan.service.visit</field>
+        <field name="arch" type="xml">
+            <calendar date_start="planned_start" date_stop="planned_end" color="state" mode="week" quick_add="false">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="technician_ids"/>
+                <field name="state"/>
+                <field name="priority"/>
+            </calendar>
+        </field>
+    </record>
+
     <record id="view_aabaan_service_visit_search" model="ir.ui.view">
         <field name="name">aabaan.service.visit.search</field>
         <field name="model">aabaan.service.visit</field>
@@ -127,6 +141,13 @@
         <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="view_aabaan_service_visit_search"/>
         <field name="context">{'search_default_today': 1}</field>
+    </record>
+
+    <record id="action_aabaan_service_visit_dashboard" model="ir.actions.act_window">
+        <field name="name">Scheduling Dashboard</field>
+        <field name="res_model">aabaan.service.visit</field>
+        <field name="view_mode">calendar,list,kanban,form</field>
+        <field name="search_view_id" ref="view_aabaan_service_visit_search"/>
     </record>
 
     <record id="action_aabaan_service_visit_approvals" model="ir.actions.act_window">
