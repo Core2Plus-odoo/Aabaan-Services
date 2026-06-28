@@ -10,6 +10,8 @@
 - URL: `https://core2plus-odoo-aabaan-services.odoo.com`
 - Database: `core2plus-odoo-aabaan-services-main-34150667`
 - User: `muhammad.umer@core2plus.com`
+- Edition: Odoo `19.0+e` Enterprise Edition
+- Database expiration: July 28, 2026
 
 ## What Can Be Deployed By API
 
@@ -24,7 +26,7 @@ The script does a dry run by default. Add `-ImportToTarget` only when ready to w
 
 ## Scheduler Deployment Constraint
 
-The Python addon `aabaan_service_scheduler` is ready for Odoo.sh or self-hosted Odoo.
+The Python addon `aabaan_service_scheduler` targets Odoo `19.0+e` and is ready for Odoo.sh or self-hosted Odoo Enterprise.
 
 For standard Odoo Online, custom Python addons usually cannot be installed. The scheduler should then be implemented with one of these paths:
 
