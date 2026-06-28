@@ -85,33 +85,10 @@
         </field>
     </record>
 
-    <record id="view_aabaan_service_contract_search" model="ir.ui.view">
-        <field name="name">aabaan.service.contract.search</field>
-        <field name="model">aabaan.service.contract</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <field name="partner_id"/>
-                <field name="service_type"/>
-                <field name="group_name"/>
-                <filter name="active" string="Active" domain="[('state', '=', 'active')]"/>
-                <filter name="renewal_due" string="Renewal Due" domain="[('renewal_due', '=', True)]"/>
-                <filter name="pest_control" string="Pest Control" domain="[('service_type', '=', 'pest_control')]"/>
-                <filter name="water_tank" string="Water Tank" domain="[('service_type', '=', 'water_tank')]"/>
-                <group expand="0" string="Group By">
-                    <filter name="group_service" string="Service Type" context="{'group_by': 'service_type'}"/>
-                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
-                    <filter name="group_emirate" string="Emirate" context="{'group_by': 'emirate'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
     <record id="action_aabaan_service_contract" model="ir.actions.act_window">
         <field name="name">Service Contracts</field>
         <field name="res_model">aabaan.service.contract</field>
         <field name="view_mode">list,form</field>
-        <field name="search_view_id" ref="view_aabaan_service_contract_search"/>
-        <field name="context">{'search_default_active': 1}</field>
+        <field name="domain">[('state', 'in', ['draft', 'active', 'expired', 'cancelled'])]</field>
     </record>
 </odoo>
