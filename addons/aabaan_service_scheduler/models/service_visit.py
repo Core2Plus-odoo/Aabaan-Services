@@ -10,6 +10,9 @@ class AabaanServiceVisit(models.Model):
     _order = "planned_date, name"
 
     name = fields.Char(required=True)
+    company_id = fields.Many2one(
+        "res.company", required=True, default=lambda self: self.env.company
+    )
     contract_id = fields.Many2one("aabaan.service.contract", required=True, ondelete="cascade")
     partner_id = fields.Many2one("res.partner", string="Customer", required=True)
     service_type = fields.Selection(SERVICE_TYPES, required=True, default="pest_control")
