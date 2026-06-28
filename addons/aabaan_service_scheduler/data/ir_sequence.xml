@@ -1,0 +1,8 @@
+<odoo>
+    <record id="seq_aabaan_service_contract" model="ir.sequence">
+        <field name="name">Aabaan Service Contract</field>
+        <field name="code">aabaan.service.contract</field>
+        <field name="prefix">AAB-AMC-</field>
+        <field name="padding">5</field>
+    </record>
+</odoo>
