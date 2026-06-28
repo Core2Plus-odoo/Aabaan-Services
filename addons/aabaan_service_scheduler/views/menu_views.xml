@@ -1,0 +1,8 @@
+<odoo>
+    <menuitem id="menu_aabaan_service_root" name="Aabaan Scheduler" sequence="20"/>
+    <menuitem id="menu_aabaan_service_today" name="Today" parent="menu_aabaan_service_root" action="action_aabaan_service_visit_today" sequence="1"/>
+    <menuitem id="menu_aabaan_service_to_schedule" name="To Schedule" parent="menu_aabaan_service_root" action="action_aabaan_service_visit_to_schedule" sequence="2"/>
+    <menuitem id="menu_aabaan_service_missed" name="Missed" parent="menu_aabaan_service_root" action="action_aabaan_service_visit_missed" sequence="3"/>
+    <menuitem id="menu_aabaan_service_visits" name="Service Visits" parent="menu_aabaan_service_root" action="action_aabaan_service_visit" sequence="10"/>
+    <menuitem id="menu_aabaan_service_contracts" name="Contracts" parent="menu_aabaan_service_root" action="action_aabaan_service_contract" sequence="20"/>
+</odoo>
