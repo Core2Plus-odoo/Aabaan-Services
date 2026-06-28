@@ -30,7 +30,7 @@
                 <field name="state"/>
                 <field name="priority"/>
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <strong><field name="name"/></strong>
                             <div><field name="partner_id"/></div>
