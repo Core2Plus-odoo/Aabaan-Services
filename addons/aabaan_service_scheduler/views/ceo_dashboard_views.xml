@@ -35,6 +35,16 @@
         <field name="help">Contract value, billing and renewal pipeline across companies, emirates and service lines.</field>
     </record>
 
+    <!-- Expiring / renewal pipeline: list view focused on contracts nearing end_date -->
+    <record id="action_aabaan_ceo_expiring_contracts" model="ir.actions.act_window">
+        <field name="name">Expiring Contracts</field>
+        <field name="res_model">aabaan.service.contract</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_aabaan_service_contract_search"/>
+        <field name="context">{'search_default_expiring_soon': 1}</field>
+        <field name="help">Active contracts ending within 30 days that need renewal follow-up.</field>
+    </record>
+
     <!-- Operations & Visits: pivot/graph views on aabaan.service.visit -->
     <record id="view_aabaan_service_visit_pivot" model="ir.ui.view">
         <field name="name">aabaan.service.visit.pivot</field>
@@ -70,14 +80,41 @@
         <field name="help">Visit volume, completion and missed-visit rate by company, technician, emirate and service line.</field>
     </record>
 
+    <!-- Technician Performance: workload and completion / miss rate per technician -->
+    <record id="view_aabaan_service_visit_pivot_technician" model="ir.ui.view">
+        <field name="name">aabaan.service.visit.pivot.technician</field>
+        <field name="model">aabaan.service.visit</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="technician_ids" type="row"/>
+                <field name="state" type="col"/>
+                <field name="duration_hours" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_aabaan_ceo_technician_performance" model="ir.actions.act_window">
+        <field name="name">Technician Performance</field>
+        <field name="res_model">aabaan.service.visit</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="search_view_id" ref="view_aabaan_service_visit_search"/>
+        <field name="context">{'search_default_group_technician': 1}</field>
+        <field name="help">Workload and completion / missed-visit rate per technician.</field>
+    </record>
+
     <!-- Approvals already exists (action_aabaan_service_visit_approvals); reused on the CEO menu below. -->
 
-    <menuitem id="menu_aabaan_ceo_dashboard_root" name="CEO Dashboard" parent="menu_aabaan_service_root" sequence="5"
+    <!-- Standalone top-level app for management only, separate from the operational Aabaan Scheduler menu -->
+    <menuitem id="menu_aabaan_ceo_dashboard_root" name="CEO Dashboard" sequence="19"
         groups="group_aabaan_service_ceo,sales_team.group_sale_manager"/>
     <menuitem id="menu_aabaan_ceo_revenue" name="Revenue &amp; Contracts" parent="menu_aabaan_ceo_dashboard_root"
         action="action_aabaan_ceo_revenue" sequence="10"/>
+    <menuitem id="menu_aabaan_ceo_expiring_contracts" name="Expiring Contracts" parent="menu_aabaan_ceo_dashboard_root"
+        action="action_aabaan_ceo_expiring_contracts" sequence="15"/>
     <menuitem id="menu_aabaan_ceo_operations" name="Operations &amp; Visits" parent="menu_aabaan_ceo_dashboard_root"
         action="action_aabaan_ceo_operations" sequence="20"/>
+    <menuitem id="menu_aabaan_ceo_technician_performance" name="Technician Performance" parent="menu_aabaan_ceo_dashboard_root"
+        action="action_aabaan_ceo_technician_performance" sequence="25"/>
     <menuitem id="menu_aabaan_ceo_approvals" name="Pending Approvals" parent="menu_aabaan_ceo_dashboard_root"
         action="action_aabaan_service_visit_approvals" sequence="30"/>
 </odoo>
