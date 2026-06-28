@@ -49,11 +49,31 @@
 - [ ] Log in as a CEO/Executive (or Sales Manager) user, confirm the
       standalone **CEO Dashboard** app appears (separate from the
       operational **Aabaan Scheduler** app).
-- [ ] Confirm **Revenue & Contracts**, **Expiring Contracts**,
-      **Operations & Visits**, **Technician Performance** and
-      **Pending Approvals** all load with real data.
+- [ ] Confirm **Financial Overview → Revenue & Receivables** and
+      **Cost & Payables**, **Contracts Management → Contracts Overview**,
+      **All Contracts**, **Expiring Contracts**,
+      **Operations → Operations & Visits**, **Visit Journey**,
+      **Technician Performance**, and **Pending Approvals** all load with
+      real data.
 - [ ] Confirm a plain Internal User does **not** see the CEO Dashboard app.
 
-## 8. Multi-company (when a second company is added later)
+## 8. Financial Overview data readiness
+- [ ] Accounting app is installed and chart of accounts configured.
+- [ ] At least one customer invoice and one vendor bill are **posted**
+      (`state = posted`) — Revenue/Receivables and Cost/Payables show no data
+      until invoices/bills are posted.
+- [ ] Confirm **Revenue & Receivables** matches the customer
+      invoices/credit notes in Accounting (totals, residual/receivable
+      amounts).
+- [ ] Confirm **Cost & Payables** matches the vendor bills/refunds in
+      Accounting (totals, residual/payable amounts).
+
+## 9. Visit journey / flow
+- [ ] Confirm **Visit Journey** kanban shows columns for every state
+      (To Schedule, Scheduled, In Progress, Done, Missed, Cancelled) and a
+      visit dragged/moved through the workflow appears in the right column.
+- [ ] Confirm a visit cannot be approved before it reaches `Done`.
+
+## 10. Multi-company (when a second company is added later)
 - [ ] Confirm `Company` field/filter appears on Contracts and Visits.
 - [ ] Confirm CEO Dashboard pivots group correctly by company.

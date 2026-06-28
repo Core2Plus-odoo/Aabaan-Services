@@ -1,5 +1,5 @@
 <odoo>
-    <!-- Revenue & Contracts: pivot/graph views on aabaan.service.contract -->
+    <!-- Contracts overview: pivot/graph views on aabaan.service.contract -->
     <record id="view_aabaan_service_contract_pivot" model="ir.ui.view">
         <field name="name">aabaan.service.contract.pivot</field>
         <field name="model">aabaan.service.contract</field>
@@ -27,12 +27,22 @@
     </record>
 
     <record id="action_aabaan_ceo_revenue" model="ir.actions.act_window">
-        <field name="name">Revenue &amp; Contracts</field>
+        <field name="name">Contracts Overview</field>
         <field name="res_model">aabaan.service.contract</field>
         <field name="view_mode">pivot,graph,list,form</field>
         <field name="search_view_id" ref="view_aabaan_service_contract_search"/>
         <field name="context">{'search_default_active': 1, 'search_default_group_service_type': 1}</field>
-        <field name="help">Contract value, billing and renewal pipeline across companies, emirates and service lines.</field>
+        <field name="help">Contract value and billing pipeline across companies, emirates and service lines.</field>
+    </record>
+
+    <!-- All contracts: full contract management list for the CEO, independent of the operational app -->
+    <record id="action_aabaan_ceo_all_contracts" model="ir.actions.act_window">
+        <field name="name">All Contracts</field>
+        <field name="res_model">aabaan.service.contract</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_aabaan_service_contract_search"/>
+        <field name="context">{'search_default_group_state': 1}</field>
+        <field name="help">Full contract list for management review: customers, service type, value, status and renewal terms.</field>
     </record>
 
     <!-- Expiring / renewal pipeline: list view focused on contracts nearing end_date -->
@@ -80,6 +90,15 @@
         <field name="help">Visit volume, completion and missed-visit rate by company, technician, emirate and service line.</field>
     </record>
 
+    <!-- Visit Journey: kanban grouped by status, visualising the To Schedule -> Scheduled -> In Progress -> Done flow -->
+    <record id="action_aabaan_ceo_visit_journey" model="ir.actions.act_window">
+        <field name="name">Visit Journey</field>
+        <field name="res_model">aabaan.service.visit</field>
+        <field name="view_mode">kanban,calendar,list</field>
+        <field name="search_view_id" ref="view_aabaan_service_visit_search"/>
+        <field name="help">Visual flow of every visit from To Schedule through Scheduled, In Progress, Done, Missed or Cancelled.</field>
+    </record>
+
     <!-- Technician Performance: workload and completion / miss rate per technician -->
     <record id="view_aabaan_service_visit_pivot_technician" model="ir.ui.view">
         <field name="name">aabaan.service.visit.pivot.technician</field>
@@ -107,14 +126,29 @@
     <!-- Standalone top-level app for management only, separate from the operational Aabaan Scheduler menu -->
     <menuitem id="menu_aabaan_ceo_dashboard_root" name="CEO Dashboard" sequence="19"
         groups="group_aabaan_service_ceo,sales_team.group_sale_manager"/>
-    <menuitem id="menu_aabaan_ceo_revenue" name="Revenue &amp; Contracts" parent="menu_aabaan_ceo_dashboard_root"
+
+    <menuitem id="menu_aabaan_ceo_financial" name="Financial Overview" parent="menu_aabaan_ceo_dashboard_root" sequence="10"/>
+    <menuitem id="menu_aabaan_ceo_revenue_receivables" name="Revenue &amp; Receivables" parent="menu_aabaan_ceo_financial"
+        action="action_aabaan_ceo_revenue_receivables" sequence="10"/>
+    <menuitem id="menu_aabaan_ceo_cost_payables" name="Cost &amp; Payables" parent="menu_aabaan_ceo_financial"
+        action="action_aabaan_ceo_cost_payables" sequence="20"/>
+
+    <menuitem id="menu_aabaan_ceo_contracts" name="Contracts Management" parent="menu_aabaan_ceo_dashboard_root" sequence="20"/>
+    <menuitem id="menu_aabaan_ceo_contracts_overview" name="Contracts Overview" parent="menu_aabaan_ceo_contracts"
         action="action_aabaan_ceo_revenue" sequence="10"/>
-    <menuitem id="menu_aabaan_ceo_expiring_contracts" name="Expiring Contracts" parent="menu_aabaan_ceo_dashboard_root"
-        action="action_aabaan_ceo_expiring_contracts" sequence="15"/>
-    <menuitem id="menu_aabaan_ceo_operations" name="Operations &amp; Visits" parent="menu_aabaan_ceo_dashboard_root"
-        action="action_aabaan_ceo_operations" sequence="20"/>
-    <menuitem id="menu_aabaan_ceo_technician_performance" name="Technician Performance" parent="menu_aabaan_ceo_dashboard_root"
-        action="action_aabaan_ceo_technician_performance" sequence="25"/>
+    <menuitem id="menu_aabaan_ceo_all_contracts" name="All Contracts" parent="menu_aabaan_ceo_contracts"
+        action="action_aabaan_ceo_all_contracts" sequence="20"/>
+    <menuitem id="menu_aabaan_ceo_expiring_contracts" name="Expiring Contracts" parent="menu_aabaan_ceo_contracts"
+        action="action_aabaan_ceo_expiring_contracts" sequence="30"/>
+
+    <menuitem id="menu_aabaan_ceo_operations_folder" name="Operations" parent="menu_aabaan_ceo_dashboard_root" sequence="30"/>
+    <menuitem id="menu_aabaan_ceo_operations" name="Operations &amp; Visits" parent="menu_aabaan_ceo_operations_folder"
+        action="action_aabaan_ceo_operations" sequence="10"/>
+    <menuitem id="menu_aabaan_ceo_visit_journey" name="Visit Journey" parent="menu_aabaan_ceo_operations_folder"
+        action="action_aabaan_ceo_visit_journey" sequence="20"/>
+    <menuitem id="menu_aabaan_ceo_technician_performance" name="Technician Performance" parent="menu_aabaan_ceo_operations_folder"
+        action="action_aabaan_ceo_technician_performance" sequence="30"/>
+
     <menuitem id="menu_aabaan_ceo_approvals" name="Pending Approvals" parent="menu_aabaan_ceo_dashboard_root"
-        action="action_aabaan_service_visit_approvals" sequence="30"/>
+        action="action_aabaan_service_visit_approvals" sequence="40"/>
 </odoo>
