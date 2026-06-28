@@ -46,7 +46,7 @@
         <field name="name">aabaan.service.visit.calendar</field>
         <field name="model">aabaan.service.visit</field>
         <field name="arch" type="xml">
-            <calendar date_start="planned_start" date_stop="planned_end" color="state" mode="week" quick_add="false">
+            <calendar date_start="planned_start" date_stop="planned_end" color="state" mode="week">
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="technician_ids"/>
