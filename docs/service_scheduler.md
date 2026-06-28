@@ -1,11 +1,20 @@
 # Aabaan Service Scheduler
 
+## Module Metadata
+
+- Technical Name: `aabaan_service_scheduler`
+- Category: `Services`
+- License: `LGPL-3`
+- Version: `19.0.1.0.0`
+- Target: Odoo `19.0+e` Enterprise Edition
+- Database expiration: July 28, 2026
+
 ## Purpose
 
 This addon gives Aabaan an easy Odoo scheduler for recurring service work:
 
 - Pest Control AMC contracts
-- Water Tank Cleaning AMC contracts
+- Water Tank Cleaning contracts
 - One-off or custom cleaning service visits
 - Technician assignment
 - Calendar-based dispatch
