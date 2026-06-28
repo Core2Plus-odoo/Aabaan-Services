@@ -42,7 +42,6 @@
                             <field name="name"/>
                             <field name="partner_id"/>
                             <field name="phone"/>
-                            <field name="mobile"/>
                             <field name="service_type"/>
                             <field name="product_id"/>
                             <field name="group_name"/>
