@@ -9,3 +9,5 @@ access_aabaan_auto_schedule_wizard_supervisor,aabaan.auto.schedule.wizard.superv
 access_aabaan_auto_schedule_wizard_manager,aabaan.auto.schedule.wizard.manager,model_aabaan_auto_schedule_wizard,sales_team.group_sale_manager,1,1,1,1
 access_aabaan_service_contract_ceo,aabaan.service.contract.ceo,model_aabaan_service_contract,group_aabaan_service_ceo,1,0,0,0
 access_aabaan_service_visit_ceo,aabaan.service.visit.ceo,model_aabaan_service_visit,group_aabaan_service_ceo,1,0,0,0
+access_aabaan_account_move_ceo,aabaan.account.move.ceo,account.model_account_move,group_aabaan_service_ceo,1,0,0,0
+access_aabaan_account_move_sale_manager,aabaan.account.move.sale.manager,account.model_account_move,sales_team.group_sale_manager,1,0,0,0

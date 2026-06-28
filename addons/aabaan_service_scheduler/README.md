@@ -37,21 +37,75 @@ Scheduler" section of a user's Access Rights tab.
 5. **Approve**: a Technician Supervisor or Sales Manager approves completed
    visits from `Aabaan Scheduler → Approvals`.
 
+## Visit journey / flow
+
+Every visit moves through a single state machine, visualised end-to-end in
+**CEO Dashboard → Operations → Visit Journey** (kanban grouped by status):
+
+```
+draft (To Schedule) → scheduled → in_progress → done → [approved]
+                                              ↘ missed
+                                              ↘ cancelled
+```
+
+- **To Schedule (`draft`)** — created by contract visit generation; no
+  technician/time slot confirmed yet.
+- **Scheduled** — technician(s) and a planned date/time window are assigned,
+  either manually or via the Auto Schedule wizard.
+- **In Progress** — the technician has started the visit on-site.
+- **Done** — the technician has completed the visit and recorded completion
+  date, materials used, before/after notes and a recommendation. Visits in
+  `done` are not yet final until approved.
+- **Missed / Cancelled** — terminal states for visits that didn't happen as
+  planned.
+- **Approval gate** — a visit in `done` only becomes fully closed once a
+  Technician Supervisor or Sales Manager clicks **Approve**
+  (`Aabaan Scheduler → Approvals`, or the CEO Dashboard's Pending Approvals
+  item), which stamps `approved_by`/`approved_date`. Approval is restricted to
+  those two groups and only allowed once the visit is `done`.
+
 ## CEO Dashboard
 
 A standalone top-level app ("CEO Dashboard"), separate from the operational
 Aabaan Scheduler menu, visible only to `group_aabaan_service_ceo` and Sales
 Managers:
 
-- **Revenue & Contracts** — pivot/graph of contract value and billing-cycle
+### Financial Overview
+
+Real accounting KPIs sourced from posted `account.move` entries (read-only,
+no data duplication with Accounting):
+
+- **Revenue & Receivables** — pivot/graph/list of posted customer invoices
+  and credit notes, by customer and month, with untaxed, total and
+  outstanding-residual (receivable) amounts.
+- **Cost & Payables** — pivot/graph/list of posted vendor bills and refunds,
+  by vendor and month, with untaxed, total and outstanding-residual
+  (payable) amounts.
+
+These require the Accounting app to be installed and invoices/bills to be
+posted; figures are blank until then.
+
+### Contracts Management
+
+- **Contracts Overview** — pivot/graph of contract value and billing-cycle
   amount by company, service type, emirate and status.
+- **All Contracts** — full contract list for management review, independent
+  of the operational Contracts menu.
 - **Expiring Contracts** — active contracts ending within 30 days, for
   renewal follow-up.
+
+### Operations
+
 - **Operations & Visits** — visit volume/duration by status, grouped by
   company, service type, emirate and technician, with a monthly trend graph.
+- **Visit Journey** — kanban/calendar/list visualising every visit's status
+  across the full flow described above.
 - **Technician Performance** — workload and completion/missed-visit rate per
   technician.
-- **Pending Approvals** — completed visits awaiting supervisor sign-off.
+
+### Pending Approvals
+
+Completed visits awaiting supervisor sign-off.
 
 ### Multi-company readiness
 
