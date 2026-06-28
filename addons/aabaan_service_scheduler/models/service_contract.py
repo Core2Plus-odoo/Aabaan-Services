@@ -3,14 +3,7 @@ from datetime import timedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
-
-SERVICE_TYPES = [
-    ("pest_control", "Pest Control"),
-    ("water_tank", "Water Tank Cleaning"),
-    ("cleaning", "Cleaning"),
-    ("termite", "Termite"),
-    ("other", "Other"),
-]
+from .service_constants import SERVICE_TYPES
 
 
 class AabaanServiceContract(models.Model):
