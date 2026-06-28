@@ -1,9 +1,9 @@
 <odoo>
-    <record id="view_aabaan_service_contract_tree" model="ir.ui.view">
-        <field name="name">aabaan.service.contract.tree</field>
+    <record id="view_aabaan_service_contract_list" model="ir.ui.view">
+        <field name="name">aabaan.service.contract.list</field>
         <field name="model">aabaan.service.contract</field>
         <field name="arch" type="xml">
-            <tree decoration-danger="renewal_due" decoration-muted="state in ('expired', 'cancelled')">
+            <list decoration-danger="renewal_due" decoration-muted="state in ('expired', 'cancelled')">
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="service_type"/>
@@ -16,7 +16,7 @@
                 <field name="completed_visit_count"/>
                 <field name="visit_count"/>
                 <field name="state"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -66,13 +66,13 @@
                     <notebook>
                         <page string="Visits">
                             <field name="visit_ids">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="planned_date"/>
                                     <field name="planned_start"/>
                                     <field name="planned_end"/>
                                     <field name="technician_ids" widget="many2many_tags"/>
                                     <field name="state"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Notes">
@@ -110,7 +110,7 @@
     <record id="action_aabaan_service_contract" model="ir.actions.act_window">
         <field name="name">Service Contracts</field>
         <field name="res_model">aabaan.service.contract</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="view_aabaan_service_contract_search"/>
         <field name="context">{'search_default_active': 1}</field>
     </record>
