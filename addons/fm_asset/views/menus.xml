@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- FM Platform application root menu. Subsequent fm_* modules attach their
+         menus under menu_fm_root. No web_icon (avoids the comma-format
+         file-path crash); the default app icon is used. -->
+    <menuitem id="menu_fm_root"
+              name="Facility Management"
+              sequence="15"
+              groups="fm_branding.group_fm_user"/>
+
+    <menuitem id="menu_fm_assets_root"
+              name="Assets"
+              parent="menu_fm_root"
+              sequence="20"/>
+
+    <menuitem id="menu_fm_asset"
+              name="Assets"
+              parent="menu_fm_assets_root"
+              action="action_fm_asset"
+              sequence="10"/>
+
+    <menuitem id="menu_fm_asset_category"
+              name="Categories"
+              parent="menu_fm_assets_root"
+              action="action_fm_asset_category"
+              sequence="20"/>
+
+    <menuitem id="menu_fm_asset_location"
+              name="Locations"
+              parent="menu_fm_assets_root"
+              action="action_fm_asset_location"
+              sequence="30"/>
+
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_fm_contracts_root"
+              name="Contracts"
+              parent="fm_asset.menu_fm_root"
+              sequence="30"/>
+
+    <menuitem id="menu_fm_contract"
+              name="Contracts"
+              parent="menu_fm_contracts_root"
+              action="action_fm_contract"
+              sequence="10"/>
+
+    <menuitem id="menu_fm_contract_service_item"
+              name="Service Items"
+              parent="menu_fm_contracts_root"
+              action="action_fm_contract_service_item"
+              sequence="20"/>
+
+</odoo>

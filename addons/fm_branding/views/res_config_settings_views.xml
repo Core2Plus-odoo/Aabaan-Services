@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form_fm" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.fm</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="FM Platform" string="FM Platform" name="fm_branding">
+                    <block title="Branding" id="fm_branding_block"
+                           help="Per-company branding for the FM Platform. Each tenant can rebrand without code changes.">
+                        <setting string="Brand Name" help="Displayed across the FM Platform UI and documents.">
+                            <field name="fm_brand_name"/>
+                        </setting>
+                        <setting string="Brand Logo" help="Used on cover pages, report headers and signature blocks.">
+                            <field name="fm_brand_logo" widget="image" class="oe_avatar"/>
+                        </setting>
+                        <setting string="Primary Color" help="Deep forest green by default (#1F4434).">
+                            <field name="fm_brand_color_primary" widget="color"/>
+                        </setting>
+                        <setting string="Accent Color" help="Warm gold by default (#B8923A).">
+                            <field name="fm_brand_color_accent" widget="color"/>
+                        </setting>
+                    </block>
+                    <block title="Localization &amp; Compliance" id="fm_localization_block">
+                        <setting string="Default Currency" help="AED by default for the GCC market.">
+                            <field name="fm_default_currency_id"/>
+                        </setting>
+                        <setting string="Default VAT %" help="5% per UAE Federal Tax Authority.">
+                            <field name="fm_default_vat_rate"/>
+                        </setting>
+                        <setting string="Compliance Country" help="Drives which regulatory regimes apply.">
+                            <field name="fm_compliance_country"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_fm_config_settings" model="ir.actions.act_window">
+        <field name="name">FM Platform Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'fm_branding'}</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Multi-company isolation (brief §8.2) -->
+    <record id="rule_fm_workorder_company" model="ir.rule">
+        <field name="name">FM Work Order: multi-company</field>
+        <field name="model_id" ref="model_fm_workorder"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Technicians see only their own work orders (brief §8.2) -->
+    <record id="rule_fm_workorder_technician_own" model="ir.rule">
+        <field name="name">FM Work Order: technician sees own</field>
+        <field name="model_id" ref="model_fm_workorder"/>
+        <field name="groups" eval="[(4, ref('fm_branding.group_fm_technician'))]"/>
+        <field name="domain_force">[('technician_id.user_id', '=', user.id)]</field>
+    </record>
+
+    <!-- Dispatchers/managers see all work orders -->
+    <record id="rule_fm_workorder_dispatcher_all" model="ir.rule">
+        <field name="name">FM Work Order: dispatcher sees all</field>
+        <field name="model_id" ref="model_fm_workorder"/>
+        <field name="groups" eval="[(4, ref('fm_branding.group_fm_dispatcher'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+</odoo>

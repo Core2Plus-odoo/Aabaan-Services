@@ -1,0 +1,64 @@
+// =====================================================================
+// FM Platform — shared design tokens (brief §3.1)
+// Reproduced from the prototype :root blocks. Applied to the Odoo backend
+// via web.assets_backend. Do NOT modify Odoo's own SCSS — only add tokens
+// here that fm_* components consume.
+// =====================================================================
+
+:root {
+    // Foundation
+    --fm-bg-page: #FAFAF7;
+    --fm-bg-canvas: #FFFFFF;
+    --fm-bg-subtle: #F5F5F1;
+    --fm-bg-muted: #EFEFE9;
+    --fm-bg-tint: #F9F8F4;
+
+    // Ink scale (text)
+    --fm-ink-900: #1A1A1A;
+    --fm-ink-800: #2A2A2A;
+    --fm-ink-700: #3F3F3F;
+    --fm-ink-600: #5C5C5C;
+    --fm-ink-500: #7A7A7A;
+    --fm-ink-400: #999999;
+    --fm-ink-300: #BABABA;
+    --fm-ink-200: #DCDCD5;
+    --fm-ink-100: #ECECE6;
+
+    // Borders
+    --fm-border-line: rgba(0, 0, 0, 0.07);
+    --fm-border-soft: rgba(0, 0, 0, 0.04);
+    --fm-border-strong: rgba(0, 0, 0, 0.12);
+
+    // Brand accent (deep forest green)
+    --fm-accent: #1F4434;
+    --fm-accent-deep: #0F2A1F;
+    --fm-accent-soft: #E8EFEA;
+    --fm-accent-tint: #F2F6F3;
+
+    // Highlight (warm gold)
+    --fm-highlight: #B8923A;
+    --fm-highlight-soft: #FAF5E8;
+
+    // Semantic
+    --fm-positive: #2E7D5F;
+    --fm-positive-soft: #E8F1EC;
+    --fm-warning: #C18A33;
+    --fm-warning-soft: #FAF1E4;
+    --fm-negative: #B83A3A;
+    --fm-negative-soft: #F9E9E9;
+    --fm-info: #3D6B8E;
+    --fm-info-soft: #EDF2F6;
+
+    // Service-line colors
+    --fm-svc-hvac: #2C5F7C;        --fm-svc-hvac-tint: #ECF1F5;
+    --fm-svc-electrical: #B8923A;  --fm-svc-electrical-tint: #FAF5E8;
+    --fm-svc-plumbing: #3D7E8B;    --fm-svc-plumbing-tint: #ECF3F4;
+    --fm-svc-cleaning: #6B5B95;    --fm-svc-cleaning-tint: #F0EEF5;
+    --fm-svc-pest: #A05E5E;        --fm-svc-pest-tint: #F5ECEC;
+    --fm-svc-security: #4A6B5E;    --fm-svc-security-tint: #ECF1EE;
+
+    // Typography stacks (web fonts wired in a later phase; system fallbacks now)
+    --fm-font-display: 'Instrument Serif', Georgia, serif;       // KPI values, page titles
+    --fm-font-sans: 'Inter', -apple-system, system-ui, sans-serif;
+    --fm-font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace; // IDs, timestamps, numbers
+}

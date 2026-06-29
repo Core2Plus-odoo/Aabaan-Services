@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_fm_contract" model="ir.sequence">
+        <field name="name">FM Contract Number</field>
+        <field name="code">fm.contract</field>
+        <field name="prefix">AMC-</field>
+        <field name="padding">4</field>
+        <field name="number_increment">1</field>
+    </record>
+</odoo>

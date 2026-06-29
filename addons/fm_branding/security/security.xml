@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- ===================================================================
+         FM Platform role hierarchy (brief §8.1). Every fm_* module assigns
+         model access and record rules to these groups.
+         =================================================================== -->
+
+    <record id="module_category_fm" model="ir.module.category">
+        <field name="name">Facility Management</field>
+        <field name="description">Roles for the FM Platform</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <!-- FM User (Read) — base of the hierarchy -->
+    <record id="group_fm_user" model="res.groups">
+        <field name="name">FM User (Read)</field>
+        <field name="category_id" ref="module_category_fm"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- FM Technician -->
+    <record id="group_fm_technician" model="res.groups">
+        <field name="name">FM Technician</field>
+        <field name="category_id" ref="module_category_fm"/>
+        <field name="implied_ids" eval="[(4, ref('group_fm_user'))]"/>
+    </record>
+
+    <!-- FM Dispatcher -->
+    <record id="group_fm_dispatcher" model="res.groups">
+        <field name="name">FM Dispatcher</field>
+        <field name="category_id" ref="module_category_fm"/>
+        <field name="implied_ids" eval="[(4, ref('group_fm_user'))]"/>
+    </record>
+
+    <!-- FM Manager — inherits Dispatcher -->
+    <record id="group_fm_manager" model="res.groups">
+        <field name="name">FM Manager</field>
+        <field name="category_id" ref="module_category_fm"/>
+        <field name="implied_ids" eval="[(4, ref('group_fm_dispatcher'))]"/>
+    </record>
+
+    <!-- FM Account Manager — inherits Manager -->
+    <record id="group_fm_account_manager" model="res.groups">
+        <field name="name">FM Account Manager</field>
+        <field name="category_id" ref="module_category_fm"/>
+        <field name="implied_ids" eval="[(4, ref('group_fm_manager'))]"/>
+    </record>
+
+    <!-- FM Administrator — inherits Manager + Account Manager -->
+    <record id="group_fm_admin" model="res.groups">
+        <field name="name">FM Administrator</field>
+        <field name="category_id" ref="module_category_fm"/>
+        <field name="implied_ids" eval="[(4, ref('group_fm_manager')), (4, ref('group_fm_account_manager'))]"/>
+    </record>
+
+    <!-- FM Auditor (Read-Only) -->
+    <record id="group_fm_auditor" model="res.groups">
+        <field name="name">FM Auditor (Read-Only)</field>
+        <field name="category_id" ref="module_category_fm"/>
+        <field name="implied_ids" eval="[(4, ref('group_fm_user'))]"/>
+    </record>
+
+    <!-- FM Customer (Portal) -->
+    <record id="group_fm_customer" model="res.groups">
+        <field name="name">FM Customer (Portal)</field>
+        <field name="category_id" ref="module_category_fm"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+    </record>
+
+</odoo>
