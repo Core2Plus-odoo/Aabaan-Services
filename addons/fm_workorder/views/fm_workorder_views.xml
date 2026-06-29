@@ -18,14 +18,12 @@
                 <filter name="ppm" string="PPM" domain="[('wo_type', '=', 'ppm')]"/>
                 <filter name="critical" string="P1 Critical" domain="[('severity', '=', 'p1_critical')]"/>
                 <separator/>
-                <group expand="0" string="Group By">
-                    <filter name="group_stage" string="Stage" context="{'group_by': 'stage'}"/>
-                    <filter name="group_type" string="Type" context="{'group_by': 'wo_type'}"/>
-                    <filter name="group_severity" string="Severity" context="{'group_by': 'severity'}"/>
-                    <filter name="group_service_line" string="Service Line" context="{'group_by': 'service_line'}"/>
-                    <filter name="group_technician" string="Technician" context="{'group_by': 'technician_id'}"/>
-                    <filter name="group_customer" string="Customer" context="{'group_by': 'customer_id'}"/>
-                </group>
+                <filter name="group_stage" string="Stage" context="{'group_by': 'stage'}"/>
+                <filter name="group_type" string="Type" context="{'group_by': 'wo_type'}"/>
+                <filter name="group_severity" string="Severity" context="{'group_by': 'severity'}"/>
+                <filter name="group_service_line" string="Service Line" context="{'group_by': 'service_line'}"/>
+                <filter name="group_technician" string="Technician" context="{'group_by': 'technician_id'}"/>
+                <filter name="group_customer" string="Customer" context="{'group_by': 'customer_id'}"/>
             </search>
         </field>
     </record>
