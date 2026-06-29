@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- CEO Command Centre — custom OWL client action dashboard -->
+    <record id="action_aabaan_ceo_command_centre" model="ir.actions.client">
+        <field name="name">Command Centre</field>
+        <field name="tag">aabaan_ceo_command_centre</field>
+    </record>
+
+    <!-- First item under the CEO Dashboard root, the landing page -->
+    <menuitem
+        id="menu_aabaan_ceo_command_centre"
+        name="Command Centre"
+        parent="menu_aabaan_ceo_dashboard_root"
+        action="action_aabaan_ceo_command_centre"
+        sequence="1"/>
+
+</odoo>

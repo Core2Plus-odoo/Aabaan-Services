@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="aabaan_service_scheduler.CeoCommandCentre">
+        <div class="o_aabaan_cc">
+
+            <!-- Top control bar -->
+            <div class="o_aabaan_cc_topbar">
+                <div class="o_aabaan_cc_filters">
+                    <label>PERIOD</label>
+                    <select t-on-change="onPeriodChange" class="o_aabaan_cc_select">
+                        <t t-foreach="periods" t-as="p" t-key="p.value">
+                            <option t-att-value="p.value" t-att-selected="p.value === state.period">
+                                <t t-esc="p.label"/>
+                            </option>
+                        </t>
+                    </select>
+                </div>
+                <div class="o_aabaan_cc_meta" t-if="state.data">
+                    <button class="o_aabaan_cc_refresh" t-on-click="() => this.load()">
+                        <i class="fa fa-refresh"/> Refresh
+                    </button>
+                    <span class="o_aabaan_cc_updated">Updated <t t-esc="state.updatedAt"/></span>
+                    <span class="o_aabaan_cc_scope">
+                        <t t-esc="state.data.company_label"/> ·
+                        <t t-esc="state.data.company_count"/> <t t-esc="state.data.company_count === 1 ? 'company' : 'companies'"/> ·
+                        <t t-esc="state.data.period_label"/>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div t-if="state.loading" class="o_aabaan_cc_loading">
+                <i class="fa fa-circle-o-notch fa-spin"/> Loading command centre…
+            </div>
+
+            <t t-if="!state.loading and state.data">
+                <!-- Greeting -->
+                <div class="o_aabaan_cc_hero">
+                    <h1>
+                        <t t-esc="greeting"/>, <span class="o_aabaan_cc_name"><t t-esc="state.data.user_name"/></span>.
+                    </h1>
+                    <p class="o_aabaan_cc_date"><t t-esc="today"/></p>
+                </div>
+
+                <!-- KPI cards -->
+                <div class="o_aabaan_cc_kpis">
+                    <div class="o_aabaan_cc_kpi">
+                        <div class="o_aabaan_cc_kpi_label">SALES · <t t-esc="state.data.period_label"/></div>
+                        <div class="o_aabaan_cc_kpi_value"><t t-esc="formatMoney(state.data.kpis.sales_ytd)"/></div>
+                        <div class="o_aabaan_cc_kpi_sub">posted customer invoices</div>
+                    </div>
+                    <div class="o_aabaan_cc_kpi">
+                        <div class="o_aabaan_cc_kpi_label">RECEIVABLES</div>
+                        <div class="o_aabaan_cc_kpi_value"><t t-esc="formatMoney(state.data.kpis.receivables)"/></div>
+                        <div class="o_aabaan_cc_kpi_sub o_aabaan_cc_danger" t-if="state.data.kpis.overdue_receivables">
+                            <t t-esc="formatMoney(state.data.kpis.overdue_receivables)"/> overdue
+                        </div>
+                        <div class="o_aabaan_cc_kpi_sub" t-else="">nothing overdue</div>
+                    </div>
+                    <div class="o_aabaan_cc_kpi">
+                        <div class="o_aabaan_cc_kpi_label">PAYABLES</div>
+                        <div class="o_aabaan_cc_kpi_value"><t t-esc="formatMoney(state.data.kpis.payables)"/></div>
+                        <div class="o_aabaan_cc_kpi_sub">owed to suppliers</div>
+                    </div>
+                    <div class="o_aabaan_cc_kpi">
+                        <div class="o_aabaan_cc_kpi_label">CASH POSITION</div>
+                        <div class="o_aabaan_cc_kpi_value"><t t-esc="formatMoney(state.data.kpis.cash_position)"/></div>
+                        <div class="o_aabaan_cc_kpi_sub">liquidity balance</div>
+                    </div>
+                </div>
+
+                <!-- Operational stat strip -->
+                <div class="o_aabaan_cc_stats">
+                    <div class="o_aabaan_cc_stat" t-on-click="() => this.openAction('aabaan_service_scheduler.action_aabaan_ceo_all_contracts')">
+                        <span class="o_aabaan_cc_stat_num"><t t-esc="state.data.operations.active_contracts"/></span>
+                        <span class="o_aabaan_cc_stat_lbl">Active contracts</span>
+                    </div>
+                    <div class="o_aabaan_cc_stat" t-on-click="() => this.openAction('aabaan_service_scheduler.action_aabaan_ceo_expiring_contracts')">
+                        <span class="o_aabaan_cc_stat_num"><t t-esc="state.data.operations.expiring_contracts"/></span>
+                        <span class="o_aabaan_cc_stat_lbl">Expiring &#8804; 30d</span>
+                    </div>
+                    <div class="o_aabaan_cc_stat" t-on-click="() => this.openAction('aabaan_service_scheduler.action_aabaan_service_visit_approvals')">
+                        <span class="o_aabaan_cc_stat_num"><t t-esc="state.data.operations.pending_approvals"/></span>
+                        <span class="o_aabaan_cc_stat_lbl">Pending approvals</span>
+                    </div>
+                    <div class="o_aabaan_cc_stat" t-on-click="() => this.openAction('aabaan_service_scheduler.action_aabaan_ceo_visit_journey')">
+                        <span class="o_aabaan_cc_stat_num"><t t-esc="state.data.operations.visits_today"/></span>
+                        <span class="o_aabaan_cc_stat_lbl">Visits today</span>
+                    </div>
+                    <div class="o_aabaan_cc_stat">
+                        <span class="o_aabaan_cc_stat_num o_aabaan_cc_danger_text"><t t-esc="state.data.operations.missed_this_month"/></span>
+                        <span class="o_aabaan_cc_stat_lbl">Missed this month</span>
+                    </div>
+                </div>
+
+                <!-- Two-column: activity + alerts -->
+                <div class="o_aabaan_cc_cols">
+                    <div class="o_aabaan_cc_panel">
+                        <div class="o_aabaan_cc_panel_title">ACTIVITY TIMELINE</div>
+                        <div class="o_aabaan_cc_empty" t-if="!state.data.activity.length">No recent contract activity.</div>
+                        <t t-foreach="state.data.activity" t-as="item" t-key="item.id">
+                            <div class="o_aabaan_cc_row">
+                                <i class="fa fa-file-text-o o_aabaan_cc_row_icon"/>
+                                <div class="o_aabaan_cc_row_main">
+                                    <div class="o_aabaan_cc_row_title"><t t-esc="item.name"/> · <t t-esc="item.partner"/></div>
+                                    <div class="o_aabaan_cc_row_sub"><t t-esc="item.state"/></div>
+                                </div>
+                                <div class="o_aabaan_cc_row_amount">
+                                    <t t-esc="item.currency"/> <t t-esc="item.value.toLocaleString()"/>
+                                </div>
+                                <div class="o_aabaan_cc_row_time"><t t-esc="item.since"/></div>
+                            </div>
+                        </t>
+                    </div>
+
+                    <div class="o_aabaan_cc_panel">
+                        <div class="o_aabaan_cc_panel_title">ALERT FEED</div>
+                        <t t-foreach="state.data.alerts" t-as="alert" t-key="alert_index">
+                            <div class="o_aabaan_cc_alert">
+                                <span t-attf-class="o_aabaan_cc_dot o_aabaan_cc_dot_{{alert.level}}"/>
+                                <span class="o_aabaan_cc_alert_text"><t t-esc="alert.text"/></span>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+
+</templates>
