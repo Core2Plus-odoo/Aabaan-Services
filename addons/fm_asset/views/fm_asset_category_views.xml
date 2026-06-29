@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_fm_asset_category_list" model="ir.ui.view">
+        <field name="name">fm.asset.category.list</field>
+        <field name="model">fm.asset.category</field>
+        <field name="arch" type="xml">
+            <list string="Asset Categories">
+                <field name="complete_name" string="Category"/>
+                <field name="service_line"/>
+                <field name="default_criticality"/>
+                <field name="default_ppm_frequency_months"/>
+                <field name="asset_count" string="Assets"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_fm_asset_category_form" model="ir.ui.view">
+        <field name="name">fm.asset.category.form</field>
+        <field name="model">fm.asset.category</field>
+        <field name="arch" type="xml">
+            <form string="Asset Category">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="parent_id"/>
+                            <field name="service_line"/>
+                        </group>
+                        <group>
+                            <field name="default_criticality"/>
+                            <field name="default_ppm_frequency_months"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_fm_asset_category" model="ir.actions.act_window">
+        <field name="name">Asset Categories</field>
+        <field name="res_model">fm.asset.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

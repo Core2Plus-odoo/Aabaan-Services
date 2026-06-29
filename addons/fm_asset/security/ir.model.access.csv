@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_fm_asset_category_user,fm.asset.category user,model_fm_asset_category,fm_branding.group_fm_user,1,0,0,0
+access_fm_asset_category_manager,fm.asset.category manager,model_fm_asset_category,fm_branding.group_fm_manager,1,1,1,0
+access_fm_asset_category_admin,fm.asset.category admin,model_fm_asset_category,fm_branding.group_fm_admin,1,1,1,1
+access_fm_asset_location_user,fm.asset.location user,model_fm_asset_location,fm_branding.group_fm_user,1,0,0,0
+access_fm_asset_location_manager,fm.asset.location manager,model_fm_asset_location,fm_branding.group_fm_manager,1,1,1,0
+access_fm_asset_location_admin,fm.asset.location admin,model_fm_asset_location,fm_branding.group_fm_admin,1,1,1,1
+access_fm_asset_user,fm.asset user,model_fm_asset,fm_branding.group_fm_user,1,0,0,0
+access_fm_asset_technician,fm.asset technician,model_fm_asset,fm_branding.group_fm_technician,1,1,0,0
+access_fm_asset_manager,fm.asset manager,model_fm_asset,fm_branding.group_fm_manager,1,1,1,0
+access_fm_asset_admin,fm.asset admin,model_fm_asset,fm_branding.group_fm_admin,1,1,1,1

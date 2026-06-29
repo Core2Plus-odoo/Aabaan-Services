@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Multi-company isolation via the linked sale.order's company (brief §8.2) -->
+    <record id="rule_fm_contract_company" model="ir.rule">
+        <field name="name">FM Contract: multi-company</field>
+        <field name="model_id" ref="model_fm_contract"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('sale_order_id.company_id', '=', False), ('sale_order_id.company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Account managers see their own contracts; managers/admins see all (brief §8.2) -->
+    <record id="rule_fm_contract_own_am" model="ir.rule">
+        <field name="name">FM Contract: account manager sees own</field>
+        <field name="model_id" ref="model_fm_contract"/>
+        <field name="groups" eval="[(4, ref('fm_branding.group_fm_account_manager'))]"/>
+        <field name="domain_force">[('account_manager_id', '=', user.id)]</field>
+    </record>
+
+    <record id="rule_fm_contract_all_admin" model="ir.rule">
+        <field name="name">FM Contract: managers/admins see all</field>
+        <field name="model_id" ref="model_fm_contract"/>
+        <field name="groups" eval="[(4, ref('fm_branding.group_fm_admin'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+</odoo>

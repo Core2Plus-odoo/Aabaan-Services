@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_fm_contract_search" model="ir.ui.view">
+        <field name="name">fm.contract.search</field>
+        <field name="model">fm.contract</field>
+        <field name="arch" type="xml">
+            <search string="Contracts">
+                <field name="contract_number"/>
+                <field name="partner_id"/>
+                <field name="account_manager_id"/>
+                <separator/>
+                <filter name="active_contracts" string="Active" domain="[('state', '=', 'active')]"/>
+                <filter name="renewal" string="In Renewal" domain="[('state', '=', 'renewal_pipeline')]"/>
+                <filter name="my_contracts" string="My Contracts" domain="[('account_manager_id', '=', uid)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_type" string="Type" context="{'group_by': 'contract_type'}"/>
+                    <filter name="group_band" string="Health" context="{'group_by': 'health_band'}"/>
+                    <filter name="group_am" string="Account Manager" context="{'group_by': 'account_manager_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_fm_contract_list" model="ir.ui.view">
+        <field name="name">fm.contract.list</field>
+        <field name="model">fm.contract</field>
+        <field name="arch" type="xml">
+            <list string="Contracts">
+                <field name="contract_number"/>
+                <field name="partner_id"/>
+                <field name="contract_type"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="acv" sum="ACV"/>
+                <field name="health_band" widget="badge"
+                       decoration-success="health_band == 'healthy'"
+                       decoration-warning="health_band == 'watch'"
+                       decoration-danger="health_band in ('at_risk', 'critical')"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'active'"
+                       decoration-muted="state in ('expired', 'terminated')"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_fm_contract_form" model="ir.ui.view">
+        <field name="name">fm.contract.form</field>
+        <field name="model">fm.contract</field>
+        <field name="arch" type="xml">
+            <form string="Contract">
+                <header>
+                    <button name="action_activate" type="object" string="Activate"
+                            class="btn-primary" invisible="state == 'active'"/>
+                    <button name="action_set_renewal" type="object" string="Move to Renewal"
+                            invisible="state != 'active'"/>
+                    <button name="action_terminate" type="object" string="Terminate"
+                            invisible="state in ('terminated', 'expired')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,negotiating,active,renewal_pipeline,expired"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="contract_number" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Customer &amp; Term">
+                            <field name="partner_id"/>
+                            <field name="contract_type"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="days_to_renewal"/>
+                            <field name="auto_renew"/>
+                            <field name="renewal_term_months" invisible="not auto_renew"/>
+                        </group>
+                        <group string="Commercials &amp; Health">
+                            <field name="acv"/>
+                            <field name="tcv"/>
+                            <field name="billing_frequency"/>
+                            <field name="next_invoice_date"/>
+                            <field name="account_manager_id"/>
+                            <field name="health_score"/>
+                            <field name="health_band" widget="badge"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Scope" name="scope">
+                            <group>
+                                <field name="asset_ids" widget="many2many_tags"/>
+                            </group>
+                            <group>
+                                <field name="service_inclusions" widget="many2many_tags" string="Inclusions"/>
+                                <field name="service_exclusions" widget="many2many_tags" string="Exclusions"/>
+                            </group>
+                        </page>
+                        <page string="SLA Rules" name="sla">
+                            <field name="sla_rule_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="severity"/>
+                                    <field name="response_target_minutes"/>
+                                    <field name="resolution_target_minutes"/>
+                                    <field name="business_hours_only"/>
+                                    <field name="penalty_per_breach"/>
+                                    <field name="credit_per_breach"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Penalties" name="penalties">
+                            <field name="penalty_clause_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="trigger"/>
+                                    <field name="amount"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Customer Contacts" name="contacts">
+                            <field name="customer_contact_ids" widget="many2many_tags"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_fm_contract" model="ir.actions.act_window">
+        <field name="name">Contracts</field>
+        <field name="res_model">fm.contract</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_fm_contract_search"/>
+        <field name="context">{'search_default_group_state': 1}</field>
+    </record>
+
+</odoo>

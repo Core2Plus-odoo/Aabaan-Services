@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_fm_contract_service_item_user,fm.contract.service.item user,model_fm_contract_service_item,fm_branding.group_fm_user,1,0,0,0
+access_fm_contract_service_item_manager,fm.contract.service.item manager,model_fm_contract_service_item,fm_branding.group_fm_manager,1,1,1,0
+access_fm_contract_service_item_admin,fm.contract.service.item admin,model_fm_contract_service_item,fm_branding.group_fm_admin,1,1,1,1
+access_fm_sla_rule_user,fm.sla.rule user,model_fm_sla_rule,fm_branding.group_fm_user,1,0,0,0
+access_fm_sla_rule_am,fm.sla.rule account manager,model_fm_sla_rule,fm_branding.group_fm_account_manager,1,1,1,1
+access_fm_sla_rule_admin,fm.sla.rule admin,model_fm_sla_rule,fm_branding.group_fm_admin,1,1,1,1
+access_fm_contract_penalty_user,fm.contract.penalty user,model_fm_contract_penalty,fm_branding.group_fm_user,1,0,0,0
+access_fm_contract_penalty_am,fm.contract.penalty account manager,model_fm_contract_penalty,fm_branding.group_fm_account_manager,1,1,1,1
+access_fm_contract_penalty_admin,fm.contract.penalty admin,model_fm_contract_penalty,fm_branding.group_fm_admin,1,1,1,1
+access_fm_contract_user,fm.contract user,model_fm_contract,fm_branding.group_fm_user,1,0,0,0
+access_fm_contract_am,fm.contract account manager,model_fm_contract,fm_branding.group_fm_account_manager,1,1,1,0
+access_fm_contract_admin,fm.contract admin,model_fm_contract,fm_branding.group_fm_admin,1,1,1,1
