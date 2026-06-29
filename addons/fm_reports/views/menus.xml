@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_fm_reports_hub" model="ir.actions.client">
+        <field name="name">Reports</field>
+        <field name="tag">fm_reports_hub</field>
+    </record>
+
+    <menuitem id="menu_fm_reports"
+              name="Reports"
+              parent="fm_asset.menu_fm_root"
+              action="action_fm_reports_hub"
+              sequence="80"
+              groups="fm_branding.group_fm_manager"/>
+
+</odoo>
