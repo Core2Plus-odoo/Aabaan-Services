@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Surface SLA actuals/status on the work-order SLA page -->
+    <record id="view_fm_workorder_form_sla" model="ir.ui.view">
+        <field name="name">fm.workorder.form.sla</field>
+        <field name="model">fm.workorder</field>
+        <field name="inherit_id" ref="fm_workorder.view_fm_workorder_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='sla_resolution_target_min']" position="after">
+                <field name="sla_response_actual_min"/>
+                <field name="sla_resolution_actual_min"/>
+                <field name="sla_response_status" widget="badge"
+                       decoration-success="sla_response_status == 'met'"
+                       decoration-info="sla_response_status == 'on_track'"
+                       decoration-warning="sla_response_status == 'at_risk'"
+                       decoration-danger="sla_response_status == 'breached'"/>
+                <field name="sla_resolution_status" widget="badge"
+                       decoration-success="sla_resolution_status == 'met'"
+                       decoration-info="sla_resolution_status == 'on_track'"
+                       decoration-warning="sla_resolution_status == 'at_risk'"
+                       decoration-danger="sla_resolution_status == 'breached'"/>
+                <field name="invoice_id" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Show SLA breach badges in the work-order list -->
+    <record id="view_fm_workorder_list_sla" model="ir.ui.view">
+        <field name="name">fm.workorder.list.sla</field>
+        <field name="model">fm.workorder</field>
+        <field name="inherit_id" ref="fm_workorder.view_fm_workorder_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='stage']" position="before">
+                <field name="sla_resolution_status" widget="badge" optional="show"
+                       decoration-success="sla_resolution_status == 'met'"
+                       decoration-warning="sla_resolution_status == 'at_risk'"
+                       decoration-danger="sla_resolution_status == 'breached'"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
