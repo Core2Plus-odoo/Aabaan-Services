@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="fm_dashboards.FmExecDashboard">
+        <div class="o_fm_exec">
+            <div class="o_fm_exec_topbar">
+                <span class="o_fm_exec_brand">FM · Executive Dashboard</span>
+                <div class="o_fm_exec_meta" t-if="state.data">
+                    <button class="o_fm_exec_refresh" t-on-click="() => this.load()">
+                        <i class="fa fa-refresh"/> Refresh
+                    </button>
+                    <span>Updated <t t-esc="state.updatedAt"/> · <t t-esc="state.data.company_label"/></span>
+                </div>
+            </div>
+
+            <div t-if="state.loading" class="o_fm_exec_loading">
+                <i class="fa fa-circle-o-notch fa-spin"/> Loading…
+            </div>
+
+            <t t-if="!state.loading and state.data">
+                <div class="o_fm_exec_hero">
+                    <h1><t t-esc="greeting"/>.</h1>
+                    <p class="o_fm_exec_date"><t t-esc="today"/></p>
+                </div>
+
+                <!-- KPI tiles -->
+                <div class="o_fm_exec_kpis">
+                    <div class="o_fm_exec_kpi">
+                        <div class="o_fm_exec_kpi_label">ANNUAL CONTRACT VALUE</div>
+                        <div class="o_fm_exec_kpi_value"><t t-esc="money(state.data.kpis.revenue)"/></div>
+                        <div class="o_fm_exec_kpi_sub">active contracts</div>
+                    </div>
+                    <div class="o_fm_exec_kpi">
+                        <div class="o_fm_exec_kpi_label">ACTIVE CONTRACTS</div>
+                        <div class="o_fm_exec_kpi_value"><t t-esc="state.data.kpis.active_contracts"/></div>
+                        <div class="o_fm_exec_kpi_sub">live AMC / break-fix</div>
+                    </div>
+                    <div class="o_fm_exec_kpi">
+                        <div class="o_fm_exec_kpi_label">SLA COMPLIANCE · 90d</div>
+                        <div class="o_fm_exec_kpi_value"><t t-esc="state.data.kpis.sla_compliance"/>%</div>
+                        <div class="o_fm_exec_kpi_sub">resolution met</div>
+                    </div>
+                    <div class="o_fm_exec_kpi">
+                        <div class="o_fm_exec_kpi_label">OPEN CRITICAL</div>
+                        <div class="o_fm_exec_kpi_value o_fm_danger"><t t-esc="state.data.kpis.open_critical"/></div>
+                        <div class="o_fm_exec_kpi_sub">P1 / P2 unresolved</div>
+                    </div>
+                    <div class="o_fm_exec_kpi">
+                        <div class="o_fm_exec_kpi_label">AVG CSAT · 90d</div>
+                        <div class="o_fm_exec_kpi_value"><t t-esc="state.data.kpis.avg_csat"/></div>
+                        <div class="o_fm_exec_kpi_sub">out of 5</div>
+                    </div>
+                </div>
+
+                <div class="o_fm_exec_cols">
+                    <!-- At-risk contracts -->
+                    <div class="o_fm_exec_panel">
+                        <div class="o_fm_exec_panel_title">CONTRACTS AT RISK</div>
+                        <div class="o_fm_exec_empty" t-if="!state.data.at_risk.length">No contracts at risk.</div>
+                        <table class="o_fm_exec_table" t-if="state.data.at_risk.length">
+                            <thead><tr><th>Contract</th><th>Customer</th><th>Health</th></tr></thead>
+                            <tbody>
+                                <t t-foreach="state.data.at_risk" t-as="c" t-key="c.id">
+                                    <tr>
+                                        <td class="o_fm_mono"><t t-esc="c.name"/></td>
+                                        <td><t t-esc="c.partner"/></td>
+                                        <td>
+                                            <span t-attf-class="o_fm_band o_fm_band_{{c.band}}">
+                                                <t t-esc="c.score"/> · <t t-esc="c.band"/>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Top performers -->
+                    <div class="o_fm_exec_panel">
+                        <div class="o_fm_exec_panel_title">TOP PERFORMERS · CSAT</div>
+                        <div class="o_fm_exec_empty" t-if="!state.data.top_performers.length">No rated jobs yet.</div>
+                        <t t-foreach="state.data.top_performers" t-as="p" t-key="p_index">
+                            <div class="o_fm_exec_perf">
+                                <span class="o_fm_exec_perf_name"><t t-esc="p.name"/></span>
+                                <span class="o_fm_exec_perf_bar">
+                                    <span class="o_fm_exec_perf_fill" t-attf-style="width: {{(p.csat/5*100)}}%;"/>
+                                </span>
+                                <span class="o_fm_exec_perf_val"><t t-esc="p.csat"/> · <t t-esc="p.jobs"/>j</span>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- Service mix -->
+                <div class="o_fm_exec_panel">
+                    <div class="o_fm_exec_panel_title">SERVICE MIX · 90d</div>
+                    <div class="o_fm_exec_empty" t-if="!state.data.service_mix.length">No work orders yet.</div>
+                    <t t-foreach="state.data.service_mix" t-as="m" t-key="m_index">
+                        <div class="o_fm_exec_mix">
+                            <span class="o_fm_exec_mix_label"><t t-esc="m.label"/></span>
+                            <span class="o_fm_exec_mix_bar">
+                                <span class="o_fm_exec_mix_fill" t-attf-style="width: {{m.pct}}%;"/>
+                            </span>
+                            <span class="o_fm_exec_mix_val"><t t-esc="m.count"/> (<t t-esc="m.pct"/>%)</span>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </div>
+    </t>
+
+</templates>
