@@ -7,69 +7,6 @@
          Sections: Today's Operations · Approvals · Performance · Contracts
          =================================================================== -->
 
-    <!-- ── Dedicated pivot / graph views ─────────────────────────────────── -->
-
-    <!-- Technician Performance — pivot -->
-    <record id="view_supervisor_technician_pivot" model="ir.ui.view">
-        <field name="name">aabaan.service.visit.supervisor.technician.pivot</field>
-        <field name="model">aabaan.service.visit</field>
-        <field name="type">pivot</field>
-        <field name="priority">20</field>
-        <field name="arch" type="xml">
-            <pivot string="Technician Performance" disable_linking="0">
-                <field name="technician_ids" type="row" string="Technician"/>
-                <field name="state" type="col" string="Status"/>
-                <field name="duration_hours" type="measure" string="Hours"/>
-            </pivot>
-        </field>
-    </record>
-
-    <!-- Technician Performance — graph -->
-    <record id="view_supervisor_technician_graph" model="ir.ui.view">
-        <field name="name">aabaan.service.visit.supervisor.technician.graph</field>
-        <field name="model">aabaan.service.visit</field>
-        <field name="type">graph</field>
-        <field name="priority">20</field>
-        <field name="arch" type="xml">
-            <graph string="Technician Workload" type="bar" stacked="1">
-                <field name="technician_ids" type="row" string="Technician"/>
-                <field name="state" type="col" string="Status"/>
-                <field name="duration_hours" type="measure" string="Hours"/>
-            </graph>
-        </field>
-    </record>
-
-    <!-- Visit Overview — pivot -->
-    <record id="view_supervisor_visit_overview_pivot" model="ir.ui.view">
-        <field name="name">aabaan.service.visit.supervisor.overview.pivot</field>
-        <field name="model">aabaan.service.visit</field>
-        <field name="type">pivot</field>
-        <field name="priority">20</field>
-        <field name="arch" type="xml">
-            <pivot string="Visit Overview" disable_linking="0">
-                <field name="service_type" type="row" string="Service Type"/>
-                <field name="emirate" type="row" string="Emirate"/>
-                <field name="state" type="col" string="Status"/>
-                <field name="duration_hours" type="measure" string="Hours"/>
-            </pivot>
-        </field>
-    </record>
-
-    <!-- Visit Overview — graph -->
-    <record id="view_supervisor_visit_overview_graph" model="ir.ui.view">
-        <field name="name">aabaan.service.visit.supervisor.overview.graph</field>
-        <field name="model">aabaan.service.visit</field>
-        <field name="type">graph</field>
-        <field name="priority">20</field>
-        <field name="arch" type="xml">
-            <graph string="Visit Trend" type="bar" stacked="1">
-                <field name="planned_date" interval="month" type="row" string="Month"/>
-                <field name="state" type="col" string="Status"/>
-                <field name="duration_hours" type="measure" string="Hours"/>
-            </graph>
-        </field>
-    </record>
-
     <!-- ── Actions ───────────────────────────────────────────────────────── -->
 
     <!-- Today's Operations: Team Status (kanban grouped by technician) -->
@@ -111,28 +48,22 @@
         <field name="context">{'search_default_group_approved_date': 1}</field>
     </record>
 
-    <!-- Performance: Technician Performance (dedicated pivot + graph) -->
+    <!-- Performance: Technician Performance (grouped by technician) -->
     <record id="action_supervisor_technician_performance" model="ir.actions.act_window">
         <field name="name">Technician Performance</field>
         <field name="res_model">aabaan.service.visit</field>
         <field name="view_mode">pivot,graph,list</field>
-        <field name="view_ids" eval="[
-            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_supervisor_technician_pivot')}),
-            (0, 0, {'view_mode': 'graph', 'view_id': ref('view_supervisor_technician_graph')}),
-            (0, 0, {'view_mode': 'list',  'view_id': False}),
-        ]"/>
+        <field name="search_view_id" ref="view_aabaan_service_visit_search"/>
+        <field name="context">{'search_default_group_technician': 1, 'search_default_group_state': 1}</field>
     </record>
 
-    <!-- Performance: Visit Overview (dedicated pivot + graph) -->
+    <!-- Performance: Visit Overview (grouped by service type / status) -->
     <record id="action_supervisor_visit_overview" model="ir.actions.act_window">
         <field name="name">Visit Overview</field>
         <field name="res_model">aabaan.service.visit</field>
         <field name="view_mode">pivot,graph,list</field>
-        <field name="view_ids" eval="[
-            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_supervisor_visit_overview_pivot')}),
-            (0, 0, {'view_mode': 'graph', 'view_id': ref('view_supervisor_visit_overview_graph')}),
-            (0, 0, {'view_mode': 'list',  'view_id': False}),
-        ]"/>
+        <field name="search_view_id" ref="view_aabaan_service_visit_search"/>
+        <field name="context">{'search_default_group_service_type': 1, 'search_default_group_state': 1}</field>
     </record>
 
     <!-- Contracts: Active -->
