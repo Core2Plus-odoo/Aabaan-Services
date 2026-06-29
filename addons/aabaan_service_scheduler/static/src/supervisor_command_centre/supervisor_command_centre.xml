@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="aabaan_service_scheduler.SupervisorCommandCentre">
+        <div class="o_aabaan_sc">
+
+            <div class="o_aabaan_sc_topbar">
+                <span class="o_aabaan_sc_brand"><i class="fa fa-tasks"/> Supervisor Command Centre</span>
+                <div class="o_aabaan_sc_meta" t-if="state.data">
+                    <button class="o_aabaan_sc_refresh" t-on-click="() => this.load()">
+                        <i class="fa fa-refresh"/> Refresh
+                    </button>
+                    <span class="o_aabaan_sc_updated">Updated <t t-esc="state.updatedAt"/></span>
+                    <span class="o_aabaan_sc_scope">
+                        <t t-esc="state.data.company_label"/> ·
+                        <t t-esc="state.data.company_count"/> <t t-esc="state.data.company_count === 1 ? 'company' : 'companies'"/>
+                    </span>
+                </div>
+            </div>
+
+            <div t-if="state.loading" class="o_aabaan_sc_loading">
+                <i class="fa fa-circle-o-notch fa-spin"/> Loading command centre…
+            </div>
+
+            <t t-if="!state.loading and state.data">
+                <div class="o_aabaan_sc_hero">
+                    <h1><t t-esc="greeting"/>, <span class="o_aabaan_sc_name"><t t-esc="state.data.user_name"/></span>.</h1>
+                    <p class="o_aabaan_sc_date"><t t-esc="today"/></p>
+                </div>
+
+                <!-- Headline KPI cards -->
+                <div class="o_aabaan_sc_kpis">
+                    <div class="o_aabaan_sc_kpi" t-on-click="() => this.openAction('aabaan_service_scheduler.action_supervisor_team_today')">
+                        <div class="o_aabaan_sc_kpi_label">VISITS TODAY</div>
+                        <div class="o_aabaan_sc_kpi_value"><t t-esc="state.data.kpis.visits_today"/></div>
+                        <div class="o_aabaan_sc_kpi_sub">scheduled for today</div>
+                    </div>
+                    <div class="o_aabaan_sc_kpi" t-on-click="() => this.openAction('aabaan_service_scheduler.action_supervisor_all_visits')">
+                        <div class="o_aabaan_sc_kpi_label">IN PROGRESS</div>
+                        <div class="o_aabaan_sc_kpi_value"><t t-esc="state.data.kpis.in_progress"/></div>
+                        <div class="o_aabaan_sc_kpi_sub">currently on-site</div>
+                    </div>
+                    <div class="o_aabaan_sc_kpi" t-on-click="() => this.openAction('aabaan_service_scheduler.action_supervisor_pending_approvals')">
+                        <div class="o_aabaan_sc_kpi_label">PENDING APPROVALS</div>
+                        <div class="o_aabaan_sc_kpi_value o_aabaan_sc_accent"><t t-esc="state.data.kpis.pending_approvals"/></div>
+                        <div class="o_aabaan_sc_kpi_sub">awaiting your sign-off</div>
+                    </div>
+                    <div class="o_aabaan_sc_kpi">
+                        <div class="o_aabaan_sc_kpi_label">MISSED · THIS MONTH</div>
+                        <div class="o_aabaan_sc_kpi_value o_aabaan_sc_danger_text"><t t-esc="state.data.kpis.missed_this_month"/></div>
+                        <div class="o_aabaan_sc_kpi_sub">need follow-up</div>
+                    </div>
+                </div>
+
+                <!-- Secondary stat strip -->
+                <div class="o_aabaan_sc_stats">
+                    <div class="o_aabaan_sc_stat" t-on-click="() => this.openAction('aabaan_service_scheduler.action_aabaan_auto_schedule_wizard')">
+                        <span class="o_aabaan_sc_stat_num"><t t-esc="state.data.stats.unscheduled"/></span>
+                        <span class="o_aabaan_sc_stat_lbl">Unscheduled</span>
+                    </div>
+                    <div class="o_aabaan_sc_stat" t-on-click="() => this.openAction('aabaan_service_scheduler.action_supervisor_scheduling_calendar')">
+                        <span class="o_aabaan_sc_stat_num"><t t-esc="state.data.stats.this_week"/></span>
+                        <span class="o_aabaan_sc_stat_lbl">This week</span>
+                    </div>
+                    <div class="o_aabaan_sc_stat" t-on-click="() => this.openAction('aabaan_service_scheduler.action_supervisor_active_contracts')">
+                        <span class="o_aabaan_sc_stat_num"><t t-esc="state.data.stats.active_contracts"/></span>
+                        <span class="o_aabaan_sc_stat_lbl">Active contracts</span>
+                    </div>
+                    <div class="o_aabaan_sc_stat" t-on-click="() => this.openAction('aabaan_service_scheduler.action_supervisor_expiring_contracts')">
+                        <span class="o_aabaan_sc_stat_num"><t t-esc="state.data.stats.expiring_contracts"/></span>
+                        <span class="o_aabaan_sc_stat_lbl">Expiring &#8804; 30d</span>
+                    </div>
+                    <div class="o_aabaan_sc_stat">
+                        <span class="o_aabaan_sc_stat_num o_aabaan_sc_ok_text"><t t-esc="state.data.stats.completion_rate"/>%</span>
+                        <span class="o_aabaan_sc_stat_lbl">Completion (mo)</span>
+                    </div>
+                </div>
+
+                <div class="o_aabaan_sc_cols">
+                    <!-- Team workload -->
+                    <div class="o_aabaan_sc_panel">
+                        <div class="o_aabaan_sc_panel_title">TEAM LOAD · NEXT 7 DAYS</div>
+                        <div class="o_aabaan_sc_empty" t-if="!state.data.team.length">No upcoming assigned visits.</div>
+                        <t t-foreach="state.data.team" t-as="tech" t-key="tech_index">
+                            <div class="o_aabaan_sc_team_row">
+                                <span class="o_aabaan_sc_team_name"><t t-esc="tech.name"/></span>
+                                <span class="o_aabaan_sc_team_bar">
+                                    <span class="o_aabaan_sc_team_fill" t-attf-style="width: {{Math.min(100, tech.count * 12)}}%;"/>
+                                </span>
+                                <span class="o_aabaan_sc_team_count"><t t-esc="tech.count"/></span>
+                            </div>
+                        </t>
+                    </div>
+
+                    <!-- Alerts -->
+                    <div class="o_aabaan_sc_panel">
+                        <div class="o_aabaan_sc_panel_title">ALERT FEED</div>
+                        <t t-foreach="state.data.alerts" t-as="alert" t-key="alert_index">
+                            <div class="o_aabaan_sc_alert">
+                                <span t-attf-class="o_aabaan_sc_dot o_aabaan_sc_dot_{{alert.level}}"/>
+                                <span class="o_aabaan_sc_alert_text"><t t-esc="alert.text"/></span>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- Activity timeline -->
+                <div class="o_aabaan_sc_panel o_aabaan_sc_panel_wide">
+                    <div class="o_aabaan_sc_panel_title">RECENT VISIT ACTIVITY</div>
+                    <div class="o_aabaan_sc_empty" t-if="!state.data.activity.length">No recent visit activity.</div>
+                    <t t-foreach="state.data.activity" t-as="item" t-key="item.id">
+                        <div class="o_aabaan_sc_row">
+                            <span t-attf-class="o_aabaan_sc_chip o_aabaan_sc_chip_{{item.state_key}}"><t t-esc="item.state"/></span>
+                            <div class="o_aabaan_sc_row_main">
+                                <div class="o_aabaan_sc_row_title"><t t-esc="item.name"/> · <t t-esc="item.partner"/></div>
+                                <div class="o_aabaan_sc_row_sub"><i class="fa fa-user-o"/> <t t-esc="item.technician"/></div>
+                            </div>
+                            <div class="o_aabaan_sc_row_time"><t t-esc="item.since"/></div>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </div>
+    </t>
+
+</templates>
