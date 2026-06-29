@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_fm_sla_rule_list" model="ir.ui.view">
+        <field name="name">fm.sla.rule.list</field>
+        <field name="model">fm.sla.rule</field>
+        <field name="arch" type="xml">
+            <list string="SLA Rules" editable="bottom">
+                <field name="name"/>
+                <field name="severity"/>
+                <field name="response_target_minutes"/>
+                <field name="resolution_target_minutes"/>
+                <field name="business_hours_only"/>
+                <field name="penalty_per_breach"/>
+                <field name="credit_per_breach"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+</odoo>

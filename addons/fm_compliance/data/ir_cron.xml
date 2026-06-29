@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="cron_fm_compliance_watchdog" model="ir.cron">
+        <field name="name">FM: Compliance Certificate Watchdog</field>
+        <field name="model_id" ref="model_fm_compliance_certificate"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_certificate_watchdog()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

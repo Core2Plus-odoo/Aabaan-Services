@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_fm_compliance_regime_user,fm.compliance.regime user,model_fm_compliance_regime,fm_branding.group_fm_user,1,0,0,0
+access_fm_compliance_regime_manager,fm.compliance.regime manager,model_fm_compliance_regime,fm_branding.group_fm_manager,1,1,1,1
+access_fm_compliance_task_template_user,fm.compliance.task.template user,model_fm_compliance_task_template,fm_branding.group_fm_user,1,0,0,0
+access_fm_compliance_task_template_manager,fm.compliance.task.template manager,model_fm_compliance_task_template,fm_branding.group_fm_manager,1,1,1,1
+access_fm_compliance_certificate_user,fm.compliance.certificate user,model_fm_compliance_certificate,fm_branding.group_fm_user,1,0,0,0
+access_fm_compliance_certificate_manager,fm.compliance.certificate manager,model_fm_compliance_certificate,fm_branding.group_fm_manager,1,1,1,1
+access_fm_compliance_certificate_auditor,fm.compliance.certificate auditor,model_fm_compliance_certificate,fm_branding.group_fm_auditor,1,0,0,0

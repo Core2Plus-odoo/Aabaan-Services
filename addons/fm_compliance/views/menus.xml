@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_fm_compliance_root"
+              name="Compliance"
+              parent="fm_asset.menu_fm_root"
+              sequence="40"/>
+
+    <menuitem id="menu_fm_compliance_certificate"
+              name="Certificates"
+              parent="menu_fm_compliance_root"
+              action="action_fm_compliance_certificate"
+              sequence="10"/>
+
+    <menuitem id="menu_fm_compliance_regime"
+              name="Regimes"
+              parent="menu_fm_compliance_root"
+              action="action_fm_compliance_regime"
+              sequence="20"/>
+
+</odoo>

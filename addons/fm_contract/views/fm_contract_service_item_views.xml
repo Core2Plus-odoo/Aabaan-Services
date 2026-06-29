@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_fm_contract_service_item_list" model="ir.ui.view">
+        <field name="name">fm.contract.service.item.list</field>
+        <field name="model">fm.contract.service.item</field>
+        <field name="arch" type="xml">
+            <list string="Service Items" editable="bottom">
+                <field name="name"/>
+                <field name="service_line"/>
+                <field name="description"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_fm_contract_service_item" model="ir.actions.act_window">
+        <field name="name">Service Items</field>
+        <field name="res_model">fm.contract.service.item</field>
+        <field name="view_mode">list</field>
+    </record>
+
+</odoo>
