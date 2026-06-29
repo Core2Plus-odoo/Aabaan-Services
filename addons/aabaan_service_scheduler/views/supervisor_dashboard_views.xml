@@ -161,7 +161,6 @@
         id="menu_supervisor_dashboard_root"
         name="Supervisor"
         sequence="18"
-        web_icon="fa-tasks,#2980b9"
         groups="aabaan_service_scheduler.group_aabaan_service_supervisor,sales_team.group_sale_manager"/>
 
     <!-- ── Today's Operations ─────────────────────────────────────────────── -->
