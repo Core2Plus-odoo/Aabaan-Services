@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===================================================================
+         SUPERVISOR DASHBOARD
+         Standalone app for Technician Supervisors and Sales Managers.
+         Sections: Today's Operations · Approvals · Performance · Contracts
+         =================================================================== -->
+
+    <!-- ── Dedicated pivot / graph views ─────────────────────────────────── -->
+
+    <!-- Technician Performance — pivot -->
+    <record id="view_supervisor_technician_pivot" model="ir.ui.view">
+        <field name="name">aabaan.service.visit.supervisor.technician.pivot</field>
+        <field name="model">aabaan.service.visit</field>
+        <field name="type">pivot</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <pivot string="Technician Performance" disable_linking="0">
+                <field name="technician_ids" type="row" string="Technician"/>
+                <field name="state" type="col" string="Status"/>
+                <field name="duration_hours" type="measure" string="Hours"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Technician Performance — graph -->
+    <record id="view_supervisor_technician_graph" model="ir.ui.view">
+        <field name="name">aabaan.service.visit.supervisor.technician.graph</field>
+        <field name="model">aabaan.service.visit</field>
+        <field name="type">graph</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <graph string="Technician Workload" type="bar" stacked="1">
+                <field name="technician_ids" type="row" string="Technician"/>
+                <field name="state" type="col" string="Status"/>
+                <field name="duration_hours" type="measure" string="Hours"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Visit Overview — pivot -->
+    <record id="view_supervisor_visit_overview_pivot" model="ir.ui.view">
+        <field name="name">aabaan.service.visit.supervisor.overview.pivot</field>
+        <field name="model">aabaan.service.visit</field>
+        <field name="type">pivot</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <pivot string="Visit Overview" disable_linking="0">
+                <field name="service_type" type="row" string="Service Type"/>
+                <field name="emirate" type="row" string="Emirate"/>
+                <field name="state" type="col" string="Status"/>
+                <field name="duration_hours" type="measure" string="Hours"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Visit Overview — graph -->
+    <record id="view_supervisor_visit_overview_graph" model="ir.ui.view">
+        <field name="name">aabaan.service.visit.supervisor.overview.graph</field>
+        <field name="model">aabaan.service.visit</field>
+        <field name="type">graph</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <graph string="Visit Trend" type="bar" stacked="1">
+                <field name="planned_date" interval="month" type="row" string="Month"/>
+                <field name="state" type="col" string="Status"/>
+                <field name="duration_hours" type="measure" string="Hours"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- ── Actions ───────────────────────────────────────────────────────── -->
+
+    <!-- Today's Operations: Team Status (kanban grouped by technician) -->
+    <record id="action_supervisor_team_today" model="ir.actions.act_window">
+        <field name="name">Team Status — Today</field>
+        <field name="res_model">aabaan.service.visit</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_today': 1, 'group_by': 'technician_ids'}</field>
+    </record>
+
+    <!-- Today's Operations: Scheduling Calendar -->
+    <record id="action_supervisor_scheduling_calendar" model="ir.actions.act_window">
+        <field name="name">Scheduling Calendar</field>
+        <field name="res_model">aabaan.service.visit</field>
+        <field name="view_mode">calendar,list,kanban,form</field>
+    </record>
+
+    <!-- Today's Operations: All Visits -->
+    <record id="action_supervisor_all_visits" model="ir.actions.act_window">
+        <field name="name">All Visits</field>
+        <field name="res_model">aabaan.service.visit</field>
+        <field name="view_mode">list,kanban,calendar,form</field>
+    </record>
+
+    <!-- Approvals: Pending (done, not yet approved) -->
+    <record id="action_supervisor_pending_approvals" model="ir.actions.act_window">
+        <field name="name">Pending Approvals</field>
+        <field name="res_model">aabaan.service.visit</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'done'), ('approved', '=', False)]</field>
+    </record>
+
+    <!-- Approvals: Approved History -->
+    <record id="action_supervisor_approved_history" model="ir.actions.act_window">
+        <field name="name">Approved Visits</field>
+        <field name="res_model">aabaan.service.visit</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('approved', '=', True)]</field>
+        <field name="context">{'search_default_group_approved_date': 1}</field>
+    </record>
+
+    <!-- Performance: Technician Performance (dedicated pivot + graph) -->
+    <record id="action_supervisor_technician_performance" model="ir.actions.act_window">
+        <field name="name">Technician Performance</field>
+        <field name="res_model">aabaan.service.visit</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="view_ids" eval="[
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_supervisor_technician_pivot')}),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('view_supervisor_technician_graph')}),
+            (0, 0, {'view_mode': 'list',  'view_id': False}),
+        ]"/>
+    </record>
+
+    <!-- Performance: Visit Overview (dedicated pivot + graph) -->
+    <record id="action_supervisor_visit_overview" model="ir.actions.act_window">
+        <field name="name">Visit Overview</field>
+        <field name="res_model">aabaan.service.visit</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="view_ids" eval="[
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_supervisor_visit_overview_pivot')}),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('view_supervisor_visit_overview_graph')}),
+            (0, 0, {'view_mode': 'list',  'view_id': False}),
+        ]"/>
+    </record>
+
+    <!-- Contracts: Active -->
+    <record id="action_supervisor_active_contracts" model="ir.actions.act_window">
+        <field name="name">Active Contracts</field>
+        <field name="res_model">aabaan.service.contract</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'active')]</field>
+    </record>
+
+    <!-- Contracts: Expiring within 30 days -->
+    <record id="action_supervisor_expiring_contracts" model="ir.actions.act_window">
+        <field name="name">Expiring Contracts</field>
+        <field name="res_model">aabaan.service.contract</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[
+            ('state', '=', 'active'),
+            ('end_date', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d')),
+            ('end_date', '&gt;=', context_today().strftime('%Y-%m-%d'))
+        ]</field>
+    </record>
+
+    <!-- ── Root menu ─────────────────────────────────────────────────────── -->
+
+    <menuitem
+        id="menu_supervisor_dashboard_root"
+        name="Supervisor"
+        sequence="18"
+        web_icon="fa-tasks,#2980b9"
+        groups="aabaan_service_scheduler.group_aabaan_service_supervisor,sales_team.group_sale_manager"/>
+
+    <!-- ── Today's Operations ─────────────────────────────────────────────── -->
+
+    <menuitem
+        id="menu_supervisor_operations"
+        name="Today's Operations"
+        parent="menu_supervisor_dashboard_root"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_supervisor_team_today"
+        name="Team Status"
+        parent="menu_supervisor_operations"
+        action="action_supervisor_team_today"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_supervisor_scheduling_calendar"
+        name="Scheduling Calendar"
+        parent="menu_supervisor_operations"
+        action="action_supervisor_scheduling_calendar"
+        sequence="20"/>
+
+    <menuitem
+        id="menu_supervisor_all_visits"
+        name="All Visits"
+        parent="menu_supervisor_operations"
+        action="action_supervisor_all_visits"
+        sequence="30"/>
+
+    <menuitem
+        id="menu_supervisor_auto_schedule"
+        name="Auto Schedule"
+        parent="menu_supervisor_operations"
+        action="action_aabaan_auto_schedule_wizard"
+        sequence="40"/>
+
+    <!-- ── Approvals ─────────────────────────────────────────────────────── -->
+
+    <menuitem
+        id="menu_supervisor_approvals_folder"
+        name="Approvals"
+        parent="menu_supervisor_dashboard_root"
+        sequence="20"/>
+
+    <menuitem
+        id="menu_supervisor_pending_approvals"
+        name="Pending Approvals"
+        parent="menu_supervisor_approvals_folder"
+        action="action_supervisor_pending_approvals"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_supervisor_approved_history"
+        name="Approved History"
+        parent="menu_supervisor_approvals_folder"
+        action="action_supervisor_approved_history"
+        sequence="20"/>
+
+    <!-- ── Performance &amp; Reports ──────────────────────────────────────── -->
+
+    <menuitem
+        id="menu_supervisor_performance_folder"
+        name="Performance &amp; Reports"
+        parent="menu_supervisor_dashboard_root"
+        sequence="30"/>
+
+    <menuitem
+        id="menu_supervisor_technician_performance"
+        name="Technician Performance"
+        parent="menu_supervisor_performance_folder"
+        action="action_supervisor_technician_performance"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_supervisor_visit_overview"
+        name="Visit Overview"
+        parent="menu_supervisor_performance_folder"
+        action="action_supervisor_visit_overview"
+        sequence="20"/>
+
+    <!-- ── Contracts ─────────────────────────────────────────────────────── -->
+
+    <menuitem
+        id="menu_supervisor_contracts_folder"
+        name="Contracts"
+        parent="menu_supervisor_dashboard_root"
+        sequence="40"/>
+
+    <menuitem
+        id="menu_supervisor_active_contracts"
+        name="Active Contracts"
+        parent="menu_supervisor_contracts_folder"
+        action="action_supervisor_active_contracts"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_supervisor_expiring_contracts"
+        name="Expiring Contracts"
+        parent="menu_supervisor_contracts_folder"
+        action="action_supervisor_expiring_contracts"
+        sequence="20"/>
+
+</odoo>
