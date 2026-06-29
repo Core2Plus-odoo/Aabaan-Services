@@ -15,12 +15,10 @@
                 <filter name="under_repair" string="Under Repair" domain="[('state', '=', 'under_repair')]"/>
                 <filter name="critical" string="Critical" domain="[('criticality', '=', 'critical')]"/>
                 <separator/>
-                <group expand="0" string="Group By">
-                    <filter name="group_location" string="Location" context="{'group_by': 'location_fm_id'}"/>
-                    <filter name="group_criticality" string="Criticality" context="{'group_by': 'criticality'}"/>
-                    <filter name="group_service_line" string="Service Line" context="{'group_by': 'service_line'}"/>
-                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
-                </group>
+                <filter name="group_location" string="Location" context="{'group_by': 'location_fm_id'}"/>
+                <filter name="group_criticality" string="Criticality" context="{'group_by': 'criticality'}"/>
+                <filter name="group_service_line" string="Service Line" context="{'group_by': 'service_line'}"/>
+                <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
             </search>
         </field>
     </record>
