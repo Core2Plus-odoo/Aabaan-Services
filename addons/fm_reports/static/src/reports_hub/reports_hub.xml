@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="fm_reports.FmReportsHub">
+        <div class="o_fm_reports">
+            <div class="o_fm_reports_hero">
+                <h1>Reports</h1>
+                <p class="o_fm_reports_sub">Operational, financial and compliance analysis across the portfolio.</p>
+            </div>
+
+            <t t-foreach="catalog" t-as="group" t-key="group.section">
+                <div class="o_fm_reports_section">
+                    <div class="o_fm_reports_section_title"><t t-esc="group.section"/></div>
+                    <div class="o_fm_reports_grid">
+                        <t t-foreach="group.cards" t-as="card" t-key="card.title">
+                            <div class="o_fm_reports_card" t-on-click="() => this.open(card.action)">
+                                <div class="o_fm_reports_card_icon"><i t-attf-class="fa {{card.icon}}"/></div>
+                                <div class="o_fm_reports_card_body">
+                                    <div class="o_fm_reports_card_title"><t t-esc="card.title"/></div>
+                                    <div class="o_fm_reports_card_desc"><t t-esc="card.desc"/></div>
+                                </div>
+                                <i class="fa fa-angle-right o_fm_reports_card_arrow"/>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+
+</templates>
