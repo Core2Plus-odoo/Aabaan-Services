@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_fm_exec_dashboard" model="ir.actions.client">
+        <field name="name">Executive Dashboard</field>
+        <field name="tag">fm_exec_dashboard</field>
+    </record>
+
+    <menuitem id="menu_fm_dashboards_root"
+              name="Dashboards"
+              parent="fm_asset.menu_fm_root"
+              sequence="5"/>
+
+    <menuitem id="menu_fm_exec_dashboard"
+              name="Executive Dashboard"
+              parent="menu_fm_dashboards_root"
+              action="action_fm_exec_dashboard"
+              sequence="10"
+              groups="fm_branding.group_fm_manager"/>
+
+</odoo>
