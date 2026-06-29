@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Regime -->
+    <record id="view_fm_compliance_regime_list" model="ir.ui.view">
+        <field name="name">fm.compliance.regime.list</field>
+        <field name="model">fm.compliance.regime</field>
+        <field name="arch" type="xml">
+            <list string="Compliance Regimes">
+                <field name="name"/>
+                <field name="country"/>
+                <field name="authority"/>
+                <field name="regulation_code"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_fm_compliance_regime_form" model="ir.ui.view">
+        <field name="name">fm.compliance.regime.form</field>
+        <field name="model">fm.compliance.regime</field>
+        <field name="arch" type="xml">
+            <form string="Compliance Regime">
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="country"/>
+                            <field name="authority"/>
+                            <field name="regulation_code"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Scope and requirements..."/>
+                    <group string="Applies To">
+                        <field name="applies_to_asset_category_ids" widget="many2many_tags" nolabel="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Task Templates">
+                            <field name="task_template_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="frequency_value"/>
+                                    <field name="frequency_unit"/>
+                                    <field name="checklist_template_id"/>
+                                    <field name="certificate_required"/>
+                                    <field name="lead_days"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_fm_compliance_regime" model="ir.actions.act_window">
+        <field name="name">Compliance Regimes</field>
+        <field name="res_model">fm.compliance.regime</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Certificate -->
+    <record id="view_fm_compliance_certificate_list" model="ir.ui.view">
+        <field name="name">fm.compliance.certificate.list</field>
+        <field name="model">fm.compliance.certificate</field>
+        <field name="arch" type="xml">
+            <list string="Certificates" decoration-danger="state == 'expired'" decoration-warning="state == 'expiring_soon'">
+                <field name="name"/>
+                <field name="regime_id"/>
+                <field name="asset_id"/>
+                <field name="location_id"/>
+                <field name="issue_date"/>
+                <field name="expiry_date"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'valid'"
+                       decoration-warning="state == 'expiring_soon'"
+                       decoration-danger="state == 'expired'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_fm_compliance_certificate_form" model="ir.ui.view">
+        <field name="name">fm.compliance.certificate.form</field>
+        <field name="model">fm.compliance.certificate</field>
+        <field name="arch" type="xml">
+            <form string="Certificate">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="regime_id"/>
+                            <field name="certificate_number"/>
+                            <field name="issued_by"/>
+                            <field name="asset_id"/>
+                            <field name="location_id"/>
+                        </group>
+                        <group>
+                            <field name="issue_date"/>
+                            <field name="expiry_date"/>
+                            <field name="state"/>
+                            <field name="related_workorder_id"/>
+                            <field name="document_attachment_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_fm_compliance_certificate" model="ir.actions.act_window">
+        <field name="name">Certificates</field>
+        <field name="res_model">fm.compliance.certificate</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>
