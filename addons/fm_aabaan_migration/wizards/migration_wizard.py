@@ -105,6 +105,18 @@ class FmAabaanMigrationWizard(models.TransientModel):
             })
             n_contracts += 1
 
+            # Carry the contract's service product onto the FM contract as a
+            # recurring order line (reuses the existing product.product), so
+            # subscription billing has something to invoice.
+            if c.product_id:
+                self.env["sale.order.line"].create({
+                    "order_id": fmc.sale_order_id.id,
+                    "product_id": c.product_id.id,
+                    "name": c.product_id.display_name,
+                    "product_uom_qty": 1.0,
+                    "price_unit": c.billing_cycle_amount or c.contract_value or 0.0,
+                })
+
             if self.migrate_visits:
                 wo_vals = []
                 for v in c.visit_ids:
