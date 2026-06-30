@@ -40,7 +40,9 @@ class FmWorkOrderPartsLine(models.Model):
     qty = fields.Float(required=True, default=1.0)
     unit_cost = fields.Monetary(currency_field="currency_id")
     total = fields.Monetary(compute="_compute_total", store=True, currency_field="currency_id")
-    stock_move_id = fields.Many2one("stock.move", readonly=True)
+    # stock_move_id (link to stock consumption) is added when the Stock module
+    # is part of the deployment — see README. fm_workorder does not depend on
+    # `stock`, so the field is omitted to avoid an unknown-comodel error.
     currency_id = fields.Many2one(related="workorder_id.currency_id")
 
     @api.depends("qty", "unit_cost")
