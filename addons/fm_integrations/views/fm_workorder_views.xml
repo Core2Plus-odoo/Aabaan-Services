@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Surface the linked calendar event on the work-order form -->
+    <record id="view_fm_workorder_form_calendar_link" model="ir.ui.view">
+        <field name="name">fm.workorder.form.calendar-link</field>
+        <field name="model">fm.workorder</field>
+        <field name="inherit_id" ref="fm_workorder.view_fm_workorder_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='duration_minutes']" position="after">
+                <field name="calendar_event_id" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
