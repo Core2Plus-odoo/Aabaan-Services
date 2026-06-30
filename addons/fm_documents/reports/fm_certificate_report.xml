@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_fm_certificate" model="ir.actions.report">
+        <field name="name">Compliance Certificate</field>
+        <field name="model">fm.compliance.certificate</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fm_documents.report_fm_certificate_document</field>
+        <field name="report_file">fm_documents.report_fm_certificate_document</field>
+        <field name="binding_model_id" ref="fm_compliance.model_fm_compliance_certificate"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+
+    <template id="report_fm_certificate_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="row mb-4">
+                            <div class="col-9">
+                                <h2 class="mb-0">Compliance Certificate</h2>
+                                <div style="font-size:16px;" dir="rtl">شهادة الامتثال</div>
+                                <div class="text-muted"><span t-field="o.name"/></div>
+                            </div>
+                            <div class="col-3 text-end">
+                                <img t-att-src="'/report/barcode/?barcode_type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('QR', o.certificate_number or o.name or str(o.id), 120, 120)"
+                                     style="width:120px;height:120px;"/>
+                                <div class="text-muted" style="font-size:9px;">Scan to verify / امسح للتحقق</div>
+                            </div>
+                        </div>
+
+                        <table class="table table-sm">
+                            <tr>
+                                <td style="width:35%;"><strong>Regime / الجهة التنظيمية</strong></td>
+                                <td><span t-field="o.regime_id"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Certificate No. / رقم الشهادة</strong></td>
+                                <td><span t-field="o.certificate_number"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Asset / الأصل</strong></td>
+                                <td><span t-field="o.asset_id"/><span t-if="not o.asset_id" t-field="o.location_id"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Issued By / صادرة عن</strong></td>
+                                <td><span t-field="o.issued_by"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Issue Date / تاريخ الإصدار</strong></td>
+                                <td><span t-field="o.issue_date"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Expiry Date / تاريخ الانتهاء</strong></td>
+                                <td><span t-field="o.expiry_date"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Status / الحالة</strong></td>
+                                <td><span t-field="o.state"/></td>
+                            </tr>
+                        </table>
+
+                        <div class="text-muted mt-5" style="font-size:11px;">
+                            TRN: <span t-field="o.company_id.vat"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>
