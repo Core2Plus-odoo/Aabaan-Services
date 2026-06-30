@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_fm_contract" model="ir.actions.report">
+        <field name="name">Contract Summary</field>
+        <field name="model">fm.contract</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fm_documents.report_fm_contract_document</field>
+        <field name="report_file">fm_documents.report_fm_contract_document</field>
+        <field name="binding_model_id" ref="fm_contract.model_fm_contract"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+
+    <template id="report_fm_contract_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="row mb-3">
+                            <div class="col-7">
+                                <h2 class="mb-0">Maintenance Contract</h2>
+                                <div class="text-muted"><span t-field="o.contract_number"/></div>
+                            </div>
+                            <div class="col-5 text-end">
+                                <div><strong>Type:</strong> <span t-field="o.contract_type"/></div>
+                                <div><strong>Status:</strong> <span t-field="o.state"/></div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <strong>Customer</strong>
+                                <div t-field="o.partner_id"
+                                     t-options='{"widget": "contact", "fields": ["name", "address", "phone"]}'/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Term &amp; Billing</strong>
+                                <div><strong>Start:</strong> <span t-field="o.start_date"/></div>
+                                <div><strong>End:</strong> <span t-field="o.end_date"/></div>
+                                <div><strong>Billing:</strong> <span t-field="o.billing_frequency"/></div>
+                                <div><strong>Annual Value:</strong> <span t-field="o.acv"/></div>
+                            </div>
+                        </div>
+
+                        <t t-if="o.asset_ids">
+                            <strong>Covered Assets</strong>
+                            <table class="table table-sm o_main_table mb-3">
+                                <thead><tr><th>Asset</th><th>Location</th><th>Criticality</th></tr></thead>
+                                <tbody>
+                                    <tr t-foreach="o.asset_ids" t-as="a">
+                                        <td><span t-field="a.name"/></td>
+                                        <td><span t-field="a.location_full_path"/></td>
+                                        <td><span t-field="a.criticality"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+
+                        <t t-if="o.sla_rule_ids">
+                            <strong>Service Levels</strong>
+                            <table class="table table-sm o_main_table mb-3">
+                                <thead><tr><th>Severity</th><th class="text-end">Response (min)</th><th class="text-end">Resolution (min)</th></tr></thead>
+                                <tbody>
+                                    <tr t-foreach="o.sla_rule_ids" t-as="s">
+                                        <td><span t-field="s.severity"/></td>
+                                        <td class="text-end"><span t-field="s.response_target_minutes"/></td>
+                                        <td class="text-end"><span t-field="s.resolution_target_minutes"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+
+                        <div class="text-muted mt-4" style="font-size:11px;">
+                            TRN: <span t-field="o.company_id.vat"/> · All amounts in AED unless stated.
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>
