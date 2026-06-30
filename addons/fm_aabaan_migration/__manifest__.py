@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Aabaan Migration",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.1.0",
     "category": "Facility Management",
     "summary": "One-click migration of aabaan contracts/visits into the FM Platform",
     "description": """
