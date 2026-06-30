@@ -58,9 +58,13 @@
                 <field name="name"/>
                 <field name="severity"/>
                 <field name="stage"/>
+                <field name="asset_id"/>
+                <field name="location_id"/>
+                <field name="customer_id"/>
+                <field name="technician_id"/>
                 <templates>
-                    <t t-name="kanban-box">
-                        <div class="oe_kanban_global_click">
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="o_kanban_record_top">
                                 <strong><field name="name"/></strong>
                                 <span class="float-end"><field name="severity" widget="badge"/></span>
