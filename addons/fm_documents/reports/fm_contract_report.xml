@@ -20,6 +20,7 @@
                         <div class="row mb-3">
                             <div class="col-7">
                                 <h2 class="mb-0">Maintenance Contract</h2>
+                                <div style="font-size:15px;" dir="rtl">عقد الصيانة</div>
                                 <div class="text-muted"><span t-field="o.contract_number"/></div>
                             </div>
                             <div class="col-5 text-end">
@@ -30,12 +31,12 @@
 
                         <div class="row mb-3">
                             <div class="col-6">
-                                <strong>Customer</strong>
+                                <strong>Customer / العميل</strong>
                                 <div t-field="o.partner_id"
                                      t-options='{"widget": "contact", "fields": ["name", "address", "phone"]}'/>
                             </div>
                             <div class="col-6">
-                                <strong>Term &amp; Billing</strong>
+                                <strong>Term &amp; Billing / المدة والفوترة</strong>
                                 <div><strong>Start:</strong> <span t-field="o.start_date"/></div>
                                 <div><strong>End:</strong> <span t-field="o.end_date"/></div>
                                 <div><strong>Billing:</strong> <span t-field="o.billing_frequency"/></div>
@@ -44,7 +45,7 @@
                         </div>
 
                         <t t-if="o.asset_ids">
-                            <strong>Covered Assets</strong>
+                            <strong>Covered Assets / الأصول المشمولة</strong>
                             <table class="table table-sm o_main_table mb-3">
                                 <thead><tr><th>Asset</th><th>Location</th><th>Criticality</th></tr></thead>
                                 <tbody>
@@ -58,7 +59,7 @@
                         </t>
 
                         <t t-if="o.sla_rule_ids">
-                            <strong>Service Levels</strong>
+                            <strong>Service Levels / مستويات الخدمة</strong>
                             <table class="table table-sm o_main_table mb-3">
                                 <thead><tr><th>Severity</th><th class="text-end">Response (min)</th><th class="text-end">Resolution (min)</th></tr></thead>
                                 <tbody>

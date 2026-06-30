@@ -20,6 +20,7 @@
                         <div class="row mb-3">
                             <div class="col-7">
                                 <h2 class="mb-0">Service Work Order</h2>
+                                <div style="font-size:15px;" dir="rtl">أمر عمل الخدمة</div>
                                 <div class="text-muted"><span t-field="o.name"/></div>
                             </div>
                             <div class="col-5 text-end">
@@ -32,12 +33,12 @@
 
                         <div class="row mb-3">
                             <div class="col-6">
-                                <strong>Customer</strong>
+                                <strong>Customer / العميل</strong>
                                 <div t-field="o.customer_id"
                                      t-options='{"widget": "contact", "fields": ["name", "address", "phone"]}'/>
                             </div>
                             <div class="col-6">
-                                <strong>Service Details</strong>
+                                <strong>Service Details / تفاصيل الخدمة</strong>
                                 <div><strong>Asset:</strong> <span t-field="o.asset_id"/></div>
                                 <div><strong>Location:</strong> <span t-field="o.location_id"/></div>
                                 <div t-if="o.contract_id"><strong>Contract:</strong> <span t-field="o.contract_id"/></div>
@@ -46,16 +47,16 @@
                         </div>
 
                         <div class="mb-3">
-                            <strong>Problem Reported</strong>
+                            <strong>Problem Reported / المشكلة المبلّغة</strong>
                             <p t-field="o.problem_description"/>
                             <t t-if="o.resolution_notes">
-                                <strong>Work Performed</strong>
+                                <strong>Work Performed / العمل المنجز</strong>
                                 <p t-field="o.resolution_notes"/>
                             </t>
                         </div>
 
                         <t t-if="o.checklist_item_ids">
-                            <strong>Checklist</strong>
+                            <strong>Checklist / قائمة الفحص</strong>
                             <table class="table table-sm o_main_table mb-3">
                                 <thead>
                                     <tr>
@@ -75,7 +76,7 @@
                         </t>
 
                         <t t-if="o.parts_line_ids">
-                            <strong>Parts &amp; Materials</strong>
+                            <strong>Parts &amp; Materials / قطع الغيار والمواد</strong>
                             <table class="table table-sm o_main_table mb-3">
                                 <thead>
                                     <tr>
@@ -109,7 +110,7 @@
 
                         <div class="row mt-4">
                             <div class="col-6">
-                                <strong>Customer Sign-off</strong>
+                                <strong>Customer Sign-off / توقيع العميل</strong>
                                 <div t-if="o.signed_off_by"><span t-field="o.signed_off_by"/><span t-if="o.signed_off_role"> (<span t-field="o.signed_off_role"/>)</span></div>
                                 <div t-if="o.signed_off_at"><span t-field="o.signed_off_at"/></div>
                                 <div t-if="o.csat_rating"><strong>Satisfaction:</strong> <span t-field="o.csat_rating"/> / 5</div>

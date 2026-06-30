@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Documents",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.1.0",
     "category": "Facility Management",
     "summary": "Branded PDF documents (work order job sheet, contract) — UAE-ready",
     "description": """
@@ -21,10 +21,12 @@ set the company TRN in its VAT field and the 5% tax for full compliance.
     "license": "OPL-1",
     "depends": [
         "fm_workorder",
+        "fm_compliance",
     ],
     "data": [
         "reports/fm_workorder_report.xml",
         "reports/fm_contract_report.xml",
+        "reports/fm_certificate_report.xml",
     ],
     "installable": True,
     "application": False,
