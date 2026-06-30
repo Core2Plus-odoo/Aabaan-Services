@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Contract",
-    "version": "19.0.1.0.1",
+    "version": "19.0.1.1.0",
     "category": "Facility Management",
     "summary": "AMC contracts, SLA rules, scope and renewal lifecycle",
     "description": """
@@ -29,6 +29,7 @@ land — see README.
         "views/fm_contract_service_item_views.xml",
         "views/fm_sla_rule_views.xml",
         "views/fm_contract_views.xml",
+        "views/fm_customer_views.xml",
         "views/menus.xml",
     ],
     "installable": True,
