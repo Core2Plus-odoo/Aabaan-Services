@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- FM Platform supersedes the standalone Aabaan Scheduler. These root
+         menus (and their whole trees) are deactivated so Facility Management is
+         the single front door. The module stays installed and ALL data is
+         preserved; re-activate by removing this file or setting active=True. -->
+
+    <record id="menu_aabaan_service_root" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+    <record id="menu_aabaan_ceo_dashboard_root" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+    <record id="menu_supervisor_dashboard_root" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+</odoo>

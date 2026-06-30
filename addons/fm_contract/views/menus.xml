@@ -6,6 +6,12 @@
               parent="fm_asset.menu_fm_root"
               sequence="30"/>
 
+    <menuitem id="menu_fm_customer"
+              name="Customers"
+              parent="menu_fm_contracts_root"
+              action="action_fm_customer"
+              sequence="5"/>
+
     <menuitem id="menu_fm_contract"
               name="Contracts"
               parent="menu_fm_contracts_root"

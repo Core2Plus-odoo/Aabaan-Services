@@ -82,6 +82,21 @@
         </field>
     </record>
 
+    <record id="view_fm_workorder_calendar" model="ir.ui.view">
+        <field name="name">fm.workorder.calendar</field>
+        <field name="model">fm.workorder</field>
+        <field name="arch" type="xml">
+            <calendar date_start="schedule_date_start" date_stop="schedule_date_end"
+                      color="technician_id" mode="month">
+                <field name="name"/>
+                <field name="asset_id"/>
+                <field name="technician_id"/>
+                <field name="severity"/>
+                <field name="stage"/>
+            </calendar>
+        </field>
+    </record>
+
     <record id="view_fm_workorder_form" model="ir.ui.view">
         <field name="name">fm.workorder.form</field>
         <field name="model">fm.workorder</field>
@@ -217,7 +232,7 @@
     <record id="action_fm_workorder" model="ir.actions.act_window">
         <field name="name">Work Orders</field>
         <field name="res_model">fm.workorder</field>
-        <field name="view_mode">kanban,list,form</field>
+        <field name="view_mode">kanban,list,calendar,form</field>
         <field name="search_view_id" ref="view_fm_workorder_search"/>
         <field name="context">{'search_default_open': 1}</field>
     </record>
