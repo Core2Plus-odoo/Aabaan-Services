@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_fm_workorder" model="ir.actions.report">
+        <field name="name">Work Order</field>
+        <field name="model">fm.workorder</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fm_documents.report_fm_workorder_document</field>
+        <field name="report_file">fm_documents.report_fm_workorder_document</field>
+        <field name="binding_model_id" ref="fm_workorder.model_fm_workorder"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+
+    <template id="report_fm_workorder_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="row mb-3">
+                            <div class="col-7">
+                                <h2 class="mb-0">Service Work Order</h2>
+                                <div class="text-muted"><span t-field="o.name"/></div>
+                            </div>
+                            <div class="col-5 text-end">
+                                <div><strong>Date:</strong> <span t-field="o.schedule_date_start"/></div>
+                                <div><strong>Type:</strong> <span t-field="o.wo_type"/></div>
+                                <div><strong>Severity:</strong> <span t-field="o.severity"/></div>
+                                <div><strong>Status:</strong> <span t-field="o.stage"/></div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <strong>Customer</strong>
+                                <div t-field="o.customer_id"
+                                     t-options='{"widget": "contact", "fields": ["name", "address", "phone"]}'/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Service Details</strong>
+                                <div><strong>Asset:</strong> <span t-field="o.asset_id"/></div>
+                                <div><strong>Location:</strong> <span t-field="o.location_id"/></div>
+                                <div t-if="o.contract_id"><strong>Contract:</strong> <span t-field="o.contract_id"/></div>
+                                <div t-if="o.technician_id"><strong>Technician:</strong> <span t-field="o.technician_id"/></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>Problem Reported</strong>
+                            <p t-field="o.problem_description"/>
+                            <t t-if="o.resolution_notes">
+                                <strong>Work Performed</strong>
+                                <p t-field="o.resolution_notes"/>
+                            </t>
+                        </div>
+
+                        <t t-if="o.checklist_item_ids">
+                            <strong>Checklist</strong>
+                            <table class="table table-sm o_main_table mb-3">
+                                <thead>
+                                    <tr>
+                                        <th>Task</th>
+                                        <th class="text-center">Mandatory</th>
+                                        <th class="text-center">Done</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.checklist_item_ids" t-as="item">
+                                        <td><span t-field="item.text"/></td>
+                                        <td class="text-center"><span t-field="item.is_mandatory"/></td>
+                                        <td class="text-center"><span t-field="item.is_done"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+
+                        <t t-if="o.parts_line_ids">
+                            <strong>Parts &amp; Materials</strong>
+                            <table class="table table-sm o_main_table mb-3">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th class="text-end">Qty</th>
+                                        <th class="text-end">Unit Cost</th>
+                                        <th class="text-end">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.parts_line_ids" t-as="p">
+                                        <td><span t-field="p.description"/><span t-if="not p.description" t-field="p.product_id"/></td>
+                                        <td class="text-end"><span t-field="p.qty"/></td>
+                                        <td class="text-end"><span t-field="p.unit_cost"/></td>
+                                        <td class="text-end"><span t-field="p.total"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+
+                        <div class="row">
+                            <div class="col-6"/>
+                            <div class="col-6">
+                                <table class="table table-sm">
+                                    <tr><td>Parts Total</td><td class="text-end"><span t-field="o.parts_cost_total"/></td></tr>
+                                    <tr><td>Labor Total</td><td class="text-end"><span t-field="o.labor_cost_total"/></td></tr>
+                                    <tr><td><strong>Total (AED)</strong></td><td class="text-end"><strong><span t-field="o.total_cost"/></strong></td></tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <strong>Customer Sign-off</strong>
+                                <div t-if="o.signed_off_by"><span t-field="o.signed_off_by"/><span t-if="o.signed_off_role"> (<span t-field="o.signed_off_role"/>)</span></div>
+                                <div t-if="o.signed_off_at"><span t-field="o.signed_off_at"/></div>
+                                <div t-if="o.csat_rating"><strong>Satisfaction:</strong> <span t-field="o.csat_rating"/> / 5</div>
+                                <img t-if="o.signed_off_signature" t-att-src="image_data_uri(o.signed_off_signature)" style="max-height:80px; max-width:200px;"/>
+                            </div>
+                            <div class="col-6 text-end">
+                                <div class="text-muted" style="font-size:11px;">
+                                    TRN: <span t-field="o.company_id.vat"/>
+                                </div>
+                                <div class="text-muted" style="font-size:11px;">All amounts in AED unless stated.</div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>
