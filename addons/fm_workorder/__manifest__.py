@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Work Order",
-    "version": "19.0.1.1.0",
+    "version": "19.0.1.2.0",
     "category": "Facility Management",
     "summary": "Work orders: state machine, checklist, parts, labor and sign-off",
     "description": """
@@ -30,6 +30,7 @@ The OWL work-order form / kanban (brief §7.3, §7.4) are added once the
         "security/ir.model.access.csv",
         "security/security.xml",
         "data/ir_sequence.xml",
+        "data/ir_cron.xml",
         "views/fm_checklist_template_views.xml",
         "views/fm_workorder_views.xml",
         "views/fm_contract_views.xml",
