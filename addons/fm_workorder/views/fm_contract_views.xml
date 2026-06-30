@@ -24,11 +24,14 @@
                         confirm="This will create planned work orders for every covered asset across the contract term. Continue?"/>
             </xpath>
 
-            <!-- Scheduling fields next to the term -->
+            <!-- Auto-scheduling criteria next to the term -->
             <xpath expr="//field[@name='renewal_term_months']" position="after">
+                <field name="auto_schedule"/>
                 <field name="visit_frequency"/>
+                <field name="visit_hour"/>
+                <field name="skip_weekends"/>
                 <field name="preferred_technician_id"/>
-                <field name="planned_wo_count" string="Planned WOs / generation"/>
+                <field name="planned_wo_count" string="Planned visits (full term)"/>
             </xpath>
 
         </field>
