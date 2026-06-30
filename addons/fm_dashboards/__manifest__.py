@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Dashboards",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "category": "Facility Management",
     "summary": "Executive dashboard (OWL) — KPIs, at-risk contracts, top performers, service mix",
     "description": """

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Reports",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "category": "Facility Management",
     "summary": "Reports hub (OWL) — grouped catalog of operational, financial and compliance views",
     "description": """
