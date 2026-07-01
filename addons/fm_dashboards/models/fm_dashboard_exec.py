@@ -14,7 +14,7 @@ class FmDashboardExec(models.AbstractModel):
     _description = "FM Executive Dashboard Data"
 
     @api.model
-    def get_dashboard_data(self):
+    def get_dashboard_data(self, branch_id=None):
         companies = self.env.companies
         currency = self.env.company.currency_id
         today = fields.Date.context_today(self)
@@ -24,6 +24,17 @@ class FmDashboardExec(models.AbstractModel):
         cdom = [("company_id", "in", companies.ids)]
         # fm.contract company is delegated through the sale order
         contract_dom = [("sale_order_id.company_id", "in", companies.ids)]
+
+        # Optional branch filter (only if fm_branch is installed)
+        branches = []
+        if "fm.branch" in self.env:
+            branches = [
+                {"id": b.id, "name": b.name}
+                for b in self.env["fm.branch"].sudo().search([("company_id", "in", companies.ids)])
+            ]
+        if branch_id and "branch_id" in Wo._fields:
+            cdom += [("branch_id", "=", branch_id)]
+            contract_dom += [("branch_id", "=", branch_id)]
 
         active = Contract.search(contract_dom + [("state", "=", "active")])
         revenue = sum(active.mapped("acv"))
@@ -88,6 +99,8 @@ class FmDashboardExec(models.AbstractModel):
         return {
             "currency": currency.symbol or currency.name,
             "company_label": "All Companies" if len(companies) > 1 else companies.name,
+            "branches": branches,
+            "branch_id": branch_id or False,
             "kpis": {
                 "revenue": revenue,
                 "active_contracts": len(active),

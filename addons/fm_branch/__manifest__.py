@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Branch",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.1.0",
     "category": "Facility Management",
     "summary": "Aabaan operating branches (emirate offices) on contracts, work orders and technicians",
     "description": """
@@ -16,6 +16,7 @@ to a branch, with grouping/filtering across the views.
     "license": "OPL-1",
     "depends": [
         "fm_workorder",
+        "fm_documents",
     ],
     "data": [
         "security/ir.model.access.csv",
@@ -23,6 +24,7 @@ to a branch, with grouping/filtering across the views.
         "views/fm_contract_views.xml",
         "views/fm_workorder_views.xml",
         "views/hr_employee_views.xml",
+        "views/fm_documents_reports.xml",
         "views/menus.xml",
     ],
     "installable": True,

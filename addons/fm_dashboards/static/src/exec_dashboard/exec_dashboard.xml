@@ -6,6 +6,13 @@
             <div class="o_fm_exec_topbar">
                 <span class="o_fm_exec_brand">FM · Executive Dashboard</span>
                 <div class="o_fm_exec_meta" t-if="state.data">
+                    <select t-if="state.data.branches.length" class="o_fm_exec_refresh"
+                            t-on-change="onBranchChange">
+                        <option value="">All Branches</option>
+                        <t t-foreach="state.data.branches" t-as="b" t-key="b.id">
+                            <option t-att-value="b.id" t-att-selected="b.id === state.branchId"><t t-esc="b.name"/></option>
+                        </t>
+                    </select>
                     <button class="o_fm_exec_refresh" t-on-click="() => this.load()">
                         <i class="fa fa-refresh"/> Refresh
                     </button>
