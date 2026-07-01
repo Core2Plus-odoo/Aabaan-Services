@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- UAE compliance regimes relevant to Aabaan's service lines. -->
+
+    <record id="regime_dm_pest" model="fm.compliance.regime">
+        <field name="name">Dubai Municipality — Pest Control Permit</field>
+        <field name="country">ae</field>
+        <field name="authority">Dubai Municipality</field>
+        <field name="regulation_code">DM-PC</field>
+        <field name="description">Approved pest-control operator permit and periodic service
+            records required by Dubai Municipality Public Health &amp; Safety.</field>
+        <field name="applies_to_asset_category_ids"
+               eval="[(6, 0, [ref('cat_pest_control')])]"/>
+    </record>
+    <record id="task_dm_pest_permit" model="fm.compliance.task.template">
+        <field name="regime_id" ref="regime_dm_pest"/>
+        <field name="name">Renew pest-control operator permit</field>
+        <field name="frequency_unit">year</field>
+        <field name="frequency_value">1</field>
+        <field name="certificate_required" eval="True"/>
+        <field name="lead_days">45</field>
+    </record>
+
+    <record id="regime_water_tank" model="fm.compliance.regime">
+        <field name="name">Water Tank Cleaning &amp; Disinfection Certificate</field>
+        <field name="country">ae</field>
+        <field name="authority">Dubai Municipality / Local Authority</field>
+        <field name="regulation_code">WTC</field>
+        <field name="description">Mandatory periodic cleaning, disinfection and water-quality
+            certification of potable water storage tanks.</field>
+        <field name="applies_to_asset_category_ids"
+               eval="[(6, 0, [ref('cat_water_tank')])]"/>
+    </record>
+    <record id="task_water_tank_cert" model="fm.compliance.task.template">
+        <field name="regime_id" ref="regime_water_tank"/>
+        <field name="name">Tank cleaning, disinfection &amp; water-quality certificate</field>
+        <field name="frequency_unit">month</field>
+        <field name="frequency_value">6</field>
+        <field name="certificate_required" eval="True"/>
+        <field name="lead_days">30</field>
+    </record>
+
+    <record id="regime_civil_defence" model="fm.compliance.regime">
+        <field name="name">Civil Defence — Fire &amp; Life Safety</field>
+        <field name="country">ae</field>
+        <field name="authority">General Directorate of Civil Defence</field>
+        <field name="regulation_code">CD-FLS</field>
+        <field name="description">Fire and life-safety systems inspection and certification
+            for serviced facilities.</field>
+        <field name="applies_to_asset_category_ids"
+               eval="[(6, 0, [ref('cat_hvac')])]"/>
+    </record>
+    <record id="task_civil_defence_inspection" model="fm.compliance.task.template">
+        <field name="regime_id" ref="regime_civil_defence"/>
+        <field name="name">Annual fire &amp; life-safety inspection</field>
+        <field name="frequency_unit">year</field>
+        <field name="frequency_value">1</field>
+        <field name="certificate_required" eval="True"/>
+        <field name="lead_days">30</field>
+    </record>
+
+</odoo>

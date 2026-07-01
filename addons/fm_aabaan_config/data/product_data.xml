@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Aabaan service products — the billable lines on AMC contracts /
+         subscriptions and break-fix invoices. Standard service products. -->
+
+    <record id="product_pest_control" model="product.template">
+        <field name="name">Pest Control Service</field>
+        <field name="type">service</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price">300.0</field>
+        <field name="description_sale">Periodic pest-control treatment visit (general disinfestation).</field>
+    </record>
+
+    <record id="product_water_tank" model="product.template">
+        <field name="name">Water Tank Cleaning &amp; Disinfection</field>
+        <field name="type">service</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price">450.0</field>
+        <field name="description_sale">Cleaning, disinfection and water-quality certification of water storage tanks.</field>
+    </record>
+
+    <record id="product_cleaning" model="product.template">
+        <field name="name">Building &amp; Facility Cleaning</field>
+        <field name="type">service</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price">200.0</field>
+        <field name="description_sale">Scheduled building / facility cleaning visit.</field>
+    </record>
+
+    <record id="product_hvac" model="product.template">
+        <field name="name">AC / HVAC Maintenance</field>
+        <field name="type">service</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price">350.0</field>
+        <field name="description_sale">Preventive AC / HVAC maintenance visit.</field>
+    </record>
+
+    <record id="product_plumbing" model="product.template">
+        <field name="name">Plumbing &amp; Sanitary Service</field>
+        <field name="type">service</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price">250.0</field>
+        <field name="description_sale">Plumbing and sanitary maintenance / repair visit.</field>
+    </record>
+
+    <record id="product_amc_comprehensive" model="product.template">
+        <field name="name">Annual Maintenance Contract (Comprehensive)</field>
+        <field name="type">service</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price">6000.0</field>
+        <field name="description_sale">Comprehensive AMC covering scheduled visits, priority response and parts as per contract scope.</field>
+    </record>
+
+</odoo>

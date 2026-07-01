@@ -41,7 +41,6 @@
                                     <field name="name"/>
                                     <field name="frequency_value"/>
                                     <field name="frequency_unit"/>
-                                    <field name="checklist_template_id"/>
                                     <field name="certificate_required"/>
                                     <field name="lead_days"/>
                                 </list>
