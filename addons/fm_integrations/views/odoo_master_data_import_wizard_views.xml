@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Wizard Form View -->
+    <record id="odoo_master_data_import_wizard_form" model="ir.ui.view">
+        <field name="name">Odoo Master Data Import Wizard - Form</field>
+        <field name="model">odoo.master.data.import.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <div class="alert alert-info" role="alert">
+                    <p>This wizard imports all master data from your source Odoo instance directly into your FM Platform database.</p>
+                </div>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Import Master Data</h1>
+                    </div>
+
+                    <!-- Setup State -->
+                    <div attrs="{'invisible': [('state', '!=', 'setup')]}">
+                        <group>
+                            <group string="Source Odoo Connection">
+                                <field name="source_url" placeholder="https://aaban-classic-building-cleaning-llc.odoo.com"/>
+                                <field name="source_database" placeholder="aabaan_classic_building_cleaning_llc"/>
+                                <field name="source_username" placeholder="admin@example.com"/>
+                                <field name="source_api_key" password="True" placeholder="API Key"/>
+                            </group>
+                            <group string="Data to Import">
+                                <field name="import_partners"/>
+                                <field name="import_products"/>
+                                <field name="import_employees"/>
+                                <field name="import_accounts"/>
+                                <field name="import_company"/>
+                            </group>
+                        </group>
+
+                        <footer>
+                            <button name="test_connection" string="Test Connection" type="object" class="btn-primary"/>
+                            <button name="action_start_import" string="Start Import" type="object" class="btn-success"/>
+                            <button string="Cancel" class="btn-secondary" special="cancel"/>
+                        </footer>
+                    </div>
+
+                    <!-- Done State -->
+                    <div attrs="{'invisible': [('state', '!=', 'done')]}">
+                        <group string="Import Results" col="1">
+                            <field name="import_log" nolabel="1" readonly="1" widget="text"/>
+                        </group>
+
+                        <footer>
+                            <button string="Close" class="btn-secondary" special="cancel"/>
+                        </footer>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action to launch the wizard -->
+    <record id="action_odoo_master_data_import_wizard" model="ir.actions.act_window">
+        <field name="name">Import Master Data</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">odoo.master.data.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="base.model_ir_module_module"/>
+    </record>
+
+    <!-- Menu Item for quick access -->
+    <menuitem
+        id="menu_odoo_master_data_import_wizard"
+        name="Import Master Data"
+        action="action_odoo_master_data_import_wizard"
+        parent="base.menu_administration"
+        sequence="101"/>
+</odoo>

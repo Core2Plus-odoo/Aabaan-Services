@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Integrations",
-    "version": "19.0.1.1.0",
+    "version": "19.0.1.2.0",
     "category": "Facility Management",
     "summary": "Link FM work orders to Odoo standard apps (Calendar, …) and import master data",
     "description": """
@@ -34,6 +34,7 @@ plan is chosen.
         "security/ir.model.access.csv",
         "views/fm_workorder_views.xml",
         "views/odoo_master_data_import_views.xml",
+        "views/odoo_master_data_import_wizard_views.xml",
     ],
     "installable": True,
     "application": False,
