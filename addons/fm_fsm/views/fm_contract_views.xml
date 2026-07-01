@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Auto-scheduling criteria + generate button + visits smart button on
+         the contract, driving native Field Service tasks. -->
+    <record id="view_fm_contract_form_fsm" model="ir.ui.view">
+        <field name="name">fm.contract.form.fsm</field>
+        <field name="model">fm.contract</field>
+        <field name="inherit_id" ref="fm_contract.view_fm_contract_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//header/button[@name='action_activate']" position="after">
+                <button name="action_generate_visits" type="object"
+                        string="Generate Visits" class="btn-secondary"
+                        invisible="not asset_ids"/>
+            </xpath>
+
+            <xpath expr="//sheet/div[hasclass('oe_title')]" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_tasks" type="object"
+                            class="oe_stat_button" icon="fa-wrench">
+                        <field name="task_count" widget="statinfo" string="Visits"/>
+                    </button>
+                </div>
+            </xpath>
+
+            <xpath expr="//page[@name='scope']" position="after">
+                <page string="Scheduling" name="scheduling">
+                    <group>
+                        <group string="Auto-scheduling">
+                            <field name="auto_schedule"/>
+                            <field name="visit_frequency"/>
+                            <field name="skip_weekends"/>
+                            <field name="preferred_technician_id"/>
+                        </group>
+                        <group string="Projection">
+                            <field name="planned_visit_count"/>
+                        </group>
+                    </group>
+                    <p class="text-muted">
+                        Visits are created as native Field Service tasks in the
+                        Facility Management project. Activating the contract (or the
+                        daily scheduler) populates a rolling horizon of planned
+                        visits per covered asset at the chosen frequency.
+                    </p>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Keep a rolling horizon of planned FSM visits populated for active,
+         auto-scheduled contracts. -->
+    <record id="cron_fm_fsm_auto_schedule" model="ir.cron">
+        <field name="name">FM: Auto-schedule Field Service visits</field>
+        <field name="model_id" ref="fm_contract.model_fm_contract"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_auto_schedule()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+
+</odoo>

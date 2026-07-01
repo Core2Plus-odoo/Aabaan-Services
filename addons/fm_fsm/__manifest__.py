@@ -29,11 +29,14 @@ are handled by native Odoo (recurrence, SLA policies, native calendar on tasks).
     "depends": [
         "industry_fsm",
         "fm_asset",
+        "fm_contract",
     ],
     "data": [
         "data/fsm_stages.xml",
         "data/fsm_project.xml",
+        "data/cron.xml",
         "views/project_task_views.xml",
+        "views/fm_contract_views.xml",
         "views/menus.xml",
     ],
     "installable": True,
