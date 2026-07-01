@@ -10,15 +10,22 @@ export class FmExecDashboard extends Component {
 
     setup() {
         this.orm = useService("orm");
-        this.state = useState({ loading: true, data: null, updatedAt: "" });
+        this.state = useState({ loading: true, data: null, updatedAt: "", branchId: false });
         onWillStart(() => this.load());
     }
 
     async load() {
         this.state.loading = true;
-        this.state.data = await this.orm.call("fm.dashboard.exec", "get_dashboard_data", []);
+        this.state.data = await this.orm.call("fm.dashboard.exec", "get_dashboard_data", [
+            this.state.branchId || null,
+        ]);
         this.state.updatedAt = new Date().toLocaleTimeString();
         this.state.loading = false;
+    }
+
+    onBranchChange(ev) {
+        this.state.branchId = ev.target.value ? parseInt(ev.target.value, 10) : false;
+        this.load();
     }
 
     get greeting() {
