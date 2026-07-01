@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Graft the FM domain fields onto the native Field Service task form. -->
+    <record id="view_fsm_task_form_fm" model="ir.ui.view">
+        <field name="name">project.task.form.fm.fsm</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="before">
+                <field name="fm_asset_id"/>
+                <field name="fm_contract_id"/>
+                <field name="fm_service_line"/>
+                <field name="fm_severity"/>
+                <field name="fm_wo_type"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Group / filter the FSM list by the FM dimensions. -->
+    <record id="view_fsm_task_search_fm" model="ir.ui.view">
+        <field name="name">project.task.search.fm.fsm</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_search_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="fm_group_service_line" string="Service Line"
+                        context="{'group_by': 'fm_service_line'}"/>
+                <filter name="fm_group_severity" string="Severity"
+                        context="{'group_by': 'fm_severity'}"/>
+                <filter name="fm_group_contract" string="AMC Contract"
+                        context="{'group_by': 'fm_contract_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
