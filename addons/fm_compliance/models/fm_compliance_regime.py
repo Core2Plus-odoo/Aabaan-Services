@@ -35,6 +35,5 @@ class FmComplianceTaskTemplate(models.Model):
     name = fields.Char(required=True, translate=True)
     frequency_unit = fields.Selection([("month", "Months"), ("year", "Years")], default="year")
     frequency_value = fields.Integer(default=1)
-    checklist_template_id = fields.Many2one("fm.checklist.template")
     certificate_required = fields.Boolean(default=True)
     lead_days = fields.Integer(string="Generate WO N days before due", default=30)
