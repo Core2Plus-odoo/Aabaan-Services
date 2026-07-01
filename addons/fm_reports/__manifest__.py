@@ -15,9 +15,8 @@ Built from the §7.7 spec and the shared --fm-* design tokens.
     "website": "https://c2p.ae",
     "license": "OPL-1",
     "depends": [
-        "fm_workorder",
+        "fm_fsm",
         "fm_compliance",
-        "fm_ppm",
     ],
     "data": [
         "views/menus.xml",

@@ -34,7 +34,7 @@
 
     <menuitem id="menu_fm_aabaan_migration"
               name="Migrate Aabaan Data"
-              parent="fm_workorder.menu_fm_config_root"
+              parent="fm_fsm.menu_fm_config_root"
               action="action_fm_aabaan_migration_wizard"
               sequence="90"
               groups="fm_branding.group_fm_admin"/>

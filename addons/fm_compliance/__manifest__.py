@@ -15,7 +15,7 @@ work orders ahead of certificate expiry and flags expired certificates.
     "website": "https://c2p.ae",
     "license": "OPL-1",
     "depends": [
-        "fm_workorder",
+        "fm_fsm",
     ],
     "data": [
         "security/ir.model.access.csv",

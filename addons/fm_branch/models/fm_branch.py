@@ -34,10 +34,10 @@ class FmBranch(models.Model):
 
     def _compute_counts(self):
         Contract = self.env["fm.contract"]
-        Wo = self.env["fm.workorder"]
+        Task = self.env["project.task"]
         Emp = self.env["hr.employee"]
         c_groups = dict(Contract._read_group([("branch_id", "in", self.ids)], ["branch_id"], ["__count"]))
-        w_groups = dict(Wo._read_group([("branch_id", "in", self.ids)], ["branch_id"], ["__count"]))
+        w_groups = dict(Task._read_group([("branch_id", "in", self.ids)], ["branch_id"], ["__count"]))
         e_groups = dict(Emp._read_group([("fm_branch_id", "in", self.ids)], ["fm_branch_id"], ["__count"]))
         for b in self:
             b.contract_count = c_groups.get(b, 0)
@@ -49,8 +49,8 @@ class FmBranch(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": "Work Orders",
-            "res_model": "fm.workorder",
-            "view_mode": "list,form",
-            "domain": [("branch_id", "=", self.id)],
+            "res_model": "project.task",
+            "view_mode": "list,kanban,form",
+            "domain": [("branch_id", "=", self.id), ("fm_wo_type", "!=", False)],
             "context": {"default_branch_id": self.id},
         }

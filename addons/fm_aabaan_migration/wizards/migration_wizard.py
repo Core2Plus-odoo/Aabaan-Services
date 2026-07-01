@@ -22,13 +22,14 @@ FREQUENCY = {
     "custom": "monthly",
 }
 
+# Map aabaan visit state to the fm_fsm project.task.type external id.
 VISIT_STAGE = {
-    "draft": "draft",
-    "scheduled": "assigned",
-    "in_progress": "in_progress",
-    "done": "completed",
-    "missed": "cancelled",
-    "cancelled": "cancelled",
+    "draft": "fm_fsm.fsm_stage_draft",
+    "scheduled": "fm_fsm.fsm_stage_assigned",
+    "in_progress": "fm_fsm.fsm_stage_in_progress",
+    "done": "fm_fsm.fsm_stage_completed",
+    "missed": "fm_fsm.fsm_stage_cancelled",
+    "cancelled": "fm_fsm.fsm_stage_cancelled",
 }
 
 # Map aabaan service types to an FM service line for the migrated category.
@@ -71,7 +72,8 @@ class FmAabaanMigrationWizard(models.TransientModel):
         Contract = self.env["aabaan.service.contract"]
         FmContract = self.env["fm.contract"]
         FmAsset = self.env["fm.asset"]
-        FmWo = self.env["fm.workorder"]
+        Task = self.env["project.task"]
+        project = self.env.ref("fm_fsm.fsm_project_fm", raise_if_not_found=False)
 
         n_contracts = n_assets = n_visits = 0
 
@@ -118,33 +120,43 @@ class FmAabaanMigrationWizard(models.TransientModel):
                 })
 
             if self.migrate_visits:
-                wo_vals = []
+                task_vals = []
                 for v in c.visit_ids:
-                    if FmWo.search_count([("aabaan_visit_id", "=", v.id)]):
+                    if Task.search_count([("aabaan_visit_id", "=", v.id)]):
                         continue
                     start_dt = v.planned_start
                     if not start_dt and v.planned_date:
                         start_dt = datetime.combine(v.planned_date, time(9, 0))
-                    stage = VISIT_STAGE.get(v.state, "draft")
+                    stage_xmlid = VISIT_STAGE.get(v.state, "fm_fsm.fsm_stage_draft")
                     if v.state == "done" and v.approved:
-                        stage = "signed_off"
-                    wo_vals.append({
-                        "wo_type": "ppm",
-                        "severity": "p3_medium",
-                        "asset_id": asset.id,
-                        "customer_id": c.partner_id.id,
-                        "contract_id": fmc.id,
+                        stage_xmlid = "fm_fsm.fsm_stage_signed_off"
+                    stage = self.env.ref(stage_xmlid, raise_if_not_found=False)
+                    tech = v.technician_ids[:1]
+                    tech_user = tech.user_id if tech and tech.user_id else False
+                    notes = v.name or _("Migrated visit")
+                    if v.after_notes:
+                        notes = "%s\n%s" % (notes, v.after_notes)
+                    vals = {
+                        "name": v.name or _("Migrated visit"),
                         "company_id": company.id,
-                        "technician_id": v.technician_ids[:1].id or False,
-                        "stage": stage,
-                        "problem_description": v.name or _("Migrated visit"),
-                        "resolution_notes": v.after_notes or False,
-                        "schedule_date_start": start_dt,
-                        "schedule_date_end": v.planned_end or False,
+                        "partner_id": c.partner_id.id,
+                        "fm_asset_id": asset.id,
+                        "fm_contract_id": fmc.id,
+                        "fm_wo_type": "ppm",
+                        "fm_severity": "p3_medium",
+                        "description": notes,
+                        "date_deadline": start_dt.date() if start_dt else False,
                         "aabaan_visit_id": v.id,
-                    })
-                if wo_vals:
-                    created = FmWo.create(wo_vals)
+                    }
+                    if project:
+                        vals["project_id"] = project.id
+                    if stage:
+                        vals["stage_id"] = stage.id
+                    if tech_user:
+                        vals["user_ids"] = [(6, 0, [tech_user.id])]
+                    task_vals.append(vals)
+                if task_vals:
+                    created = Task.create(task_vals)
                     n_visits += len(created)
 
         self.result_message = _(

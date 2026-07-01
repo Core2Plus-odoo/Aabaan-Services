@@ -12,8 +12,8 @@ class FmContract(models.Model):
     )
 
 
-class FmWorkOrder(models.Model):
-    _inherit = "fm.workorder"
+class ProjectTask(models.Model):
+    _inherit = "project.task"
 
     aabaan_visit_id = fields.Many2one(
         "aabaan.service.visit", string="Migrated From Visit", readonly=True, copy=False, index=True

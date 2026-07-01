@@ -1,3 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_fm_ppm_schedule_user,fm.ppm.schedule user,model_fm_ppm_schedule,fm_branding.group_fm_user,1,0,0,0
-access_fm_ppm_schedule_manager,fm.ppm.schedule manager,model_fm_ppm_schedule,fm_branding.group_fm_manager,1,1,1,1

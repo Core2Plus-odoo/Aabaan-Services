@@ -20,11 +20,11 @@ set the company TRN in its VAT field and the 5% tax for full compliance.
     "website": "https://c2p.ae",
     "license": "OPL-1",
     "depends": [
-        "fm_workorder",
+        "fm_fsm",
         "fm_compliance",
     ],
     "data": [
-        "reports/fm_workorder_report.xml",
+        "reports/project_task_report.xml",
         "reports/fm_contract_report.xml",
         "reports/fm_certificate_report.xml",
     ],

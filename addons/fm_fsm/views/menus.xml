@@ -30,4 +30,10 @@
               action="action_fm_workorders"
               sequence="1"/>
 
+    <!-- FM Configuration root (replaces the retired fm_workorder config menu). -->
+    <menuitem id="menu_fm_config_root"
+              name="Configuration"
+              parent="fm_asset.menu_fm_root"
+              sequence="99"/>
+
 </odoo>
