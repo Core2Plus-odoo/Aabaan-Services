@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_fm_branch_list" model="ir.ui.view">
+        <field name="name">fm.branch.list</field>
+        <field name="model">fm.branch</field>
+        <field name="arch" type="xml">
+            <list string="Branches">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="emirate"/>
+                <field name="manager_id"/>
+                <field name="phone"/>
+                <field name="workorder_count" string="WOs"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_fm_branch_form" model="ir.ui.view">
+        <field name="name">fm.branch.form</field>
+        <field name="model">fm.branch</field>
+        <field name="arch" type="xml">
+            <form string="Branch">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_workorders" type="object" class="oe_stat_button" icon="fa-wrench">
+                            <field name="workorder_count" widget="statinfo" string="Work Orders"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. Dubai Branch"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="emirate"/>
+                            <field name="manager_id"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="phone"/>
+                            <field name="email"/>
+                            <field name="street"/>
+                            <field name="city"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="contract_count"/>
+                        <field name="technician_count"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_fm_branch" model="ir.actions.act_window">
+        <field name="name">Branches</field>
+        <field name="res_model">fm.branch</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

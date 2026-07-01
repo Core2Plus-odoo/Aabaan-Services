@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_fm_branch_user,fm.branch user,model_fm_branch,fm_branding.group_fm_user,1,0,0,0
+access_fm_branch_manager,fm.branch manager,model_fm_branch,fm_branding.group_fm_manager,1,1,1,0
+access_fm_branch_admin,fm.branch admin,model_fm_branch,fm_branding.group_fm_admin,1,1,1,1

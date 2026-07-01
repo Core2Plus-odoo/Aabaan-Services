@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_fm_branch"
+              name="Branches"
+              parent="fm_asset.menu_fm_root"
+              action="action_fm_branch"
+              sequence="35"
+              groups="fm_branding.group_fm_manager"/>
+</odoo>
