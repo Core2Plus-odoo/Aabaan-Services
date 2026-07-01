@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Aabaan Services operating branches across the UAE. -->
+    <record id="branch_dubai" model="fm.branch">
+        <field name="name">Aabaan Services — Dubai</field>
+        <field name="code">DXB</field>
+        <field name="emirate">dubai</field>
+        <field name="city">Dubai</field>
+    </record>
+
+    <record id="branch_sharjah" model="fm.branch">
+        <field name="name">Aabaan Services — Sharjah</field>
+        <field name="code">SHJ</field>
+        <field name="emirate">sharjah</field>
+        <field name="city">Sharjah</field>
+    </record>
+
+    <record id="branch_ajman" model="fm.branch">
+        <field name="name">Aabaan Services — Ajman</field>
+        <field name="code">AJM</field>
+        <field name="emirate">ajman</field>
+        <field name="city">Ajman</field>
+    </record>
+
+    <record id="branch_abu_dhabi" model="fm.branch">
+        <field name="name">Aabaan Services — Abu Dhabi</field>
+        <field name="code">AUH</field>
+        <field name="emirate">abu_dhabi</field>
+        <field name="city">Abu Dhabi</field>
+    </record>
+
+</odoo>

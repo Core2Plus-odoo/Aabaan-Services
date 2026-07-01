@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Aabaan service catalogue as asset categories, one per service line. -->
+    <record id="cat_pest_control" model="fm.asset.category">
+        <field name="name">Pest Control</field>
+        <field name="service_line">pest</field>
+        <field name="default_criticality">medium</field>
+        <field name="default_ppm_frequency_months">1</field>
+    </record>
+
+    <record id="cat_water_tank" model="fm.asset.category">
+        <field name="name">Water Tank Cleaning &amp; Disinfection</field>
+        <field name="service_line">plumbing</field>
+        <field name="default_criticality">high</field>
+        <field name="default_ppm_frequency_months">6</field>
+    </record>
+
+    <record id="cat_cleaning" model="fm.asset.category">
+        <field name="name">Building &amp; Facility Cleaning</field>
+        <field name="service_line">cleaning</field>
+        <field name="default_criticality">low</field>
+        <field name="default_ppm_frequency_months">1</field>
+    </record>
+
+    <record id="cat_hvac" model="fm.asset.category">
+        <field name="name">AC / HVAC Maintenance</field>
+        <field name="service_line">hvac</field>
+        <field name="default_criticality">high</field>
+        <field name="default_ppm_frequency_months">3</field>
+    </record>
+
+    <record id="cat_plumbing" model="fm.asset.category">
+        <field name="name">Plumbing &amp; Sanitary</field>
+        <field name="service_line">plumbing</field>
+        <field name="default_criticality">medium</field>
+        <field name="default_ppm_frequency_months">3</field>
+    </record>
+
+</odoo>
