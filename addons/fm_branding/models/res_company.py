@@ -15,7 +15,7 @@ class ResCompany(models.Model):
 
     _inherit = "res.company"
 
-    fm_brand_name = fields.Char(string="FM Brand Name", default="FM Platform")
+    fm_brand_name = fields.Char(string="FM Brand Name", default="Aabaan Services")
     fm_brand_logo = fields.Binary(string="FM Brand Logo")
     fm_brand_color_primary = fields.Char(string="FM Primary Color", default="#1F4434")
     fm_brand_color_accent = fields.Char(string="FM Accent Color", default="#B8923A")
