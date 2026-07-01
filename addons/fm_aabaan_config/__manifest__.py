@@ -24,11 +24,13 @@ No custom models — everything targets the native/thin FM models.
     "depends": [
         "fm_branch",
         "fm_compliance",
+        "sale",
     ],
     "data": [
         "data/fm_branch_data.xml",
         "data/fm_asset_category_data.xml",
         "data/fm_compliance_regime_data.xml",
+        "data/product_data.xml",
     ],
     "installable": True,
     "application": False,
