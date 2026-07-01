@@ -8,7 +8,7 @@
 Migrates legacy aabaan_service_scheduler data into the FM Platform:
 - aabaan.service.contract -> fm.contract (+ one 'service site' fm.asset each,
   since FM is asset-centric and aabaan is not)
-- aabaan.service.visit -> fm.workorder
+- aabaan.service.visit -> project.task (native FSM)
 Customers (res.partner) are shared, so they are reused, not duplicated.
 The wizard is idempotent: already-migrated records are skipped on re-run.
 """,
@@ -16,7 +16,7 @@ The wizard is idempotent: already-migrated records are skipped on re-run.
     "website": "https://c2p.ae",
     "license": "OPL-1",
     "depends": [
-        "fm_workorder",
+        "fm_fsm",
         "aabaan_service_scheduler",
     ],
     "data": [

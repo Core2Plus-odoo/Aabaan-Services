@@ -10,8 +10,7 @@ const CATALOG = [
     {
         section: "Operational",
         cards: [
-            { title: "Work Orders", desc: "All work orders by stage, severity and technician.", icon: "fa-wrench", action: "fm_workorder.action_fm_workorder" },
-            { title: "PPM Schedules", desc: "Planned preventive maintenance cadence and generated WOs.", icon: "fa-calendar-check-o", action: "fm_ppm.action_fm_ppm_schedule" },
+            { title: "Work Orders", desc: "All Field Service work orders by stage, severity and technician.", icon: "fa-wrench", action: "fm_fsm.action_fm_workorders" },
             { title: "Asset Registry", desc: "Assets by location, criticality and service line.", icon: "fa-cubes", action: "fm_asset.action_fm_asset" },
         ],
     },

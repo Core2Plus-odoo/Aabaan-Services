@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- The Facility Management Field Service project. Every FM work order is a
+         native FSM task in this project, so it inherits FSM planning, mobile
+         worksheets, timesheets and native billing. -->
+    <record id="fsm_project_fm" model="project.project">
+        <field name="name">Facility Management</field>
+        <field name="is_fsm" eval="True"/>
+        <field name="allow_timesheets" eval="True"/>
+        <field name="type_ids" eval="[(6, 0, [
+            ref('fsm_stage_draft'),
+            ref('fsm_stage_assigned'),
+            ref('fsm_stage_acknowledged'),
+            ref('fsm_stage_in_progress'),
+            ref('fsm_stage_completed'),
+            ref('fsm_stage_signed_off'),
+            ref('fsm_stage_cancelled'),
+        ])]"/>
+    </record>
+
+</odoo>

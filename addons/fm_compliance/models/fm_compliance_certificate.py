@@ -36,7 +36,7 @@ class FmComplianceCertificate(models.Model):
         store=True,
     )
     document_attachment_id = fields.Many2one("ir.attachment")
-    related_workorder_id = fields.Many2one("fm.workorder", readonly=True)
+    related_workorder_id = fields.Many2one("project.task", readonly=True, string="Remediation Work Order")
     company_id = fields.Many2one("res.company", default=lambda self: self.env.company)
 
     @api.depends("regime_id", "certificate_number", "asset_id", "location_id")
@@ -63,19 +63,22 @@ class FmComplianceCertificate(models.Model):
         self.ensure_one()
         asset = self.asset_id
         company = asset.company_id if asset else self.company_id
-        wo = self.env["fm.workorder"].create(
-            {
-                "wo_type": "compliance",
-                "severity": "p2_high",
-                "asset_id": asset.id if asset else False,
-                "customer_id": company.partner_id.id,
-                "company_id": company.id,
-                "problem_description": "Compliance renewal due: %s (expires %s)"
-                % (self.regime_id.name, self.expiry_date),
-            }
-        )
-        self.related_workorder_id = wo.id
-        return wo
+        project = self.env.ref("fm_fsm.fsm_project_fm", raise_if_not_found=False)
+        vals = {
+            "name": "Compliance renewal — %s" % (self.regime_id.name or ""),
+            "company_id": company.id,
+            "partner_id": company.partner_id.id,
+            "fm_asset_id": asset.id if asset else False,
+            "fm_wo_type": "compliance",
+            "fm_severity": "p2_high",
+            "description": "Compliance renewal due: %s (expires %s)"
+            % (self.regime_id.name, self.expiry_date),
+        }
+        if project:
+            vals["project_id"] = project.id
+        task = self.env["project.task"].create(vals)
+        self.related_workorder_id = task.id
+        return task
 
     @api.model
     def _cron_certificate_watchdog(self):

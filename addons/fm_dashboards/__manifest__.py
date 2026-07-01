@@ -20,7 +20,7 @@ KPI tiles, tables and CSS bars.
     "website": "https://c2p.ae",
     "license": "OPL-1",
     "depends": [
-        "fm_sla",
+        "fm_fsm",
     ],
     "data": [
         "views/menus.xml",

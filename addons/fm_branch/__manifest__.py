@@ -15,14 +15,14 @@ to a branch, with grouping/filtering across the views.
     "website": "https://c2p.ae",
     "license": "OPL-1",
     "depends": [
-        "fm_workorder",
+        "fm_fsm",
         "fm_documents",
     ],
     "data": [
         "security/ir.model.access.csv",
         "views/fm_branch_views.xml",
         "views/fm_contract_views.xml",
-        "views/fm_workorder_views.xml",
+        "views/project_task_views.xml",
         "views/hr_employee_views.xml",
         "views/fm_documents_reports.xml",
         "views/menus.xml",

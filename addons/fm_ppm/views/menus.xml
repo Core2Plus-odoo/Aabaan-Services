@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <menuitem id="menu_fm_ppm_schedule"
-              name="PPM Schedules"
-              parent="fm_workorder.menu_fm_operations_root"
-              action="action_fm_ppm_schedule"
-              sequence="20"/>
-</odoo>

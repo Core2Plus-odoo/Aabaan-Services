@@ -3,7 +3,7 @@
 
     <!-- Add the handling branch to the Work Order job sheet -->
     <template id="report_fm_workorder_branch" inherit_id="fm_documents.report_fm_workorder_document">
-        <xpath expr="//div[span[@t-field='o.location_id']]" position="after">
+        <xpath expr="//div[span[@t-field='o.fm_location_id']]" position="after">
             <div t-if="o.branch_id"><strong>Branch / الفرع:</strong> <span t-field="o.branch_id"/></div>
         </xpath>
     </template>

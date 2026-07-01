@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_fm_workorder" model="ir.actions.report">
+        <field name="name">Work Order</field>
+        <field name="model">project.task</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fm_documents.report_fm_workorder_document</field>
+        <field name="report_file">fm_documents.report_fm_workorder_document</field>
+        <field name="binding_model_id" ref="project.model_project_task"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+
+    <template id="report_fm_workorder_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="row mb-3">
+                            <div class="col-7">
+                                <h2 class="mb-0">Service Work Order</h2>
+                                <div style="font-size:15px;" dir="rtl">أمر عمل الخدمة</div>
+                                <div class="text-muted"><span t-field="o.name"/></div>
+                            </div>
+                            <div class="col-5 text-end">
+                                <div><strong>Date:</strong> <span t-field="o.date_deadline"/></div>
+                                <div t-if="o.fm_wo_type"><strong>Type:</strong> <span t-field="o.fm_wo_type"/></div>
+                                <div t-if="o.fm_severity"><strong>Severity:</strong> <span t-field="o.fm_severity"/></div>
+                                <div t-if="o.stage_id"><strong>Status:</strong> <span t-field="o.stage_id"/></div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <strong>Customer / العميل</strong>
+                                <div t-field="o.partner_id"
+                                     t-options='{"widget": "contact", "fields": ["name", "address", "phone"]}'/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Service Details / تفاصيل الخدمة</strong>
+                                <div t-if="o.fm_asset_id"><strong>Asset:</strong> <span t-field="o.fm_asset_id"/></div>
+                                <div t-if="o.fm_location_id"><strong>Location:</strong> <span t-field="o.fm_location_id"/></div>
+                                <div t-if="o.fm_contract_id"><strong>Contract:</strong> <span t-field="o.fm_contract_id"/></div>
+                                <div t-if="o.user_ids"><strong>Technician:</strong> <span t-field="o.user_ids"/></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3" t-if="o.description">
+                            <strong>Work Details / تفاصيل العمل</strong>
+                            <div t-field="o.description"/>
+                        </div>
+
+                        <t t-if="o.timesheet_ids">
+                            <strong>Labour / العمالة</strong>
+                            <table class="table table-sm o_main_table mb-3">
+                                <thead>
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>Description</th>
+                                        <th class="text-end">Hours</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.timesheet_ids" t-as="ts">
+                                        <td><span t-field="ts.employee_id"/></td>
+                                        <td><span t-field="ts.name"/></td>
+                                        <td class="text-end"><span t-field="ts.unit_amount"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <strong>Customer Sign-off / توقيع العميل</strong>
+                                <div class="mt-4" style="border-top:1px solid #000; width:220px;">Signature / التوقيع</div>
+                            </div>
+                            <div class="col-6 text-end">
+                                <div class="text-muted" style="font-size:11px;">
+                                    TRN: <span t-field="o.company_id.vat"/>
+                                </div>
+                                <div class="text-muted" style="font-size:11px;">All amounts in AED unless stated.</div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>
