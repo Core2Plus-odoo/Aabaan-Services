@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="fm_ceo_dashboard.FmCeoDashboard">
+        <div class="o_fm_ceo">
+            <div class="o_fm_ceo_topbar">
+                <span class="o_fm_ceo_brand">Aabaan · CEO Dashboard</span>
+                <div class="o_fm_ceo_meta" t-if="state.data">
+                    <select t-if="state.data.branches.length" class="o_fm_ceo_btn"
+                            t-on-change="onBranchChange">
+                        <option value="">All Branches</option>
+                        <t t-foreach="state.data.branches" t-as="b" t-key="b.id">
+                            <option t-att-value="b.id" t-att-selected="b.id === state.branchId"><t t-esc="b.name"/></option>
+                        </t>
+                    </select>
+                    <button class="o_fm_ceo_btn" t-on-click="() => this.load()">
+                        <i class="fa fa-refresh"/> Refresh
+                    </button>
+                    <span>Updated <t t-esc="state.updatedAt"/> · <t t-esc="state.data.company_label"/></span>
+                </div>
+            </div>
+
+            <div t-if="state.loading" class="o_fm_ceo_loading">
+                <i class="fa fa-circle-o-notch fa-spin"/> Loading…
+            </div>
+
+            <t t-if="!state.loading and state.data">
+                <div class="o_fm_ceo_hero">
+                    <h1><t t-esc="greeting"/>.</h1>
+                    <p class="o_fm_ceo_date"><t t-esc="today"/></p>
+                </div>
+
+                <!-- KPI tiles -->
+                <div class="o_fm_ceo_kpis">
+                    <div class="o_fm_ceo_kpi">
+                        <div class="o_fm_ceo_kpi_label">ANNUAL CONTRACT VALUE</div>
+                        <div class="o_fm_ceo_kpi_value"><t t-esc="money(state.data.kpis.acv)"/></div>
+                        <div class="o_fm_ceo_kpi_sub">active AMC portfolio</div>
+                    </div>
+                    <div class="o_fm_ceo_kpi">
+                        <div class="o_fm_ceo_kpi_label">TOTAL CONTRACT VALUE</div>
+                        <div class="o_fm_ceo_kpi_value"><t t-esc="money(state.data.kpis.tcv)"/></div>
+                        <div class="o_fm_ceo_kpi_sub">full term</div>
+                    </div>
+                    <div class="o_fm_ceo_kpi">
+                        <div class="o_fm_ceo_kpi_label">REVENUE · YTD</div>
+                        <div class="o_fm_ceo_kpi_value"><t t-esc="money(state.data.kpis.revenue_ytd)"/></div>
+                        <div class="o_fm_ceo_kpi_sub">invoiced (excl. VAT)</div>
+                    </div>
+                    <div class="o_fm_ceo_kpi">
+                        <div class="o_fm_ceo_kpi_label">ACTIVE CONTRACTS</div>
+                        <div class="o_fm_ceo_kpi_value"><t t-esc="state.data.kpis.active_contracts"/></div>
+                        <div class="o_fm_ceo_kpi_sub"><t t-esc="state.data.kpis.renewals_90d"/> renew in 90d</div>
+                    </div>
+                    <div class="o_fm_ceo_kpi">
+                        <div class="o_fm_ceo_kpi_label">OPEN CRITICAL</div>
+                        <div class="o_fm_ceo_kpi_value o_fm_ceo_danger"><t t-esc="state.data.kpis.open_critical"/></div>
+                        <div class="o_fm_ceo_kpi_sub">P1 / P2 work orders</div>
+                    </div>
+                    <div class="o_fm_ceo_kpi">
+                        <div class="o_fm_ceo_kpi_label">COMPLIANCE EXPIRED</div>
+                        <div t-attf-class="o_fm_ceo_kpi_value {{state.data.kpis.compliance_expired ? 'o_fm_ceo_danger' : ''}}"><t t-esc="state.data.kpis.compliance_expired"/></div>
+                        <div class="o_fm_ceo_kpi_sub">certificates overdue</div>
+                    </div>
+                </div>
+
+                <div class="o_fm_ceo_cols">
+                    <!-- Contract health -->
+                    <div class="o_fm_ceo_panel">
+                        <div class="o_fm_ceo_panel_title">CONTRACT HEALTH</div>
+                        <t t-foreach="state.data.health" t-as="h" t-key="h.band">
+                            <div class="o_fm_ceo_bar_row">
+                                <span class="o_fm_ceo_bar_label"><t t-esc="h.label"/></span>
+                                <span class="o_fm_ceo_bar">
+                                    <span t-attf-class="o_fm_ceo_bar_fill o_fm_ceo_band_{{h.band}}" t-attf-style="width: {{h.pct}}%;"/>
+                                </span>
+                                <span class="o_fm_ceo_bar_val"><t t-esc="h.count"/></span>
+                            </div>
+                        </t>
+                    </div>
+
+                    <!-- Operations by severity -->
+                    <div class="o_fm_ceo_panel">
+                        <div class="o_fm_ceo_panel_title">OPEN WORK ORDERS · BY SEVERITY</div>
+                        <t t-foreach="state.data.ops" t-as="o" t-key="o.code">
+                            <div class="o_fm_ceo_bar_row">
+                                <span class="o_fm_ceo_bar_label"><t t-esc="o.label"/></span>
+                                <span class="o_fm_ceo_bar">
+                                    <span t-attf-class="o_fm_ceo_bar_fill o_fm_ceo_sev_{{o.code}}" t-attf-style="width: {{(o.count / maxOps * 100)}}%;"/>
+                                </span>
+                                <span class="o_fm_ceo_bar_val"><t t-esc="o.count"/></span>
+                            </div>
+                        </t>
+                        <div class="o_fm_ceo_note">Completed this month: <t t-esc="state.data.kpis.completed_month"/></div>
+                    </div>
+                </div>
+
+                <div class="o_fm_ceo_cols">
+                    <!-- Renewals pipeline -->
+                    <div class="o_fm_ceo_panel">
+                        <div class="o_fm_ceo_panel_title">RENEWALS · NEXT 90 DAYS</div>
+                        <div class="o_fm_ceo_empty" t-if="!state.data.renewals.length">No renewals due.</div>
+                        <table class="o_fm_ceo_table" t-if="state.data.renewals.length">
+                            <thead><tr><th>Contract</th><th>Customer</th><th class="o_fm_ceo_r">Days</th><th class="o_fm_ceo_r">ACV</th></tr></thead>
+                            <tbody>
+                                <t t-foreach="state.data.renewals" t-as="r" t-key="r.id">
+                                    <tr>
+                                        <td class="o_fm_ceo_mono"><t t-esc="r.name"/></td>
+                                        <td><t t-esc="r.partner"/></td>
+                                        <td class="o_fm_ceo_r"><t t-esc="r.days"/></td>
+                                        <td class="o_fm_ceo_r"><t t-esc="money(r.acv)"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Portfolio by branch -->
+                    <div class="o_fm_ceo_panel">
+                        <div class="o_fm_ceo_panel_title">PORTFOLIO VALUE · BY BRANCH</div>
+                        <div class="o_fm_ceo_empty" t-if="!state.data.by_branch.length">No branch data.</div>
+                        <t t-foreach="state.data.by_branch" t-as="b" t-key="b_index">
+                            <div class="o_fm_ceo_bar_row">
+                                <span class="o_fm_ceo_bar_label"><t t-esc="b.label"/></span>
+                                <span class="o_fm_ceo_bar">
+                                    <span class="o_fm_ceo_bar_fill o_fm_ceo_brandfill" t-attf-style="width: {{(b.value / maxBranch * 100)}}%;"/>
+                                </span>
+                                <span class="o_fm_ceo_bar_val"><t t-esc="money(b.value)"/></span>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+
+</templates>
