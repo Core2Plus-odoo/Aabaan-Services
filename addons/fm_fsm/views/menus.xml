@@ -39,6 +39,27 @@
               action="action_fm_workorders"
               sequence="1"/>
 
+    <!-- Visit Calendar: see auto-scheduled and reactive visits on a calendar. -->
+    <record id="action_fm_visit_calendar" model="ir.actions.act_window">
+        <field name="name">Visit Calendar</field>
+        <field name="res_model">project.task</field>
+        <field name="view_mode">calendar,list,kanban,form</field>
+        <field name="view_id" ref="view_fm_task_calendar"/>
+        <field name="domain">[('fm_wo_type', '!=', False)]</field>
+        <field name="context">{'fsm_mode': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No visits scheduled yet</p>
+            <p>Planned visits appear here once contracts are activated (auto-scheduling)
+               or you use <b>Generate Visits</b> on a contract.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_fm_visit_calendar"
+              name="Visit Calendar"
+              parent="menu_fm_workorders_root"
+              action="action_fm_visit_calendar"
+              sequence="2"/>
+
     <!-- FM Configuration root (replaces the retired fm_workorder config menu). -->
     <menuitem id="menu_fm_config_root"
               name="Configuration"

@@ -17,6 +17,24 @@
         </field>
     </record>
 
+    <!-- Visit calendar: auto-scheduled and reactive FM work orders by date,
+         coloured by severity. Keyed on date_deadline (the visit date set by the
+         contract scheduler). -->
+    <record id="view_fm_task_calendar" model="ir.ui.view">
+        <field name="name">project.task.calendar.fm</field>
+        <field name="model">project.task</field>
+        <field name="arch" type="xml">
+            <calendar string="Visit Calendar" date_start="date_deadline"
+                      color="fm_severity" mode="month" quick_create="0">
+                <field name="fm_asset_id"/>
+                <field name="partner_id"/>
+                <field name="fm_contract_id"/>
+                <field name="fm_severity"/>
+                <field name="user_ids" widget="many2many_avatar_user"/>
+            </calendar>
+        </field>
+    </record>
+
     <!-- Group / filter the FSM list by the FM dimensions. -->
     <record id="view_fsm_task_search_fm" model="ir.ui.view">
         <field name="name">project.task.search.fm.fsm</field>
