@@ -51,9 +51,9 @@ class FmAsset(models.Model):
     acquisition_cost = fields.Monetary(currency_field="currency_id")
     qr_code_data = fields.Char(compute="_compute_qr_code_data", store=True)
 
-    _sql_constraints = [
-        ("asset_code_uniq", "unique(asset_code)", "The asset code must be unique."),
-    ]
+    _asset_code_uniq = models.Constraint(
+        "unique(asset_code)", "The asset code must be unique."
+    )
 
     @api.depends("asset_code")
     def _compute_qr_code_data(self):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Asset",
-    "version": "19.0.1.0.1",
+    "version": "19.0.1.0.2",
     "category": "Facility Management",
     "summary": "Asset registry: hierarchy, criticality, locations and QR codes",
     "description": """

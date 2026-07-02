@@ -22,7 +22,7 @@ class FmContract(models.Model):
     _order = "contract_number desc"
 
     sale_order_id = fields.Many2one(
-        "sale.order", required=True, ondelete="restrict", auto_join=True, index=True
+        "sale.order", required=True, ondelete="restrict", index=True
     )
 
     # Identity
@@ -105,9 +105,9 @@ class FmContract(models.Model):
     account_manager_id = fields.Many2one("res.users", string="Account Manager", required=True, tracking=True)
     customer_contact_ids = fields.Many2many("res.partner", string="Customer Contacts")
 
-    _sql_constraints = [
-        ("contract_number_uniq", "unique(contract_number)", "Contract number must be unique."),
-    ]
+    _contract_number_uniq = models.Constraint(
+        "unique(contract_number)", "Contract number must be unique."
+    )
 
     @api.depends("acv", "start_date", "end_date")
     def _compute_tcv(self):

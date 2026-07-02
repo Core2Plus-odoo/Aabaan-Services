@@ -38,7 +38,7 @@ class FmAssetCategory(models.Model):
 
     name = fields.Char(required=True, translate=True)
     parent_id = fields.Many2one("fm.asset.category", string="Parent Category", ondelete="restrict", index=True)
-    parent_path = fields.Char(index=True, unaccent=False)
+    parent_path = fields.Char(index=True)
     complete_name = fields.Char(compute="_compute_complete_name", store=True, recursive=True)
     child_ids = fields.One2many("fm.asset.category", "parent_id", string="Sub-categories")
     service_line = fields.Selection(SERVICE_LINES, required=True, default="other")
