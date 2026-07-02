@@ -8,10 +8,10 @@
         <field name="res_model">project.task</field>
         <field name="view_mode">kanban,list,form,calendar,map,pivot,graph</field>
         <field name="domain">[('project_id', '=', %(fsm_project_fm)d)]</field>
-        <field name="context">{
-            'default_project_id': %(fsm_project_fm)d,
-            'fsm_mode': True,
-        }</field>
+        <!-- NB: Odoo interpolates %(xmlid)d in a domain but NOT in a context, so
+             we set the default project id on the context after load (below)
+             rather than inline here, which would reach the client unparsed. -->
+        <field name="context">{'fsm_mode': True}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Schedule your first work order</p>
             <p>Field Service tasks in the Facility Management project — reactive,
@@ -19,6 +19,13 @@
                native Odoo Field Service.</p>
         </field>
     </record>
+
+    <!-- Bake the resolved FM project id into the action context so new work
+         orders default to the Facility Management project (context does not
+         support %(xmlid)d interpolation). -->
+    <function model="ir.actions.act_window" name="write"
+              eval="[[ref('action_fm_workorders')],
+                     {'context': &quot;{'fsm_mode': True, 'default_project_id': &quot; + str(ref('fsm_project_fm')) + '}'}]"/>
 
     <menuitem id="menu_fm_workorders_root"
               name="Work Orders"
