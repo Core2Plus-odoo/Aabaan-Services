@@ -7,10 +7,12 @@
         <field name="name">Work Orders</field>
         <field name="res_model">project.task</field>
         <field name="view_mode">kanban,list,form,calendar,map,pivot,graph</field>
-        <field name="domain">[('project_id', '=', %(fsm_project_fm)d)]</field>
-        <!-- NB: Odoo interpolates %(xmlid)d in a domain but NOT in a context, so
-             we set the default project id on the context after load (below)
-             rather than inline here, which would reach the client unparsed. -->
+        <!-- FM work orders are exactly the FSM tasks carrying an FM work type,
+             so filter on that instead of the project id: %(xmlid)d is NOT
+             interpolated in an action's domain or context in this build, and
+             would reach the client unparsed. The default project is baked into
+             the context by the post-load write below. -->
+        <field name="domain">[('fm_wo_type', '!=', False)]</field>
         <field name="context">{'fsm_mode': True}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Schedule your first work order</p>
