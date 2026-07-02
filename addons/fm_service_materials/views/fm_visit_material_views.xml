@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_fm_visit_material_pivot" model="ir.ui.view">
+        <field name="name">fm.visit.material.pivot</field>
+        <field name="model">fm.visit.material</field>
+        <field name="arch" type="xml">
+            <pivot string="Material Forecast &amp; Consumption">
+                <field name="material_id" type="row"/>
+                <field name="date_deadline" interval="month" type="col"/>
+                <field name="qty_expected" type="measure"/>
+                <field name="qty_used" type="measure"/>
+                <field name="cost_expected" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_fm_visit_material_graph" model="ir.ui.view">
+        <field name="name">fm.visit.material.graph</field>
+        <field name="model">fm.visit.material</field>
+        <field name="arch" type="xml">
+            <graph string="Material Forecast" type="bar">
+                <field name="material_id"/>
+                <field name="qty_expected" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_fm_visit_material_list" model="ir.ui.view">
+        <field name="name">fm.visit.material.list</field>
+        <field name="model">fm.visit.material</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date_deadline"/>
+                <field name="material_id"/>
+                <field name="partner_id"/>
+                <field name="contract_id"/>
+                <field name="qty_expected" sum="Expected"/>
+                <field name="qty_used" sum="Used"/>
+                <field name="uom_id"/>
+                <field name="cost_expected" sum="Est. Cost"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_fm_visit_material_search" model="ir.ui.view">
+        <field name="name">fm.visit.material.search</field>
+        <field name="model">fm.visit.material</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="material_id"/>
+                <field name="partner_id"/>
+                <field name="contract_id"/>
+                <filter name="future" string="Upcoming"
+                        domain="[('date_deadline','&gt;=', context_today())]"/>
+                <filter name="billable" string="Billable" domain="[('billable','=',True)]"/>
+                <separator/>
+                <filter name="group_material" string="Material" context="{'group_by': 'material_id'}"/>
+                <filter name="group_service_line" string="Service Line" context="{'group_by': 'service_line'}"/>
+                <filter name="group_contract" string="Contract" context="{'group_by': 'contract_id'}"/>
+                <filter name="group_month" string="Visit Month" context="{'group_by': 'date_deadline:month'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_fm_material_forecast" model="ir.actions.act_window">
+        <field name="name">Material Forecast &amp; Consumption</field>
+        <field name="res_model">fm.visit.material</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="context">{'search_default_group_material': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No material lines yet</p>
+            <p>Expected materials are loaded onto visits from each service's composition.
+               Pivot by material and month to anticipate requirements; compare Expected vs Used
+               to track consumption.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_fm_material_forecast"
+              name="Material Forecast"
+              parent="fm_fsm.menu_fm_workorders_root"
+              action="action_fm_material_forecast"
+              sequence="3"
+              groups="fm_branding.group_fm_manager"/>
+
+</odoo>

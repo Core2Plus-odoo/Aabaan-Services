@@ -2,3 +2,5 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_fm_service_material_user,fm.service.material user,model_fm_service_material,fm_branding.group_fm_user,1,0,0,0
 access_fm_service_material_manager,fm.service.material manager,model_fm_service_material,fm_branding.group_fm_manager,1,1,1,1
 access_fm_service_material_admin,fm.service.material admin,model_fm_service_material,fm_branding.group_fm_admin,1,1,1,1
+access_fm_visit_material_user,fm.visit.material user,model_fm_visit_material,fm_branding.group_fm_user,1,1,1,1
+access_fm_visit_material_manager,fm.visit.material manager,model_fm_visit_material,fm_branding.group_fm_manager,1,1,1,1
