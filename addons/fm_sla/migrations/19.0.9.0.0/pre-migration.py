@@ -4,7 +4,7 @@
 # UI records linger in installed databases and reference fields/models that no
 # longer exist (e.g. fm.contract.workorder_count, model fm.workorder), which
 # breaks view revalidation when fm_fsm loads. This runs early (on upgrade to the
-# empty stub) and removes those doomed views/menus/actions. Idempotent.
+# empty stub) and removes those doomed crons/views/menus/actions. Idempotent.
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -26,6 +26,30 @@ UI_TABLES = (
     ("ir.actions.server", "ir_act_server"),
     ("ir.actions.report", "ir_act_report_xml"),
 )
+
+
+def _module_res_ids(cr, model):
+    cr.execute(
+        "SELECT res_id FROM ir_model_data WHERE model = %s AND module IN %s",
+        (model, RETIRED_MODULES),
+    )
+    return [r[0] for r in cr.fetchall()]
+
+
+def _delete_crons(cr):
+    # Scheduled actions (ir.cron _inherits ir.actions.server) reference their
+    # server action via a FK, so crons must go before their server actions.
+    srv_ids = _module_res_ids(cr, "ir.actions.server")
+    cron_ids = set(_module_res_ids(cr, "ir.cron"))
+    if srv_ids:
+        cr.execute("SELECT id FROM ir_cron WHERE ir_actions_server_id IN %s", (tuple(srv_ids),))
+        cron_ids |= {r[0] for r in cr.fetchall()}
+    if not cron_ids:
+        return
+    cron_ids = tuple(cron_ids)
+    cr.execute("DELETE FROM ir_cron_trigger WHERE cron_id IN %s", (cron_ids,))
+    cr.execute("DELETE FROM ir_cron WHERE id IN %s", (cron_ids,))
+    _logger.info("Re-base cleanup: removed %s cron(s)", len(cron_ids))
 
 
 def _delete_views(cr):
@@ -57,11 +81,7 @@ def _delete_views(cr):
 
 
 def _delete_by_module(cr, model, table):
-    cr.execute(
-        "SELECT res_id FROM ir_model_data WHERE model = %s AND module IN %s",
-        (model, RETIRED_MODULES),
-    )
-    ids = [r[0] for r in cr.fetchall()]
+    ids = _module_res_ids(cr, model)
     if ids:
         cr.execute("DELETE FROM %s WHERE id IN %%s" % table, (tuple(ids),))
         _logger.info("Re-base cleanup: removed %s %s record(s)", len(ids), model)
@@ -71,14 +91,12 @@ def migrate(cr, version):
     if not version:
         return
     # Menus first: NULL child parent_id FKs, then delete the module's menus.
-    cr.execute(
-        "SELECT res_id FROM ir_model_data WHERE model = 'ir.ui.menu' AND module IN %s",
-        (RETIRED_MODULES,),
-    )
-    menu_ids = [r[0] for r in cr.fetchall()]
+    menu_ids = _module_res_ids(cr, "ir.ui.menu")
     if menu_ids:
         cr.execute("UPDATE ir_ui_menu SET parent_id = NULL WHERE parent_id IN %s", (tuple(menu_ids),))
         cr.execute("DELETE FROM ir_ui_menu WHERE id IN %s", (tuple(menu_ids),))
+    # Crons before their server actions (FK ir_cron -> ir_act_server).
+    _delete_crons(cr)
     for model, table in (
         ("ir.actions.act_window", "ir_act_window"),
         ("ir.actions.client", "ir_act_client"),
@@ -87,9 +105,8 @@ def migrate(cr, version):
     ):
         _delete_by_module(cr, model, table)
     _delete_views(cr)
-    # Remove dangling ir_model_data anchors for any UI record now gone
-    # (including ones owned by kept modules, e.g. old fm_branch WO views).
-    for model, table in UI_TABLES:
+    # Remove dangling ir_model_data anchors for any UI record now gone.
+    for model, table in UI_TABLES + (("ir.cron", "ir_cron"),):
         cr.execute(
             "DELETE FROM ir_model_data d WHERE d.model = %s "
             "AND NOT EXISTS (SELECT 1 FROM {t} t WHERE t.id = d.res_id)".format(t=table),
