@@ -30,7 +30,7 @@ class FmAssetLocation(models.Model):
         default="building",
     )
     parent_id = fields.Many2one("fm.asset.location", string="Parent Location", ondelete="restrict", index=True)
-    parent_path = fields.Char(index=True, unaccent=False)
+    parent_path = fields.Char(index=True)
     child_ids = fields.One2many("fm.asset.location", "parent_id", string="Sub-locations")
     site_id = fields.Many2one(
         "fm.asset.location",

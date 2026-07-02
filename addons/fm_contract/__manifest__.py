@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Contract",
-    "version": "19.0.1.1.0",
+    "version": "19.0.1.2.0",
     "category": "Facility Management",
     "summary": "AMC contracts, SLA rules, scope and renewal lifecycle",
     "description": """
