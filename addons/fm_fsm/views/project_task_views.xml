@@ -17,25 +17,30 @@
         </field>
     </record>
 
-    <!-- Visit calendar: auto-scheduled and reactive FM work orders by date,
-         coloured by severity. Keyed on date_deadline (the visit date set by the
-         contract scheduler). -->
+    <!-- Visit calendar: auto-scheduled and reactive FM work orders by date.
+         Coloured by status (stage), keyed on the visit date (date_deadline).
+         Each event shows the customer/site as its title (see the visit name in
+         fm_contract._generate_schedule), with asset, technician, service line
+         and status in the popup. -->
     <record id="view_fm_task_calendar" model="ir.ui.view">
         <field name="name">project.task.calendar.fm</field>
         <field name="model">project.task</field>
         <field name="arch" type="xml">
             <calendar string="Visit Calendar" date_start="date_deadline"
-                      color="fm_severity" mode="month" quick_create="0">
+                      color="stage_id" mode="month" quick_create="0"
+                      event_open_popup="1">
+                <field name="partner_id" filters="1"/>
+                <field name="stage_id" filters="1"/>
+                <field name="fm_service_line" filters="1"/>
                 <field name="fm_asset_id"/>
-                <field name="partner_id"/>
                 <field name="fm_contract_id"/>
                 <field name="fm_severity"/>
-                <field name="user_ids" widget="many2many_avatar_user"/>
+                <field name="user_ids" widget="many2many_avatar_user" filters="1"/>
             </calendar>
         </field>
     </record>
 
-    <!-- Group / filter the FSM list by the FM dimensions. -->
+    <!-- Group / filter the FSM list &amp; calendar by the FM dimensions. -->
     <record id="view_fsm_task_search_fm" model="ir.ui.view">
         <field name="name">project.task.search.fm.fsm</field>
         <field name="model">project.task</field>
@@ -43,10 +48,16 @@
         <field name="arch" type="xml">
             <xpath expr="//search" position="inside">
                 <separator/>
+                <filter name="fm_group_customer" string="Customer"
+                        context="{'group_by': 'partner_id'}"/>
+                <filter name="fm_group_stage" string="Status"
+                        context="{'group_by': 'stage_id'}"/>
                 <filter name="fm_group_service_line" string="Service Line"
                         context="{'group_by': 'fm_service_line'}"/>
                 <filter name="fm_group_severity" string="Severity"
                         context="{'group_by': 'fm_severity'}"/>
+                <filter name="fm_group_technician" string="Technician"
+                        context="{'group_by': 'user_ids'}"/>
                 <filter name="fm_group_contract" string="AMC Contract"
                         context="{'group_by': 'fm_contract_id'}"/>
             </xpath>
