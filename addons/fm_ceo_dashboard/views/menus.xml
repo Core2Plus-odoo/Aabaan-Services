@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_fm_ceo_dashboard" model="ir.actions.client">
+        <field name="name">CEO Dashboard</field>
+        <field name="tag">fm_ceo_dashboard</field>
+    </record>
+
+    <!-- Non-default menu item under the FM app root, restricted to management. -->
+    <menuitem id="menu_fm_ceo_dashboard"
+              name="CEO Dashboard"
+              parent="fm_asset.menu_fm_root"
+              action="action_fm_ceo_dashboard"
+              sequence="2"
+              groups="fm_branding.group_fm_account_manager"/>
+
+</odoo>

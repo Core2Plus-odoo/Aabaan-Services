@@ -1,0 +1,78 @@
+.o_fm_ceo {
+    height: 100%;
+    overflow: auto;
+    padding: 24px 28px 48px;
+    background: #f6f7fb;
+    color: #1f2430;
+    font-size: 14px;
+
+    .o_fm_ceo_topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .o_fm_ceo_brand { font-weight: 700; letter-spacing: .04em; color: #0b5cab; }
+    .o_fm_ceo_meta { display: flex; align-items: center; gap: 10px; color: #6b7280; font-size: 12px; }
+    .o_fm_ceo_btn {
+        border: 1px solid #d7dbe3; background: #fff; border-radius: 6px;
+        padding: 4px 10px; cursor: pointer; color: #1f2430;
+        &:hover { background: #f0f2f7; }
+    }
+    .o_fm_ceo_loading { padding: 40px; color: #6b7280; }
+
+    .o_fm_ceo_hero { margin: 14px 0 18px; h1 { margin: 0; font-size: 26px; font-weight: 700; } }
+    .o_fm_ceo_date { color: #6b7280; margin: 2px 0 0; }
+
+    .o_fm_ceo_kpis {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 14px;
+        margin-bottom: 18px;
+    }
+    .o_fm_ceo_kpi {
+        background: #fff; border: 1px solid #e7eaf0; border-radius: 12px;
+        padding: 16px 18px; box-shadow: 0 1px 2px rgba(16,24,40,.04);
+    }
+    .o_fm_ceo_kpi_label { font-size: 11px; letter-spacing: .05em; color: #8a93a3; font-weight: 600; }
+    .o_fm_ceo_kpi_value { font-size: 26px; font-weight: 700; margin: 6px 0 2px; }
+    .o_fm_ceo_kpi_sub { font-size: 12px; color: #8a93a3; }
+    .o_fm_ceo_danger { color: #d64545; }
+
+    .o_fm_ceo_cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-bottom: 14px;
+        @media (max-width: 900px) { grid-template-columns: 1fr; }
+    }
+    .o_fm_ceo_panel {
+        background: #fff; border: 1px solid #e7eaf0; border-radius: 12px; padding: 16px 18px;
+    }
+    .o_fm_ceo_panel_title { font-size: 12px; letter-spacing: .05em; color: #8a93a3; font-weight: 700; margin-bottom: 12px; }
+    .o_fm_ceo_empty { color: #9aa2b1; font-style: italic; padding: 8px 0; }
+    .o_fm_ceo_note { margin-top: 10px; font-size: 12px; color: #6b7280; }
+
+    .o_fm_ceo_bar_row { display: flex; align-items: center; gap: 10px; margin: 7px 0; }
+    .o_fm_ceo_bar_label { width: 120px; font-size: 13px; color: #414a5a; }
+    .o_fm_ceo_bar { flex: 1; height: 10px; background: #eef1f6; border-radius: 6px; overflow: hidden; }
+    .o_fm_ceo_bar_fill { display: block; height: 100%; border-radius: 6px; background: #0b5cab; }
+    .o_fm_ceo_bar_val { width: 90px; text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+
+    .o_fm_ceo_brandfill { background: #0b5cab; }
+    .o_fm_ceo_band_healthy { background: #2e9b5b; }
+    .o_fm_ceo_band_watch { background: #c9a227; }
+    .o_fm_ceo_band_at_risk { background: #e08a1e; }
+    .o_fm_ceo_band_critical { background: #d64545; }
+    .o_fm_ceo_sev_p1_critical { background: #d64545; }
+    .o_fm_ceo_sev_p2_high { background: #e08a1e; }
+    .o_fm_ceo_sev_p3_medium { background: #c9a227; }
+    .o_fm_ceo_sev_p4_low { background: #2e9b5b; }
+
+    .o_fm_ceo_table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .o_fm_ceo_table th { text-align: left; color: #8a93a3; font-weight: 600; border-bottom: 1px solid #eef1f6; padding: 6px 6px; }
+    .o_fm_ceo_table td { padding: 6px 6px; border-bottom: 1px solid #f4f6fa; }
+    .o_fm_ceo_r { text-align: right; }
+    .o_fm_ceo_mono { font-family: monospace; }
+}
