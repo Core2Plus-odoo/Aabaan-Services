@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Dashboards",
-    "version": "19.0.1.1.0",
+    "version": "19.0.2.0.0",
     "category": "Facility Management",
-    "summary": "Executive dashboard (OWL) — KPIs, at-risk contracts, top performers, service mix",
+    "summary": "Native FM dashboards — Operations (work orders) and Contracts graph/pivot analysis",
     "description": """
-FM Platform — Executive Dashboard (brief §7.1)
-==============================================
-A branded OWL client-action dashboard for management: KPI tiles (revenue,
-active contracts, SLA compliance, open criticals, CSAT), an at-risk contracts
-table, a technician leaderboard and the service mix — all read live from
-fm.workorder / fm.contract, scoped to the user's companies.
+FM Platform — Dashboards
+========================
+Native, JavaScript-free management dashboards built from standard Odoo
+graph/pivot/kanban actions over the native records:
 
-Built from the brief's component spec and the shared --fm-* design tokens.
-ApexCharts trend/column charts (brief §7.1) are a follow-up; this ships the
-KPI tiles, tables and CSS bars.
+* **Operations Dashboard** — Field Service work orders (project.task) by service
+  line, severity, stage and branch.
+* **Contracts Dashboard** — AMC / break-fix contracts by state, health and value.
+
+Replaces the earlier OWL client-action dashboard, which depended on a custom JS
+bundle; native actions cannot fail with a client-action registry error and need
+no asset rebuild.
 """,
     "author": "C2P Consultants FZC LLC",
     "website": "https://c2p.ae",
@@ -25,13 +27,6 @@ KPI tiles, tables and CSS bars.
     "data": [
         "views/menus.xml",
     ],
-    "assets": {
-        "web.assets_backend": [
-            "fm_dashboards/static/src/exec_dashboard/exec_dashboard.scss",
-            "fm_dashboards/static/src/exec_dashboard/exec_dashboard.js",
-            "fm_dashboards/static/src/exec_dashboard/exec_dashboard.xml",
-        ],
-    },
     "installable": True,
     "application": False,
     "auto_install": False,

@@ -8,6 +8,9 @@
         <field name="name">Facility Management</field>
         <field name="is_fsm" eval="True"/>
         <field name="allow_timesheets" eval="True"/>
+        <!-- Odoo 19 requires a company on FSM projects
+             (project_project_company_id_required_for_fsm_project). -->
+        <field name="company_id" ref="base.main_company"/>
         <field name="type_ids" eval="[(6, 0, [
             ref('fsm_stage_draft'),
             ref('fsm_stage_assigned'),
