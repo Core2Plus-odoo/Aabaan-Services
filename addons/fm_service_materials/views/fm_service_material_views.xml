@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_fm_service_material_list" model="ir.ui.view">
+        <field name="name">fm.service.material.list</field>
+        <field name="model">fm.service.material</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="service_tmpl_id"/>
+                <field name="material_id"/>
+                <field name="qty_per_visit"/>
+                <field name="uom_id"/>
+                <field name="billable"/>
+                <field name="unit_cost"/>
+                <field name="est_cost_per_visit"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="notes"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_fm_service_material_pivot" model="ir.ui.view">
+        <field name="name">fm.service.material.pivot</field>
+        <field name="model">fm.service.material</field>
+        <field name="arch" type="xml">
+            <pivot string="Service Materials">
+                <field name="service_tmpl_id" type="row"/>
+                <field name="material_id" type="row"/>
+                <field name="qty_per_visit" type="measure"/>
+                <field name="est_cost_per_visit" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_fm_service_material_search" model="ir.ui.view">
+        <field name="name">fm.service.material.search</field>
+        <field name="model">fm.service.material</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="service_tmpl_id"/>
+                <field name="material_id"/>
+                <filter name="billable" string="Billable" domain="[('billable','=',True)]"/>
+                <separator/>
+                <filter name="group_service" string="Service" context="{'group_by': 'service_tmpl_id'}"/>
+                <filter name="group_material" string="Material" context="{'group_by': 'material_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_fm_service_material" model="ir.actions.act_window">
+        <field name="name">Service Materials</field>
+        <field name="res_model">fm.service.material</field>
+        <field name="view_mode">list,pivot</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Define which materials each service uses</p>
+            <p>One row per service × material, with the quantity consumed per visit.
+               This is the basis for material requirement and consumption forecasting.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_fm_service_material"
+              name="Service Materials"
+              parent="fm_fsm.menu_fm_config_root"
+              action="action_fm_service_material"
+              sequence="30"
+              groups="fm_branding.group_fm_manager"/>
+
+</odoo>

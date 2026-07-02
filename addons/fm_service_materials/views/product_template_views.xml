@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Materials-per-visit composition on the service product form. -->
+    <record id="view_product_template_form_fm_materials" model="ir.ui.view">
+        <field name="name">product.template.form.fm.materials</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Materials per Visit" name="fm_materials"
+                      invisible="type != 'service'">
+                    <field name="fm_service_material_ids">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="material_id"/>
+                            <field name="qty_per_visit"/>
+                            <field name="uom_id"/>
+                            <field name="billable"/>
+                            <field name="unit_cost"/>
+                            <field name="est_cost_per_visit"/>
+                            <field name="currency_id" column_invisible="1"/>
+                            <field name="notes"/>
+                        </list>
+                    </field>
+                    <p class="text-muted">
+                        Quantities are per single visit. The scheduled visit frequency
+                        (from the contract) drives how often they are consumed.
+                    </p>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
