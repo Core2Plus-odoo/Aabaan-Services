@@ -59,6 +59,12 @@ class FmContract(models.Model):
             raise UserError(_("Add at least one product/service line to the contract before starting the subscription."))
         if not order.plan_id:
             order.plan_id = self._get_or_create_plan().id
+        # A subscription order (with a recurring plan) needs at least one
+        # recurring product, else Odoo blocks confirmation. Mark the contract's
+        # products recurring so AMC lines bill on the plan's cadence.
+        products = order.order_line.product_id
+        if "recurring_invoice" in products._fields and not any(products.mapped("recurring_invoice")):
+            products.filtered(lambda p: not p.recurring_invoice).write({"recurring_invoice": True})
         if order.state in ("draft", "sent"):
             order.action_confirm()
         self.message_post(body=_("Subscription started on plan %s.") % order.plan_id.display_name)
