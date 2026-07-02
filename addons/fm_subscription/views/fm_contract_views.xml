@@ -20,16 +20,21 @@
                 <field name="subscription_state"/>
             </xpath>
 
-            <!-- Products &amp; services = the recurring lines. Editable only once
-                 the contract (and its underlying sale order) exists, and new
-                 lines default their order_id to that sale order — otherwise
-                 sale.order.line._get_lang() runs on an empty order and crashes. -->
+            <!-- Products &amp; services = the recurring lines. Shown read-only here;
+                 edited on the underlying Sales Order (via the button), where
+                 order_id is always set. Editing delegated order_line inline on
+                 the fm.contract form creates lines with an empty order_id, which
+                 crashes sale.order.line._compute_name -> _get_lang().ensure_one(). -->
             <xpath expr="//notebook" position="inside">
                 <page string="Products &amp; Services" name="subscription_lines"
                       invisible="not sale_order_id">
                     <field name="sale_order_id" invisible="1"/>
-                    <field name="order_line" context="{'default_order_id': sale_order_id}">
-                        <list editable="bottom">
+                    <div class="oe_button_box" name="so_btn">
+                        <button name="action_open_subscription" type="object"
+                                string="Edit Products (Sales Order)" class="btn-primary"/>
+                    </div>
+                    <field name="order_line" readonly="1">
+                        <list>
                             <field name="product_id"/>
                             <field name="name"/>
                             <field name="product_uom_qty"/>
