@@ -126,8 +126,18 @@ class FmContract(models.Model):
                 while day <= end:
                     sched_day = c._next_working_day(day)
                     if sched_day not in existing.setdefault(asset.id, set()):
+                        # Title = customer/site so the calendar reads by client;
+                        # asset & contract are in the description and FM fields.
+                        visit_name = c.partner_id.display_name or asset.display_name
+                        if asset.service_line:
+                            visit_name = "%s — %s" % (
+                                visit_name,
+                                dict(asset._fields["service_line"].selection).get(
+                                    asset.service_line, asset.service_line
+                                ),
+                            )
                         vals = {
-                            "name": _("Planned visit — %(asset)s") % {"asset": asset.display_name},
+                            "name": visit_name,
                             "project_id": project.id,
                             "company_id": company.id,
                             "partner_id": c.partner_id.id,
