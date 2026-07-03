@@ -104,9 +104,10 @@ class FmSupervisorDashboard(models.AbstractModel):
                 {"id": b.id, "name": b.name}
                 for b in self.env["fm.branch"].sudo().search([("company_id", "in", companies.ids)])
             ]
-        service_lines = [
-            {"key": k, "name": v} for k, v in Task._fields["fm_service_line"].selection
-        ]
+        # fm_service_line is a related Selection, so resolve its options via
+        # fields_get (its .selection attribute is a callable, not a list).
+        sl_options = Task.fields_get(["fm_service_line"])["fm_service_line"]["selection"]
+        service_lines = [{"key": k, "name": v} for k, v in sl_options]
 
         return {
             "week_start": monday.isoformat(),
