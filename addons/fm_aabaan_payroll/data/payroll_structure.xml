@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Structure type -->
+    <record id="structure_type_uae" model="hr.payroll.structure.type">
+        <field name="name">UAE Employee</field>
+        <field name="wage_type">monthly</field>
+    </record>
+
+    <!-- Salary structure -->
+    <record id="structure_uae_monthly" model="hr.payroll.structure">
+        <field name="name">UAE Monthly Salary</field>
+        <field name="type_id" ref="structure_type_uae"/>
+    </record>
+
+    <!-- ================= Salary rules ================= -->
+    <!-- Contract wage is treated as the total monthly package, split below. -->
+
+    <record id="rule_basic" model="hr.salary.rule">
+        <field name="name">Basic Salary</field>
+        <field name="code">BASIC</field>
+        <field name="sequence">10</field>
+        <field name="category_id" ref="hr_payroll.BASIC"/>
+        <field name="struct_id" ref="structure_uae_monthly"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">result = contract.wage * 0.60</field>
+        <field name="appears_on_payslip" eval="True"/>
+    </record>
+
+    <record id="rule_housing" model="hr.salary.rule">
+        <field name="name">Housing Allowance</field>
+        <field name="code">HOU</field>
+        <field name="sequence">20</field>
+        <field name="category_id" ref="hr_payroll.ALW"/>
+        <field name="struct_id" ref="structure_uae_monthly"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">result = contract.wage * 0.25</field>
+        <field name="appears_on_payslip" eval="True"/>
+    </record>
+
+    <record id="rule_transport" model="hr.salary.rule">
+        <field name="name">Transport Allowance</field>
+        <field name="code">TRA</field>
+        <field name="sequence">30</field>
+        <field name="category_id" ref="hr_payroll.ALW"/>
+        <field name="struct_id" ref="structure_uae_monthly"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">result = contract.wage * 0.15</field>
+        <field name="appears_on_payslip" eval="True"/>
+    </record>
+
+    <record id="rule_gross" model="hr.salary.rule">
+        <field name="name">Gross</field>
+        <field name="code">GROSS</field>
+        <field name="sequence">100</field>
+        <field name="category_id" ref="hr_payroll.GROSS"/>
+        <field name="struct_id" ref="structure_uae_monthly"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">result = categories.BASIC + categories.ALW</field>
+        <field name="appears_on_payslip" eval="True"/>
+    </record>
+
+    <record id="rule_net" model="hr.salary.rule">
+        <field name="name">Net Salary</field>
+        <field name="code">NET</field>
+        <field name="sequence">200</field>
+        <field name="category_id" ref="hr_payroll.NET"/>
+        <field name="struct_id" ref="structure_uae_monthly"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">result = categories.GROSS + categories.DED</field>
+        <field name="appears_on_payslip" eval="True"/>
+    </record>
+
+    <!-- End-of-service gratuity accrual (informational provision):
+         21 days' basic per year, accrued per month = basic * (21/30) / 12. -->
+    <record id="rule_eosb" model="hr.salary.rule">
+        <field name="name">EOS Gratuity Accrual (provision)</field>
+        <field name="code">EOSB</field>
+        <field name="sequence">300</field>
+        <field name="category_id" ref="hr_payroll.COMP"/>
+        <field name="struct_id" ref="structure_uae_monthly"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">result = (categories.BASIC * (21.0 / 30.0)) / 12.0</field>
+        <field name="appears_on_payslip" eval="True"/>
+    </record>
+
+</odoo>
