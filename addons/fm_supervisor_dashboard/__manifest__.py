@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Supervisor Dashboard",
-    "version": "19.0.1.0.2",
+    "version": "19.0.2.0.0",
     "category": "Facility Management",
     "summary": "Supervisor visit board — the week's work orders at a glance, colour-coded by status",
     "description": """
