@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Materials tab on the FM work order (FSM task) form. -->
+    <record id="view_fsm_task_form_fm_materials" model="ir.ui.view">
+        <field name="name">project.task.form.fm.materials</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="fm_fsm.view_fsm_task_form_fm"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='fm_wo_type']" position="after">
+                <field name="fm_service_product_id"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Materials" name="fm_materials"
+                      invisible="not fm_wo_type">
+                    <button name="action_load_expected_materials" type="object"
+                            string="Load Expected Materials" class="btn-secondary"
+                            invisible="not fm_service_product_id"/>
+                    <field name="fm_material_line_ids">
+                        <list editable="bottom">
+                            <field name="material_id"/>
+                            <field name="qty_expected"/>
+                            <field name="qty_used"/>
+                            <field name="uom_id"/>
+                            <field name="billable"/>
+                            <field name="unit_cost"/>
+                            <field name="cost_used"/>
+                            <field name="currency_id" column_invisible="1"/>
+                            <field name="notes"/>
+                        </list>
+                    </field>
+                    <group class="oe_subtotal_footer">
+                        <field name="fm_currency_id" invisible="1"/>
+                        <field name="fm_material_expected_cost" widget="monetary"/>
+                        <field name="fm_material_used_cost" widget="monetary"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
