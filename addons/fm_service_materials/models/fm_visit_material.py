@@ -24,7 +24,9 @@ class FmVisitMaterial(models.Model):
     notes = fields.Char()
 
     # Reporting dimensions (from the work order)
-    date_deadline = fields.Date(related="task_id.date_deadline", store=True, string="Visit Date")
+    date_deadline = fields.Date(
+        string="Visit Date", compute="_compute_visit_date", store=True
+    )
     partner_id = fields.Many2one(related="task_id.partner_id", store=True, string="Customer")
     service_line = fields.Selection(related="task_id.fm_service_line", store=True)
     contract_id = fields.Many2one(related="task_id.fm_contract_id", store=True, string="Contract")
@@ -33,6 +35,12 @@ class FmVisitMaterial(models.Model):
     unit_cost = fields.Float(related="material_id.standard_price")
     cost_expected = fields.Monetary(compute="_compute_costs", store=True, currency_field="currency_id")
     cost_used = fields.Monetary(compute="_compute_costs", store=True, currency_field="currency_id")
+
+    @api.depends("task_id.date_deadline")
+    def _compute_visit_date(self):
+        for line in self:
+            dt = line.task_id.date_deadline
+            line.date_deadline = dt.date() if dt else False
 
     @api.depends("qty_expected", "qty_used", "unit_cost")
     def _compute_costs(self):

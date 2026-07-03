@@ -118,7 +118,9 @@ class FmContract(models.Model):
             # Existing scheduled dates per asset, to stay idempotent.
             existing = {}
             for task in c.task_ids.filtered("date_deadline"):
-                existing.setdefault(task.fm_asset_id.id, set()).add(task.date_deadline)
+                # date_deadline is a Datetime; compare on the date part so the
+                # idempotency check matches the scheduled day.
+                existing.setdefault(task.fm_asset_id.id, set()).add(task.date_deadline.date())
 
             vals_list = []
             for asset in c.asset_ids:

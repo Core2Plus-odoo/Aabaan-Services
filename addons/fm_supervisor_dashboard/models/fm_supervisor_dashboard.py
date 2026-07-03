@@ -47,16 +47,19 @@ class FmSupervisorDashboard(models.AbstractModel):
                 # folded = signed off / cancelled → treat cancelled separately
                 name = (t.stage_id.name or "").lower()
                 return "cancelled" if "cancel" in name else "done"
-            if t.date_deadline and t.date_deadline < today:
+            dd = t.date_deadline.date() if t.date_deadline else False
+            if dd and dd < today:
                 return "overdue"
-            if t.date_deadline == today:
+            if dd == today:
                 return "today"
             return "scheduled"
 
         by_day = {d.isoformat(): [] for d in days}
         sev_labels = dict(Task._fields["fm_severity"].selection)
         for t in tasks:
-            key = t.date_deadline.isoformat()
+            if not t.date_deadline:
+                continue
+            key = t.date_deadline.date().isoformat()
             if key not in by_day:
                 continue
             by_day[key].append({
@@ -83,8 +86,8 @@ class FmSupervisorDashboard(models.AbstractModel):
         # KPIs (this week window unless noted)
         open_tasks = tasks.filtered(lambda t: not t.stage_id.fold)
         kpis = {
-            "today": len(tasks.filtered(lambda t: t.date_deadline == today)),
-            "overdue": len(open_tasks.filtered(lambda t: t.date_deadline and t.date_deadline < today)),
+            "today": len(tasks.filtered(lambda t: t.date_deadline and t.date_deadline.date() == today)),
+            "overdue": len(open_tasks.filtered(lambda t: t.date_deadline and t.date_deadline.date() < today)),
             "unassigned": len(open_tasks.filtered(lambda t: not t.user_ids)),
             "week_total": len(tasks),
             "done": len(tasks.filtered(lambda t: t.stage_id.fold)),
