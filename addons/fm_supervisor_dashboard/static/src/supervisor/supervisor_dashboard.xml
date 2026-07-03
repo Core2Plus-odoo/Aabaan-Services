@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="fm_supervisor_dashboard.Board">
+        <div class="o_fm_sup">
+            <div class="o_fm_sup_top">
+                <span class="o_fm_sup_brand">Supervisor · Visit Board</span>
+                <div class="o_fm_sup_ctrl" t-if="state.data">
+                    <button class="o_fm_sup_btn" t-on-click="() => this.goWeek(state.data.prev_week)">◀</button>
+                    <button class="o_fm_sup_btn" t-on-click="() => this.goWeek(state.data.this_week)">Today</button>
+                    <button class="o_fm_sup_btn" t-on-click="() => this.goWeek(state.data.next_week)">▶</button>
+                    <span class="o_fm_sup_week"><t t-esc="state.data.week_label"/></span>
+                    <select class="o_fm_sup_sel" t-on-change="(ev) => this.onFilter('technicianId', ev)">
+                        <option value="">All technicians</option>
+                        <t t-foreach="state.data.technicians" t-as="u" t-key="u.id">
+                            <option t-att-value="u.id" t-att-selected="u.id === state.technicianId"><t t-esc="u.name"/></option>
+                        </t>
+                    </select>
+                    <select class="o_fm_sup_sel" t-on-change="(ev) => this.onFilter('serviceLine', ev)">
+                        <option value="">All services</option>
+                        <t t-foreach="state.data.service_lines" t-as="s" t-key="s.key">
+                            <option t-att-value="s.key" t-att-selected="s.key === state.serviceLine"><t t-esc="s.name"/></option>
+                        </t>
+                    </select>
+                    <select t-if="state.data.branches.length" class="o_fm_sup_sel" t-on-change="(ev) => this.onFilter('branchId', ev)">
+                        <option value="">All branches</option>
+                        <t t-foreach="state.data.branches" t-as="b" t-key="b.id">
+                            <option t-att-value="b.id" t-att-selected="b.id === state.branchId"><t t-esc="b.name"/></option>
+                        </t>
+                    </select>
+                </div>
+            </div>
+
+            <div t-if="state.loading" class="o_fm_sup_loading"><i class="fa fa-circle-o-notch fa-spin"/> Loading…</div>
+
+            <t t-if="!state.loading and state.data">
+                <!-- KPI strip -->
+                <div class="o_fm_sup_kpis">
+                    <div class="o_fm_sup_kpi"><span class="o_fm_sup_kpi_v"><t t-esc="state.data.kpis.today"/></span><span class="o_fm_sup_kpi_l">Today</span></div>
+                    <div class="o_fm_sup_kpi o_fm_sup_red"><span class="o_fm_sup_kpi_v"><t t-esc="state.data.kpis.overdue"/></span><span class="o_fm_sup_kpi_l">Overdue</span></div>
+                    <div class="o_fm_sup_kpi o_fm_sup_amber"><span class="o_fm_sup_kpi_v"><t t-esc="state.data.kpis.unassigned"/></span><span class="o_fm_sup_kpi_l">Unassigned</span></div>
+                    <div class="o_fm_sup_kpi"><span class="o_fm_sup_kpi_v"><t t-esc="state.data.kpis.week_total"/></span><span class="o_fm_sup_kpi_l">This week</span></div>
+                    <div class="o_fm_sup_kpi o_fm_sup_green"><span class="o_fm_sup_kpi_v"><t t-esc="state.data.kpis.done"/></span><span class="o_fm_sup_kpi_l">Done</span></div>
+                </div>
+
+                <!-- Week board -->
+                <div class="o_fm_sup_board">
+                    <t t-foreach="state.data.days" t-as="d" t-key="d.date">
+                        <div t-attf-class="o_fm_sup_col {{d.is_today ? 'o_fm_sup_col_today' : ''}} {{d.is_weekend ? 'o_fm_sup_col_wknd' : ''}}">
+                            <div class="o_fm_sup_colhead">
+                                <span class="o_fm_sup_wd"><t t-esc="d.weekday"/></span>
+                                <span class="o_fm_sup_dd"><t t-esc="d.day"/> <t t-esc="d.month"/></span>
+                                <span class="o_fm_sup_cnt" t-if="d.visits.length"><t t-esc="d.visits.length"/></span>
+                            </div>
+                            <div class="o_fm_sup_chips">
+                                <div t-foreach="d.visits" t-as="v" t-key="v.id"
+                                     t-attf-class="o_fm_sup_chip o_fm_sup_st_{{v.status}}"
+                                     t-on-click="() => this.openVisit(v.id)"
+                                     t-att-title="v.asset">
+                                    <span class="o_fm_sup_chip_t"><t t-esc="v.title"/></span>
+                                    <span class="o_fm_sup_chip_m"><t t-esc="v.tech"/></span>
+                                </div>
+                                <div class="o_fm_sup_none" t-if="!d.visits.length">—</div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+
+                <div class="o_fm_sup_legend">
+                    <span class="o_fm_sup_lg o_fm_sup_st_today">Today</span>
+                    <span class="o_fm_sup_lg o_fm_sup_st_scheduled">Scheduled</span>
+                    <span class="o_fm_sup_lg o_fm_sup_st_overdue">Overdue</span>
+                    <span class="o_fm_sup_lg o_fm_sup_st_done">Done</span>
+                    <span class="o_fm_sup_lg o_fm_sup_st_cancelled">Cancelled</span>
+                    <span class="o_fm_sup_hint">Click a visit to open it.</span>
+                </div>
+            </t>
+        </div>
+    </t>
+
+</templates>
