@@ -2,77 +2,88 @@
 <templates xml:space="preserve">
 
     <t t-name="fm_supervisor_dashboard.Board">
-        <div class="o_fm_sup">
-            <div class="o_fm_sup_top">
-                <span class="o_fm_sup_brand">Supervisor · Visit Board</span>
-                <div class="o_fm_sup_ctrl" t-if="state.data">
-                    <button class="o_fm_sup_btn" t-on-click="() => this.goWeek(state.data.prev_week)">◀</button>
-                    <button class="o_fm_sup_btn" t-on-click="() => this.goWeek(state.data.this_week)">Today</button>
-                    <button class="o_fm_sup_btn" t-on-click="() => this.goWeek(state.data.next_week)">▶</button>
-                    <span class="o_fm_sup_week"><t t-esc="state.data.week_label"/></span>
-                    <select class="o_fm_sup_sel" t-on-change="(ev) => this.onFilter('technicianId', ev)">
-                        <option value="">All technicians</option>
-                        <t t-foreach="state.data.technicians" t-as="u" t-key="u.id">
-                            <option t-att-value="u.id" t-att-selected="u.id === state.technicianId"><t t-esc="u.name"/></option>
-                        </t>
-                    </select>
-                    <select class="o_fm_sup_sel" t-on-change="(ev) => this.onFilter('serviceLine', ev)">
-                        <option value="">All services</option>
-                        <t t-foreach="state.data.service_lines" t-as="s" t-key="s.key">
-                            <option t-att-value="s.key" t-att-selected="s.key === state.serviceLine"><t t-esc="s.name"/></option>
-                        </t>
-                    </select>
-                    <select t-if="state.data.branches.length" class="o_fm_sup_sel" t-on-change="(ev) => this.onFilter('branchId', ev)">
-                        <option value="">All branches</option>
-                        <t t-foreach="state.data.branches" t-as="b" t-key="b.id">
-                            <option t-att-value="b.id" t-att-selected="b.id === state.branchId"><t t-esc="b.name"/></option>
-                        </t>
-                    </select>
+        <div class="o_fm_cal">
+            <!-- Header -->
+            <div class="o_fm_cal_head">
+                <div class="o_fm_cal_head_l">
+                    <div class="o_fm_cal_logo">FM</div>
+                    <div>
+                        <div class="o_fm_cal_title">Maintenance Calendar</div>
+                        <div class="o_fm_cal_sub" t-if="state.data"><t t-esc="state.data.company_label"/></div>
+                    </div>
+                </div>
+                <div class="o_fm_cal_head_r" t-if="state.data">
+                    <div class="o_fm_cal_nav">
+                        <button class="o_fm_cal_ico" t-on-click="() => this.goMonth(state.data.prev_month)"><i class="fa fa-chevron-left"/></button>
+                        <span class="o_fm_cal_month"><t t-esc="state.data.month_label"/></span>
+                        <button class="o_fm_cal_ico" t-on-click="() => this.goMonth(state.data.next_month)"><i class="fa fa-chevron-right"/></button>
+                        <button class="o_fm_cal_today" t-on-click="() => this.goMonth(state.data.this_month)">This month</button>
+                    </div>
+                    <div class="o_fm_cal_filters">
+                        <select class="o_fm_cal_sel" t-on-change="(ev) => this.onFilter('technicianId', ev)">
+                            <option value="">All technicians</option>
+                            <t t-foreach="state.data.technicians" t-as="u" t-key="u.id">
+                                <option t-att-value="u.id" t-att-selected="u.id === state.technicianId"><t t-esc="u.name"/></option>
+                            </t>
+                        </select>
+                        <select class="o_fm_cal_sel" t-on-change="(ev) => this.onFilter('serviceLine', ev)">
+                            <option value="">All services</option>
+                            <t t-foreach="state.data.service_lines" t-as="s" t-key="s.key">
+                                <option t-att-value="s.key" t-att-selected="s.key === state.serviceLine"><t t-esc="s.name"/></option>
+                            </t>
+                        </select>
+                        <select t-if="state.data.branches.length" class="o_fm_cal_sel" t-on-change="(ev) => this.onFilter('branchId', ev)">
+                            <option value="">All branches</option>
+                            <t t-foreach="state.data.branches" t-as="b" t-key="b.id">
+                                <option t-att-value="b.id" t-att-selected="b.id === state.branchId"><t t-esc="b.name"/></option>
+                            </t>
+                        </select>
+                    </div>
                 </div>
             </div>
 
-            <div t-if="state.loading" class="o_fm_sup_loading"><i class="fa fa-circle-o-notch fa-spin"/> Loading…</div>
+            <div t-if="state.loading" class="o_fm_cal_loading"><i class="fa fa-circle-o-notch fa-spin"/> Loading…</div>
 
             <t t-if="!state.loading and state.data">
                 <!-- KPI strip -->
-                <div class="o_fm_sup_kpis">
-                    <div class="o_fm_sup_kpi"><span class="o_fm_sup_kpi_v"><t t-esc="state.data.kpis.today"/></span><span class="o_fm_sup_kpi_l">Today</span></div>
-                    <div class="o_fm_sup_kpi o_fm_sup_red"><span class="o_fm_sup_kpi_v"><t t-esc="state.data.kpis.overdue"/></span><span class="o_fm_sup_kpi_l">Overdue</span></div>
-                    <div class="o_fm_sup_kpi o_fm_sup_amber"><span class="o_fm_sup_kpi_v"><t t-esc="state.data.kpis.unassigned"/></span><span class="o_fm_sup_kpi_l">Unassigned</span></div>
-                    <div class="o_fm_sup_kpi"><span class="o_fm_sup_kpi_v"><t t-esc="state.data.kpis.week_total"/></span><span class="o_fm_sup_kpi_l">This week</span></div>
-                    <div class="o_fm_sup_kpi o_fm_sup_green"><span class="o_fm_sup_kpi_v"><t t-esc="state.data.kpis.done"/></span><span class="o_fm_sup_kpi_l">Done</span></div>
+                <div class="o_fm_cal_kpis">
+                    <div class="o_fm_cal_kpi"><span class="o_fm_cal_kv"><t t-esc="state.data.kpis.today"/></span><span class="o_fm_cal_kl">Today</span></div>
+                    <div class="o_fm_cal_kpi"><span class="o_fm_cal_kv o_red"><t t-esc="state.data.kpis.overdue"/></span><span class="o_fm_cal_kl">Overdue</span></div>
+                    <div class="o_fm_cal_kpi"><span class="o_fm_cal_kv o_amber"><t t-esc="state.data.kpis.unassigned"/></span><span class="o_fm_cal_kl">Unassigned</span></div>
+                    <div class="o_fm_cal_kpi"><span class="o_fm_cal_kv"><t t-esc="state.data.kpis.month_total"/></span><span class="o_fm_cal_kl">This month</span></div>
+                    <div class="o_fm_cal_kpi"><span class="o_fm_cal_kv o_green"><t t-esc="state.data.kpis.done"/></span><span class="o_fm_cal_kl">Done · <t t-esc="state.data.kpis.completion"/>%</span></div>
                 </div>
 
-                <!-- Week board -->
-                <div class="o_fm_sup_board">
-                    <t t-foreach="state.data.days" t-as="d" t-key="d.date">
-                        <div t-attf-class="o_fm_sup_col {{d.is_today ? 'o_fm_sup_col_today' : ''}} {{d.is_weekend ? 'o_fm_sup_col_wknd' : ''}}">
-                            <div class="o_fm_sup_colhead">
-                                <span class="o_fm_sup_wd"><t t-esc="d.weekday"/></span>
-                                <span class="o_fm_sup_dd"><t t-esc="d.day"/> <t t-esc="d.month"/></span>
-                                <span class="o_fm_sup_cnt" t-if="d.visits.length"><t t-esc="d.visits.length"/></span>
-                            </div>
-                            <div class="o_fm_sup_chips">
-                                <div t-foreach="d.visits" t-as="v" t-key="v.id"
-                                     t-attf-class="o_fm_sup_chip o_fm_sup_st_{{v.status}}"
-                                     t-on-click="() => this.openVisit(v.id)"
-                                     t-att-title="v.asset">
-                                    <span class="o_fm_sup_chip_t"><t t-esc="v.title"/></span>
-                                    <span class="o_fm_sup_chip_m"><t t-esc="v.tech"/></span>
+                <div class="o_fm_cal_wrap">
+                    <!-- Calendar -->
+                    <div class="o_fm_cal_grid">
+                        <div class="o_fm_cal_dow" t-foreach="state.data.weekdays" t-as="wd" t-key="wd_index"><t t-esc="wd"/></div>
+                        <t t-foreach="state.data.weeks" t-as="week" t-key="week_index">
+                            <t t-foreach="week" t-as="c" t-key="c.date">
+                                <div t-attf-class="o_fm_cal_cell {{c.in_month ? '' : 'o_out'}} {{c.is_today ? 'o_today' : ''}} {{c.is_weekend ? 'o_wknd' : ''}}">
+                                    <div class="o_fm_cal_num"><t t-esc="c.day"/></div>
+                                    <div class="o_fm_cal_evts">
+                                        <div t-foreach="c.events" t-as="e" t-key="e.id"
+                                             class="o_fm_cal_evt" t-on-click="() => this.openVisit(e.id)"
+                                             t-att-title="e.sub ? e.title + ' — ' + e.sub : e.title">
+                                            <span class="o_fm_cal_tag" t-attf-style="background: {{e.color}};"><t t-esc="e.status_label"/></span>
+                                            <span class="o_fm_cal_txt"><t t-esc="e.title"/></span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="o_fm_sup_none" t-if="!d.visits.length">—</div>
-                            </div>
-                        </div>
-                    </t>
-                </div>
+                            </t>
+                        </t>
+                    </div>
 
-                <div class="o_fm_sup_legend">
-                    <span class="o_fm_sup_lg o_fm_sup_st_today">Today</span>
-                    <span class="o_fm_sup_lg o_fm_sup_st_scheduled">Scheduled</span>
-                    <span class="o_fm_sup_lg o_fm_sup_st_overdue">Overdue</span>
-                    <span class="o_fm_sup_lg o_fm_sup_st_done">Done</span>
-                    <span class="o_fm_sup_lg o_fm_sup_st_cancelled">Cancelled</span>
-                    <span class="o_fm_sup_hint">Click a visit to open it.</span>
+                    <!-- Legend -->
+                    <div class="o_fm_cal_side">
+                        <div class="o_fm_cal_side_h">Legend</div>
+                        <div class="o_fm_cal_leg" t-foreach="state.data.legend" t-as="lg" t-key="lg.key">
+                            <span class="o_fm_cal_sw" t-attf-style="background: {{lg.color}};"/>
+                            <span><t t-esc="lg.label"/></span>
+                        </div>
+                        <div class="o_fm_cal_side_note">Click any visit to open it. Times and status are managed on the work order.</div>
+                    </div>
                 </div>
             </t>
         </div>

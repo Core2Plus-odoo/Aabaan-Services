@@ -14,7 +14,7 @@ export class FmSupervisorDashboard extends Component {
         this.state = useState({
             loading: true,
             data: null,
-            weekStart: false,
+            monthStart: false,
             technicianId: false,
             serviceLine: false,
             branchId: false,
@@ -25,7 +25,7 @@ export class FmSupervisorDashboard extends Component {
     async load() {
         this.state.loading = true;
         this.state.data = await this.orm.call("fm.supervisor.dashboard", "get_board_data", [
-            this.state.weekStart || null,
+            this.state.monthStart || null,
             this.state.technicianId || null,
             this.state.serviceLine || null,
             this.state.branchId || null,
@@ -33,8 +33,8 @@ export class FmSupervisorDashboard extends Component {
         this.state.loading = false;
     }
 
-    goWeek(ws) {
-        this.state.weekStart = ws;
+    goMonth(ms) {
+        this.state.monthStart = ms;
         this.load();
     }
 
