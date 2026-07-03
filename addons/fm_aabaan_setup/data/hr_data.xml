@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Departments for a UAE FM operation -->
+    <record id="dept_operations" model="hr.department">
+        <field name="name">Operations / Field Service</field>
+    </record>
+    <record id="dept_sales" model="hr.department">
+        <field name="name">Sales &amp; Contracts</field>
+    </record>
+    <record id="dept_finance" model="hr.department">
+        <field name="name">Finance &amp; Accounts</field>
+    </record>
+    <record id="dept_hr" model="hr.department">
+        <field name="name">HR &amp; Admin</field>
+    </record>
+    <record id="dept_compliance" model="hr.department">
+        <field name="name">HSE &amp; Compliance</field>
+    </record>
+
+    <!-- Job positions -->
+    <record id="job_technician" model="hr.job">
+        <field name="name">Field Technician</field>
+        <field name="department_id" ref="dept_operations"/>
+    </record>
+    <record id="job_supervisor" model="hr.job">
+        <field name="name">Field Supervisor</field>
+        <field name="department_id" ref="dept_operations"/>
+    </record>
+    <record id="job_dispatcher" model="hr.job">
+        <field name="name">Dispatcher / Scheduler</field>
+        <field name="department_id" ref="dept_operations"/>
+    </record>
+    <record id="job_account_manager" model="hr.job">
+        <field name="name">Account Manager</field>
+        <field name="department_id" ref="dept_sales"/>
+    </record>
+    <record id="job_accountant" model="hr.job">
+        <field name="name">Accountant</field>
+        <field name="department_id" ref="dept_finance"/>
+    </record>
+    <record id="job_hse_officer" model="hr.job">
+        <field name="name">HSE / Compliance Officer</field>
+        <field name="department_id" ref="dept_compliance"/>
+    </record>
+
+</odoo>

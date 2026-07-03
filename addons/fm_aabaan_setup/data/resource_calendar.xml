@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- UAE standard working week: Monday–Friday, 08:00–12:00 and 13:00–17:00. -->
+    <record id="resource_calendar_uae" model="resource.calendar">
+        <field name="name">UAE Standard (Mon–Fri)</field>
+        <field name="hours_per_day">8.0</field>
+        <field name="tz">Asia/Dubai</field>
+    </record>
+
+    <record id="att_mon_am" model="resource.calendar.attendance">
+        <field name="name">Monday Morning</field><field name="dayofweek">0</field>
+        <field name="hour_from">8.0</field><field name="hour_to">12.0</field>
+        <field name="day_period">morning</field><field name="calendar_id" ref="resource_calendar_uae"/>
+    </record>
+    <record id="att_mon_pm" model="resource.calendar.attendance">
+        <field name="name">Monday Afternoon</field><field name="dayofweek">0</field>
+        <field name="hour_from">13.0</field><field name="hour_to">17.0</field>
+        <field name="day_period">afternoon</field><field name="calendar_id" ref="resource_calendar_uae"/>
+    </record>
+    <record id="att_tue_am" model="resource.calendar.attendance">
+        <field name="name">Tuesday Morning</field><field name="dayofweek">1</field>
+        <field name="hour_from">8.0</field><field name="hour_to">12.0</field>
+        <field name="day_period">morning</field><field name="calendar_id" ref="resource_calendar_uae"/>
+    </record>
+    <record id="att_tue_pm" model="resource.calendar.attendance">
+        <field name="name">Tuesday Afternoon</field><field name="dayofweek">1</field>
+        <field name="hour_from">13.0</field><field name="hour_to">17.0</field>
+        <field name="day_period">afternoon</field><field name="calendar_id" ref="resource_calendar_uae"/>
+    </record>
+    <record id="att_wed_am" model="resource.calendar.attendance">
+        <field name="name">Wednesday Morning</field><field name="dayofweek">2</field>
+        <field name="hour_from">8.0</field><field name="hour_to">12.0</field>
+        <field name="day_period">morning</field><field name="calendar_id" ref="resource_calendar_uae"/>
+    </record>
+    <record id="att_wed_pm" model="resource.calendar.attendance">
+        <field name="name">Wednesday Afternoon</field><field name="dayofweek">2</field>
+        <field name="hour_from">13.0</field><field name="hour_to">17.0</field>
+        <field name="day_period">afternoon</field><field name="calendar_id" ref="resource_calendar_uae"/>
+    </record>
+    <record id="att_thu_am" model="resource.calendar.attendance">
+        <field name="name">Thursday Morning</field><field name="dayofweek">3</field>
+        <field name="hour_from">8.0</field><field name="hour_to">12.0</field>
+        <field name="day_period">morning</field><field name="calendar_id" ref="resource_calendar_uae"/>
+    </record>
+    <record id="att_thu_pm" model="resource.calendar.attendance">
+        <field name="name">Thursday Afternoon</field><field name="dayofweek">3</field>
+        <field name="hour_from">13.0</field><field name="hour_to">17.0</field>
+        <field name="day_period">afternoon</field><field name="calendar_id" ref="resource_calendar_uae"/>
+    </record>
+    <record id="att_fri_am" model="resource.calendar.attendance">
+        <field name="name">Friday Morning</field><field name="dayofweek">4</field>
+        <field name="hour_from">8.0</field><field name="hour_to">12.0</field>
+        <field name="day_period">morning</field><field name="calendar_id" ref="resource_calendar_uae"/>
+    </record>
+    <record id="att_fri_pm" model="resource.calendar.attendance">
+        <field name="name">Friday Afternoon</field><field name="dayofweek">4</field>
+        <field name="hour_from">13.0</field><field name="hour_to">17.0</field>
+        <field name="day_period">afternoon</field><field name="calendar_id" ref="resource_calendar_uae"/>
+    </record>
+
+</odoo>
