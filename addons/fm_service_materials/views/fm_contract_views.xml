@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Button to (re)load expected materials onto the contract's open visits. -->
+    <record id="view_fm_contract_form_materials" model="ir.ui.view">
+        <field name="name">fm.contract.form.materials</field>
+        <field name="model">fm.contract</field>
+        <field name="inherit_id" ref="fm_fsm.view_fm_contract_form_fsm"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_generate_visits']" position="after">
+                <button name="action_load_visit_materials" type="object"
+                        string="Load Visit Materials" class="btn-secondary"
+                        invisible="not task_count"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

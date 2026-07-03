@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Service Materials",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.1.0",
     "category": "Facility Management",
     "summary": "Bill of materials per service — which materials/consumables each service uses per visit",
     "description": """
@@ -33,6 +33,9 @@ Consumption capture on the visit and a live material forecast
         "security/ir.model.access.csv",
         "views/fm_service_material_views.xml",
         "views/product_template_views.xml",
+        "views/project_task_views.xml",
+        "views/fm_visit_material_views.xml",
+        "views/fm_contract_views.xml",
     ],
     "installable": True,
     "application": False,
