@@ -17,8 +17,8 @@ class ResCompany(models.Model):
 
     fm_brand_name = fields.Char(string="FM Brand Name", default="Aabaan Services")
     fm_brand_logo = fields.Binary(string="FM Brand Logo")
-    fm_brand_color_primary = fields.Char(string="FM Primary Color", default="#1F4434")
-    fm_brand_color_accent = fields.Char(string="FM Accent Color", default="#B8923A")
+    fm_brand_color_primary = fields.Char(string="FM Primary Color", default="#1C2B3A")
+    fm_brand_color_accent = fields.Char(string="FM Accent Color", default="#EE7A22")
     fm_default_currency_id = fields.Many2one(
         "res.currency",
         string="FM Default Currency",

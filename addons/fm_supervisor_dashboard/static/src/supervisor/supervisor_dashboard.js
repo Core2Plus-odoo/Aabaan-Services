@@ -38,6 +38,31 @@ export class FmSupervisorDashboard extends Component {
         this.load();
     }
 
+    onPeriod(field, ev) {
+        const y = field === "year" ? parseInt(ev.target.value, 10) : this.state.data.year;
+        const m = field === "month" ? parseInt(ev.target.value, 10) : this.state.data.month_num;
+        this.goMonth(`${y}-${String(m).padStart(2, "0")}-01`);
+    }
+
+    openDay(dateStr) {
+        this.action.doAction({
+            type: "ir.actions.act_window",
+            name: "Visits — " + dateStr,
+            res_model: "project.task",
+            domain: [
+                ["fm_wo_type", "!=", false],
+                ["date_deadline", ">=", dateStr + " 00:00:00"],
+                ["date_deadline", "<=", dateStr + " 23:59:59"],
+            ],
+            views: [[false, "list"], [false, "form"]],
+            target: "current",
+        });
+    }
+
+    print() {
+        window.print();
+    }
+
     onFilter(field, ev) {
         const v = ev.target.value;
         if (field === "technicianId" || field === "branchId") {
