@@ -9,10 +9,9 @@ class FmContract(models.Model):
     currency and the customer come from the standard sales document, while FM
     adds scope, SLA, penalties and a renewal lifecycle.
 
-    ``workorder_ids`` and the data-driven ``health_score`` computation live in
-    ``fm_workorder`` / ``fm_sla`` (which depend on this module) to avoid a
-    forward dependency on the work-order model. Until then ``health_score`` is a
-    plain, manually-maintainable field defaulting to healthy.
+    Visits/work orders are linked by ``fm_fsm`` (``task_ids`` on this model →
+    native FSM ``project.task``). ``health_score`` / ``health_band`` are
+    account-manager-maintained fields (10 = healthy); no automatic computation.
     """
 
     _name = "fm.contract"
@@ -88,8 +87,8 @@ class FmContract(models.Model):
     sla_rule_ids = fields.One2many("fm.sla.rule", "contract_id", string="SLA Rules")
     penalty_clause_ids = fields.One2many("fm.contract.penalty", "contract_id", string="Penalty Clauses")
 
-    # Health (real computation added in fm_sla; neutral default until then)
-    health_score = fields.Float(default=10.0, tracking=True, help="0-10; maintained by fm_sla once work-order history exists.")
+    # Health (maintained by the account manager; 10 = healthy)
+    health_score = fields.Float(default=10.0, tracking=True, help="0-10; set by the account manager from delivery/SLA performance.")
     health_band = fields.Selection(
         [
             ("healthy", "Healthy"),

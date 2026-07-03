@@ -26,6 +26,16 @@ app is a single cockpit that operates them.
 | Compliance | Activities / Documents | `fm_compliance` regimes + certificates |
 | Dashboards | native graph/pivot actions | `fm_dashboards` (JS-free) |
 
+**Standard covers it — configure, don't code** (see
+`docs/FM_LIFECYCLE_WORKFLOW.md`): checklists = **FSM Worksheet Templates**
+(`industry_fsm_report`, Studio); materials used on a job + billing them =
+**products on tasks** (`industry_fsm_sale` / `industry_fsm_stock`); job
+time = native **timesheets** on the FSM task; contract e-signature = **Sign**;
+files = chatter + **Documents** app; renewals/MRR = **Subscriptions**;
+onboarding = Customer/CRM. Before adding any model, check this list and the
+native FSM sub-apps first. Prefer extending an existing `fm_*` module over
+creating a new one.
+
 ---
 
 ## 2. Module map (`addons/`)
@@ -107,6 +117,13 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
 - **OWL client-action dashboards are fragile on stale asset bundles**
   (`KeyNotFound in actions registry`). Prefer native graph/pivot `act_window`
   actions (see `fm_dashboards`).
+- **Re-declaring a `<menuitem>` without a `parent` attribute RESETS
+  `parent_id` to False** (`_tag_menuitem` starts from `{'parent_id': False}`)
+  — the menu detaches and floats to the root. When re-sequencing another
+  module's menu, always repeat `parent=` (see `fm_fsm/views/menus.xml`).
+- **Computed stored `Monetary` fields need an explicit `aggregator="sum"`** to
+  be usable as pivot/graph measures (else `No aggregate function has been
+  provided for the measure`), and their `currency_field` should be stored.
 
 ---
 

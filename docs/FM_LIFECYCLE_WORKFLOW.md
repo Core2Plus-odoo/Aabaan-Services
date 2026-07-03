@@ -49,6 +49,15 @@ FM → Contracts → **Contracts → New** (`fm.contract`, delegates to `sale.or
   inclusions/exclusions wording on the contract PDF.
 - **Materials per service** (FM → Configuration → *Service Materials* / **Material
   Forecast**) so consumption can be anticipated (`fm_service_materials`).
+- **Materials actually used on a job → bill them: native.** Install/enable the
+  Field Service sub-apps **`industry_fsm_sale`** (technician adds products on
+  the task from mobile; they flow to the sale order → invoice) and
+  **`industry_fsm_stock`** (stock moves for consumed parts). Use the FM
+  composition for *forecasting*, native products-on-task for *actuals &
+  billing* — don't re-develop consumption billing.
+- **Job time → invoice: native.** Enable **Timesheets** on the Facility
+  Management project; technician time on the task can be billed per the sale
+  order's service policy.
 
 ## 4. Scheduling  **[BUILT]**
 
