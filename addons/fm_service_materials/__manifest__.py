@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Service Materials",
-    "version": "19.0.1.1.1",
+    "version": "19.0.1.1.2",
     "category": "Facility Management",
     "summary": "Bill of materials per service — which materials/consumables each service uses per visit",
     "description": """

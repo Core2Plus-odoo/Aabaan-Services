@@ -61,13 +61,13 @@ app is a single cockpit that operates them.
 - `fm_wo_migration` — one-off converter: leftover `fm_workorder` **table** rows
   → `project.task` (reads by SQL; run before uninstalling the stubs).
 
-**Retired stubs** — `fm_workorder`, `fm_ppm`, `fm_sla`, `fm_integrations`:
-empty placeholder modules (`depends: base`, no models/data, `v19.0.9.0.0`).
-They exist so an installed DB loads cleanly and can be uninstalled from Apps.
-Each carries a `migrations/19.0.9.0.0/pre-migration.py` that purges the old
-modules' crons/actions/views (see §5). **Do not build on these.** Once
-uninstalled on production and confirmed, they and `fm_wo_migration` can be
-deleted from the repo.
+**Retired stubs — removed.** `fm_workorder`, `fm_ppm`, `fm_sla`,
+`fm_integrations` were empty placeholder modules that existed only so an
+installed DB loaded cleanly while their residual DB records were purged (by each
+stub's `migrations/19.0.9.0.0/pre-migration.py`, see §5). They have been
+**uninstalled on production and deleted from the repo**. `fm_wo_migration`
+(one-off SQL converter) is kept only until its conversion is confirmed run on
+production, then it too can be deleted.
 
 **Legacy:** `aabaan_service_scheduler` — the original pest/water-tank scheduler.
 Hidden (root menus `active=False`), data preserved, superseded by the FM suite.

@@ -66,4 +66,29 @@
               parent="fm_asset.menu_fm_root"
               sequence="99"/>
 
+    <!-- ================================================================
+         Lifecycle journey ordering (config, no new models).
+         Re-sequence the existing top-level FM sections so the app reads in
+         the order the team actually works:
+           Onboarding & Contracts → Assets → Scheduling → Compliance →
+           Health (dashboards) → Configuration.
+         Only re-sequences menus fm_fsm already depends on; higher-level
+         sections (Compliance seq 40, Dashboards/Reports 50+) keep their
+         sequences and naturally fall into place after these.
+         ================================================================ -->
+
+    <!-- 1. Onboarding & Contracts first (Customers → Contracts → Service Items). -->
+    <menuitem id="fm_contract.menu_fm_contracts_root"
+              name="Contracts"
+              sequence="10"/>
+
+    <!-- 2. Assets. -->
+    <menuitem id="fm_asset.menu_fm_assets_root"
+              sequence="20"/>
+
+    <!-- 3. Scheduling &amp; Work Orders (Work Orders + Visit Calendar). -->
+    <menuitem id="menu_fm_workorders_root"
+              name="Scheduling &amp; Work Orders"
+              sequence="30"/>
+
 </odoo>
