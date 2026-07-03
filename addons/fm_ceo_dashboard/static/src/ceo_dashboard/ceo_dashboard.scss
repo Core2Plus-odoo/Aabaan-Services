@@ -13,7 +13,7 @@
         flex-wrap: wrap;
         gap: 8px;
     }
-    .o_fm_ceo_brand { font-weight: 700; letter-spacing: .04em; color: #0b5cab; }
+    .o_fm_ceo_brand { font-weight: 700; letter-spacing: .04em; color: #1c2b3a; }
     .o_fm_ceo_meta { display: flex; align-items: center; gap: 10px; color: #6b7280; font-size: 12px; }
     .o_fm_ceo_btn {
         border: 1px solid #d7dbe3; background: #fff; border-radius: 6px;
@@ -57,10 +57,10 @@
     .o_fm_ceo_bar_row { display: flex; align-items: center; gap: 10px; margin: 7px 0; }
     .o_fm_ceo_bar_label { width: 120px; font-size: 13px; color: #414a5a; }
     .o_fm_ceo_bar { flex: 1; height: 10px; background: #eef1f6; border-radius: 6px; overflow: hidden; }
-    .o_fm_ceo_bar_fill { display: block; height: 100%; border-radius: 6px; background: #0b5cab; }
+    .o_fm_ceo_bar_fill { display: block; height: 100%; border-radius: 6px; background: #ee7a22; }
     .o_fm_ceo_bar_val { width: 90px; text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
 
-    .o_fm_ceo_brandfill { background: #0b5cab; }
+    .o_fm_ceo_brandfill { background: #ee7a22; }
     .o_fm_ceo_band_healthy { background: #2e9b5b; }
     .o_fm_ceo_band_watch { background: #c9a227; }
     .o_fm_ceo_band_at_risk { background: #e08a1e; }

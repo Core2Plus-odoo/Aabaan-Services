@@ -5,8 +5,8 @@
     --c-line: #eef1f7;
     --c-text: #1f2533;
     --c-muted: #7c8598;
-    --c-brand: #3b3f8f;
-    --c-head: #4b4fa6;
+    --c-brand: #1c2b3a;
+    --c-head: #1c2b3a;
     --c-shadow: 0 1px 2px rgba(16,24,40,.05), 0 1px 3px rgba(16,24,40,.04);
 
     height: 100%; overflow: auto; padding: 20px 24px 44px;
@@ -16,7 +16,7 @@
     .o_fm_cal_head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
     .o_fm_cal_head_l { display: flex; align-items: center; gap: 12px; }
     .o_fm_cal_logo { width: 40px; height: 40px; border-radius: 11px; display: flex; align-items: center; justify-content: center;
-        background: linear-gradient(135deg, #3b3f8f, #5b60c9); color: #fff; font-weight: 800; box-shadow: 0 3px 8px rgba(59,63,143,.25); }
+        background: linear-gradient(135deg, #ee7a22, #1c2b3a); color: #fff; font-weight: 800; box-shadow: 0 3px 8px rgba(28,43,58,.25); }
     .o_fm_cal_title { font-size: 20px; font-weight: 760; line-height: 1.1; color: var(--c-brand); }
     .o_fm_cal_sub { color: var(--c-muted); font-size: 12px; margin-top: 1px; }
     .o_fm_cal_head_r { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
@@ -63,11 +63,16 @@
     .o_fm_cal_tag { color: #fff; font-size: 9.5px; font-weight: 750; letter-spacing: .03em; text-transform: uppercase;
         padding: 2px 6px; border-radius: 5px; white-space: nowrap; flex: 0 0 auto; line-height: 1.25; }
     .o_fm_cal_txt { font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .o_fm_cal_more { font-size: 11px; font-weight: 650; color: var(--c-head); cursor: pointer; padding: 1px 3px; }
+    .o_fm_cal_more:hover { text-decoration: underline; }
+    .o_fm_cal_mo { max-width: 130px; } .o_fm_cal_yr { max-width: 90px; }
 
     /* Side legend */
     .o_fm_cal_side { background: var(--c-card); border: 1px solid var(--c-border); border-radius: 14px; padding: 14px; box-shadow: var(--c-shadow); position: sticky; top: 0; }
     .o_fm_cal_side_h { font-size: 11.5px; letter-spacing: .04em; text-transform: uppercase; color: var(--c-muted); font-weight: 750; margin-bottom: 12px; }
     .o_fm_cal_leg { display: flex; align-items: center; gap: 9px; margin: 8px 0; font-size: 12.5px; }
+    .o_fm_cal_leg_l { flex: 1; }
+    .o_fm_cal_leg_c { font-weight: 750; font-variant-numeric: tabular-nums; color: var(--c-muted); }
     .o_fm_cal_sw { width: 26px; height: 15px; border-radius: 4px; flex: 0 0 auto; }
     .o_fm_cal_side_note { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--c-line); color: var(--c-muted); font-size: 11.5px; line-height: 1.5; }
 
@@ -79,11 +84,21 @@
     }
 }
 
+/* Print */
+@media print {
+    .o_fm_cal { padding: 0; background: #fff; }
+    .o_fm_cal_head_r, .o_fm_cal_filters, .o_fm_noprint, .o_fm_cal_kpis { display: none !important; }
+    .o_fm_cal_wrap { grid-template-columns: 1fr; }
+    .o_fm_cal_grid, .o_fm_cal_side, .o_fm_cal_cell, .o_fm_cal_kpi { box-shadow: none !important; }
+    .o_fm_cal_cell { min-height: 96px; break-inside: avoid; }
+    .o_fm_cal_title { color: #000; }
+}
+
 /* Dark mode */
 .o_web_client.o_dark_theme, :root[data-color-scheme="dark"] {
     .o_fm_cal {
         --c-bg: #1a1d24; --c-card: #23272f; --c-border: #333a45; --c-line: #2b313b;
-        --c-text: #e6e9ef; --c-muted: #98a1b2; --c-brand: #aab0ff; --c-head: #3a3f7d;
+        --c-text: #e6e9ef; --c-muted: #98a1b2; --c-brand: #f3a25a; --c-head: #24344a;
         .o_fm_cal_cell.o_out { background: #20242c; }
         .o_fm_cal_cell.o_wknd { background: #21252e; }
     }

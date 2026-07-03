@@ -15,9 +15,19 @@
                 <div class="o_fm_cal_head_r" t-if="state.data">
                     <div class="o_fm_cal_nav">
                         <button class="o_fm_cal_ico" t-on-click="() => this.goMonth(state.data.prev_month)"><i class="fa fa-chevron-left"/></button>
-                        <span class="o_fm_cal_month"><t t-esc="state.data.month_label"/></span>
+                        <select class="o_fm_cal_sel o_fm_cal_mo" t-on-change="(ev) => this.onPeriod('month', ev)">
+                            <t t-foreach="state.data.months" t-as="mo" t-key="mo.num">
+                                <option t-att-value="mo.num" t-att-selected="mo.num === state.data.month_num"><t t-esc="mo.name"/></option>
+                            </t>
+                        </select>
+                        <select class="o_fm_cal_sel o_fm_cal_yr" t-on-change="(ev) => this.onPeriod('year', ev)">
+                            <t t-foreach="state.data.years" t-as="yr" t-key="yr">
+                                <option t-att-value="yr" t-att-selected="yr === state.data.year"><t t-esc="yr"/></option>
+                            </t>
+                        </select>
                         <button class="o_fm_cal_ico" t-on-click="() => this.goMonth(state.data.next_month)"><i class="fa fa-chevron-right"/></button>
-                        <button class="o_fm_cal_today" t-on-click="() => this.goMonth(state.data.this_month)">This month</button>
+                        <button class="o_fm_cal_today" t-on-click="() => this.goMonth(state.data.this_month)">Today</button>
+                        <button class="o_fm_cal_ico o_fm_noprint" t-on-click="() => this.print()" title="Print"><i class="fa fa-print"/></button>
                     </div>
                     <div class="o_fm_cal_filters">
                         <select class="o_fm_cal_sel" t-on-change="(ev) => this.onFilter('technicianId', ev)">
@@ -63,12 +73,15 @@
                                 <div t-attf-class="o_fm_cal_cell {{c.in_month ? '' : 'o_out'}} {{c.is_today ? 'o_today' : ''}} {{c.is_weekend ? 'o_wknd' : ''}}">
                                     <div class="o_fm_cal_num"><t t-esc="c.day"/></div>
                                     <div class="o_fm_cal_evts">
-                                        <div t-foreach="c.events" t-as="e" t-key="e.id"
-                                             class="o_fm_cal_evt" t-on-click="() => this.openVisit(e.id)"
-                                             t-att-title="e.sub ? e.title + ' — ' + e.sub : e.title">
-                                            <span class="o_fm_cal_tag" t-attf-style="background: {{e.color}};"><t t-esc="e.status_label"/></span>
-                                            <span class="o_fm_cal_txt"><t t-esc="e.title"/></span>
-                                        </div>
+                                        <t t-foreach="c.events" t-as="e" t-key="e.id">
+                                            <div t-if="e_index &lt; 3"
+                                                 class="o_fm_cal_evt" t-on-click="() => this.openVisit(e.id)"
+                                                 t-att-title="e.sub ? e.title + ' — ' + e.sub : e.title">
+                                                <span class="o_fm_cal_tag" t-attf-style="background: {{e.color}};"><t t-esc="e.status_label"/></span>
+                                                <span class="o_fm_cal_txt"><t t-esc="e.title"/></span>
+                                            </div>
+                                        </t>
+                                        <div t-if="c.more" class="o_fm_cal_more" t-on-click="() => this.openDay(c.date)">+<t t-esc="c.more"/> more</div>
                                     </div>
                                 </div>
                             </t>
@@ -80,7 +93,8 @@
                         <div class="o_fm_cal_side_h">Legend</div>
                         <div class="o_fm_cal_leg" t-foreach="state.data.legend" t-as="lg" t-key="lg.key">
                             <span class="o_fm_cal_sw" t-attf-style="background: {{lg.color}};"/>
-                            <span><t t-esc="lg.label"/></span>
+                            <span class="o_fm_cal_leg_l"><t t-esc="lg.label"/></span>
+                            <span class="o_fm_cal_leg_c"><t t-esc="lg.count"/></span>
                         </div>
                         <div class="o_fm_cal_side_note">Click any visit to open it. Times and status are managed on the work order.</div>
                     </div>

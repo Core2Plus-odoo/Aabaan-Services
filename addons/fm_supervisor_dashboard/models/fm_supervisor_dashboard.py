@@ -87,13 +87,15 @@ class FmSupervisorDashboard(models.AbstractModel):
             row = []
             for i in range(7):
                 d = grid_days[w * 7 + i]
+                evts = by_day.get(d.isoformat(), [])
                 row.append({
                     "date": d.isoformat(),
                     "day": d.day,
                     "in_month": d.month == first.month,
                     "is_today": d == today,
                     "is_weekend": d.weekday() in (4, 5),  # Fri/Sat (UAE)
-                    "events": by_day.get(d.isoformat(), []),
+                    "events": evts,
+                    "more": max(0, len(evts) - 3),
                 })
             weeks.append(row)
 
@@ -121,17 +123,29 @@ class FmSupervisorDashboard(models.AbstractModel):
         sl_options = Task.fields_get(["fm_service_line"])["fm_service_line"]["selection"]
         service_lines = [{"key": k, "name": v} for k, v in sl_options]
 
+        # Per-status counts for the legend (this month)
+        counts = {}
+        for t in in_month:
+            st = status_of(t)
+            counts[st] = counts.get(st, 0) + 1
+
         prev_m = (first - timedelta(days=1)).replace(day=1)
         next_m = (first + timedelta(days=31)).replace(day=1)
+        months = [{"num": i, "name": date(2000, i, 1).strftime("%B")} for i in range(1, 13)]
+        years = list(range(first.year - 2, first.year + 3))
         return {
             "month_label": first.strftime("%B %Y"),
             "month_start": first.isoformat(),
+            "year": first.year,
+            "month_num": first.month,
+            "months": months,
+            "years": years,
             "prev_month": prev_m.isoformat(),
             "next_month": next_m.isoformat(),
             "this_month": today.replace(day=1).isoformat(),
             "weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
             "weeks": weeks,
-            "legend": [{"key": k, "label": l, "color": c} for k, l, c in STATUSES],
+            "legend": [{"key": k, "label": l, "color": c, "count": counts.get(k, 0)} for k, l, c in STATUSES],
             "kpis": kpis,
             "technicians": technicians,
             "branches": branches,

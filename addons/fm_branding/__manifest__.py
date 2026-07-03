@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Branding",
-    "version": "19.0.1.0.3",
+    "version": "19.0.1.0.4",
     "category": "Facility Management",
     "summary": "Foundation module: theme tokens, branding settings and FM security groups",
     "description": """

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM CEO Dashboard",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "category": "Facility Management",
     "summary": "Executive (CEO) dashboard — portfolio value, contract health, operations, compliance risk, revenue",
     "description": """
