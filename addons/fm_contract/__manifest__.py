@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Contract",
-    "version": "19.0.1.2.0",
+    "version": "19.0.1.2.1",
     "category": "Facility Management",
     "summary": "AMC contracts, SLA rules, scope and renewal lifecycle",
     "description": """
@@ -11,9 +11,8 @@ AMC / break-fix / project contracts. Composes with ``sale.order`` for billing
 (``_inherits``) and carries FM scope (covered assets, service inclusions/
 exclusions), SLA rules, penalties and a renewal lifecycle.
 
-``workorder_ids`` and the data-driven health score (which need work-order and
-CSAT history) are added by ``fm_workorder`` / ``fm_sla`` once those modules
-land — see README.
+Visits/work orders are native Field Service tasks linked by ``fm_fsm``
+(``task_ids``); contract health is maintained by the account manager.
 """,
     "author": "C2P Consultants FZC LLC",
     "website": "https://c2p.ae",
