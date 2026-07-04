@@ -1,2 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_fm_wo_convert_wizard_admin,fm.wo.convert.wizard admin,model_fm_wo_convert_wizard,fm_branding.group_fm_admin,1,1,1,1

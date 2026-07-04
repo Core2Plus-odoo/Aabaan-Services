@@ -1,3 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_odoo_master_data_config_admin,odoo.master.data.config admin,model_odoo_master_data_config,base.group_system,1,1,1,1
-access_odoo_master_data_wizard_admin,odoo.master.data.import.wizard admin,model_odoo_master_data_import_wizard,base.group_system,1,1,1,1
