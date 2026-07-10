@@ -230,7 +230,28 @@ class FmContract(models.Model):
             raise UserError(_("Set a valid start and end date on the contract first."))
         created = self._generate_schedule()
         self.message_post(body=_("%s planned Field Service visit(s) generated.") % len(created))
-        return self.action_view_tasks()
+        if not created:
+            raise UserError(_(
+                "No new visits were generated — every covered asset already has a "
+                "scheduled visit for every date in this window. Check the Visits / "
+                "Work Orders smart button for the existing schedule."
+            ))
+        # Open scoped to exactly the batch just created, not the contract's
+        # full visit history — otherwise a new run's visits get buried among
+        # everything already generated and it looks like nothing happened.
+        project = self._fsm_project()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("%s Visit(s) Generated") % len(created),
+            "res_model": "project.task",
+            "view_mode": "list,calendar,kanban,form",
+            "domain": [("id", "in", created.ids)],
+            "context": {
+                "default_fm_contract_id": self.id,
+                "default_partner_id": self.partner_id.id,
+                "default_project_id": project.id if project else False,
+            },
+        }
 
     def action_view_tasks(self):
         self.ensure_one()
