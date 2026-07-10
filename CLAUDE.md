@@ -64,20 +64,23 @@ creating a new one.
 11. `fm_aabaan_config` — **seed data**: branches, service categories, UAE
     compliance regimes, service products. Makes the platform Aabaan-ready.
 
-**Migration / one-off tools:**
+**Migration / one-off tools — now RETIRED STUBS** (jobs done; empty stub +
+`migrations/19.0.9.0.0/pre-migration.py` self-purges on the prod upgrade, see
+§5). Uninstall them from Apps after the upgrade, then delete from source:
 
-- `fm_aabaan_migration` — wizard: `aabaan.service.contract/visit` → `fm.contract`
-  + `project.task`. Idempotent (`aabaan_contract_id` / `aabaan_visit_id`).
-- `fm_wo_migration` — one-off converter: leftover `fm_workorder` **table** rows
-  → `project.task` (reads by SQL; run before uninstalling the stubs).
+- `fm_aabaan_migration` — was the `aabaan.service.contract/visit` → `fm.contract`
+  + `project.task` wizard.
+- `fm_wo_migration` — was the leftover-`fm_workorder`-table → `project.task`
+  SQL converter.
+- `fm_data_import` — was the XML-RPC master-data importer; its pre-migration
+  also **drops the `odoo_master_data_config` table** (which stored source API
+  keys), purging those credentials.
 
 **Retired stubs — removed.** `fm_workorder`, `fm_ppm`, `fm_sla`,
 `fm_integrations` were empty placeholder modules that existed only so an
 installed DB loaded cleanly while their residual DB records were purged (by each
 stub's `migrations/19.0.9.0.0/pre-migration.py`, see §5). They have been
-**uninstalled on production and deleted from the repo**. `fm_wo_migration`
-(one-off SQL converter) is kept only until its conversion is confirmed run on
-production, then it too can be deleted.
+**uninstalled on production and deleted from the repo**.
 
 **Legacy:** `aabaan_service_scheduler` — the original pest/water-tank scheduler.
 Hidden (root menus `active=False`), data preserved, superseded by the FM suite.
