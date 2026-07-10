@@ -127,6 +127,16 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
 - **Computed stored `Monetary` fields need an explicit `aggregator="sum"`** to
   be usable as pivot/graph measures (else `No aggregate function has been
   provided for the measure`), and their `currency_field` should be stored.
+- **`project.task.date_deadline` must be `>= planned_date_begin`** (a server
+  constraint) — don't set `date_deadline` to midnight-of-day while
+  `planned_date_begin` is later that same day, or `create()` raises "planned
+  start date must be before planned end date". Use the visit's *end* instant
+  for `date_deadline`, not the bare day.
+- **`project.task.date_end` is silently discarded when passed inside
+  `create()`** on this build (verified live) — it comes back `False` even
+  though the field is stored/writable. A `write()` immediately after `create()`
+  is the only way it sticks. `planned_date_begin` and `allocated_hours` persist
+  fine on `create()`. See `fm_fsm/models/fm_contract.py::_generate_schedule`.
 
 ---
 

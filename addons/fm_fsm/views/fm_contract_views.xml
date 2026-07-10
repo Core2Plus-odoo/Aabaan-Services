@@ -32,9 +32,12 @@
                             <field name="visit_frequency"/>
                             <field name="skip_weekends"/>
                             <field name="preferred_technician_id"/>
+                            <field name="auto_schedule_state"/>
                         </group>
                         <group string="Projection">
                             <field name="planned_visit_count"/>
+                            <field name="visit_start_time" widget="float_time"/>
+                            <field name="visit_duration_hours" widget="float_time"/>
                         </group>
                     </group>
                     <p class="text-muted">

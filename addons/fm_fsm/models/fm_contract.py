@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
@@ -61,6 +61,27 @@ class FmContract(models.Model):
     )
     preferred_technician_id = fields.Many2one("hr.employee", string="Preferred Technician")
     planned_visit_count = fields.Integer(compute="_compute_planned_visit_count")
+    auto_schedule_state = fields.Selection(
+        [
+            ("draft", "Draft — needs review before dispatch"),
+            ("confirmed", "Confirmed — ready to assign/dispatch"),
+        ],
+        string="Auto-scheduled Visits Start As",
+        default="confirmed",
+        help="Stage new auto-generated visits open in. 'Confirmed' puts them "
+        "straight in the Assigned stage (technician set if a Preferred "
+        "Technician is chosen); 'Draft' holds them for dispatcher review "
+        "before anyone is assigned.",
+    )
+    visit_start_time = fields.Float(
+        string="Default Visit Start Time",
+        default=9.0,
+        help="Time of day (24h) auto-scheduled visits are planned to start, e.g. 9.0 = 09:00.",
+    )
+    visit_duration_hours = fields.Float(
+        string="Default Visit Duration (hours)",
+        default=2.0,
+    )
 
     def _compute_task_count(self):
         groups = self.env["project.task"]._read_group(
@@ -129,6 +150,7 @@ class FmContract(models.Model):
                 existing.setdefault(task.fm_asset_id.id, set()).add(task.date_deadline.date())
 
             vals_list = []
+            end_dt_list = []
             for asset in c.asset_ids:
                 day = c.start_date
                 while day <= end:
@@ -144,6 +166,20 @@ class FmContract(models.Model):
                                     asset.service_line, asset.service_line
                                 ),
                             )
+                        # Planned date = the visit date itself, at the contract's
+                        # default visit start time/duration, so the task appears
+                        # on the FSM planning Gantt and mobile "Today" view (which
+                        # key on planned_date_begin/date_end), not just the
+                        # calendar (which keys on date_deadline).
+                        # date_deadline must be >= planned_date_begin (a project.task
+                        # constraint) — use the visit's end time, not midnight of the
+                        # day, or task creation is rejected ("planned start date must
+                        # be before planned end date").
+                        duration = c.visit_duration_hours or 2.0
+                        start_dt = datetime.combine(sched_day, datetime.min.time()) + timedelta(
+                            hours=c.visit_start_time or 9.0
+                        )
+                        end_dt = start_dt + timedelta(hours=duration)
                         vals = {
                             "name": visit_name,
                             "project_id": project.id,
@@ -153,22 +189,36 @@ class FmContract(models.Model):
                             "fm_contract_id": c.id,
                             "fm_wo_type": "ppm",
                             "fm_severity": "p3_medium",
-                            "date_deadline": sched_day,
+                            "date_deadline": end_dt,
+                            "planned_date_begin": start_dt,
+                            # date_end is NOT set here: on this build it is
+                            # silently discarded when passed to create() (a
+                            # write() right after create() is the only way it
+                            # sticks) — set in the follow-up loop below.
+                            "allocated_hours": duration,
                             "description": _(
                                 "Planned visit for %(asset)s under contract %(ref)s"
                             ) % {"asset": asset.display_name, "ref": c.contract_number},
                         }
                         if tech_user:
                             vals["user_ids"] = [(6, 0, [tech_user.id])]
-                            if stage_assigned:
-                                vals["stage_id"] = stage_assigned.id
-                        elif stage_draft:
+                        # Initial stage follows the contract's explicit choice —
+                        # 'confirmed' visits go straight to Assigned (ready to
+                        # dispatch, whether or not a technician is set yet);
+                        # 'draft' holds them for dispatcher review.
+                        if c.auto_schedule_state == "draft" and stage_draft:
                             vals["stage_id"] = stage_draft.id
+                        elif stage_assigned:
+                            vals["stage_id"] = stage_assigned.id
                         vals_list.append(vals)
+                        end_dt_list.append(end_dt)
                         existing[asset.id].add(sched_day)
                     day += timedelta(days=interval)
             if vals_list:
-                created += Task.create(vals_list)
+                new_tasks = Task.create(vals_list)
+                for task, task_end_dt in zip(new_tasks, end_dt_list):
+                    task.date_end = task_end_dt
+                created += new_tasks
         return created
 
     def action_generate_visits(self):
