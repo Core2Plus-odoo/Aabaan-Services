@@ -104,6 +104,12 @@ class FmContract(models.Model):
             return Task
         stage_draft = self.env.ref("fm_fsm.fsm_stage_draft", raise_if_not_found=False)
         stage_assigned = self.env.ref("fm_fsm.fsm_stage_assigned", raise_if_not_found=False)
+        # fm.asset.service_line is a related field, so _fields[...].selection is
+        # not the static option list (it's resolved lazily) — fetch the
+        # display labels via fields_get() instead of dict()-ing .selection.
+        service_line_labels = dict(
+            self.env["fm.asset"].fields_get(["service_line"])["service_line"]["selection"]
+        )
         created = Task
         for c in self:
             if not (c.asset_ids and c.visit_frequency and c.start_date and c.end_date):
@@ -134,7 +140,7 @@ class FmContract(models.Model):
                         if asset.service_line:
                             visit_name = "%s — %s" % (
                                 visit_name,
-                                dict(asset._fields["service_line"].selection).get(
+                                service_line_labels.get(
                                     asset.service_line, asset.service_line
                                 ),
                             )
