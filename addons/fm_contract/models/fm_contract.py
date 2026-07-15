@@ -100,6 +100,41 @@ class FmContract(models.Model):
         tracking=True,
     )
 
+    # Printed legal agreement (fm_documents "Service Agreement" report) — free
+    # text so each contract can carry its own site-specific wording, with
+    # sensible defaults so a blank contract still prints something reasonable.
+    subject = fields.Char(
+        string="Contract Subject",
+        help="Printed under the contract header, e.g. 'PEST CONTROL TREATMENT "
+        "FOR ROYAL APARTMENT G+11'. Defaults to the customer name if blank.",
+    )
+    scope_notes = fields.Text(
+        string="Scope of Work (site wording)",
+        help="Free text describing the areas/site covered, printed on the "
+        "agreement. Falls back to the Inclusions list if blank.",
+    )
+    treatment_notes = fields.Text(
+        string="Treatment / Method Notes",
+        help="Optional — treatment methods, chemicals/equipment used, etc. "
+        "Only printed if set.",
+    )
+    payment_terms_note = fields.Text(
+        string="Payment Terms (printed wording)",
+        help="e.g. '50% at the time of signing, 50% after 6 months'.",
+    )
+    unscheduled_visits_included = fields.Integer(
+        string="Unscheduled Visits Included",
+        default=2,
+        help="Number of unscheduled/ad-hoc visits included at no extra charge "
+        "over the contract term, stated on the printed agreement.",
+    )
+    termination_notice_days = fields.Integer(
+        string="Termination Notice (days)",
+        default=30,
+        help="Notice period either party must give to cancel auto-renewal, "
+        "stated on the printed agreement.",
+    )
+
     # Account team
     account_manager_id = fields.Many2one("res.users", string="Account Manager", required=True, tracking=True)
     customer_contact_ids = fields.Many2many("res.partner", string="Customer Contacts")
