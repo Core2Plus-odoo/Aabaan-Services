@@ -123,6 +123,27 @@
                         <page string="Customer Contacts" name="contacts">
                             <field name="customer_contact_ids" widget="many2many_tags"/>
                         </page>
+                        <page string="Printed Agreement" name="agreement">
+                            <p class="text-muted">
+                                Wording used by the printed Service Agreement (Print &gt;
+                                Service Agreement). Leave a field blank to fall back to a
+                                sensible default.
+                            </p>
+                            <group>
+                                <field name="subject" placeholder="e.g. PEST CONTROL TREATMENT FOR ROYAL APARTMENT G+11"/>
+                            </group>
+                            <group>
+                                <group string="Scope &amp; Treatment">
+                                    <field name="scope_notes" nolabel="1" placeholder="Areas/site covered..."/>
+                                    <field name="treatment_notes" nolabel="1" placeholder="Treatment methods (optional)..."/>
+                                </group>
+                                <group string="Commercial Terms">
+                                    <field name="payment_terms_note" placeholder="e.g. 50% at signing, 50% after 6 months"/>
+                                    <field name="unscheduled_visits_included"/>
+                                    <field name="termination_notice_days"/>
+                                </group>
+                            </group>
+                        </page>
                     </notebook>
                 </sheet>
                 <chatter/>

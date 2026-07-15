@@ -2,7 +2,7 @@
 <odoo>
 
     <record id="action_report_fm_contract" model="ir.actions.report">
-        <field name="name">Contract Summary</field>
+        <field name="name">Service Agreement</field>
         <field name="model">fm.contract</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">fm_documents.report_fm_contract_document</field>
@@ -12,6 +12,10 @@
         <field name="paperformat_id" ref="base.paperformat_euro"/>
     </record>
 
+    <!-- Signable legal Service Agreement — mirrors the numbered-Article AMC
+         contract format historically used (First/Second Party, scope,
+         pricing table, standard terms, signature blocks), generated from the
+         contract's own data instead of a one-off Word/PDF per customer. -->
     <template id="report_fm_contract_document">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
@@ -19,49 +23,155 @@
                     <div class="page">
                         <div class="row mb-3">
                             <div class="col-7">
-                                <h2 class="mb-0">Maintenance Contract</h2>
-                                <div style="font-size:15px;" dir="rtl">عقد الصيانة</div>
-                                <div class="text-muted"><span t-field="o.contract_number"/></div>
+                                <h2 class="mb-0">Service Agreement</h2>
+                                <div style="font-size:14px;" dir="rtl">اتفاقية الخدمة</div>
+                                <div class="mt-2">
+                                    <strong t-esc="o.subject or (o.partner_id.name or '')"/>
+                                </div>
                             </div>
                             <div class="col-5 text-end">
-                                <div><strong>Type:</strong> <span t-field="o.contract_type"/></div>
-                                <div><strong>Status:</strong> <span t-field="o.state"/></div>
+                                <div><strong>Ref#:</strong> <span t-field="o.contract_number"/></div>
+                                <div><strong>Date:</strong> <span t-field="o.start_date"/></div>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-6">
-                                <strong>Customer / العميل</strong>
-                                <div t-field="o.partner_id"
+                                <strong>First Party</strong>
+                                <div t-field="o.company_id.partner_id"
                                      t-options='{"widget": "contact", "fields": ["name", "address", "phone"]}'/>
+                                <div t-if="o.company_id.company_registry">
+                                    License No: <span t-field="o.company_id.company_registry"/>
+                                </div>
                             </div>
                             <div class="col-6">
-                                <strong>Term &amp; Billing / المدة والفوترة</strong>
-                                <div><strong>Start:</strong> <span t-field="o.start_date"/></div>
-                                <div><strong>End:</strong> <span t-field="o.end_date"/></div>
-                                <div><strong>Billing:</strong> <span t-field="o.billing_frequency"/></div>
-                                <div><strong>Annual Value:</strong> <span t-field="o.acv"/></div>
+                                <strong>Second Party</strong>
+                                <div t-field="o.partner_id"
+                                     t-options='{"widget": "contact", "fields": ["name", "address", "phone"]}'/>
+                                <t t-if="o.customer_contact_ids">
+                                    <div class="text-muted">
+                                        Contact: <span t-esc="o.customer_contact_ids[0].name"/>
+                                        <span t-if="o.customer_contact_ids[0].phone">
+                                            — <span t-field="o.customer_contact_ids[0].phone"/>
+                                        </span>
+                                    </div>
+                                </t>
                             </div>
                         </div>
 
-                        <t t-if="o.asset_ids">
-                            <strong>Covered Assets / الأصول المشمولة</strong>
-                            <table class="table table-sm o_main_table mb-3">
-                                <thead><tr><th>Asset</th><th>Location</th><th>Criticality</th></tr></thead>
-                                <tbody>
-                                    <tr t-foreach="o.asset_ids" t-as="a">
-                                        <td><span t-field="a.name"/></td>
-                                        <td><span t-field="a.location_full_path"/></td>
-                                        <td><span t-field="a.criticality"/></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </t>
+                        <h5>Article 1 — Duration of the Contract</h5>
+                        <p>
+                            This contract is valid from <span t-field="o.start_date"/>
+                            to <span t-field="o.end_date"/>.
+                        </p>
+
+                        <h5>Article 2 — Service</h5>
+                        <p>
+                            <span t-field="o.company_id.name"/> agrees to supply the services described
+                            below to the Second Party at the site stated above, in accordance with the
+                            schedule detailed in this agreement. The First Party will ensure that
+                            everyone providing the services has the necessary training and authorization
+                            to do so.
+                        </p>
+
+                        <h5>Article 3 — Scope of Work</h5>
+                        <p t-if="o.scope_notes" t-esc="o.scope_notes" style="white-space:pre-wrap;"/>
+                        <ul t-elif="o.service_inclusions">
+                            <li t-foreach="o.service_inclusions" t-as="incl" t-esc="incl.name"/>
+                        </ul>
+
+                        <p t-if="o.treatment_notes" style="white-space:pre-wrap;">
+                            <strong>Treatment / Method:</strong> <span t-esc="o.treatment_notes"/>
+                        </p>
+
+                        <table class="table table-sm o_main_table mb-1" style="margin-top:12px;">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th class="text-end">Qty</th>
+                                    <th class="text-end">Rate</th>
+                                    <th class="text-end">Tax</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.order_line" t-as="line" t-if="not line.display_type">
+                                    <td>
+                                        <span t-field="line.name"/>
+                                        <div t-if="o.visit_frequency" class="text-muted" style="font-size:11px;">
+                                            Frequency: <span t-field="o.visit_frequency"/>
+                                        </div>
+                                    </td>
+                                    <td class="text-end"><span t-field="line.product_uom_qty"/></td>
+                                    <td class="text-end"><span t-field="line.price_unit"/></td>
+                                    <td class="text-end"><span t-field="line.price_tax"/></td>
+                                    <td class="text-end"><span t-field="line.price_total"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="text-end">
+                            <strong>Total Amount:</strong>
+                            <span t-field="o.amount_total"/>
+                        </p>
+
+                        <h5>Article 4 — Service Schedule</h5>
+                        <p>
+                            The customer agrees to fulfil all technical guidelines requested by
+                            <span t-field="o.company_id.name"/> to secure the best results. The Second
+                            Party will make its representative available with the technicians during
+                            treatment. Any area not made ready for a scheduled visit will be skipped and
+                            treated on the next scheduled visit.
+                        </p>
+
+                        <h5>Article 5 — Unscheduled Services and Conditions of Supply</h5>
+                        <p>
+                            The First Party will attend to unscheduled services at the request of the
+                            Second Party
+                            <t t-if="o.unscheduled_visits_included">
+                                up to <span t-esc="o.unscheduled_visits_included"/> time(s)
+                            </t>
+                            during the whole contract period, at no additional charge where the request
+                            concerns an area previously serviced and still under warranty. Any further
+                            service will be provided after quotation approval by the Second Party.
+                        </p>
+
+                        <h5>Article 6 — Exclusions</h5>
+                        <ul t-if="o.service_exclusions">
+                            <li t-foreach="o.service_exclusions" t-as="excl" t-esc="excl.name"/>
+                        </ul>
+                        <p t-else="">This contract excludes anything not explicitly listed under Article 3.</p>
+
+                        <h5>Article 7 — Commencement of Services</h5>
+                        <p>
+                            The First Party will commence the agreed services within ten (10) days from
+                            the date the Second Party signs this contract and returns it to the First
+                            Party. The Second Party agrees to provide access to the areas to be serviced
+                            during the agreed hours.
+                        </p>
+
+                        <h5>Article 8 — Contract Termination</h5>
+                        <p>
+                            At the end of the contract period, this contract remains valid and renews
+                            under the same conditions unless cancelled by either party giving
+                            <span t-esc="o.termination_notice_days or 30"/> days' written notice.
+                        </p>
+
+                        <h5>Article 9 — Payment Terms</h5>
+                        <p t-if="o.payment_terms_note" t-esc="o.payment_terms_note" style="white-space:pre-wrap;"/>
+                        <p t-else="">
+                            <span t-field="o.payment_term_id"/>
+                        </p>
 
                         <t t-if="o.sla_rule_ids">
-                            <strong>Service Levels / مستويات الخدمة</strong>
+                            <h5>Annex A — Service Levels</h5>
                             <table class="table table-sm o_main_table mb-3">
-                                <thead><tr><th>Severity</th><th class="text-end">Response (min)</th><th class="text-end">Resolution (min)</th></tr></thead>
+                                <thead>
+                                    <tr>
+                                        <th>Severity</th>
+                                        <th class="text-end">Response (min)</th>
+                                        <th class="text-end">Resolution (min)</th>
+                                    </tr>
+                                </thead>
                                 <tbody>
                                     <tr t-foreach="o.sla_rule_ids" t-as="s">
                                         <td><span t-field="s.severity"/></td>
@@ -71,6 +181,17 @@
                                 </tbody>
                             </table>
                         </t>
+
+                        <div class="row mt-5" style="page-break-inside: avoid;">
+                            <div class="col-6">
+                                <div><span t-field="o.partner_id.name"/></div>
+                                <div style="margin-top:40px; border-top:1px solid #000; width:70%;">Signature</div>
+                            </div>
+                            <div class="col-6">
+                                <div><span t-field="o.company_id.name"/></div>
+                                <div style="margin-top:40px; border-top:1px solid #000; width:70%;">Signature</div>
+                            </div>
+                        </div>
 
                         <div class="text-muted mt-4" style="font-size:11px;">
                             TRN: <span t-field="o.company_id.vat"/> · All amounts in AED unless stated.
