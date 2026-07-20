@@ -134,6 +134,12 @@ class FmContract(models.Model):
         help="Notice period either party must give to cancel auto-renewal, "
         "stated on the printed agreement.",
     )
+    complaint_response_hours = fields.Integer(
+        string="Complaint Response Time (hours)",
+        default=24,
+        help="Hours within which the team commits to visiting a site after a "
+        "complaint/infestation report, stated on the printed quotation.",
+    )
 
     # Account team
     account_manager_id = fields.Many2one("res.users", string="Account Manager", required=True, tracking=True)

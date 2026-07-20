@@ -141,6 +141,7 @@
                                     <field name="payment_terms_note" placeholder="e.g. 50% at signing, 50% after 6 months"/>
                                     <field name="unscheduled_visits_included"/>
                                     <field name="termination_notice_days"/>
+                                    <field name="complaint_response_hours"/>
                                 </group>
                             </group>
                         </page>
