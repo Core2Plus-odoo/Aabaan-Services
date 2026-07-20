@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_fm_quotation" model="ir.actions.report">
+        <field name="name">Quotation</field>
+        <field name="model">fm.contract</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fm_documents.report_fm_quotation_document</field>
+        <field name="report_file">fm_documents.report_fm_quotation_document</field>
+        <field name="binding_model_id" ref="fm_contract.model_fm_contract"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+
+    <!-- Pre-contract Quotation — narrative scope/treatment/terms + pricing
+         table with VAT breakdown, mirroring the format historically used
+         (uploaded sample: greeting, Scope of Work, Covered Area, Treatment,
+         follow-up/complaint visit commitments, then pricing + payment terms).
+         Printable at any contract stage; typically used before activation. -->
+    <template id="report_fm_quotation_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="row mb-3">
+                            <div class="col-7">
+                                <h2 class="mb-0">Quotation</h2>
+                                <div style="font-size:14px;" dir="rtl">عرض سعر</div>
+                            </div>
+                            <div class="col-5 text-end">
+                                <div><strong>Ref#:</strong> <span t-field="o.contract_number"/></div>
+                                <div><strong>Date:</strong> <span t-field="o.create_date"/></div>
+                                <div t-if="o.validity_date">
+                                    <strong>Valid Until:</strong> <span t-field="o.validity_date"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong t-esc="o.subject or ('Service Proposal — %s' % (o.partner_id.name or ''))"/>
+                        </div>
+
+                        <p>
+                            Dear <span t-esc="(o.customer_contact_ids and o.customer_contact_ids[0].name) or o.partner_id.name"/>,
+                        </p>
+                        <p>
+                            With reference to the above subject and our site inspection, we are pleased to
+                            provide our best quotation for the services described below at
+                            <span t-esc="o.partner_id.name"/>.
+                        </p>
+
+                        <h5>Scope of Work</h5>
+                        <p>
+                            Trained operators will inspect the premises prior to any service activity to
+                            assess requirements, then carry out the work using methods and materials
+                            approved by the relevant UAE municipal and environmental authorities.
+                        </p>
+
+                        <h5>Covered Area</h5>
+                        <p t-if="o.scope_notes" t-esc="o.scope_notes" style="white-space:pre-wrap;"/>
+                        <ul t-elif="o.service_inclusions">
+                            <li t-foreach="o.service_inclusions" t-as="incl" t-esc="incl.name"/>
+                        </ul>
+
+                        <p t-if="o.treatment_notes" style="white-space:pre-wrap;">
+                            <strong>Treatment / Method:</strong> <span t-esc="o.treatment_notes"/>
+                        </p>
+
+                        <h5>Follow-up and Complaint Visits</h5>
+                        <p>
+                            Where an issue is reported during a routine visit, the team will conduct
+                            follow-up visits and take the necessary action until resolved.
+                            <t t-if="o.unscheduled_visits_included">
+                                Up to <span t-esc="o.unscheduled_visits_included"/> unscheduled visit(s) are
+                                included over the contract period at no additional charge.
+                            </t>
+                            In case of a complaint, the team will visit the site within
+                            <span t-esc="o.complaint_response_hours or 24"/> hours of the report.
+                        </p>
+
+                        <table class="table table-sm o_main_table mb-1" style="margin-top:12px;">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th class="text-end">Qty</th>
+                                    <th class="text-end">Rate</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.order_line" t-as="line" t-if="not line.display_type">
+                                    <td>
+                                        <span t-field="line.name"/>
+                                        <div t-if="o.visit_frequency" class="text-muted" style="font-size:11px;">
+                                            Frequency: <span t-field="o.visit_frequency"/>
+                                        </div>
+                                    </td>
+                                    <td class="text-end"><span t-field="line.product_uom_qty"/></td>
+                                    <td class="text-end"><span t-field="line.price_unit"/></td>
+                                    <td class="text-end"><span t-field="line.price_subtotal"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm" style="width:40%; margin-left:auto;">
+                            <tr>
+                                <td>Subtotal</td>
+                                <td class="text-end"><span t-field="o.amount_untaxed"/></td>
+                            </tr>
+                            <tr>
+                                <td>VAT</td>
+                                <td class="text-end"><span t-field="o.amount_tax"/></td>
+                            </tr>
+                            <tr style="font-weight:bold;">
+                                <td>Grand Total</td>
+                                <td class="text-end"><span t-field="o.amount_total"/></td>
+                            </tr>
+                        </table>
+
+                        <h5 class="mt-3">Payment Terms</h5>
+                        <p t-if="o.payment_terms_note" t-esc="o.payment_terms_note" style="white-space:pre-wrap;"/>
+                        <p t-else="">
+                            <span t-field="o.payment_term_id"/>
+                        </p>
+
+                        <div class="mt-5" style="page-break-inside: avoid;">
+                            <div>MANAGER,</div>
+                            <div><strong t-field="o.company_id.name"/></div>
+                        </div>
+
+                        <div class="text-muted mt-4" style="font-size:11px;">
+                            TRN: <span t-field="o.company_id.vat"/> · All amounts in AED unless stated. This
+                            quotation is not a tax invoice.
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>
