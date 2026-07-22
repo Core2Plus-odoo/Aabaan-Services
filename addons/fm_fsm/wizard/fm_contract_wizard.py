@@ -128,18 +128,31 @@ class FmContractWizard(models.TransientModel):
     @api.onchange("service_ids")
     def _onchange_service_ids(self):
         """Keep the per-service schedule rows and pricing-line service tags
-        in sync with the ticked services."""
-        # Rebuild schedule rows: keep existing rows for still-selected
-        # services, add new ones with the category's default cadence.
-        keep = self.schedule_ids.filtered(lambda s: s.category_id in self.service_ids)
-        commands = [(6, 0, keep._origin.ids)] if keep._origin else [(5, 0, 0)]
-        new_rows = []
+        in sync with the ticked services.
+
+        The rows are fully rebuilt on every change — carrying the user's
+        frequency edits over BY VALUE for still-selected services. (An
+        earlier version tried to keep existing rows via (6,0,_origin.ids)
+        commands, but _origin is empty for rows that only exist in the
+        unsaved dialog, which could yield schedule rows with no category_id
+        and a "Missing required value for the field 'Service'" error on
+        Next.)"""
+        current = {
+            s.category_id.id: (s.visit_frequency, s.custom_interval_days)
+            for s in self.schedule_ids if s.category_id
+        }
+        rows = []
         for cat in self.service_ids:
-            if cat in keep.mapped("category_id"):
-                continue
-            freq = MONTHS_TO_FREQUENCY.get(cat.default_ppm_frequency_months, "monthly")
-            new_rows.append((0, 0, {"category_id": cat.id, "visit_frequency": freq}))
-        self.schedule_ids = commands + new_rows if new_rows else commands
+            freq, days = current.get(
+                cat.id,
+                (MONTHS_TO_FREQUENCY.get(cat.default_ppm_frequency_months, "monthly"), 0),
+            )
+            rows.append((0, 0, {
+                "category_id": cat.id,
+                "visit_frequency": freq or "monthly",
+                "custom_interval_days": days,
+            }))
+        self.schedule_ids = [(5, 0, 0)] + rows
         # Single service selected -> tag any untagged pricing lines with it.
         if len(self.service_ids) == 1:
             for line in self.line_ids.filtered(lambda l: not l.service_id):
