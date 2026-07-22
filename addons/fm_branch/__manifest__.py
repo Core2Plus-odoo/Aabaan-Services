@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Branch",
-    "version": "19.0.1.2.0",
+    "version": "19.0.1.2.1",
     "category": "Facility Management",
     "summary": "Aabaan operating branches (emirate offices) on contracts, work orders and technicians",
     "description": """

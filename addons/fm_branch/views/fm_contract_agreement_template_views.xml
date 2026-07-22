@@ -24,4 +24,18 @@
         </field>
     </record>
 
+    <record id="view_fm_contract_agreement_template_search_branch" model="ir.ui.view">
+        <field name="name">fm.contract.agreement.template.search.branch</field>
+        <field name="model">fm.contract.agreement.template</field>
+        <field name="inherit_id" ref="fm_contract.view_fm_contract_agreement_template_search"/>
+        <field name="arch" type="xml">
+            <field name="service_line" position="after">
+                <field name="branch_id"/>
+            </field>
+            <filter name="group_service" position="after">
+                <filter name="group_branch" string="Branch" context="{'group_by': 'branch_id'}"/>
+            </filter>
+        </field>
+    </record>
+
 </odoo>

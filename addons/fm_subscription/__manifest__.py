@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Subscription",
-    "version": "19.0.1.0.3",
+    "version": "19.0.1.0.4",
     "category": "Facility Management",
     "summary": "Bill FM contracts as recurring subscriptions (sale_subscription)",
     "description": """
