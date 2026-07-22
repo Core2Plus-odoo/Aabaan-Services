@@ -27,11 +27,11 @@
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
-                    <div class="page" style="font-size:13px;">
+                    <div class="page" style="font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:12.5px; line-height:1.55; color:#2b2b2b;">
                         <div class="row mb-4">
                             <div class="col-7">
-                                <h2 class="mb-0" style="color:#1C2B3A;">Quotation</h2>
-                                <div style="font-size:13px; color:#666;" dir="rtl">عرض سعر</div>
+                                <h2 class="mb-0" style="color:#1C2B3A; font-size:24px; font-weight:700;">Quotation</h2>
+                                <div style="font-size:13px; color:#777;" dir="rtl">عرض سعر</div>
                             </div>
                             <div class="col-5">
                                 <table style="width:100%; border-collapse:collapse;">
@@ -66,7 +66,7 @@
                             <span t-esc="o.partner_id.name"/>.
                         </p>
 
-                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Scope of Work</h5>
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Scope of Work</h5>
                         <p t-if="o.agreement_template_id.scope_method_text"
                            t-esc="o.agreement_template_id.scope_method_text" style="white-space:pre-wrap;"/>
                         <p t-else="">
@@ -75,17 +75,18 @@
                             approved by the relevant UAE municipal and environmental authorities.
                         </p>
 
-                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Covered Area</h5>
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Covered Area</h5>
                         <p t-if="o.scope_notes" t-esc="o.scope_notes" style="white-space:pre-wrap;"/>
                         <ul t-elif="o.service_inclusions">
                             <li t-foreach="o.service_inclusions" t-as="incl" t-esc="incl.name"/>
                         </ul>
+                        <p t-else="" class="text-muted">Covered area to be confirmed following site inspection.</p>
 
                         <p t-if="o.treatment_notes" style="white-space:pre-wrap;">
                             <strong>Treatment / Method:</strong> <span t-esc="o.treatment_notes"/>
                         </p>
 
-                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Follow-up and Complaint Visits</h5>
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Follow-up and Complaint Visits</h5>
                         <p>
                             Where an issue is reported during a routine visit, the team will conduct
                             follow-up visits and take the necessary action until resolved.
@@ -97,17 +98,18 @@
                             <span t-esc="o.complaint_response_hours or 24"/> hours of the report.
                         </p>
 
-                        <table class="table table-sm mb-1" style="margin-top:14px; border-collapse:collapse; width:100%;">
+                        <t t-set="priced_lines" t-value="o.order_line.filtered(lambda l: not l.display_type)"/>
+                        <table t-if="priced_lines" class="table table-sm mb-1" style="margin-top:14px; border-collapse:collapse; width:100%; font-size:12px;">
                             <thead>
                                 <tr style="background:#1C2B3A; color:#fff;">
-                                    <th style="padding:6px 8px; border:1px solid #1C2B3A;">Description</th>
-                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; text-align:right;">Qty</th>
-                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; text-align:right;">Rate</th>
-                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; text-align:right;">Total</th>
+                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; font-weight:700;">Description</th>
+                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; font-weight:700; text-align:right;">Qty</th>
+                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; font-weight:700; text-align:right;">Rate</th>
+                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; font-weight:700; text-align:right;">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="o.order_line" t-as="line" t-if="not line.display_type">
+                                <tr t-foreach="priced_lines" t-as="line">
                                     <td style="padding:6px 8px; border:1px solid #ddd;">
                                         <span t-field="line.name"/>
                                         <div class="text-muted" style="font-size:11px;">
@@ -124,7 +126,10 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <table style="width:45%; margin-left:auto; border-collapse:collapse;">
+                        <p t-else="" class="text-muted" style="margin-top:14px; border:1px dashed #ccc; padding:8px 10px; font-size:11px;">
+                            No priced service lines yet — add products via "Edit Products (Sales Order)" on the contract.
+                        </p>
+                        <table t-if="priced_lines" style="width:45%; margin-left:auto; border-collapse:collapse;">
                             <tr>
                                 <td style="padding:4px 8px; border:1px solid #ddd;">Subtotal</td>
                                 <td style="padding:4px 8px; border:1px solid #ddd; text-align:right;"><span t-field="o.amount_untaxed"/></td>
@@ -139,7 +144,7 @@
                             </tr>
                         </table>
 
-                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Payment Terms</h5>
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Payment Terms</h5>
                         <p t-if="o.payment_terms_note" t-esc="o.payment_terms_note" style="white-space:pre-wrap;"/>
                         <p t-else="">
                             <span t-field="o.payment_term_id"/>
