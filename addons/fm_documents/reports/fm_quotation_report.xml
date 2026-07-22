@@ -103,6 +103,13 @@
                             <span t-esc="o.complaint_response_hours or 24"/> hours of the report.
                         </p>
 
+                        <t t-foreach="o.agreement_line_ids" t-as="aline">
+                            <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">
+                                <span t-esc="aline.name"/>
+                            </h5>
+                            <p t-esc="aline.body" style="white-space:pre-wrap;"/>
+                        </t>
+
                         <t t-set="priced_lines" t-value="o.order_line.filtered(lambda l: not l.display_type)"/>
                         <table t-if="priced_lines" class="table table-sm mb-1" style="margin-top:14px; border-collapse:collapse; width:100%; font-size:12px;">
                             <thead>

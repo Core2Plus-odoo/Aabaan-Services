@@ -179,6 +179,14 @@ class FmContract(models.Model):
         "when this contract has no Exclusions listed. Copied from the "
         "selected template; edit freely.",
     )
+    agreement_line_ids = fields.One2many(
+        "fm.contract.agreement.line", "contract_id",
+        string="Additional Terms (editable)",
+        help="Extra articles for this service (e.g. Tank Details, Warranty "
+        "Certificate, Customer Responsibility) — copied from the selected "
+        "template's Additional Terms, then freely editable/addable here "
+        "without touching the shared template.",
+    )
 
     @api.onchange("asset_ids")
     def _onchange_asset_ids_agreement_template(self):
@@ -212,6 +220,10 @@ class FmContract(models.Model):
         self.service_text = t.service_text if t else False
         self.schedule_text = t.schedule_text if t else False
         self.exclusions_text = t.exclusions_default_text if t else False
+        self.agreement_line_ids = [(5, 0, 0)] + [
+            (0, 0, {"sequence": line.sequence, "name": line.name, "body": line.body})
+            for line in t.line_ids
+        ]
 
     # Account team
     account_manager_id = fields.Many2one("res.users", string="Account Manager", required=True, tracking=True)
@@ -259,3 +271,19 @@ class FmContract(models.Model):
 
     def action_terminate(self):
         self.write({"state": "terminated"})
+
+
+class FmContractAgreementLine(models.Model):
+    """One custom article on a contract's printed agreement — the contract's
+    own editable copy of a template line (see
+    FmContract._onchange_agreement_template_id); freely addable/editable
+    without touching the shared template."""
+
+    _name = "fm.contract.agreement.line"
+    _description = "FM Contract Agreement — Additional Term"
+    _order = "sequence, id"
+
+    contract_id = fields.Many2one("fm.contract", required=True, ondelete="cascade", index=True)
+    sequence = fields.Integer(default=10)
+    name = fields.Char(string="Heading", required=True)
+    body = fields.Text(string="Body", required=True)

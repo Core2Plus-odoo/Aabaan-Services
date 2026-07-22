@@ -7,6 +7,8 @@ SERVICE_LINES = [
     ("plumbing", "Plumbing"),
     ("cleaning", "Cleaning"),
     ("pest", "Pest Control"),
+    ("termite", "Anti-Termite Treatment"),
+    ("water_tank", "Water Tank Cleaning"),
     ("security", "Security"),
     ("lift", "Lifts & Escalators"),
     ("fire", "Fire & Life Safety"),

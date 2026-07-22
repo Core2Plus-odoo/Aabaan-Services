@@ -51,3 +51,30 @@ class FmContractAgreementTemplate(models.Model):
         help="Used for Article 6 / the Quotation when the contract itself has "
         "no Exclusions listed.",
     )
+    line_ids = fields.One2many(
+        "fm.contract.agreement.template.line", "template_id",
+        string="Additional Terms",
+        help="Free-form extra articles this service needs that the standard "
+        "skeleton doesn't have — e.g. Tank Details, Warranty Certificate, "
+        "Customer Responsibility, Materials & Methods. Printed as their own "
+        "headed sections; copied onto a contract when this template is "
+        "selected.",
+    )
+
+
+class FmContractAgreementTemplateLine(models.Model):
+    """One custom article on an agreement template — a free heading + body,
+    for the service-specific terms that don't fit the standard skeleton
+    (e.g. water tank cleaning's 'Tank Details', anti-termite's 'Warranty
+    Certificate')."""
+
+    _name = "fm.contract.agreement.template.line"
+    _description = "FM Contract Agreement Template — Additional Term"
+    _order = "sequence, id"
+
+    template_id = fields.Many2one(
+        "fm.contract.agreement.template", required=True, ondelete="cascade", index=True
+    )
+    sequence = fields.Integer(default=10)
+    name = fields.Char(string="Heading", required=True, translate=True)
+    body = fields.Text(string="Body", required=True, translate=True)

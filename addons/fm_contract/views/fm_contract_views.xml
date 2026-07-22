@@ -157,6 +157,15 @@
                                 <field name="schedule_text" nolabel="1" placeholder="Service Agreement Article 4 (Service Schedule)..."/>
                                 <field name="exclusions_text" nolabel="1" placeholder="Default exclusions wording..."/>
                             </group>
+                            <group string="Additional Terms (editable)">
+                                <field name="agreement_line_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="name" placeholder="e.g. Tank Details"/>
+                                        <field name="body" placeholder="Body text..."/>
+                                    </list>
+                                </field>
+                            </group>
                         </page>
                     </notebook>
                 </sheet>

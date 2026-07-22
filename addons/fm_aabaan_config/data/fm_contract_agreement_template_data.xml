@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Water Tank Cleaning — transcribed from real Aaban quotes/contracts
+         (DR.SAMI BUILDING Contract 968/26; Medco Contracting Quote 495/26).
+         Editable in the UI afterwards. -->
+    <record id="agreement_template_water_tank" model="fm.contract.agreement.template">
+        <field name="name">Water Tank Cleaning — Standard</field>
+        <field name="service_line">water_tank</field>
+        <field name="quotation_intro_text">We are thankful for the interest and confidence shown towards our services. With reference to the subject inquiry, please find our competitive proposal for water tank cleaning and disinfection as follows.</field>
+        <field name="scope_method_text">Our process starts with the deep cleaning of the entire water tank: draining out the existing water, cleaning the interior tanks, disinfection, washing and flushing the tanks, refilling the tanks with fresh water, and laboratory testing.</field>
+        <field name="service_text">Aaban will provide Water Tank Cleaning and Disinfection at the site stated above, in accordance with the schedule detailed in this agreement. The tanks will be cleaned and disinfected as per Municipality standards and guidelines using environmentally friendly chemicals approved by the Municipality. Stains, sediment and mould are removed with brushes, and the tanks are thoroughly rinsed with fresh water and checked for pH neutrality before refilling.</field>
+        <field name="schedule_text">The customer agrees to fulfil all technical guidelines requested by Aaban to secure the best results. Tanks should be drained by the client prior to the scheduled arrival of the cleaning team, or the client should provide access with the tank at 5-10% of water level or empty.</field>
+    </record>
+
+    <record id="agreement_template_water_tank_line_safety" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank"/>
+        <field name="sequence">10</field>
+        <field name="name">Safety</field>
+        <field name="body">Aaban carries out all work strictly in accordance with the highest safety standards. All technicians are trained in all aspects of safety, are well supervised to ensure operations run smoothly, and are equipped with the required PPE (goggles, gloves, safety shoes, safety belts) and instruments for this process.</field>
+    </record>
+
+    <record id="agreement_template_water_tank_line_tank_details" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank"/>
+        <field name="sequence">20</field>
+        <field name="name">Tank Details</field>
+        <field name="body">[Fill in for this site: tank type(s), capacity in USG, and total number of tanks — e.g. "RCC underground tank (30,000 USG x 1); GRP panel tank (5,000 USG x 1); total 2 tanks, 35,000 USG."]</field>
+    </record>
+
+    <record id="agreement_template_water_tank_line_customer_resp" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank"/>
+        <field name="sequence">30</field>
+        <field name="name">Customer Responsibility</field>
+        <field name="body">1. Tanks will be drained by the client prior to the scheduled arrival of the cleaning team, or the client will provide the tank at 5-10% of water level or empty.
+2. Client to provide 220V single-phase electricity supply and water supply (60 litre/min) near the working location.
+3. Work permit to be prepared in advance.
+4. Client to ensure proper access is available to all units.
+5. Client to arrange all passes and permits required for the vehicle and operator at the service location, or parking during service time.
+6. Safe storage for Aaban's equipment until completion of work.
+7. Waste disposal facility for removed debris.
+8. An authorised person/staff should be present for verification and the completion report upon completion of each area.
+9. Leftover water below suction level in the tanks will be drained by the operator into the client's drainage system.</field>
+    </record>
+
+    <record id="agreement_template_water_tank_line_report" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank"/>
+        <field name="sequence">40</field>
+        <field name="name">After Service Report</field>
+        <field name="body">Photographs will be taken before and after the work and included in the final report. The service report will be issued within 8-10 working days after completion of work.</field>
+    </record>
+
+    <record id="agreement_template_water_tank_line_terms" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank"/>
+        <field name="sequence">50</field>
+        <field name="name">Additional Contract Terms</field>
+        <field name="body">As per the relevant Municipality's guidelines, the rooftop tank should be cleaned only after cleaning the main supply tank. If the client requests cleaning of the rooftop tank only and the water sample subsequently tests positive, Aaban will not be responsible for re-cleaning or re-sampling.</field>
+    </record>
+
+    <!-- Anti-Termite Treatment — transcribed from a real Aaban quote
+         (AL SIKKA BUILDING CONT Quote 129/25, pre-construction termite
+         control). Editable in the UI afterwards. -->
+    <record id="agreement_template_termite" model="fm.contract.agreement.template">
+        <field name="name">Anti-Termite Treatment — Standard</field>
+        <field name="service_line">termite</field>
+        <field name="scope_method_text">Operations are carried out as per the relevant Municipality's stated/approved procedures and terms and conditions for pre-construction termite control, typically across three stages: Stage 1 — PCC &amp; RCC; Stage 2 — vertical and horizontal treatment inside the tie beams; Stage 3 — vertical and horizontal treatment outside the tie beams.</field>
+        <field name="service_text">Aaban will provide anti-termite treatment at the site stated above, in accordance with the treatment type and materials/methods detailed in this agreement, using procedures approved by the relevant Municipality.</field>
+    </record>
+
+    <record id="agreement_template_termite_line_treatment_type" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite"/>
+        <field name="sequence">10</field>
+        <field name="name">Treatment Type</field>
+        <field name="body">[Specify for this contract: e.g. "Spray (pre-construction)."]</field>
+    </record>
+
+    <record id="agreement_template_termite_line_materials" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite"/>
+        <field name="sequence">20</field>
+        <field name="name">Materials and Methods</field>
+        <field name="body">1. All services will be provided as per the relevant Municipality's approved procedures.
+2. All equipment and control treatment methods will conform to the standards set by the Municipality.
+3. Aaban will inform the Second Party at least one day before treatment, by mutual agreement, and will arrange a representative for collaboration.
+4. On-site electricity and water availability will be arranged/confirmed by the Second Party.
+5. The Second Party will provide polythene sheeting of the required length and quality.
+6. The Second Party will provide Aaban with access to the areas to be serviced.</field>
+    </record>
+
+    <record id="agreement_template_termite_line_warranty" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite"/>
+        <field name="sequence">30</field>
+        <field name="name">Warranty Certificate</field>
+        <field name="body">Aaban will provide a ten (10) year warranty for the treated areas as per the scope of treatment and service area reports. The payment amount is charged at the rate given per square metre. During the warranty period, services for the treated area will be provided without additional cost. The warranty applies to the treated area only.</field>
+    </record>
+
+</odoo>

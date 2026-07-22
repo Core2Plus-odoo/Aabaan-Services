@@ -42,6 +42,23 @@
                         <field name="exclusions_default_text" nolabel="1"
                                placeholder="Used for Article 6 / the Quotation when the contract has no Exclusions listed."/>
                     </group>
+                    <notebook>
+                        <page string="Additional Terms" name="lines">
+                            <p class="text-muted">
+                                Free-form extra articles this service needs that the standard
+                                skeleton doesn't have — e.g. Tank Details, Warranty Certificate,
+                                Customer Responsibility, Materials &amp; Methods. Printed as their
+                                own headed sections on the Service Agreement, in this order.
+                            </p>
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name" placeholder="e.g. Tank Details"/>
+                                    <field name="body" placeholder="Body text..."/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
