@@ -27,6 +27,11 @@
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
                     <div class="page" style="font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:12.5px; line-height:1.55; color:#2b2b2b;">
+                        <style>
+                            /* Enlarge the standard Odoo letterhead logo on this report only. */
+                            .header img, .o_company_logo { max-height: 90px !important; max-width: 260px !important; width: auto !important; height: auto !important; }
+                        </style>
+                        <t t-set="aed" t-value="o.env['res.currency'].with_context(active_test=False).search([('name', '=', 'AED')], limit=1)"/>
                         <div class="row mb-4">
                             <div class="col-7">
                                 <h2 class="mb-0" style="color:#1C2B3A; font-size:24px; font-weight:700;">Service Agreement</h2>
@@ -133,9 +138,9 @@
                                         </div>
                                     </td>
                                     <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="line.product_uom_qty"/></td>
-                                    <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="line.price_unit"/></td>
-                                    <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="line.price_tax"/></td>
-                                    <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="line.price_total"/></td>
+                                    <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="line.price_unit" t-options='{"widget": "monetary", "display_currency": aed}'/></td>
+                                    <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="line.price_tax" t-options='{"widget": "monetary", "display_currency": aed}'/></td>
+                                    <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="line.price_total" t-options='{"widget": "monetary", "display_currency": aed}'/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -145,7 +150,7 @@
                         <table t-if="priced_lines" style="width:45%; margin-left:auto; border-collapse:collapse;">
                             <tr style="font-weight:bold; background:#fdf1e6;">
                                 <td style="padding:6px 8px; border:1px solid #EE7A22;">Total Amount</td>
-                                <td style="padding:6px 8px; border:1px solid #EE7A22; text-align:right;"><span t-field="o.amount_total"/></td>
+                                <td style="padding:6px 8px; border:1px solid #EE7A22; text-align:right;"><span t-field="o.amount_total" t-options='{"widget": "monetary", "display_currency": aed}'/></td>
                             </tr>
                         </table>
 
@@ -198,6 +203,80 @@
                         <p t-if="o.payment_terms_note" t-esc="o.payment_terms_note" style="white-space:pre-wrap;"/>
                         <p t-else="">
                             <span t-field="o.payment_term_id"/>
+                        </p>
+
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 10 — Force Majeure</h5>
+                        <p>
+                            Neither party shall be liable for any failure or delay in performing its
+                            obligations under this agreement where such failure or delay results from
+                            causes beyond its reasonable control, including acts of God, natural disaster,
+                            war, civil unrest, government action, epidemic, or failure of public utilities.
+                            The affected party shall notify the other without undue delay and resume
+                            performance as soon as reasonably practicable.
+                        </p>
+
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 11 — Limitation of Liability</h5>
+                        <p>
+                            The First Party's total liability arising out of or in connection with this
+                            agreement shall not exceed the total fees paid by the Second Party in the
+                            twelve (12) months preceding the claim. Neither party shall be liable to the
+                            other for indirect, incidental, or consequential loss or damage.
+                        </p>
+
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 12 — Compliance with Laws and Health &amp; Safety</h5>
+                        <p>
+                            Both parties shall comply with all applicable UAE federal and local laws,
+                            regulations, and municipal requirements relevant to the services provided,
+                            including applicable health, safety, and environmental regulations. The First
+                            Party's personnel will follow standard safety practices while on site.
+                        </p>
+
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 13 — Confidentiality</h5>
+                        <p>
+                            Each party shall keep confidential any non-public information obtained from
+                            the other party in connection with this agreement and shall not disclose it to
+                            third parties without the other party's prior written consent, except where
+                            disclosure is required by law.
+                        </p>
+
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 14 — Insurance</h5>
+                        <p>
+                            The First Party shall maintain adequate insurance coverage, including public
+                            liability insurance, appropriate to the services provided under this
+                            agreement, and shall provide evidence of such coverage upon the Second Party's
+                            reasonable request.
+                        </p>
+
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 15 — Assignment</h5>
+                        <p>
+                            Neither party may assign or transfer its rights or obligations under this
+                            agreement without the other party's prior written consent, except to an
+                            affiliate or successor in connection with a merger, acquisition, or
+                            reorganization.
+                        </p>
+
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 16 — Notices</h5>
+                        <p>
+                            All notices under this agreement shall be in writing and delivered by hand,
+                            courier, registered mail, or email to the addresses or contacts stated in this
+                            agreement, and shall be deemed received upon confirmed delivery.
+                        </p>
+
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 17 — Governing Law and Dispute Resolution</h5>
+                        <p>
+                            This agreement is governed by and construed in accordance with the laws of the
+                            United Arab Emirates. Any dispute arising out of or in connection with this
+                            agreement shall first be referred to good-faith negotiation between the
+                            parties; if not resolved within thirty (30) days, it shall be referred to the
+                            competent courts of the Emirate in which the First Party is registered.
+                        </p>
+
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 18 — Entire Agreement and Amendments</h5>
+                        <p>
+                            This agreement, together with any annexes and schedules referenced herein,
+                            constitutes the entire agreement between the parties and supersedes all prior
+                            discussions, negotiations, and agreements relating to its subject matter. Any
+                            amendment must be made in writing and signed by both parties.
                         </p>
 
                         <t t-if="o.sla_rule_ids">
