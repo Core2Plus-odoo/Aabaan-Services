@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models
 
+from odoo.addons.fm_asset.models.fm_asset_category import SERVICE_LINES
+
 # Generic starting wording — pre-filled into every new contract's editable
 # Printed Agreement fields (see the field defaults below), so there is
 # always visible, editable text in the form from the moment a contract is
@@ -75,6 +77,14 @@ class FmContract(models.Model):
         required=True,
         default="amc_comprehensive",
         tracking=True,
+    )
+    service_line = fields.Selection(
+        SERVICE_LINES,
+        string="Service",
+        tracking=True,
+        help="What service this contract covers — drives which Agreement "
+        "Wording Template is auto-selected (and, with fm_branch installed, "
+        "combined with the contract's Branch/Emirate).",
     )
 
     # Lifecycle
@@ -232,18 +242,35 @@ class FmContract(models.Model):
         "without touching the shared template.",
     )
 
+    @api.onchange("service_line")
+    def _onchange_service_line_agreement_template(self):
+        """Primary trigger: as soon as a Service is picked (right after the
+        customer, before assets necessarily exist), find and apply the
+        matching Agreement Wording Template — service-wise, and state-wise
+        too if fm_branch is installed. Always re-applies on a service
+        change, since picking a different service is a deliberate "start
+        from this service's wording" action."""
+        if not self.service_line:
+            return
+        template = self._find_agreement_template(self.service_line)
+        if template and template != self.agreement_template_id:
+            self.agreement_template_id = template.id
+            self._apply_agreement_template_wording()
+
     @api.onchange("asset_ids")
     def _onchange_asset_ids_agreement_template(self):
-        """Suggest a matching wording template from the covered assets'
-        service line, without overriding an explicit user choice."""
-        if self.agreement_template_id or not self.asset_ids:
+        """Secondary trigger: infer the service from covered assets when
+        Service wasn't set directly, without overriding an explicit choice."""
+        if self.service_line or self.agreement_template_id or not self.asset_ids:
             return
         lines = self.asset_ids.mapped("service_line")
         lines = [l for l in lines if l]
         if len(set(lines)) == 1:
             template = self._find_agreement_template(lines[0])
             if template:
+                self.service_line = lines[0]
                 self.agreement_template_id = template.id
+                self._apply_agreement_template_wording()
 
     def _find_agreement_template(self, service_line):
         """Hook for fm_branch to also match on branch/state; base
@@ -254,16 +281,32 @@ class FmContract(models.Model):
 
     @api.onchange("agreement_template_id")
     def _onchange_agreement_template_id(self):
+        """Manual template pick/change from the Printed Agreement page —
+        applies the same copy as the automatic triggers above."""
+        self._apply_agreement_template_wording()
+
+    def _apply_agreement_template_wording(self):
         """Copy the selected template's wording into this contract's own
         editable fields. Deliberately replaces any prior manual edits —
         selecting a (different) template is a deliberate "start from this"
-        action, not a passive default."""
+        action, not a passive default. Clearing the template resets these
+        fields to the same generic defaults a brand-new contract gets
+        (rather than leaving stale template text, or blanking the fields
+        out and reopening the "nothing to edit" gap)."""
         t = self.agreement_template_id
-        self.quotation_intro_text = t.quotation_intro_text if t else False
-        self.scope_method_text = t.scope_method_text if t else False
-        self.service_text = t.service_text if t else False
-        self.schedule_text = t.schedule_text if t else False
-        self.exclusions_text = t.exclusions_default_text if t else False
+        if not t:
+            self.quotation_intro_text = DEFAULT_QUOTATION_INTRO_TEXT
+            self.scope_method_text = DEFAULT_SCOPE_METHOD_TEXT
+            self.service_text = _default_service_text(self)
+            self.schedule_text = _default_schedule_text(self)
+            self.exclusions_text = DEFAULT_EXCLUSIONS_TEXT
+            self.agreement_line_ids = [(5, 0, 0)]
+            return
+        self.quotation_intro_text = t.quotation_intro_text or self.quotation_intro_text
+        self.scope_method_text = t.scope_method_text or self.scope_method_text
+        self.service_text = t.service_text or self.service_text
+        self.schedule_text = t.schedule_text or self.schedule_text
+        self.exclusions_text = t.exclusions_default_text or self.exclusions_text
         self.agreement_line_ids = [(5, 0, 0)] + [
             (0, 0, {"sequence": line.sequence, "name": line.name, "body": line.body})
             for line in t.line_ids

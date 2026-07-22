@@ -8,6 +8,7 @@
             <search string="Contracts">
                 <field name="contract_number"/>
                 <field name="partner_id"/>
+                <field name="service_line"/>
                 <field name="account_manager_id"/>
                 <separator/>
                 <filter name="active_contracts" string="Active" domain="[('state', '=', 'active')]"/>
@@ -16,6 +17,7 @@
                 <separator/>
                 <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
                 <filter name="group_type" string="Type" context="{'group_by': 'contract_type'}"/>
+                <filter name="group_service" string="Service" context="{'group_by': 'service_line'}"/>
                 <filter name="group_band" string="Health" context="{'group_by': 'health_band'}"/>
                 <filter name="group_am" string="Account Manager" context="{'group_by': 'account_manager_id'}"/>
             </search>
@@ -29,6 +31,7 @@
             <list string="Contracts">
                 <field name="contract_number"/>
                 <field name="partner_id"/>
+                <field name="service_line"/>
                 <field name="contract_type"/>
                 <field name="start_date"/>
                 <field name="end_date"/>
@@ -67,6 +70,8 @@
                     <group>
                         <group string="Customer &amp; Term">
                             <field name="partner_id"/>
+                            <field name="service_line" required="not id"
+                                   placeholder="What service is this for?"/>
                             <field name="contract_type"/>
                             <field name="start_date"/>
                             <field name="end_date"/>
