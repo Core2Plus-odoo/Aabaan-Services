@@ -1,6 +1,45 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models
 
+# Generic starting wording — pre-filled into every new contract's editable
+# Printed Agreement fields (see the field defaults below), so there is
+# always visible, editable text in the form from the moment a contract is
+# created, not only after a template is picked. These are the same
+# fallbacks fm_documents' reports use when a field is left blank, kept in
+# sync manually since one lives in Python (as a default) and the other in
+# QWeb (as a fallback) — update both together if you change the wording.
+DEFAULT_QUOTATION_INTRO_TEXT = (
+    "With reference to the above subject and our site inspection, we are "
+    "pleased to provide our best quotation for the services described below."
+)
+DEFAULT_SCOPE_METHOD_TEXT = (
+    "Trained operators will inspect the premises prior to any service "
+    "activity to assess requirements, then carry out the work using methods "
+    "and materials approved by the relevant UAE municipal and environmental "
+    "authorities."
+)
+DEFAULT_EXCLUSIONS_TEXT = "This contract excludes anything not explicitly listed under Article 3."
+
+
+def _default_service_text(self):
+    return (
+        "%s agrees to supply the services described below to the Second "
+        "Party at the site stated above, in accordance with the schedule "
+        "detailed in this agreement. The First Party will ensure that "
+        "everyone providing the services has the necessary training and "
+        "authorization to do so." % (self.env.company.name or "The First Party")
+    )
+
+
+def _default_schedule_text(self):
+    return (
+        "The customer agrees to fulfil all technical guidelines requested by "
+        "%s to secure the best results. The Second Party will make its "
+        "representative available with the technicians during treatment. Any "
+        "area not made ready for a scheduled visit will be skipped and "
+        "treated on the next scheduled visit." % (self.env.company.name or "the First Party")
+    )
+
 
 class FmContract(models.Model):
     """AMC / break-fix / project contract (brief §5.5).
@@ -154,30 +193,35 @@ class FmContract(models.Model):
     # wording never affects any other contract using the same template.
     quotation_intro_text = fields.Text(
         string="Quotation Intro (editable)",
-        help="Quotation greeting/intro paragraph. Copied from the selected "
-        "template; edit freely. Falls back to the template, then generic "
-        "wording, if left blank.",
+        default=DEFAULT_QUOTATION_INTRO_TEXT,
+        help="Quotation greeting/intro paragraph. Pre-filled with generic "
+        "wording; replaced if you pick a template, and always freely editable.",
     )
     scope_method_text = fields.Text(
         string="Scope of Work Methodology (editable)",
-        help="Quotation's 'Scope of Work' methodology paragraph. Copied from "
-        "the selected template; edit freely.",
+        default=DEFAULT_SCOPE_METHOD_TEXT,
+        help="Quotation's 'Scope of Work' methodology paragraph. Pre-filled "
+        "with generic wording; replaced if you pick a template, and always "
+        "freely editable.",
     )
     service_text = fields.Text(
         string="Article 2 — Service (editable)",
-        help="Service Agreement Article 2 wording. Copied from the selected "
-        "template; edit freely.",
+        default=_default_service_text,
+        help="Service Agreement Article 2 wording. Pre-filled with generic "
+        "wording; replaced if you pick a template, and always freely editable.",
     )
     schedule_text = fields.Text(
         string="Article 4 — Service Schedule (editable)",
-        help="Service Agreement Article 4 wording. Copied from the selected "
-        "template; edit freely.",
+        default=_default_schedule_text,
+        help="Service Agreement Article 4 wording. Pre-filled with generic "
+        "wording; replaced if you pick a template, and always freely editable.",
     )
     exclusions_text = fields.Text(
         string="Default Exclusions (editable)",
+        default=DEFAULT_EXCLUSIONS_TEXT,
         help="Fallback Article 6 / Quotation exclusions wording, used only "
-        "when this contract has no Exclusions listed. Copied from the "
-        "selected template; edit freely.",
+        "when this contract has no Exclusions listed. Pre-filled with generic "
+        "wording; replaced if you pick a template, and always freely editable.",
     )
     agreement_line_ids = fields.One2many(
         "fm.contract.agreement.line", "contract_id",
