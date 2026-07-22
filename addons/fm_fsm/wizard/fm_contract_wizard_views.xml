@@ -99,7 +99,11 @@
                         <group string="Frequency per Service" invisible="not auto_schedule">
                             <field name="schedule_ids" nolabel="1">
                                 <list editable="bottom" create="0" delete="0">
-                                    <field name="category_id" readonly="1"/>
+                                    <!-- force_save is essential: readonly fields are
+                                         EXCLUDED from the client's save payload without
+                                         it, so the onchange-populated Service would be
+                                         stripped on save -> "Missing required value". -->
+                                    <field name="category_id" readonly="1" force_save="1"/>
                                     <field name="visit_frequency"/>
                                     <field name="custom_interval_days"
                                            column_invisible="0"/>
