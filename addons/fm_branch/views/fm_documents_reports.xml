@@ -8,10 +8,17 @@
         </xpath>
     </template>
 
-    <!-- Add the branch to the Contract summary -->
+    <!-- Add the branch to the Service Agreement, under the First Party block. -->
     <template id="report_fm_contract_branch" inherit_id="fm_documents.report_fm_contract_document">
-        <xpath expr="//div[span[@t-field='o.billing_frequency']]" position="after">
+        <xpath expr="//div[@t-field='o.company_id.partner_id']" position="after">
             <div t-if="o.branch_id"><strong>Branch / الفرع:</strong> <span t-field="o.branch_id"/></div>
+        </xpath>
+    </template>
+
+    <!-- Add the branch to the Quotation, under the pricing footer. -->
+    <template id="report_fm_quotation_branch" inherit_id="fm_documents.report_fm_quotation_document">
+        <xpath expr="//h5[text()='Payment Terms']" position="before">
+            <div t-if="o.branch_id" class="mb-2"><strong>Branch / الفرع:</strong> <span t-field="o.branch_id"/></div>
         </xpath>
     </template>
 
