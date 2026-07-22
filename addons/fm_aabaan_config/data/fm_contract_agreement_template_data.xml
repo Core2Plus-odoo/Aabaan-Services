@@ -92,4 +92,71 @@
         <field name="body">Aaban will provide a ten (10) year warranty for the treated areas as per the scope of treatment and service area reports. The payment amount is charged at the rate given per square metre. During the warranty period, services for the treated area will be provided without additional cost. The warranty applies to the treated area only.</field>
     </record>
 
+    <!-- Deep Cleaning — transcribed from real Aaban quotes (Villa 52 Al
+         Barsha Quote 6/25; Montreal Management Consultants Quote 941/26 &
+         Contract 838/25). Generic/branch-blank — issued the same way
+         regardless of site or branch in every document seen. -->
+    <record id="agreement_template_cleaning_deep" model="fm.contract.agreement.template">
+        <field name="name">Deep Cleaning — Standard</field>
+        <field name="service_line">cleaning_deep</field>
+        <field name="quotation_intro_text">We are thankful for the interest and confidence shown towards our service for deep cleaning. With reference to the subject inquiry, please find our competitive proposal for the same as follows.</field>
+        <field name="scope_method_text">Deep cleaning covers, as applicable to the site: toilets (cabinets, drawers, sink and faucet descaling, shower head, walls, seat, exhaust fan, flooring, mirrors and glass doors); kitchen (sink and faucet descaling, walls, hood and countertop de-greasing, flooring); general areas (cabinets, light fixtures, AC grills, walls, corners, windows and frames, glass and wooden doors); flooring (ceramic, wooden and marble, machine-scrubbed, paint-mark removal where possible); ceiling (AC ventilation grills, corners, lights and spot lights); and external areas (balcony/parking floor, handrails and corners, where accessible).</field>
+        <field name="service_text">Aaban will provide Deep Cleaning services at the site stated above, in accordance with the scope and schedule detailed in this agreement, using scrubber machines and appropriate cleaning agents for each surface type.</field>
+    </record>
+
+    <!-- Pest Control — Dubai. Dubai-issued Pest Control contracts follow a
+         materially different, Dubai Municipality-specific legal framework
+         (Local No. 11 of 2003) from the generic Ajman-issued wording —
+         different license number, different visit cadence rules, different
+         reporting obligations. Transcribed from real Aaban contracts issued
+         by the Dubai branch (ZOWMI GROCERY STORE Contract 791/26; DECOLINE
+         CONSTRUCTION Contract 955/26) and a Dubai-site quotation (CLEANCO
+         CLEANING SERVICES Quote 527/24). Scoped to the Dubai branch — see
+         fm_branch.py for how this combines with service_line matching. -->
+    <record id="agreement_template_pest_dubai" model="fm.contract.agreement.template">
+        <field name="name">Pest Control — Dubai</field>
+        <field name="service_line">pest</field>
+        <field name="branch_id" ref="branch_dubai"/>
+        <field name="quotation_intro_text">With reference to the above-mentioned subject and subsequent inspection, we are pleased to provide our best quote for pest control services. The pesticides used are strictly approved by the Ministry of Climate Change and Environment.</field>
+        <field name="service_text">Public Health Pest Control Agreement — Aaban Classic Building Cleaning &amp; Pest Control Services (Dubai branch) is authorised by the Public Health Pest Control Section, Dubai Municipality, to carry out pest control operations at the Second Party's site under this agreement, as per the specifications and requirements below.</field>
+        <field name="schedule_text">Instructions and Terms and Conditions are as per Municipality Local Order No. 11 of 2003. The Second Party is responsible for keeping its establishment, premises or construction site free from public health pests and for not providing a favourable environment for their breeding, for the safety of the Dubai Emirate community.</field>
+    </record>
+
+    <record id="agreement_template_pest_dubai_line_compliance" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_dubai"/>
+        <field name="sequence">10</field>
+        <field name="name">Dubai Municipality Compliance</field>
+        <field name="body">All pest control operations are carried out as per the Dubai Sustainable Public Health Pest Control Model approved by the Public Health Pest Control Section, Dubai Municipality, which is considered an integral part of this agreement. A specific report is prepared after each operation, and a monthly report, both per Dubai Municipality's standard report formats, specifying: areas visited; date of visit; pests found and infestation level; treatments carried out; follow-up visit dates (if any); pesticides used; and instructions/recommendations.</field>
+    </record>
+
+    <record id="agreement_template_pest_dubai_line_visits" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_dubai"/>
+        <field name="sequence">20</field>
+        <field name="name">Visit Frequency and Reporting</field>
+        <field name="body">Routine visits: two visits per month for food and beverage (F&amp;B) establishments; one visit per month for non-food establishments, premises and buildings.
+Follow-up visits: where infestation is reported during a routine visit, a follow-up visit is conducted every three days until the infestation disappears, with a report prepared per the standard format.
+Complaint/call-out visits: on a complaint from the Second Party, Aaban will visit the site the same day and carry out pest control operations as per the Public Health Pest Control Section Dubai Municipality standards.</field>
+    </record>
+
+    <record id="agreement_template_pest_dubai_line_pesticides" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_dubai"/>
+        <field name="sequence">30</field>
+        <field name="name">Pesticides and Records</field>
+        <field name="body">Pesticides used must be registered with the Ministry of Climate Change and Environment and used per the manufacturer's recommendations. Aaban maintains a complete pest control file, accessible to the Second Party within 15 minutes of request, containing: in-charge contact details; a copy of this agreement; the list of pesticides used with registration certificates and MSDS; all visit and monthly reports; trap location maps; and a copy of the latest ministerial decree on banned/restricted pesticides. Fumigation or termite control operations require prior approval from the Public Health Pest Control Section, Dubai Municipality.</field>
+    </record>
+
+    <record id="agreement_template_pest_dubai_line_second_party" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_dubai"/>
+        <field name="sequence">40</field>
+        <field name="name">Second Party Commitments</field>
+        <field name="body">The Second Party agrees to: pay Aaban the agreed amount per the agreed payment terms; prepare the necessary working permits and approvals; and take corrective action on instructions and recommendations raised by Aaban. Legal action may be taken if the Second Party's premises remain infested due to its own non-compliance (e.g. uncleared litter, trash or kitchen debris).</field>
+    </record>
+
+    <record id="agreement_template_pest_dubai_line_termination" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_dubai"/>
+        <field name="sequence">50</field>
+        <field name="name">Termination (Dubai Municipality Notification)</field>
+        <field name="body">This contract may be terminated where: both parties agree to terminate at any time; there is no approved pest control supervisor within the company; the company is temporarily or permanently closed due to violations; or the pest control activity licence is cancelled. Either party must notify the Public Health Pest Control Section, Dubai Municipality in writing of any termination.</field>
+    </record>
+
 </odoo>
