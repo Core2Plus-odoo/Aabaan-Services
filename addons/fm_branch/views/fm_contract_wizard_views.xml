@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_fm_contract_wizard_form_branch" model="ir.ui.view">
+        <field name="name">fm.contract.wizard.form.branch</field>
+        <field name="model">fm.contract.wizard</field>
+        <field name="inherit_id" ref="fm_fsm.view_fm_contract_wizard_form"/>
+        <field name="arch" type="xml">
+            <!-- Step 1 (Customer): branch selector under the site name. -->
+            <xpath expr="(//field[@name='site_name'])[1]" position="after">
+                <field name="branch_id" options="{'no_create': True, 'no_open': True}"/>
+            </xpath>
+            <!-- Step 5 (Review): show the chosen branch in the summary. -->
+            <xpath expr="(//field[@name='site_name'])[2]" position="after">
+                <field name="branch_id" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

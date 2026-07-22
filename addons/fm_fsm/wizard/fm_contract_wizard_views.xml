@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_fm_contract_wizard_form" model="ir.ui.view">
+        <field name="name">fm.contract.wizard.form</field>
+        <field name="model">fm.contract.wizard</field>
+        <field name="arch" type="xml">
+            <form string="New Contract">
+                <header>
+                    <field name="step" widget="statusbar"/>
+                </header>
+                <sheet>
+
+                    <!-- ============ Step 1: Customer ============ -->
+                    <div invisible="step != 'customer'">
+                        <h2>Who is this contract for?</h2>
+                        <p class="text-muted">
+                            Pick an existing customer or type a new name and choose
+                            <b>Create</b>. Then name the site/building the contract covers.
+                        </p>
+                        <group>
+                            <field name="partner_id" options="{'no_open': True}"
+                                   placeholder="Type to search or create a customer..."/>
+                            <field name="site_name"
+                                   placeholder="e.g. ROYAL APARTMENT G+11"/>
+                        </group>
+                    </div>
+
+                    <!-- ============ Step 2: Service &amp; Agreement ============ -->
+                    <div invisible="step != 'service'">
+                        <h2>What service — and which agreement?</h2>
+                        <p class="text-muted">
+                            Choosing the service picks the matching agreement template
+                            (service-wise, and branch-wise where one exists). All wording
+                            stays fully editable on the contract afterwards.
+                        </p>
+                        <group>
+                            <field name="service_line" widget="radio"/>
+                            <field name="contract_type"/>
+                            <field name="template_id" options="{'no_create': True, 'no_open': True}"/>
+                        </group>
+                        <group string="Wording Preview">
+                            <field name="template_preview" nolabel="1" readonly="1"/>
+                        </group>
+                    </div>
+
+                    <!-- ============ Step 3: Products &amp; Pricing ============ -->
+                    <div invisible="step != 'products'">
+                        <h2>What are we charging?</h2>
+                        <p class="text-muted">
+                            Add the service product(s) with quantity and rate. You can
+                            also skip this and price the contract later.
+                        </p>
+                        <field name="line_ids">
+                            <list editable="bottom">
+                                <field name="product_id"/>
+                                <field name="name"/>
+                                <field name="quantity"/>
+                                <field name="price_unit"/>
+                                <field name="price_subtotal"/>
+                                <field name="currency_id" column_invisible="1"/>
+                            </list>
+                        </field>
+                        <group class="oe_subtotal_footer">
+                            <field name="amount_untaxed" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </div>
+
+                    <!-- ============ Step 4: Visit Schedule ============ -->
+                    <div invisible="step != 'schedule'">
+                        <h2>When do we visit?</h2>
+                        <p class="text-muted">
+                            The schedule below auto-generates the planned visits —
+                            they appear on the Visit Calendar and the Maintenance Calendar.
+                        </p>
+                        <group>
+                            <group string="Term">
+                                <field name="start_date"/>
+                                <field name="term_months"/>
+                                <field name="end_date"/>
+                            </group>
+                            <group string="Visits">
+                                <field name="auto_schedule"/>
+                                <field name="visit_frequency" invisible="not auto_schedule"/>
+                                <field name="custom_interval_days"
+                                       invisible="not auto_schedule or visit_frequency != 'custom'"
+                                       required="auto_schedule and visit_frequency == 'custom'"/>
+                                <field name="visit_start_time" widget="float_time" invisible="not auto_schedule"/>
+                                <field name="visit_duration_hours" widget="float_time" invisible="not auto_schedule"/>
+                                <field name="skip_weekends" invisible="not auto_schedule"/>
+                                <field name="preferred_technician_id" invisible="not auto_schedule"/>
+                                <field name="auto_schedule_state" invisible="not auto_schedule"/>
+                                <field name="planned_visit_count" invisible="not auto_schedule"/>
+                            </group>
+                        </group>
+                    </div>
+
+                    <!-- ============ Step 5: Review ============ -->
+                    <div invisible="step != 'review'">
+                        <h2>Ready to create</h2>
+                        <p class="text-muted">
+                            Check the summary. <b>Create &amp; Schedule Visits</b> activates
+                            the contract, generates the visit plan and opens it on the
+                            calendar; <b>Create as Draft</b> saves it for later.
+                        </p>
+                        <group>
+                            <group string="Customer &amp; Service">
+                                <field name="partner_id" readonly="1"/>
+                                <field name="site_name" readonly="1"/>
+                                <field name="service_line" readonly="1"/>
+                                <field name="contract_type" readonly="1"/>
+                                <field name="template_id" readonly="1"/>
+                            </group>
+                            <group string="Term, Pricing &amp; Visits">
+                                <field name="start_date" readonly="1"/>
+                                <field name="end_date" readonly="1"/>
+                                <field name="amount_untaxed" readonly="1"/>
+                                <field name="visit_frequency" readonly="1" invisible="not auto_schedule"/>
+                                <field name="planned_visit_count" readonly="1" invisible="not auto_schedule"/>
+                            </group>
+                        </group>
+                    </div>
+
+                </sheet>
+                <footer>
+                    <button name="action_back" type="object" string="Back"
+                            invisible="step == 'customer'"/>
+                    <button name="action_next" type="object" string="Next"
+                            class="btn-primary" invisible="step == 'review'"/>
+                    <button name="action_create_and_schedule" type="object"
+                            string="Create &amp; Schedule Visits" class="btn-primary"
+                            invisible="step != 'review'"/>
+                    <button name="action_create_draft" type="object"
+                            string="Create as Draft"
+                            invisible="step != 'review'"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_fm_contract_wizard" model="ir.actions.act_window">
+        <field name="name">New Contract (Guided)</field>
+        <field name="res_model">fm.contract.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- First entry under Contracts. NOTE: parent= repeated deliberately —
+         see the menuitem parent-reset gotcha in CLAUDE.md §4. -->
+    <menuitem id="menu_fm_contract_wizard"
+              name="New Contract (Guided)"
+              parent="fm_contract.menu_fm_contracts_root"
+              action="action_fm_contract_wizard"
+              sequence="1"/>
+
+</odoo>
