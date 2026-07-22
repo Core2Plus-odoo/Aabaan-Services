@@ -11,3 +11,6 @@ access_fm_contract_penalty_admin,fm.contract.penalty admin,model_fm_contract_pen
 access_fm_contract_user,fm.contract user,model_fm_contract,fm_branding.group_fm_user,1,0,0,0
 access_fm_contract_am,fm.contract account manager,model_fm_contract,fm_branding.group_fm_account_manager,1,1,1,0
 access_fm_contract_admin,fm.contract admin,model_fm_contract,fm_branding.group_fm_admin,1,1,1,1
+access_fm_contract_agreement_template_user,fm.contract.agreement.template user,model_fm_contract_agreement_template,fm_branding.group_fm_user,1,0,0,0
+access_fm_contract_agreement_template_manager,fm.contract.agreement.template manager,model_fm_contract_agreement_template,fm_branding.group_fm_manager,1,1,1,0
+access_fm_contract_agreement_template_admin,fm.contract.agreement.template admin,model_fm_contract_agreement_template,fm_branding.group_fm_admin,1,1,1,1

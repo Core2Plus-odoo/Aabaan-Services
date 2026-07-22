@@ -140,6 +140,28 @@ class FmContract(models.Model):
         help="Hours within which the team commits to visiting a site after a "
         "complaint/infestation report, stated on the printed quotation.",
     )
+    agreement_template_id = fields.Many2one(
+        "fm.contract.agreement.template",
+        string="Agreement Wording Template",
+        help="Per-service wording (Service/Schedule/Scope-of-Work/Exclusions "
+        "clauses) used by the printed Quotation and Service Agreement. Leave "
+        "blank to use generic wording.",
+    )
+
+    @api.onchange("asset_ids")
+    def _onchange_asset_ids_agreement_template(self):
+        """Suggest a matching wording template from the covered assets'
+        service line, without overriding an explicit user choice."""
+        if self.agreement_template_id or not self.asset_ids:
+            return
+        lines = self.asset_ids.mapped("service_line")
+        lines = [l for l in lines if l]
+        if len(set(lines)) == 1:
+            template = self.env["fm.contract.agreement.template"].search(
+                [("service_line", "=", lines[0])], limit=1
+            )
+            if template:
+                self.agreement_template_id = template.id
 
     # Account team
     account_manager_id = fields.Many2one("res.users", string="Account Manager", required=True, tracking=True)

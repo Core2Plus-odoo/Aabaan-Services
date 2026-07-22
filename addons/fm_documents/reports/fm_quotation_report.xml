@@ -58,14 +58,18 @@
                         <p>
                             Dear <span t-esc="(o.customer_contact_ids and o.customer_contact_ids[0].name) or o.partner_id.name"/>,
                         </p>
-                        <p>
+                        <p t-if="o.agreement_template_id.quotation_intro_text"
+                           t-esc="o.agreement_template_id.quotation_intro_text" style="white-space:pre-wrap;"/>
+                        <p t-else="">
                             With reference to the above subject and our site inspection, we are pleased to
                             provide our best quotation for the services described below at
                             <span t-esc="o.partner_id.name"/>.
                         </p>
 
                         <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Scope of Work</h5>
-                        <p>
+                        <p t-if="o.agreement_template_id.scope_method_text"
+                           t-esc="o.agreement_template_id.scope_method_text" style="white-space:pre-wrap;"/>
+                        <p t-else="">
                             Trained operators will inspect the premises prior to any service activity to
                             assess requirements, then carry out the work using methods and materials
                             approved by the relevant UAE municipal and environmental authorities.

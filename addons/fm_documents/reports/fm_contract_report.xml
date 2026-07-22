@@ -89,7 +89,8 @@
                         </p>
 
                         <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Article 2 — Service</h5>
-                        <p>
+                        <p t-if="o.agreement_template_id.service_text" t-esc="o.agreement_template_id.service_text" style="white-space:pre-wrap;"/>
+                        <p t-else="">
                             <span t-field="o.company_id.name"/> agrees to supply the services described
                             below to the Second Party at the site stated above, in accordance with the
                             schedule detailed in this agreement. The First Party will ensure that
@@ -144,7 +145,8 @@
                         </table>
 
                         <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Article 4 — Service Schedule</h5>
-                        <p>
+                        <p t-if="o.agreement_template_id.schedule_text" t-esc="o.agreement_template_id.schedule_text" style="white-space:pre-wrap;"/>
+                        <p t-else="">
                             The customer agrees to fulfil all technical guidelines requested by
                             <span t-field="o.company_id.name"/> to secure the best results. The Second
                             Party will make its representative available with the technicians during
@@ -168,6 +170,8 @@
                         <ul t-if="o.service_exclusions">
                             <li t-foreach="o.service_exclusions" t-as="excl" t-esc="excl.name"/>
                         </ul>
+                        <p t-elif="o.agreement_template_id.exclusions_default_text"
+                           t-esc="o.agreement_template_id.exclusions_default_text" style="white-space:pre-wrap;"/>
                         <p t-else="">This contract excludes anything not explicitly listed under Article 3.</p>
 
                         <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Article 7 — Commencement of Services</h5>

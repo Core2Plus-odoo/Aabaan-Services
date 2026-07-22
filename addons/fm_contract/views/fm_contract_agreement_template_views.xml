@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_fm_contract_agreement_template_list" model="ir.ui.view">
+        <field name="name">fm.contract.agreement.template.list</field>
+        <field name="model">fm.contract.agreement.template</field>
+        <field name="arch" type="xml">
+            <list string="Agreement Templates">
+                <field name="name"/>
+                <field name="service_line"/>
+                <field name="active" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_fm_contract_agreement_template_form" model="ir.ui.view">
+        <field name="name">fm.contract.agreement.template.form</field>
+        <field name="model">fm.contract.agreement.template</field>
+        <field name="arch" type="xml">
+            <form string="Agreement Template">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. Pest Control — Standard"/></h1>
+                    </div>
+                    <group>
+                        <field name="service_line"/>
+                        <field name="active"/>
+                    </group>
+                    <group string="Quotation wording">
+                        <field name="quotation_intro_text" nolabel="1"
+                               placeholder="Greeting/intro paragraph shown after 'Dear ...' on the Quotation."/>
+                        <field name="scope_method_text" nolabel="1"
+                               placeholder="Scope of Work methodology paragraph (general approach, not the site-specific area list)."/>
+                    </group>
+                    <group string="Service Agreement wording">
+                        <field name="service_text" nolabel="1"
+                               placeholder="Article 2 (Service) paragraph."/>
+                        <field name="schedule_text" nolabel="1"
+                               placeholder="Article 4 (Service Schedule) paragraph."/>
+                    </group>
+                    <group string="Default Exclusions">
+                        <field name="exclusions_default_text" nolabel="1"
+                               placeholder="Used for Article 6 / the Quotation when the contract has no Exclusions listed."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_fm_contract_agreement_template" model="ir.actions.act_window">
+        <field name="name">Agreement Templates</field>
+        <field name="res_model">fm.contract.agreement.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a per-service agreement template</p>
+            <p>
+                Editable wording used by the printed Quotation and Service Agreement —
+                one per service line (Pest Control, Cleaning, HVAC, ...). A contract
+                picks one via "Agreement Wording Template" on its Printed Agreement page;
+                leaving it blank falls back to generic wording.
+            </p>
+        </field>
+    </record>
+
+</odoo>
