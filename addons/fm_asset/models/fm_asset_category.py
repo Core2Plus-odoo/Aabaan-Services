@@ -6,6 +6,7 @@ SERVICE_LINES = [
     ("electrical", "Electrical"),
     ("plumbing", "Plumbing"),
     ("cleaning", "Cleaning"),
+    ("cleaning_deep", "Deep Cleaning"),
     ("pest", "Pest Control"),
     ("termite", "Anti-Termite Treatment"),
     ("water_tank", "Water Tank Cleaning"),

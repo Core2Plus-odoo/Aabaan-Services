@@ -7,6 +7,8 @@
         <field name="code">DXB</field>
         <field name="emirate">dubai</field>
         <field name="city">Dubai</field>
+        <field name="street">Safiya Building, Bin Saloom, Hor Al Anz, Deira</field>
+        <field name="phone">055-5229706</field>
     </record>
 
     <record id="branch_sharjah" model="fm.branch">

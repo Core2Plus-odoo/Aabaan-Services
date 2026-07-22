@@ -30,6 +30,13 @@
         <field name="default_ppm_frequency_months">1</field>
     </record>
 
+    <record id="cat_cleaning_deep" model="fm.asset.category">
+        <field name="name">Deep Cleaning</field>
+        <field name="service_line">cleaning_deep</field>
+        <field name="default_criticality">low</field>
+        <field name="default_ppm_frequency_months">3</field>
+    </record>
+
     <record id="cat_hvac" model="fm.asset.category">
         <field name="name">AC / HVAC Maintenance</field>
         <field name="service_line">hvac</field>
