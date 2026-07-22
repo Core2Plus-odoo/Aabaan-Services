@@ -289,28 +289,27 @@ class FmContract(models.Model):
         """Copy the selected template's wording into this contract's own
         editable fields. Deliberately replaces any prior manual edits —
         selecting a (different) template is a deliberate "start from this"
-        action, not a passive default. Clearing the template resets these
-        fields to the same generic defaults a brand-new contract gets
-        (rather than leaving stale template text, or blanking the fields
-        out and reopening the "nothing to edit" gap)."""
+        action, not a passive default.
+
+        Every field is always set to either the template's own value or the
+        standard generic default — NEVER left at whatever was there before.
+        (An earlier version fell back to "self.field" — the previous value —
+        when a field wasn't defined on the new template, which meant
+        switching from e.g. "Pest Control — Dubai" (schedule_text set) to
+        "Anti-Termite — Standard" (schedule_text blank) left the Dubai
+        wording stuck under an Anti-Termite contract. Clearing the template
+        entirely uses the same generic defaults, for the same reason.)"""
         t = self.agreement_template_id
-        if not t:
-            self.quotation_intro_text = DEFAULT_QUOTATION_INTRO_TEXT
-            self.scope_method_text = DEFAULT_SCOPE_METHOD_TEXT
-            self.service_text = _default_service_text(self)
-            self.schedule_text = _default_schedule_text(self)
-            self.exclusions_text = DEFAULT_EXCLUSIONS_TEXT
-            self.agreement_line_ids = [(5, 0, 0)]
-            return
-        self.quotation_intro_text = t.quotation_intro_text or self.quotation_intro_text
-        self.scope_method_text = t.scope_method_text or self.scope_method_text
-        self.service_text = t.service_text or self.service_text
-        self.schedule_text = t.schedule_text or self.schedule_text
-        self.exclusions_text = t.exclusions_default_text or self.exclusions_text
-        self.agreement_line_ids = [(5, 0, 0)] + [
+        self.quotation_intro_text = (t and t.quotation_intro_text) or DEFAULT_QUOTATION_INTRO_TEXT
+        self.scope_method_text = (t and t.scope_method_text) or DEFAULT_SCOPE_METHOD_TEXT
+        self.service_text = (t and t.service_text) or _default_service_text(self)
+        self.schedule_text = (t and t.schedule_text) or _default_schedule_text(self)
+        self.exclusions_text = (t and t.exclusions_default_text) or DEFAULT_EXCLUSIONS_TEXT
+        new_lines = [
             (0, 0, {"sequence": line.sequence, "name": line.name, "body": line.body})
             for line in t.line_ids
-        ]
+        ] if t else []
+        self.agreement_line_ids = [(5, 0, 0)] + new_lines
 
     # Account team
     account_manager_id = fields.Many2one("res.users", string="Account Manager", required=True, tracking=True)
