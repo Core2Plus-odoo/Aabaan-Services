@@ -155,12 +155,23 @@
                                     <field name="complaint_response_hours"/>
                                 </group>
                             </group>
-                            <group string="Editable Agreement Wording (from template, or write your own)">
-                                <field name="quotation_intro_text" nolabel="1" placeholder="Quotation greeting/intro paragraph..."/>
-                                <field name="scope_method_text" nolabel="1" placeholder="Quotation Scope of Work methodology..."/>
-                                <field name="service_text" nolabel="1" placeholder="Service Agreement Article 2 (Service)..."/>
-                                <field name="schedule_text" nolabel="1" placeholder="Service Agreement Article 4 (Service Schedule)..."/>
-                                <field name="exclusions_text" nolabel="1" placeholder="Default exclusions wording..."/>
+                            <separator string="Editable Agreement Wording (from template, or write your own)"/>
+                            <group col="1">
+                                <group string="Quotation Intro">
+                                    <field name="quotation_intro_text" nolabel="1" placeholder="Quotation greeting/intro paragraph..."/>
+                                </group>
+                                <group string="Quotation — Scope of Work Methodology">
+                                    <field name="scope_method_text" nolabel="1" placeholder="Quotation Scope of Work methodology..."/>
+                                </group>
+                                <group string="Service Agreement — Article 2 (Service)">
+                                    <field name="service_text" nolabel="1" placeholder="Service Agreement Article 2 (Service)..."/>
+                                </group>
+                                <group string="Service Agreement — Article 4 (Service Schedule)">
+                                    <field name="schedule_text" nolabel="1" placeholder="Service Agreement Article 4 (Service Schedule)..."/>
+                                </group>
+                                <group string="Default Exclusions">
+                                    <field name="exclusions_text" nolabel="1" placeholder="Default exclusions wording..."/>
+                                </group>
                             </group>
                             <group string="Additional Terms (editable)">
                                 <field name="agreement_line_ids" nolabel="1">
