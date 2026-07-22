@@ -16,27 +16,42 @@
          table with VAT breakdown, mirroring the format historically used
          (uploaded sample: greeting, Scope of Work, Covered Area, Treatment,
          follow-up/complaint visit commitments, then pricing + payment terms).
-         Printable at any contract stage; typically used before activation. -->
+         Printable at any contract stage; typically used before activation.
+
+         NOTE for future editors: fm_branch.report_fm_quotation_branch inherits
+         this template via an xpath anchored on the h5 with text "Payment
+         Terms" below — keep that element and its exact text if you edit this
+         file, or fm_branch will fail to load on the next production upgrade
+         (see CLAUDE.md section 5 history / the 2026-07 hotfix). -->
     <template id="report_fm_quotation_document">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
-                    <div class="page">
-                        <div class="row mb-3">
+                    <div class="page" style="font-size:13px;">
+                        <div class="row mb-4">
                             <div class="col-7">
-                                <h2 class="mb-0">Quotation</h2>
-                                <div style="font-size:14px;" dir="rtl">عرض سعر</div>
+                                <h2 class="mb-0" style="color:#1C2B3A;">Quotation</h2>
+                                <div style="font-size:13px; color:#666;" dir="rtl">عرض سعر</div>
                             </div>
-                            <div class="col-5 text-end">
-                                <div><strong>Ref#:</strong> <span t-field="o.contract_number"/></div>
-                                <div><strong>Date:</strong> <span t-field="o.create_date"/></div>
-                                <div t-if="o.validity_date">
-                                    <strong>Valid Until:</strong> <span t-field="o.validity_date"/>
-                                </div>
+                            <div class="col-5">
+                                <table style="width:100%; border-collapse:collapse;">
+                                    <tr>
+                                        <td style="padding:3px 8px; border:1px solid #ddd; background:#f7f7f7; font-weight:bold;">Ref#</td>
+                                        <td style="padding:3px 8px; border:1px solid #ddd; text-align:right;"><span t-field="o.contract_number"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:3px 8px; border:1px solid #ddd; background:#f7f7f7; font-weight:bold;">Date</td>
+                                        <td style="padding:3px 8px; border:1px solid #ddd; text-align:right;"><span t-field="o.create_date"/></td>
+                                    </tr>
+                                    <tr t-if="o.validity_date">
+                                        <td style="padding:3px 8px; border:1px solid #ddd; background:#f7f7f7; font-weight:bold;">Valid Until</td>
+                                        <td style="padding:3px 8px; border:1px solid #ddd; text-align:right;"><span t-field="o.validity_date"/></td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-3" style="border-left:4px solid #EE7A22; padding:6px 10px; background:#fafafa;">
                             <strong t-esc="o.subject or ('Service Proposal — %s' % (o.partner_id.name or ''))"/>
                         </div>
 
@@ -49,14 +64,14 @@
                             <span t-esc="o.partner_id.name"/>.
                         </p>
 
-                        <h5>Scope of Work</h5>
+                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Scope of Work</h5>
                         <p>
                             Trained operators will inspect the premises prior to any service activity to
                             assess requirements, then carry out the work using methods and materials
                             approved by the relevant UAE municipal and environmental authorities.
                         </p>
 
-                        <h5>Covered Area</h5>
+                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Covered Area</h5>
                         <p t-if="o.scope_notes" t-esc="o.scope_notes" style="white-space:pre-wrap;"/>
                         <ul t-elif="o.service_inclusions">
                             <li t-foreach="o.service_inclusions" t-as="incl" t-esc="incl.name"/>
@@ -66,7 +81,7 @@
                             <strong>Treatment / Method:</strong> <span t-esc="o.treatment_notes"/>
                         </p>
 
-                        <h5>Follow-up and Complaint Visits</h5>
+                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Follow-up and Complaint Visits</h5>
                         <p>
                             Where an issue is reported during a routine visit, the team will conduct
                             follow-up visits and take the necessary action until resolved.
@@ -78,56 +93,60 @@
                             <span t-esc="o.complaint_response_hours or 24"/> hours of the report.
                         </p>
 
-                        <table class="table table-sm o_main_table mb-1" style="margin-top:12px;">
+                        <table class="table table-sm mb-1" style="margin-top:14px; border-collapse:collapse; width:100%;">
                             <thead>
-                                <tr>
-                                    <th>Description</th>
-                                    <th class="text-end">Qty</th>
-                                    <th class="text-end">Rate</th>
-                                    <th class="text-end">Total</th>
+                                <tr style="background:#1C2B3A; color:#fff;">
+                                    <th style="padding:6px 8px; border:1px solid #1C2B3A;">Description</th>
+                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; text-align:right;">Qty</th>
+                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; text-align:right;">Rate</th>
+                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; text-align:right;">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr t-foreach="o.order_line" t-as="line" t-if="not line.display_type">
-                                    <td>
+                                    <td style="padding:6px 8px; border:1px solid #ddd;">
                                         <span t-field="line.name"/>
-                                        <div t-if="o.visit_frequency" class="text-muted" style="font-size:11px;">
-                                            Frequency: <span t-field="o.visit_frequency"/>
+                                        <div class="text-muted" style="font-size:11px;">
+                                            Frequency:
+                                            <span t-if="o.visit_frequency == 'custom'">
+                                                Every <t t-esc="o.custom_interval_days or 30"/> days
+                                            </span>
+                                            <span t-elif="o.visit_frequency" t-field="o.visit_frequency"/>
                                         </div>
                                     </td>
-                                    <td class="text-end"><span t-field="line.product_uom_qty"/></td>
-                                    <td class="text-end"><span t-field="line.price_unit"/></td>
-                                    <td class="text-end"><span t-field="line.price_subtotal"/></td>
+                                    <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="line.product_uom_qty"/></td>
+                                    <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="line.price_unit"/></td>
+                                    <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="line.price_subtotal"/></td>
                                 </tr>
                             </tbody>
                         </table>
-                        <table class="table table-sm" style="width:40%; margin-left:auto;">
+                        <table style="width:45%; margin-left:auto; border-collapse:collapse;">
                             <tr>
-                                <td>Subtotal</td>
-                                <td class="text-end"><span t-field="o.amount_untaxed"/></td>
+                                <td style="padding:4px 8px; border:1px solid #ddd;">Subtotal</td>
+                                <td style="padding:4px 8px; border:1px solid #ddd; text-align:right;"><span t-field="o.amount_untaxed"/></td>
                             </tr>
                             <tr>
-                                <td>VAT</td>
-                                <td class="text-end"><span t-field="o.amount_tax"/></td>
+                                <td style="padding:4px 8px; border:1px solid #ddd;">VAT</td>
+                                <td style="padding:4px 8px; border:1px solid #ddd; text-align:right;"><span t-field="o.amount_tax"/></td>
                             </tr>
-                            <tr style="font-weight:bold;">
-                                <td>Grand Total</td>
-                                <td class="text-end"><span t-field="o.amount_total"/></td>
+                            <tr style="font-weight:bold; background:#fdf1e6;">
+                                <td style="padding:6px 8px; border:1px solid #EE7A22;">Grand Total</td>
+                                <td style="padding:6px 8px; border:1px solid #EE7A22; text-align:right;"><span t-field="o.amount_total"/></td>
                             </tr>
                         </table>
 
-                        <h5 class="mt-3">Payment Terms</h5>
+                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Payment Terms</h5>
                         <p t-if="o.payment_terms_note" t-esc="o.payment_terms_note" style="white-space:pre-wrap;"/>
                         <p t-else="">
                             <span t-field="o.payment_term_id"/>
                         </p>
 
-                        <div class="mt-5" style="page-break-inside: avoid;">
-                            <div>MANAGER,</div>
+                        <div class="mt-5" style="page-break-inside: avoid; border:1px solid #ddd; padding:10px; width:45%;">
+                            <div style="color:#666;">MANAGER,</div>
                             <div><strong t-field="o.company_id.name"/></div>
                         </div>
 
-                        <div class="text-muted mt-4" style="font-size:11px;">
+                        <div class="text-muted mt-4" style="font-size:11px; border-top:1px solid #ddd; padding-top:6px;">
                             TRN: <span t-field="o.company_id.vat"/> · All amounts in AED unless stated. This
                             quotation is not a tax invoice.
                         </div>

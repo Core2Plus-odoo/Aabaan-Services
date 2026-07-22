@@ -50,9 +50,16 @@ class FmContract(models.Model):
             ("quarterly", "Quarterly"),
             ("semi_annual", "Semi-Annual"),
             ("annual", "Annual"),
+            ("custom", "Custom — enter interval"),
         ],
         string="Visit Frequency",
         default="monthly",
+    )
+    custom_interval_days = fields.Integer(
+        string="Custom Interval (days)",
+        help="Used when Visit Frequency is 'Custom' — number of days between "
+        "visits for each covered asset, e.g. 45 for a 45-day cadence that "
+        "doesn't fit the preset options.",
     )
     skip_weekends = fields.Boolean(
         string="Skip Weekends",
@@ -91,14 +98,24 @@ class FmContract(models.Model):
         for contract in self:
             contract.task_count = counts.get(contract.id, 0)
 
-    @api.depends("visit_frequency", "asset_ids", "start_date", "end_date")
+    def _visit_interval_days(self):
+        """Days between visits for one asset, honouring a custom interval
+        when Visit Frequency is set to 'Custom' instead of a preset cadence."""
+        self.ensure_one()
+        if self.visit_frequency == "custom":
+            return max(1, self.custom_interval_days or 30)
+        per_year = FREQUENCY_PER_YEAR.get(self.visit_frequency, 12)
+        return max(1, round(365 / per_year))
+
+    @api.depends("visit_frequency", "custom_interval_days", "asset_ids", "start_date", "end_date")
     def _compute_planned_visit_count(self):
         for contract in self:
-            per_year = FREQUENCY_PER_YEAR.get(contract.visit_frequency, 12)
+            interval = contract._visit_interval_days()
             years = 1.0
             if contract.start_date and contract.end_date and contract.end_date > contract.start_date:
                 years = (contract.end_date - contract.start_date).days / 365.0
-            contract.planned_visit_count = max(1, round(per_year * years)) * len(contract.asset_ids)
+            visits_per_year = 365.0 / interval
+            contract.planned_visit_count = max(1, round(visits_per_year * years)) * len(contract.asset_ids)
 
     # ------------------------------------------------------------------
     # Auto-scheduling
@@ -135,8 +152,7 @@ class FmContract(models.Model):
         for c in self:
             if not (c.asset_ids and c.visit_frequency and c.start_date and c.end_date):
                 continue
-            per_year = FREQUENCY_PER_YEAR.get(c.visit_frequency, 12)
-            interval = max(1, round(365 / per_year))
+            interval = c._visit_interval_days()
             end = min(c.end_date, horizon_end or c.end_date)
             company = c.sale_order_id.company_id or self.env.company
             tech = c.preferred_technician_id

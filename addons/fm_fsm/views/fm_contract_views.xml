@@ -30,6 +30,8 @@
                         <group string="Auto-scheduling">
                             <field name="auto_schedule"/>
                             <field name="visit_frequency"/>
+                            <field name="custom_interval_days" invisible="visit_frequency != 'custom'"
+                                   required="visit_frequency == 'custom'"/>
                             <field name="skip_weekends"/>
                             <field name="preferred_technician_id"/>
                             <field name="auto_schedule_state"/>
