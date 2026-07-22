@@ -28,6 +28,10 @@
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
                     <div class="page" style="font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:12.5px; line-height:1.55; color:#2b2b2b;">
+                        <style>
+                            /* Enlarge the standard Odoo letterhead logo on this report only. */
+                            .header img, .o_company_logo { max-height: 90px !important; max-width: 260px !important; width: auto !important; height: auto !important; }
+                        </style>
                         <t t-set="aed" t-value="o.env['res.currency'].with_context(active_test=False).search([('name', '=', 'AED')], limit=1)"/>
                         <div class="row mb-4">
                             <div class="col-7">
@@ -149,6 +153,11 @@
                         <p t-if="o.payment_terms_note" t-esc="o.payment_terms_note" style="white-space:pre-wrap;"/>
                         <p t-else="">
                             <span t-field="o.payment_term_id"/>
+                        </p>
+                        <p class="text-muted" style="font-size:11px;">
+                            This quotation is subject to the full terms and conditions set out in the
+                            Service Agreement issued upon acceptance, including provisions on liability,
+                            confidentiality, compliance, and dispute resolution.
                         </p>
 
                         <div class="mt-5" style="page-break-inside: avoid; border:1px solid #ddd; padding:10px; width:45%;">

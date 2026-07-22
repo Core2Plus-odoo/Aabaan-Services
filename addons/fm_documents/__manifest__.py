@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Documents",
-    "version": "19.0.1.5.2",
+    "version": "19.0.1.6.0",
     "category": "Facility Management",
     "summary": "Branded PDF documents (work order job sheet, quotation, contract) — UAE-ready",
     "description": """
