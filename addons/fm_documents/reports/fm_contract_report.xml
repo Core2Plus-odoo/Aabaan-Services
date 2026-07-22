@@ -93,6 +93,91 @@
                             to <span t-field="o.end_date"/>.
                         </p>
 
+                        <!-- ==========================================================
+                             STANDALONE MODE — the contract's own article list (copied
+                             from a "defines the full document" template, then edited
+                             per contract) IS the document body, auto-numbered after
+                             Article 1. This mirrors the real Aaban documents: each
+                             service has its own article structure (Water Tank: Tank
+                             Details/Safety/Customer Responsibility…; Anti-Termite:
+                             Treatment Type/Warranty…; Dubai Pest Control: Municipality
+                             Local Order 11 terms) — not one shared skeleton.
+                             ========================================================== -->
+                        <t t-if="o.agreement_standalone">
+                            <t t-foreach="o.agreement_line_ids" t-as="aline">
+                                <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">
+                                    <t t-esc="'Article %d — %s' % (aline_index + 2, aline.name)"/>
+                                </h5>
+                                <p t-esc="aline.body" style="white-space:pre-wrap;"/>
+                            </t>
+
+                            <t t-if="o.scope_notes or o.service_inclusions">
+                                <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Covered Area</h5>
+                                <p t-if="o.scope_notes" t-esc="o.scope_notes" style="white-space:pre-wrap;"/>
+                                <ul t-elif="o.service_inclusions">
+                                    <li t-foreach="o.service_inclusions" t-as="incl" t-esc="incl.name"/>
+                                </ul>
+                            </t>
+                            <p t-if="o.treatment_notes" style="white-space:pre-wrap;">
+                                <strong>Treatment / Method:</strong> <span t-esc="o.treatment_notes"/>
+                            </p>
+
+                            <!-- Pricing table (keep in sync with the skeleton branch below). -->
+                            <t t-set="priced_lines" t-value="o.order_line.filtered(lambda l: not l.display_type)"/>
+                            <table t-if="priced_lines" class="table table-sm mb-1" style="margin-top:14px; border-collapse:collapse; width:100%; font-size:12px;">
+                                <thead>
+                                    <tr style="background:#1C2B3A; color:#fff;">
+                                        <th style="padding:6px 8px; border:1px solid #1C2B3A; font-weight:700;">Description</th>
+                                        <th style="padding:6px 8px; border:1px solid #1C2B3A; font-weight:700; text-align:right;">Qty</th>
+                                        <th style="padding:6px 8px; border:1px solid #1C2B3A; font-weight:700; text-align:right;">Rate</th>
+                                        <th style="padding:6px 8px; border:1px solid #1C2B3A; font-weight:700; text-align:right;">Tax</th>
+                                        <th style="padding:6px 8px; border:1px solid #1C2B3A; font-weight:700; text-align:right;">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="priced_lines" t-as="line">
+                                        <td style="padding:6px 8px; border:1px solid #ddd;">
+                                            <span t-field="line.name"/>
+                                            <div class="text-muted" style="font-size:11px;">
+                                                Frequency:
+                                                <span t-if="o.visit_frequency == 'custom'">
+                                                    Every <t t-esc="o.custom_interval_days or 30"/> days
+                                                </span>
+                                                <span t-elif="o.visit_frequency" t-field="o.visit_frequency"/>
+                                            </div>
+                                        </td>
+                                        <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="line.product_uom_qty"/></td>
+                                        <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="line.price_unit" t-options='{"widget": "monetary", "display_currency": aed}'/></td>
+                                        <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="line.price_tax" t-options='{"widget": "monetary", "display_currency": aed}'/></td>
+                                        <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="line.price_total" t-options='{"widget": "monetary", "display_currency": aed}'/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p t-else="" class="text-muted" style="margin-top:14px; border:1px dashed #ccc; padding:8px 10px; font-size:11px;">
+                                No priced service lines yet — add products via "Edit Products (Sales Order)" on the contract.
+                            </p>
+                            <table t-if="priced_lines" style="width:45%; margin-left:auto; border-collapse:collapse;">
+                                <tr style="font-weight:bold; background:#fdf1e6;">
+                                    <td style="padding:6px 8px; border:1px solid #EE7A22;">Total Amount</td>
+                                    <td style="padding:6px 8px; border:1px solid #EE7A22; text-align:right;"><span t-field="o.amount_total" t-options='{"widget": "monetary", "display_currency": aed}'/></td>
+                                </tr>
+                            </table>
+
+                            <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">
+                                <t t-esc="'Article %d — Payment Terms' % (len(o.agreement_line_ids) + 2)"/>
+                            </h5>
+                            <p t-if="o.payment_terms_note" t-esc="o.payment_terms_note" style="white-space:pre-wrap;"/>
+                            <p t-else="">
+                                <span t-field="o.payment_term_id"/>
+                            </p>
+                        </t>
+
+                        <!-- ==========================================================
+                             SKELETON MODE — the generic 18-article agreement, used when
+                             no full-document template applies (legacy contracts, or a
+                             service with no template yet).
+                             ========================================================== -->
+                        <t t-if="not o.agreement_standalone">
                         <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 2 — Service</h5>
                         <p t-if="o.service_text or o.agreement_template_id.service_text"
                            t-esc="o.service_text or o.agreement_template_id.service_text" style="white-space:pre-wrap;"/>
@@ -290,6 +375,7 @@
                                 <p t-esc="aline.body" style="white-space:pre-wrap;"/>
                             </t>
                         </t>
+                        </t> <!-- end skeleton mode -->
 
                         <t t-if="o.sla_rule_ids">
                             <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Annex A — Service Levels</h5>

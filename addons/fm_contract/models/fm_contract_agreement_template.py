@@ -24,6 +24,18 @@ class FmContractAgreementTemplate(models.Model):
     name = fields.Char(required=True, translate=True)
     service_line = fields.Selection(SERVICE_LINES, required=True, index=True)
     active = fields.Boolean(default=True)
+    replaces_standard_articles = fields.Boolean(
+        string="Defines the Full Document",
+        default=True,
+        help="When on (recommended), this template's Additional Terms ARE the "
+        "printed Service Agreement's articles — auto-numbered after the "
+        "Duration article — instead of the generic 18-article skeleton. "
+        "Each real Aaban service has its own article structure (Water Tank: "
+        "Tank Details/Safety/Customer Responsibility...; Anti-Termite: "
+        "Treatment Type/Warranty...; Dubai Pest Control: Municipality Local "
+        "Order 11 terms), which this preserves faithfully. Switch off only "
+        "for a template that merely re-words the generic skeleton.",
+    )
 
     quotation_intro_text = fields.Text(
         translate=True,
