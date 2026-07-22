@@ -33,6 +33,10 @@
                         <button name="action_open_subscription" type="object"
                                 string="Edit Products (Sales Order)" class="btn-primary"/>
                     </div>
+                    <p class="text-muted">
+                        Visit frequency is set on the Scheduling &amp; Work Orders tab —
+                        it drives when visits are auto-generated, separately from pricing here.
+                    </p>
                     <field name="order_line" readonly="1">
                         <list>
                             <field name="product_id"/>
@@ -42,6 +46,12 @@
                             <field name="price_subtotal"/>
                         </list>
                     </field>
+                    <group class="oe_subtotal_footer">
+                        <field name="amount_untaxed" readonly="1" string="Subtotal"/>
+                        <field name="amount_tax" readonly="1" string="Tax"/>
+                        <field name="amount_total" readonly="1" string="Total"
+                               class="oe_subtotal_footer_separator"/>
+                    </group>
                 </page>
             </xpath>
 
