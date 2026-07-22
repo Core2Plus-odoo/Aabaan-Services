@@ -11,9 +11,16 @@
 
     <record id="cat_water_tank" model="fm.asset.category">
         <field name="name">Water Tank Cleaning &amp; Disinfection</field>
-        <field name="service_line">plumbing</field>
+        <field name="service_line">water_tank</field>
         <field name="default_criticality">high</field>
         <field name="default_ppm_frequency_months">6</field>
+    </record>
+
+    <record id="cat_termite" model="fm.asset.category">
+        <field name="name">Anti-Termite Treatment</field>
+        <field name="service_line">termite</field>
+        <field name="default_criticality">medium</field>
+        <field name="default_ppm_frequency_months">0</field>
     </record>
 
     <record id="cat_cleaning" model="fm.asset.category">

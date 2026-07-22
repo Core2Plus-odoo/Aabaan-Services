@@ -94,7 +94,8 @@
                         </p>
 
                         <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 2 — Service</h5>
-                        <p t-if="o.agreement_template_id.service_text" t-esc="o.agreement_template_id.service_text" style="white-space:pre-wrap;"/>
+                        <p t-if="o.service_text or o.agreement_template_id.service_text"
+                           t-esc="o.service_text or o.agreement_template_id.service_text" style="white-space:pre-wrap;"/>
                         <p t-else="">
                             <span t-field="o.company_id.name"/> agrees to supply the services described
                             below to the Second Party at the site stated above, in accordance with the
@@ -155,7 +156,8 @@
                         </table>
 
                         <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 4 — Service Schedule</h5>
-                        <p t-if="o.agreement_template_id.schedule_text" t-esc="o.agreement_template_id.schedule_text" style="white-space:pre-wrap;"/>
+                        <p t-if="o.schedule_text or o.agreement_template_id.schedule_text"
+                           t-esc="o.schedule_text or o.agreement_template_id.schedule_text" style="white-space:pre-wrap;"/>
                         <p t-else="">
                             The customer agrees to fulfil all technical guidelines requested by
                             <span t-field="o.company_id.name"/> to secure the best results. The Second
@@ -180,8 +182,8 @@
                         <ul t-if="o.service_exclusions">
                             <li t-foreach="o.service_exclusions" t-as="excl" t-esc="excl.name"/>
                         </ul>
-                        <p t-elif="o.agreement_template_id.exclusions_default_text"
-                           t-esc="o.agreement_template_id.exclusions_default_text" style="white-space:pre-wrap;"/>
+                        <p t-elif="o.exclusions_text or o.agreement_template_id.exclusions_default_text"
+                           t-esc="o.exclusions_text or o.agreement_template_id.exclusions_default_text" style="white-space:pre-wrap;"/>
                         <p t-else="">This contract excludes anything not explicitly listed under Article 3.</p>
 
                         <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 7 — Commencement of Services</h5>
@@ -278,6 +280,16 @@
                             discussions, negotiations, and agreements relating to its subject matter. Any
                             amendment must be made in writing and signed by both parties.
                         </p>
+
+                        <t t-if="o.agreement_line_ids">
+                            <h4 style="color:#1C2B3A; font-size:15px; font-weight:700; margin-top:24px; margin-bottom:4px;">Additional Terms</h4>
+                            <t t-foreach="o.agreement_line_ids" t-as="aline">
+                                <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:16px; margin-bottom:8px;">
+                                    <span t-esc="aline.name"/>
+                                </h5>
+                                <p t-esc="aline.body" style="white-space:pre-wrap;"/>
+                            </t>
+                        </t>
 
                         <t t-if="o.sla_rule_ids">
                             <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Annex A — Service Levels</h5>
