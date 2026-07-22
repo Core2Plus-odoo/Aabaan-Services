@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Aabaan Configuration",
-    "version": "19.0.1.2.0",
+    "version": "19.0.1.3.0",
     "category": "Facility Management",
     "summary": "Aabaan-ready seed data: branches, service catalogue, asset categories and UAE compliance regimes",
     "description": """

@@ -37,6 +37,7 @@
                     </div>
                     <group>
                         <field name="service_line"/>
+                        <field name="replaces_standard_articles"/>
                         <field name="active"/>
                     </group>
                     <group string="Quotation wording">

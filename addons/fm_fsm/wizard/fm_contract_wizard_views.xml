@@ -26,20 +26,21 @@
                         </group>
                     </div>
 
-                    <!-- ============ Step 2: Service &amp; Agreement ============ -->
+                    <!-- ============ Step 2: Services &amp; Agreements ============ -->
                     <div invisible="step != 'service'">
-                        <h2>What service — and which agreement?</h2>
+                        <h2>Which services — and their agreements?</h2>
                         <p class="text-muted">
-                            Choosing the service picks the matching agreement template
-                            (service-wise, and branch-wise where one exists). All wording
-                            stays fully editable on the contract afterwards.
+                            Tick every service the customer is taking for this site. Each
+                            service gets its own agreement (contract) with the matching
+                            wording — service-wise, and branch-wise where one exists.
                         </p>
                         <group>
-                            <field name="service_line" widget="radio"/>
-                            <field name="contract_type"/>
-                            <field name="template_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="service_ids" widget="many2many_checkboxes" nolabel="1"/>
                         </group>
-                        <group string="Wording Preview">
+                        <group>
+                            <field name="contract_type"/>
+                        </group>
+                        <group string="Matched Agreements">
                             <field name="template_preview" nolabel="1" readonly="1"/>
                         </group>
                     </div>
@@ -48,11 +49,15 @@
                     <div invisible="step != 'products'">
                         <h2>What are we charging?</h2>
                         <p class="text-muted">
-                            Add the service product(s) with quantity and rate. You can
-                            also skip this and price the contract later.
+                            Add the product(s) with quantity and rate. With several
+                            services ticked, set the <b>Service</b> column on each line so
+                            the amount lands on the right contract. You can also skip this
+                            and price the contracts later.
                         </p>
                         <field name="line_ids">
                             <list editable="bottom">
+                                <field name="service_id" column_invisible="parent.contract_count_preview &lt; 2"/>
+                                <field name="allowed_service_ids" column_invisible="1"/>
                                 <field name="product_id"/>
                                 <field name="name"/>
                                 <field name="quantity"/>
@@ -64,6 +69,7 @@
                         <group class="oe_subtotal_footer">
                             <field name="amount_untaxed" readonly="1"/>
                             <field name="currency_id" invisible="1"/>
+                            <field name="contract_count_preview" invisible="1"/>
                         </group>
                     </div>
 
@@ -71,8 +77,9 @@
                     <div invisible="step != 'schedule'">
                         <h2>When do we visit?</h2>
                         <p class="text-muted">
-                            The schedule below auto-generates the planned visits —
-                            they appear on the Visit Calendar and the Maintenance Calendar.
+                            Each service keeps its own frequency (e.g. Pest Control monthly,
+                            Water Tank Cleaning every 6 months). The visits auto-generate
+                            onto the Visit Calendar and Maintenance Calendar.
                         </p>
                         <group>
                             <group string="Term">
@@ -80,19 +87,25 @@
                                 <field name="term_months"/>
                                 <field name="end_date"/>
                             </group>
-                            <group string="Visits">
+                            <group string="Visit Defaults">
                                 <field name="auto_schedule"/>
-                                <field name="visit_frequency" invisible="not auto_schedule"/>
-                                <field name="custom_interval_days"
-                                       invisible="not auto_schedule or visit_frequency != 'custom'"
-                                       required="auto_schedule and visit_frequency == 'custom'"/>
                                 <field name="visit_start_time" widget="float_time" invisible="not auto_schedule"/>
                                 <field name="visit_duration_hours" widget="float_time" invisible="not auto_schedule"/>
                                 <field name="skip_weekends" invisible="not auto_schedule"/>
                                 <field name="preferred_technician_id" invisible="not auto_schedule"/>
                                 <field name="auto_schedule_state" invisible="not auto_schedule"/>
-                                <field name="planned_visit_count" invisible="not auto_schedule"/>
                             </group>
+                        </group>
+                        <group string="Frequency per Service" invisible="not auto_schedule">
+                            <field name="schedule_ids" nolabel="1">
+                                <list editable="bottom" create="0" delete="0">
+                                    <field name="category_id" readonly="1"/>
+                                    <field name="visit_frequency"/>
+                                    <field name="custom_interval_days"
+                                           column_invisible="0"/>
+                                </list>
+                            </field>
+                            <field name="planned_visit_count" readonly="1"/>
                         </group>
                     </div>
 
@@ -100,23 +113,23 @@
                     <div invisible="step != 'review'">
                         <h2>Ready to create</h2>
                         <p class="text-muted">
-                            Check the summary. <b>Create &amp; Schedule Visits</b> activates
-                            the contract, generates the visit plan and opens it on the
-                            calendar; <b>Create as Draft</b> saves it for later.
+                            One agreement per ticked service will be created.
+                            <b>Create &amp; Schedule Visits</b> activates them, generates
+                            every visit plan and opens the combined calendar;
+                            <b>Create as Draft</b> saves them for later.
                         </p>
                         <group>
-                            <group string="Customer &amp; Service">
+                            <group string="Customer &amp; Services">
                                 <field name="partner_id" readonly="1"/>
                                 <field name="site_name" readonly="1"/>
-                                <field name="service_line" readonly="1"/>
+                                <field name="service_ids" readonly="1" widget="many2many_tags"/>
                                 <field name="contract_type" readonly="1"/>
-                                <field name="template_id" readonly="1"/>
+                                <field name="contract_count_preview" string="Contracts to Create" readonly="1"/>
                             </group>
                             <group string="Term, Pricing &amp; Visits">
                                 <field name="start_date" readonly="1"/>
                                 <field name="end_date" readonly="1"/>
                                 <field name="amount_untaxed" readonly="1"/>
-                                <field name="visit_frequency" readonly="1" invisible="not auto_schedule"/>
                                 <field name="planned_visit_count" readonly="1" invisible="not auto_schedule"/>
                             </group>
                         </group>

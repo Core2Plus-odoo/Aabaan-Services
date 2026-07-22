@@ -159,4 +159,124 @@ Complaint/call-out visits: on a complaint from the Second Party, Aaban will visi
         <field name="body">This contract may be terminated where: both parties agree to terminate at any time; there is no approved pest control supervisor within the company; the company is temporarily or permanently closed due to violations; or the pest control activity licence is cancelled. Either party must notify the Public Health Pest Control Section, Dubai Municipality in writing of any termination.</field>
     </record>
 
+
+    <!-- ================================================================
+         Full-document upgrade (2026-07): each template's lines are the
+         complete printed agreement (auto-numbered), faithful to the real
+         Aaban documents. New records only — existing ones are noupdate=1
+         and stay as-is on installed DBs (reorder/edit them in the UI).
+         ================================================================ -->
+
+    <!-- Water Tank: complete the article set (DR.SAMI 968/26 / ELIFE
+         1054/26 / AZAZ 1066/26 all share this structure). -->
+    <record id="agreement_template_water_tank_line_service" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank"/>
+        <field name="sequence">21</field>
+        <field name="name">Service</field>
+        <field name="body">The First Party agrees to supply Water Tank Cleaning and Disinfection at the site stated above. Aaban will provide the services during the hours agreed with the Second Party and in accordance with the schedule detailed in this agreement. The First Party will ensure that everybody providing the services has the necessary training and authorization to do so.</field>
+    </record>
+    <record id="agreement_template_water_tank_line_scope" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank"/>
+        <field name="sequence">22</field>
+        <field name="name">The Scope of Work</field>
+        <field name="body">We will chemically clean and disinfect your tank to remove all of the bacteria, mould, algae, sludge and sediment and almost all of the staining inside the tank. The tanks will be cleaned and disinfected as per Municipality standards and guidelines using appropriate environmentally friendly chemicals approved by the Municipality. The water tanks will be cleaned and disinfected by spraying chemicals on the inner surface of the tanks. Stains, sediment and mould will be removed with the help of brushes. The tanks will then be thoroughly rinsed with fresh water and checked for pH neutrality before allowing them to be refilled. Draining out the existing water, cleaning the interior tanks, disinfection, washing and flushing the tanks, refilling the tanks with fresh water, laboratory testing.</field>
+    </record>
+    <record id="agreement_template_water_tank_line_termination" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank"/>
+        <field name="sequence">23</field>
+        <field name="name">Contract Termination</field>
+        <field name="body">Both parties can terminate the contract by giving the other party 30 days' prior notice, without the requirement of assigning any reason.</field>
+    </record>
+    <record id="agreement_template_water_tank_line_commencement" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank"/>
+        <field name="sequence">35</field>
+        <field name="name">Commencement of Services</field>
+        <field name="body">The First Party will commence the agreed services within ten (10) days from the date the Second Party signs the contract and delivers it to the First Party. The Second Party agrees to provide the First Party access to the areas to be serviced during the hours agreed. The Second Party may incur additional costs if the First Party is required to provide an unscheduled service.</field>
+    </record>
+
+    <!-- Anti-Termite: add the opening Scope article (AL SIKKA 129/25 /
+         AL AJMANI 1083/26). -->
+    <record id="agreement_template_termite_line_scope" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite"/>
+        <field name="sequence">5</field>
+        <field name="name">The Scope of Work</field>
+        <field name="body">Operations will be carried out as per the relevant Municipality's stated/approved procedures and terms and conditions for pre-construction termite control strategies:
+Stage 1: PCC and RCC.
+Stage 2: Vertical and horizontal treatment inside the tie beams.
+Stage 3: Vertical and horizontal treatment outside the tie beams.</field>
+    </record>
+
+    <!-- Deep Cleaning: the letter-style agreement's single body article
+         (Villa 52 Al Barsha 6/25; Montreal 838/25 & 941/26). -->
+    <record id="agreement_template_cleaning_deep_line_scope" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_cleaning_deep"/>
+        <field name="sequence">10</field>
+        <field name="name">Scope of Work</field>
+        <field name="body">Deep cleaning covers, as applicable to the site:
+Toilet cleaning — cabinets and drawers, sink and faucet descaling, shower head descaling, walls, seat, exhaust fan, shower area, deep cleaning of flooring, mirrors and glass doors.
+Kitchen — sink and faucet descaling, walls, de-greasing of hood and countertop, deep cleaning of flooring.
+General — bedroom cabinets (emptied by client), light fixtures, AC grills, walls, corners, internal windows, window frames and sills, glass and wooden doors.
+Flooring — ceramic, wooden and marble flooring using scrubber machines; removal of paint marks where possible.
+Ceiling — AC ventilation grills, ceiling corners, ceiling lights and spot lights (where accessible and in place).
+External — balcony/parking floor, handrails and corners (where accessible).</field>
+    </record>
+
+    <!-- NEW: Pest Control — Standard (the Ajman-issued wording every
+         non-Dubai pest contract uses; Royal Apartment 1006/26 Articles 2-8,
+         AAM Properties Quote 276/26). The Dubai branch keeps its own
+         Local-Order-11 template. -->
+    <record id="agreement_template_pest_standard" model="fm.contract.agreement.template">
+        <field name="name">Pest Control — Standard</field>
+        <field name="service_line">pest</field>
+        <field name="quotation_intro_text">With reference to the above-mentioned subject and subsequent inspection, we are pleased to provide our best quote for pest control services. Please be informed that the pesticides used for pest control are strictly approved by the pest control section of the relevant Municipality and the Ministry of Climate Change and Environment.</field>
+        <field name="scope_method_text">Trained operators will keenly inspect each area of the premises prior to any pest control activity to assess the level of pest infestation, then carry out pest control against cockroaches, ants and other crawling insects. Safe control will be carried out using chemicals strictly approved by the pest control section of the relevant Municipality and the Ministry of Climate Change and Environment.</field>
+    </record>
+    <record id="agreement_template_pest_standard_line_service" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_standard"/>
+        <field name="sequence">10</field>
+        <field name="name">Service</field>
+        <field name="body">The First Party agrees to supply pest control services to the Second Party at the site stated above. Aaban will provide the services during the hours agreed with the Second Party and in accordance with the schedule detailed in this agreement. The First Party will ensure that everybody providing the services has the necessary training and authorization to do so.</field>
+    </record>
+    <record id="agreement_template_pest_standard_line_schedule" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_standard"/>
+        <field name="sequence">20</field>
+        <field name="name">Service Schedule</field>
+        <field name="body">The customer agrees to fulfil all technical guidelines requested by Aaban to secure the best results. The Second Party will make its representative available with Aaban's technicians during the treatment. All areas that are not made ready/cleaned for the scheduled treatment will be avoided and treated on the next treatment.</field>
+    </record>
+    <record id="agreement_template_pest_standard_line_unscheduled" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_standard"/>
+        <field name="sequence">30</field>
+        <field name="name">Unscheduled Services and Conditions of Supply</field>
+        <field name="body">The First Party will attend to unscheduled services at the request of the Second Party only twice during the whole contract period. If the requested service results from an area previously serviced which is still under warranty, the First Party will provide the service at no charge to the Second Party. Any additional service will be served after quote approval from the Second Party.</field>
+    </record>
+    <record id="agreement_template_pest_standard_line_exclusions" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_standard"/>
+        <field name="sequence">40</field>
+        <field name="name">Exclusions</field>
+        <field name="body">This contract excludes fumigation for stored-product pests. This contract excludes termite and wood-pest treatments. This contract excludes bird control and stray animals.</field>
+    </record>
+    <record id="agreement_template_pest_standard_line_commencement" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_standard"/>
+        <field name="sequence">50</field>
+        <field name="name">Commencement of Services</field>
+        <field name="body">The First Party will commence the agreed services within ten (10) days from the date the Second Party signs the contract and delivers it to the First Party. The Second Party agrees to provide the First Party access to the areas to be serviced during the hours agreed. The Second Party may incur additional costs if the First Party is required to provide an unscheduled service.</field>
+    </record>
+    <record id="agreement_template_pest_standard_line_termination" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_standard"/>
+        <field name="sequence">60</field>
+        <field name="name">Contract Termination</field>
+        <field name="body">At the end of the contract period, this contract will continue to be valid and renewed against the same conditions unless otherwise cancelled by either party giving one month's notice.</field>
+    </record>
+
+
+    <!-- Dubai PC: the Local Order 11 preamble as the opening article (it
+         previously sat in a skeleton slot field, which standalone mode does
+         not print). -->
+    <record id="agreement_template_pest_dubai_line_preamble" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_dubai"/>
+        <field name="sequence">5</field>
+        <field name="name">Terms as per Municipality Local Order No. 11 (2003)</field>
+        <field name="body">The Second Party is responsible for keeping its establishment, premises or construction site free from public health pests and for not providing a favourable environment for their breeding and spreading, for the safety of the Dubai Emirate community. The First Party is hereby authorised by the Public Health Pest Control Section, Dubai Municipality, to exercise pest control operations at the Second Party's sites as per the specifications and requirements in this agreement.</field>
+    </record>
+
 </odoo>

@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_fm_contract_wizard_user,fm.contract.wizard user,model_fm_contract_wizard,fm_branding.group_fm_user,1,1,1,1
 access_fm_contract_wizard_line_user,fm.contract.wizard.line user,model_fm_contract_wizard_line,fm_branding.group_fm_user,1,1,1,1
+access_fm_contract_wizard_schedule_user,fm.contract.wizard.schedule user,model_fm_contract_wizard_schedule,fm_branding.group_fm_user,1,1,1,1

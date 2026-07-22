@@ -241,6 +241,14 @@ class FmContract(models.Model):
         "template's Additional Terms, then freely editable/addable here "
         "without touching the shared template.",
     )
+    agreement_standalone = fields.Boolean(
+        string="Template Defines the Full Document",
+        help="Copied from the selected template. When on, the printed Service "
+        "Agreement renders THIS contract's article list (Additional Terms, "
+        "auto-numbered after the Duration article) as the whole document body "
+        "— matching each service's real structure — instead of the generic "
+        "18-article skeleton.",
+    )
 
     @api.onchange("service_line")
     def _onchange_service_line_agreement_template(self):
@@ -310,6 +318,10 @@ class FmContract(models.Model):
             for line in t.line_ids
         ] if t else []
         self.agreement_line_ids = [(5, 0, 0)] + new_lines
+        # A template with lines that "defines the full document" makes those
+        # lines the printed agreement's article list; without a template (or
+        # with a slot-filling template) the generic skeleton prints instead.
+        self.agreement_standalone = bool(t and t.replaces_standard_articles and t.line_ids)
 
     # Account team
     account_manager_id = fields.Many2one("res.users", string="Account Manager", required=True, tracking=True)
