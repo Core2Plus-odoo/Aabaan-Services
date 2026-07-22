@@ -131,6 +131,9 @@
                             </p>
                             <group>
                                 <field name="subject" placeholder="e.g. PEST CONTROL TREATMENT FOR ROYAL APARTMENT G+11"/>
+                                <field name="agreement_template_id"
+                                       placeholder="Generic wording (no template selected)"
+                                       options="{'no_create': True}"/>
                             </group>
                             <group>
                                 <group string="Scope &amp; Treatment">

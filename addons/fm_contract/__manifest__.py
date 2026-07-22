@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Contract",
-    "version": "19.0.1.3.1",
+    "version": "19.0.1.4.0",
     "category": "Facility Management",
     "summary": "AMC contracts, SLA rules, scope and renewal lifecycle",
     "description": """
@@ -26,6 +26,7 @@ Visits/work orders are native Field Service tasks linked by ``fm_fsm``
         "security/security.xml",
         "data/ir_sequence.xml",
         "views/fm_contract_service_item_views.xml",
+        "views/fm_contract_agreement_template_views.xml",
         "views/fm_sla_rule_views.xml",
         "views/fm_contract_views.xml",
         "views/fm_customer_views.xml",

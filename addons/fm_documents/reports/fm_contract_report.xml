@@ -26,11 +26,11 @@
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
-                    <div class="page" style="font-size:13px;">
+                    <div class="page" style="font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:12.5px; line-height:1.55; color:#2b2b2b;">
                         <div class="row mb-4">
                             <div class="col-7">
-                                <h2 class="mb-0" style="color:#1C2B3A;">Service Agreement</h2>
-                                <div style="font-size:13px; color:#666;" dir="rtl">اتفاقية الخدمة</div>
+                                <h2 class="mb-0" style="color:#1C2B3A; font-size:24px; font-weight:700;">Service Agreement</h2>
+                                <div style="font-size:13px; color:#777;" dir="rtl">اتفاقية الخدمة</div>
                             </div>
                             <div class="col-5">
                                 <table style="width:100%; border-collapse:collapse;">
@@ -82,14 +82,15 @@
                             </div>
                         </div>
 
-                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Article 1 — Duration of the Contract</h5>
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 1 — Duration of the Contract</h5>
                         <p>
                             This contract is valid from <span t-field="o.start_date"/>
                             to <span t-field="o.end_date"/>.
                         </p>
 
-                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Article 2 — Service</h5>
-                        <p>
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 2 — Service</h5>
+                        <p t-if="o.agreement_template_id.service_text" t-esc="o.agreement_template_id.service_text" style="white-space:pre-wrap;"/>
+                        <p t-else="">
                             <span t-field="o.company_id.name"/> agrees to supply the services described
                             below to the Second Party at the site stated above, in accordance with the
                             schedule detailed in this agreement. The First Party will ensure that
@@ -97,28 +98,30 @@
                             to do so.
                         </p>
 
-                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Article 3 — Scope of Work</h5>
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 3 — Scope of Work</h5>
                         <p t-if="o.scope_notes" t-esc="o.scope_notes" style="white-space:pre-wrap;"/>
                         <ul t-elif="o.service_inclusions">
                             <li t-foreach="o.service_inclusions" t-as="incl" t-esc="incl.name"/>
                         </ul>
+                        <p t-else="" class="text-muted">Scope of work as agreed with the Second Party for the site stated above.</p>
 
                         <p t-if="o.treatment_notes" style="white-space:pre-wrap;">
                             <strong>Treatment / Method:</strong> <span t-esc="o.treatment_notes"/>
                         </p>
 
-                        <table class="table table-sm mb-1" style="margin-top:14px; border-collapse:collapse; width:100%;">
+                        <t t-set="priced_lines" t-value="o.order_line.filtered(lambda l: not l.display_type)"/>
+                        <table t-if="priced_lines" class="table table-sm mb-1" style="margin-top:14px; border-collapse:collapse; width:100%; font-size:12px;">
                             <thead>
                                 <tr style="background:#1C2B3A; color:#fff;">
-                                    <th style="padding:6px 8px; border:1px solid #1C2B3A;">Description</th>
-                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; text-align:right;">Qty</th>
-                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; text-align:right;">Rate</th>
-                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; text-align:right;">Tax</th>
-                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; text-align:right;">Total</th>
+                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; font-weight:700;">Description</th>
+                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; font-weight:700; text-align:right;">Qty</th>
+                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; font-weight:700; text-align:right;">Rate</th>
+                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; font-weight:700; text-align:right;">Tax</th>
+                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; font-weight:700; text-align:right;">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="o.order_line" t-as="line" t-if="not line.display_type">
+                                <tr t-foreach="priced_lines" t-as="line">
                                     <td style="padding:6px 8px; border:1px solid #ddd;">
                                         <span t-field="line.name"/>
                                         <div class="text-muted" style="font-size:11px;">
@@ -136,15 +139,19 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <table style="width:45%; margin-left:auto; border-collapse:collapse;">
+                        <p t-else="" class="text-muted" style="margin-top:14px; border:1px dashed #ccc; padding:8px 10px; font-size:11px;">
+                            No priced service lines yet — add products via "Edit Products (Sales Order)" on the contract.
+                        </p>
+                        <table t-if="priced_lines" style="width:45%; margin-left:auto; border-collapse:collapse;">
                             <tr style="font-weight:bold; background:#fdf1e6;">
                                 <td style="padding:6px 8px; border:1px solid #EE7A22;">Total Amount</td>
                                 <td style="padding:6px 8px; border:1px solid #EE7A22; text-align:right;"><span t-field="o.amount_total"/></td>
                             </tr>
                         </table>
 
-                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Article 4 — Service Schedule</h5>
-                        <p>
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 4 — Service Schedule</h5>
+                        <p t-if="o.agreement_template_id.schedule_text" t-esc="o.agreement_template_id.schedule_text" style="white-space:pre-wrap;"/>
+                        <p t-else="">
                             The customer agrees to fulfil all technical guidelines requested by
                             <span t-field="o.company_id.name"/> to secure the best results. The Second
                             Party will make its representative available with the technicians during
@@ -152,7 +159,7 @@
                             treated on the next scheduled visit.
                         </p>
 
-                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Article 5 — Unscheduled Services and Conditions of Supply</h5>
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 5 — Unscheduled Services and Conditions of Supply</h5>
                         <p>
                             The First Party will attend to unscheduled services at the request of the
                             Second Party
@@ -164,13 +171,15 @@
                             service will be provided after quotation approval by the Second Party.
                         </p>
 
-                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Article 6 — Exclusions</h5>
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 6 — Exclusions</h5>
                         <ul t-if="o.service_exclusions">
                             <li t-foreach="o.service_exclusions" t-as="excl" t-esc="excl.name"/>
                         </ul>
+                        <p t-elif="o.agreement_template_id.exclusions_default_text"
+                           t-esc="o.agreement_template_id.exclusions_default_text" style="white-space:pre-wrap;"/>
                         <p t-else="">This contract excludes anything not explicitly listed under Article 3.</p>
 
-                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Article 7 — Commencement of Services</h5>
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 7 — Commencement of Services</h5>
                         <p>
                             The First Party will commence the agreed services within ten (10) days from
                             the date the Second Party signs this contract and returns it to the First
@@ -178,21 +187,21 @@
                             during the agreed hours.
                         </p>
 
-                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Article 8 — Contract Termination</h5>
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 8 — Contract Termination</h5>
                         <p>
                             At the end of the contract period, this contract remains valid and renews
                             under the same conditions unless cancelled by either party giving
                             <span t-esc="o.termination_notice_days or 30"/> days' written notice.
                         </p>
 
-                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Article 9 — Payment Terms</h5>
+                        <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 9 — Payment Terms</h5>
                         <p t-if="o.payment_terms_note" t-esc="o.payment_terms_note" style="white-space:pre-wrap;"/>
                         <p t-else="">
                             <span t-field="o.payment_term_id"/>
                         </p>
 
                         <t t-if="o.sla_rule_ids">
-                            <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Annex A — Service Levels</h5>
+                            <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Annex A — Service Levels</h5>
                             <table class="table table-sm mb-3" style="border-collapse:collapse; width:100%;">
                                 <thead>
                                     <tr style="background:#1C2B3A; color:#fff;">
