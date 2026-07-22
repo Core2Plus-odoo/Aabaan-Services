@@ -15,57 +15,80 @@
     <!-- Signable legal Service Agreement — mirrors the numbered-Article AMC
          contract format historically used (First/Second Party, scope,
          pricing table, standard terms, signature blocks), generated from the
-         contract's own data instead of a one-off Word/PDF per customer. -->
+         contract's own data instead of a one-off Word/PDF per customer.
+
+         NOTE for future editors: fm_branch.report_fm_contract_branch inherits
+         this template via an xpath anchored on the div with
+         t-field="o.company_id.partner_id" below — keep that attribute if you
+         edit this file, or fm_branch will fail to load on the next production
+         upgrade (see CLAUDE.md section 5 history / the 2026-07 hotfix). -->
     <template id="report_fm_contract_document">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
-                    <div class="page">
-                        <div class="row mb-3">
+                    <div class="page" style="font-size:13px;">
+                        <div class="row mb-4">
                             <div class="col-7">
-                                <h2 class="mb-0">Service Agreement</h2>
-                                <div style="font-size:14px;" dir="rtl">اتفاقية الخدمة</div>
-                                <div class="mt-2">
-                                    <strong t-esc="o.subject or (o.partner_id.name or '')"/>
-                                </div>
+                                <h2 class="mb-0" style="color:#1C2B3A;">Service Agreement</h2>
+                                <div style="font-size:13px; color:#666;" dir="rtl">اتفاقية الخدمة</div>
                             </div>
-                            <div class="col-5 text-end">
-                                <div><strong>Ref#:</strong> <span t-field="o.contract_number"/></div>
-                                <div><strong>Date:</strong> <span t-field="o.start_date"/></div>
+                            <div class="col-5">
+                                <table style="width:100%; border-collapse:collapse;">
+                                    <tr>
+                                        <td style="padding:3px 8px; border:1px solid #ddd; background:#f7f7f7; font-weight:bold;">Ref#</td>
+                                        <td style="padding:3px 8px; border:1px solid #ddd; text-align:right;"><span t-field="o.contract_number"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:3px 8px; border:1px solid #ddd; background:#f7f7f7; font-weight:bold;">Date</td>
+                                        <td style="padding:3px 8px; border:1px solid #ddd; text-align:right;"><span t-field="o.start_date"/></td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
 
-                        <div class="row mb-3">
+                        <div class="mb-4" style="border-left:4px solid #EE7A22; padding:6px 10px; background:#fafafa;">
+                            <strong t-esc="o.subject or (o.partner_id.name or '')"/>
+                        </div>
+
+                        <div class="row mb-4">
                             <div class="col-6">
-                                <strong>First Party</strong>
-                                <div t-field="o.company_id.partner_id"
-                                     t-options='{"widget": "contact", "fields": ["name", "address", "phone"]}'/>
-                                <div t-if="o.company_id.company_registry">
-                                    License No: <span t-field="o.company_id.company_registry"/>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <strong>Second Party</strong>
-                                <div t-field="o.partner_id"
-                                     t-options='{"widget": "contact", "fields": ["name", "address", "phone"]}'/>
-                                <t t-if="o.customer_contact_ids">
-                                    <div class="text-muted">
-                                        Contact: <span t-esc="o.customer_contact_ids[0].name"/>
-                                        <span t-if="o.customer_contact_ids[0].phone">
-                                            — <span t-field="o.customer_contact_ids[0].phone"/>
-                                        </span>
+                                <div style="border:1px solid #ddd; border-radius:3px;">
+                                    <div style="background:#1C2B3A; color:#fff; padding:4px 10px; font-weight:bold;">First Party</div>
+                                    <div style="padding:8px 10px;">
+                                        <div t-field="o.company_id.partner_id"
+                                             t-options='{"widget": "contact", "fields": ["name", "address", "phone"]}'/>
+                                        <div t-if="o.company_id.company_registry">
+                                            License No: <span t-field="o.company_id.company_registry"/>
+                                        </div>
                                     </div>
-                                </t>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div style="border:1px solid #ddd; border-radius:3px;">
+                                    <div style="background:#1C2B3A; color:#fff; padding:4px 10px; font-weight:bold;">Second Party</div>
+                                    <div style="padding:8px 10px;">
+                                        <div t-field="o.partner_id"
+                                             t-options='{"widget": "contact", "fields": ["name", "address", "phone"]}'/>
+                                        <t t-if="o.customer_contact_ids">
+                                            <div class="text-muted">
+                                                Contact: <span t-esc="o.customer_contact_ids[0].name"/>
+                                                <span t-if="o.customer_contact_ids[0].phone">
+                                                    — <span t-field="o.customer_contact_ids[0].phone"/>
+                                                </span>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <h5>Article 1 — Duration of the Contract</h5>
+                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Article 1 — Duration of the Contract</h5>
                         <p>
                             This contract is valid from <span t-field="o.start_date"/>
                             to <span t-field="o.end_date"/>.
                         </p>
 
-                        <h5>Article 2 — Service</h5>
+                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Article 2 — Service</h5>
                         <p>
                             <span t-field="o.company_id.name"/> agrees to supply the services described
                             below to the Second Party at the site stated above, in accordance with the
@@ -74,7 +97,7 @@
                             to do so.
                         </p>
 
-                        <h5>Article 3 — Scope of Work</h5>
+                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Article 3 — Scope of Work</h5>
                         <p t-if="o.scope_notes" t-esc="o.scope_notes" style="white-space:pre-wrap;"/>
                         <ul t-elif="o.service_inclusions">
                             <li t-foreach="o.service_inclusions" t-as="incl" t-esc="incl.name"/>
@@ -84,37 +107,43 @@
                             <strong>Treatment / Method:</strong> <span t-esc="o.treatment_notes"/>
                         </p>
 
-                        <table class="table table-sm o_main_table mb-1" style="margin-top:12px;">
+                        <table class="table table-sm mb-1" style="margin-top:14px; border-collapse:collapse; width:100%;">
                             <thead>
-                                <tr>
-                                    <th>Description</th>
-                                    <th class="text-end">Qty</th>
-                                    <th class="text-end">Rate</th>
-                                    <th class="text-end">Tax</th>
-                                    <th class="text-end">Total</th>
+                                <tr style="background:#1C2B3A; color:#fff;">
+                                    <th style="padding:6px 8px; border:1px solid #1C2B3A;">Description</th>
+                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; text-align:right;">Qty</th>
+                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; text-align:right;">Rate</th>
+                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; text-align:right;">Tax</th>
+                                    <th style="padding:6px 8px; border:1px solid #1C2B3A; text-align:right;">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr t-foreach="o.order_line" t-as="line" t-if="not line.display_type">
-                                    <td>
+                                    <td style="padding:6px 8px; border:1px solid #ddd;">
                                         <span t-field="line.name"/>
-                                        <div t-if="o.visit_frequency" class="text-muted" style="font-size:11px;">
-                                            Frequency: <span t-field="o.visit_frequency"/>
+                                        <div class="text-muted" style="font-size:11px;">
+                                            Frequency:
+                                            <span t-if="o.visit_frequency == 'custom'">
+                                                Every <t t-esc="o.custom_interval_days or 30"/> days
+                                            </span>
+                                            <span t-elif="o.visit_frequency" t-field="o.visit_frequency"/>
                                         </div>
                                     </td>
-                                    <td class="text-end"><span t-field="line.product_uom_qty"/></td>
-                                    <td class="text-end"><span t-field="line.price_unit"/></td>
-                                    <td class="text-end"><span t-field="line.price_tax"/></td>
-                                    <td class="text-end"><span t-field="line.price_total"/></td>
+                                    <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="line.product_uom_qty"/></td>
+                                    <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="line.price_unit"/></td>
+                                    <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="line.price_tax"/></td>
+                                    <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="line.price_total"/></td>
                                 </tr>
                             </tbody>
                         </table>
-                        <p class="text-end">
-                            <strong>Total Amount:</strong>
-                            <span t-field="o.amount_total"/>
-                        </p>
+                        <table style="width:45%; margin-left:auto; border-collapse:collapse;">
+                            <tr style="font-weight:bold; background:#fdf1e6;">
+                                <td style="padding:6px 8px; border:1px solid #EE7A22;">Total Amount</td>
+                                <td style="padding:6px 8px; border:1px solid #EE7A22; text-align:right;"><span t-field="o.amount_total"/></td>
+                            </tr>
+                        </table>
 
-                        <h5>Article 4 — Service Schedule</h5>
+                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Article 4 — Service Schedule</h5>
                         <p>
                             The customer agrees to fulfil all technical guidelines requested by
                             <span t-field="o.company_id.name"/> to secure the best results. The Second
@@ -123,7 +152,7 @@
                             treated on the next scheduled visit.
                         </p>
 
-                        <h5>Article 5 — Unscheduled Services and Conditions of Supply</h5>
+                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Article 5 — Unscheduled Services and Conditions of Supply</h5>
                         <p>
                             The First Party will attend to unscheduled services at the request of the
                             Second Party
@@ -135,13 +164,13 @@
                             service will be provided after quotation approval by the Second Party.
                         </p>
 
-                        <h5>Article 6 — Exclusions</h5>
+                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Article 6 — Exclusions</h5>
                         <ul t-if="o.service_exclusions">
                             <li t-foreach="o.service_exclusions" t-as="excl" t-esc="excl.name"/>
                         </ul>
                         <p t-else="">This contract excludes anything not explicitly listed under Article 3.</p>
 
-                        <h5>Article 7 — Commencement of Services</h5>
+                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Article 7 — Commencement of Services</h5>
                         <p>
                             The First Party will commence the agreed services within ten (10) days from
                             the date the Second Party signs this contract and returns it to the First
@@ -149,34 +178,34 @@
                             during the agreed hours.
                         </p>
 
-                        <h5>Article 8 — Contract Termination</h5>
+                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Article 8 — Contract Termination</h5>
                         <p>
                             At the end of the contract period, this contract remains valid and renews
                             under the same conditions unless cancelled by either party giving
                             <span t-esc="o.termination_notice_days or 30"/> days' written notice.
                         </p>
 
-                        <h5>Article 9 — Payment Terms</h5>
+                        <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Article 9 — Payment Terms</h5>
                         <p t-if="o.payment_terms_note" t-esc="o.payment_terms_note" style="white-space:pre-wrap;"/>
                         <p t-else="">
                             <span t-field="o.payment_term_id"/>
                         </p>
 
                         <t t-if="o.sla_rule_ids">
-                            <h5>Annex A — Service Levels</h5>
-                            <table class="table table-sm o_main_table mb-3">
+                            <h5 style="color:#1C2B3A; border-bottom:1px solid #ddd; padding-bottom:3px; margin-top:18px;">Annex A — Service Levels</h5>
+                            <table class="table table-sm mb-3" style="border-collapse:collapse; width:100%;">
                                 <thead>
-                                    <tr>
-                                        <th>Severity</th>
-                                        <th class="text-end">Response (min)</th>
-                                        <th class="text-end">Resolution (min)</th>
+                                    <tr style="background:#1C2B3A; color:#fff;">
+                                        <th style="padding:6px 8px; border:1px solid #1C2B3A;">Severity</th>
+                                        <th style="padding:6px 8px; border:1px solid #1C2B3A; text-align:right;">Response (min)</th>
+                                        <th style="padding:6px 8px; border:1px solid #1C2B3A; text-align:right;">Resolution (min)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr t-foreach="o.sla_rule_ids" t-as="s">
-                                        <td><span t-field="s.severity"/></td>
-                                        <td class="text-end"><span t-field="s.response_target_minutes"/></td>
-                                        <td class="text-end"><span t-field="s.resolution_target_minutes"/></td>
+                                        <td style="padding:6px 8px; border:1px solid #ddd;"><span t-field="s.severity"/></td>
+                                        <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="s.response_target_minutes"/></td>
+                                        <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="s.resolution_target_minutes"/></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -184,16 +213,22 @@
 
                         <div class="row mt-5" style="page-break-inside: avoid;">
                             <div class="col-6">
-                                <div><span t-field="o.partner_id.name"/></div>
-                                <div style="margin-top:40px; border-top:1px solid #000; width:70%;">Signature</div>
+                                <div style="border:1px solid #ddd; padding:10px; min-height:70px;">
+                                    <div style="color:#666;">Second Party</div>
+                                    <div><span t-field="o.partner_id.name"/></div>
+                                    <div style="margin-top:30px; border-top:1px solid #000; width:80%;">Signature</div>
+                                </div>
                             </div>
                             <div class="col-6">
-                                <div><span t-field="o.company_id.name"/></div>
-                                <div style="margin-top:40px; border-top:1px solid #000; width:70%;">Signature</div>
+                                <div style="border:1px solid #ddd; padding:10px; min-height:70px;">
+                                    <div style="color:#666;">First Party</div>
+                                    <div><span t-field="o.company_id.name"/></div>
+                                    <div style="margin-top:30px; border-top:1px solid #000; width:80%;">Signature</div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="text-muted mt-4" style="font-size:11px;">
+                        <div class="text-muted mt-4" style="font-size:11px; border-top:1px solid #ddd; padding-top:6px;">
                             TRN: <span t-field="o.company_id.vat"/> · All amounts in AED unless stated.
                         </div>
                     </div>
