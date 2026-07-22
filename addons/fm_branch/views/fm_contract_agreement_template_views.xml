@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_fm_contract_agreement_template_list_branch" model="ir.ui.view">
+        <field name="name">fm.contract.agreement.template.list.branch</field>
+        <field name="model">fm.contract.agreement.template</field>
+        <field name="inherit_id" ref="fm_contract.view_fm_contract_agreement_template_list"/>
+        <field name="arch" type="xml">
+            <field name="service_line" position="after">
+                <field name="branch_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_fm_contract_agreement_template_form_branch" model="ir.ui.view">
+        <field name="name">fm.contract.agreement.template.form.branch</field>
+        <field name="model">fm.contract.agreement.template</field>
+        <field name="inherit_id" ref="fm_contract.view_fm_contract_agreement_template_form"/>
+        <field name="arch" type="xml">
+            <field name="service_line" position="after">
+                <field name="branch_id"
+                       help="Restrict to one branch/Emirate for different governing-law or municipal wording; leave blank to use for any branch."/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

@@ -143,9 +143,41 @@ class FmContract(models.Model):
     agreement_template_id = fields.Many2one(
         "fm.contract.agreement.template",
         string="Agreement Wording Template",
-        help="Per-service wording (Service/Schedule/Scope-of-Work/Exclusions "
-        "clauses) used by the printed Quotation and Service Agreement. Leave "
-        "blank to use generic wording.",
+        help="Per-service (and per-branch, if fm_branch is installed) wording "
+        "used to seed the editable text below. Selecting a template copies its "
+        "wording into this contract's own fields — the shared template itself "
+        "is never changed, and you're free to edit your copy.",
+    )
+    # Per-contract editable copies of the template wording (see
+    # _onchange_agreement_template_id). Kept as separate fields — rather than
+    # reading the template live in the report — so editing one contract's
+    # wording never affects any other contract using the same template.
+    quotation_intro_text = fields.Text(
+        string="Quotation Intro (editable)",
+        help="Quotation greeting/intro paragraph. Copied from the selected "
+        "template; edit freely. Falls back to the template, then generic "
+        "wording, if left blank.",
+    )
+    scope_method_text = fields.Text(
+        string="Scope of Work Methodology (editable)",
+        help="Quotation's 'Scope of Work' methodology paragraph. Copied from "
+        "the selected template; edit freely.",
+    )
+    service_text = fields.Text(
+        string="Article 2 — Service (editable)",
+        help="Service Agreement Article 2 wording. Copied from the selected "
+        "template; edit freely.",
+    )
+    schedule_text = fields.Text(
+        string="Article 4 — Service Schedule (editable)",
+        help="Service Agreement Article 4 wording. Copied from the selected "
+        "template; edit freely.",
+    )
+    exclusions_text = fields.Text(
+        string="Default Exclusions (editable)",
+        help="Fallback Article 6 / Quotation exclusions wording, used only "
+        "when this contract has no Exclusions listed. Copied from the "
+        "selected template; edit freely.",
     )
 
     @api.onchange("asset_ids")
@@ -157,11 +189,29 @@ class FmContract(models.Model):
         lines = self.asset_ids.mapped("service_line")
         lines = [l for l in lines if l]
         if len(set(lines)) == 1:
-            template = self.env["fm.contract.agreement.template"].search(
-                [("service_line", "=", lines[0])], limit=1
-            )
+            template = self._find_agreement_template(lines[0])
             if template:
                 self.agreement_template_id = template.id
+
+    def _find_agreement_template(self, service_line):
+        """Hook for fm_branch to also match on branch/state; base
+        implementation matches on service line only."""
+        return self.env["fm.contract.agreement.template"].search(
+            [("service_line", "=", service_line)], limit=1
+        )
+
+    @api.onchange("agreement_template_id")
+    def _onchange_agreement_template_id(self):
+        """Copy the selected template's wording into this contract's own
+        editable fields. Deliberately replaces any prior manual edits —
+        selecting a (different) template is a deliberate "start from this"
+        action, not a passive default."""
+        t = self.agreement_template_id
+        self.quotation_intro_text = t.quotation_intro_text if t else False
+        self.scope_method_text = t.scope_method_text if t else False
+        self.service_text = t.service_text if t else False
+        self.schedule_text = t.schedule_text if t else False
+        self.exclusions_text = t.exclusions_default_text if t else False
 
     # Account team
     account_manager_id = fields.Many2one("res.users", string="Account Manager", required=True, tracking=True)

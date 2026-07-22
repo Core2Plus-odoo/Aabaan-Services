@@ -125,9 +125,8 @@
                         </page>
                         <page string="Printed Agreement" name="agreement">
                             <p class="text-muted">
-                                Wording used by the printed Service Agreement (Print &gt;
-                                Service Agreement). Leave a field blank to fall back to a
-                                sensible default.
+                                Wording used by the printed Quotation and Service Agreement.
+                                Leave a field blank to fall back to a sensible default.
                             </p>
                             <group>
                                 <field name="subject" placeholder="e.g. PEST CONTROL TREATMENT FOR ROYAL APARTMENT G+11"/>
@@ -135,6 +134,10 @@
                                        placeholder="Generic wording (no template selected)"
                                        options="{'no_create': True}"/>
                             </group>
+                            <p class="text-muted" invisible="not agreement_template_id">
+                                Selecting a template copies its wording into the fields below —
+                                edit them freely, your changes only affect this contract.
+                            </p>
                             <group>
                                 <group string="Scope &amp; Treatment">
                                     <field name="scope_notes" nolabel="1" placeholder="Areas/site covered..."/>
@@ -146,6 +149,13 @@
                                     <field name="termination_notice_days"/>
                                     <field name="complaint_response_hours"/>
                                 </group>
+                            </group>
+                            <group string="Editable Agreement Wording (from template, or write your own)">
+                                <field name="quotation_intro_text" nolabel="1" placeholder="Quotation greeting/intro paragraph..."/>
+                                <field name="scope_method_text" nolabel="1" placeholder="Quotation Scope of Work methodology..."/>
+                                <field name="service_text" nolabel="1" placeholder="Service Agreement Article 2 (Service)..."/>
+                                <field name="schedule_text" nolabel="1" placeholder="Service Agreement Article 4 (Service Schedule)..."/>
+                                <field name="exclusions_text" nolabel="1" placeholder="Default exclusions wording..."/>
                             </group>
                         </page>
                     </notebook>
