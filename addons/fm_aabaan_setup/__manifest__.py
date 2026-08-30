@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Aabaan Setup (UAE base config)",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "category": "Facility Management",
     "summary": "Safe base configuration for Aabaan: UAE working week (Mon–Fri), HR departments & job positions",
     "description": """
