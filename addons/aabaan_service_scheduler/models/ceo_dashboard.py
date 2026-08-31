@@ -2,7 +2,8 @@ from datetime import date
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import AccessError
 
 
 class AabaanCeoDashboard(models.AbstractModel):
@@ -16,11 +17,25 @@ class AabaanCeoDashboard(models.AbstractModel):
     _name = "aabaan.ceo.dashboard"
     _description = "Aabaan CEO Command Centre Data"
 
+    @api.model
+    def _check_dashboard_access(self):
+        """Enforce the dashboard's group boundary on the server.
+
+        The menu's ``groups=`` only hides the entry point in the UI. This
+        method is a public ``@api.model`` reachable over RPC by any
+        authenticated user, and the aggregation below runs under ``sudo()``,
+        so without this check the ACLs and record rules are bypassed.
+        """
+        if not (self.env.user.has_group("aabaan_service_scheduler.group_aabaan_service_ceo")
+                or self.env.user.has_group("sales_team.group_sale_manager")):
+            raise AccessError(_("Only Aabaan CEOs and Sales Managers can read the Command Centre."))
+
     # ------------------------------------------------------------------
     # Public entry point (called from the OWL client action via ORM)
     # ------------------------------------------------------------------
     @api.model
     def get_dashboard_data(self, period="ytd"):
+        self._check_dashboard_access()
         companies = self.env.companies
         currency = self.env.company.currency_id
         today = fields.Date.context_today(self)

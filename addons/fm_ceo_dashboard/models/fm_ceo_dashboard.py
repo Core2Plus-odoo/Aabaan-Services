@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from dateutil.relativedelta import relativedelta
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import AccessError
 
 HEALTH_BANDS = [
     ("healthy", "Healthy"),
@@ -24,7 +25,20 @@ class FmCeoDashboard(models.AbstractModel):
     _description = "FM CEO Dashboard Data"
 
     @api.model
+    def _check_dashboard_access(self):
+        """Enforce the dashboard's group boundary on the server.
+
+        The menu's ``groups=`` only hides the entry point in the UI. This
+        method is a public ``@api.model`` reachable over RPC by any
+        authenticated user, and the aggregation below runs under ``sudo()``,
+        so without this check the ACLs and record rules are bypassed.
+        """
+        if not self.env.user.has_group("fm_branding.group_fm_account_manager"):
+            raise AccessError(_("Only FM Account Managers can read the CEO dashboard."))
+
+    @api.model
     def get_ceo_data(self, branch_id=None):
+        self._check_dashboard_access()
         companies = self.env.companies
         company = self.env.company
         currency = company.currency_id
