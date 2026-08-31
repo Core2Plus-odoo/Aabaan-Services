@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from datetime import date, timedelta
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import AccessError
 
 # Status model shown on the calendar (key, label, colour).
 STATUSES = [
@@ -23,7 +24,20 @@ class FmSupervisorDashboard(models.AbstractModel):
     _description = "FM Supervisor Dashboard Data"
 
     @api.model
+    def _check_dashboard_access(self):
+        """Enforce the dashboard's group boundary on the server.
+
+        The menu's ``groups=`` only hides the entry point in the UI. This
+        method is a public ``@api.model`` reachable over RPC by any
+        authenticated user, and the aggregation below runs under ``sudo()``,
+        so without this check the ACLs and record rules are bypassed.
+        """
+        if not self.env.user.has_group("fm_branding.group_fm_dispatcher"):
+            raise AccessError(_("Only FM Dispatchers can read the supervisor dashboard."))
+
+    @api.model
     def get_board_data(self, month_start=None, technician_id=None, service_line=None, branch_id=None):
+        self._check_dashboard_access()
         Task = self.env["project.task"].sudo()
         companies = self.env.companies
         today = fields.Date.context_today(self)
