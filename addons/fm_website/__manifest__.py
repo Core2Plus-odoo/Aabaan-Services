@@ -1,6 +1,6 @@
 {
     'name': 'Aabaan Website',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.1.0',
     'category': 'Website',
     'summary': 'Public website for Aabaan Services — pages, brand styling, enquiry routing',
     'description': """

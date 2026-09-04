@@ -25,11 +25,11 @@
         <field name="city">Ajman</field>
     </record>
 
-    <record id="branch_abu_dhabi" model="fm.branch">
-        <field name="name">Aabaan Services — Abu Dhabi</field>
-        <field name="code">AUH</field>
-        <field name="emirate">abu_dhabi</field>
-        <field name="city">Abu Dhabi</field>
+    <record id="branch_fujairah" model="fm.branch">
+        <field name="name">Aabaan Services — Fujairah</field>
+        <field name="code">FUJ</field>
+        <field name="emirate">fujairah</field>
+        <field name="city">Fujairah</field>
     </record>
 
 </odoo>

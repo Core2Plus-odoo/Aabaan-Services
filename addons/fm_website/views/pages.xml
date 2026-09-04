@@ -180,7 +180,7 @@
                                 <a class="fm-branch__tel" href="tel:80022226">800 22226</a>
                             </article>
                             <article class="fm-branch">
-                                <h3 class="fm-branch__city">Abu Dhabi</h3>
+                                <h3 class="fm-branch__city">Fujairah</h3>
                                 <p class="fm-branch__addr">Branch office</p>
                                 <a class="fm-branch__tel" href="tel:80022226">800 22226</a>
                             </article>
@@ -526,7 +526,7 @@
                                     <p class="fm-office__addr">Branch office</p>
                                 </article>
                                 <article class="fm-office">
-                                    <h3 class="fm-office__city">Abu Dhabi</h3>
+                                    <h3 class="fm-office__city">Fujairah</h3>
                                     <p class="fm-office__addr">Branch office</p>
                                 </article>
                             </div>

@@ -69,7 +69,7 @@ repository or to the licences (Rule 4):
 | 800 AABAN, mobiles, email | Brand contacts in `CLAUDE.md` |
 | One trade licence per emirate | The licence documents (Ajman, Dubai, Sharjah) |
 
-Sharjah, Ajman and Abu Dhabi show as offices without street addresses because
+Sharjah, Ajman and Fujairah show as offices without street addresses because
 none are recorded in the repo. Fill them in on the Contact page in the editor
 when you have them — that is a content edit, not a code change.
 

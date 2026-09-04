@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Aabaan Configuration",
-    "version": "19.0.1.3.0",
+    "version": "19.0.1.4.0",
     "category": "Facility Management",
     "summary": "Aabaan-ready seed data: branches, service catalogue, asset categories and UAE compliance regimes",
     "description": """
@@ -9,7 +9,7 @@ FM Platform — Aabaan configuration & seed data
 ==============================================
 Turns the generic FM platform into an out-of-the-box **Aabaan Services** setup:
 
-* **Branches** — Aabaan's UAE operating offices (Dubai, Sharjah, Ajman, Abu Dhabi).
+* **Branches** — Aabaan's UAE operating offices (Dubai, Sharjah, Ajman, Fujairah).
 * **Asset categories** — one per Aabaan service line (pest control, cleaning,
   water-tank cleaning, AC/HVAC, plumbing) with sensible PPM cadences.
 * **UAE compliance regimes** — Dubai Municipality pest-control permit, water-tank
