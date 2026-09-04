@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Shared blocks. Everything else lives inline in its page so staff can
+        edit it in Odoo's page editor without the change leaking onto other
+        pages. Only genuinely repeated blocks are t-called.
+    -->
+
+    <!-- The credentials strip. This is the spine of the whole site: in UAE
+         facility management the differentiator is documented compliance, not
+         adjectives. Every item below is a real regime seeded in
+         fm_aabaan_config/data/fm_compliance_regime_data.xml. -->
+    <template id="compliance_strip" name="Aabaan: compliance strip">
+        <section class="fm-strip">
+            <div class="container">
+                <p class="fm-strip__lead">Licensed, permitted and certified work</p>
+                <ul class="fm-strip__list">
+                    <li>
+                        <span class="fm-strip__label">Dubai Municipality</span>
+                        <span class="fm-strip__detail">Pest control permit</span>
+                    </li>
+                    <li>
+                        <span class="fm-strip__label">Civil Defence</span>
+                        <span class="fm-strip__detail">Fire &amp; life safety inspection</span>
+                    </li>
+                    <li>
+                        <span class="fm-strip__label">Water quality</span>
+                        <span class="fm-strip__detail">Tank cleaning &amp; disinfection certificate</span>
+                    </li>
+                    <li>
+                        <span class="fm-strip__label">Local Order No. 11</span>
+                        <span class="fm-strip__detail">Pesticide handling &amp; records (2003)</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </template>
+
+    <!-- Closing call to action. The 800 number leads because a facility
+         manager with a burst pipe phones; they do not fill in a form. -->
+    <template id="contact_band" name="Aabaan: contact band">
+        <section class="fm-cta">
+            <div class="container">
+                <div class="fm-cta__inner">
+                    <div class="fm-cta__copy">
+                        <h2 class="fm-cta__title">Tell us about your building.</h2>
+                        <p class="fm-cta__text">
+                            A site survey, a written scope and a fixed quotation —
+                            before any work is scheduled.
+                        </p>
+                    </div>
+                    <div class="fm-cta__actions">
+                        <a href="tel:80022226" class="fm-btn fm-btn--solid">800 AABAN (800 22226)</a>
+                        <a href="/contact-us" class="fm-btn fm-btn--ghost">Request a quotation</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+
+</odoo>

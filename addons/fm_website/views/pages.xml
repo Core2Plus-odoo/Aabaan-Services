@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ HOME -->
+    <template id="page_home_view" name="Home">
+        <t t-call="website.layout">
+            <div id="wrap" class="fm-site">
+                <div class="oe_structure"/>
+
+                <section class="fm-hero">
+                    <div class="container">
+                        <p class="fm-hero__eyebrow">Facility Management · United Arab Emirates</p>
+                        <h1 class="fm-hero__title">
+                            Buildings kept clean,<br/>safe and certified.
+                        </h1>
+                        <p class="fm-hero__lead">
+                            Aabaan Services maintains residential, commercial and
+                            industrial properties across four emirates — pest control,
+                            water tank disinfection, cleaning, HVAC and plumbing — on
+                            scheduled contracts, with the permits and certificates the
+                            authorities ask for.
+                        </p>
+                        <div class="fm-hero__actions">
+                            <a href="/contact-us" class="fm-btn fm-btn--solid">Request a quotation</a>
+                            <a href="/services" class="fm-btn fm-btn--outline">See our services</a>
+                        </div>
+                        <p class="fm-hero__phone">
+                            or call <a href="tel:80022226">800 AABAN — 800 22226</a>
+                        </p>
+                    </div>
+                </section>
+
+                <t t-call="fm_website.compliance_strip"/>
+
+                <section class="fm-section">
+                    <div class="container">
+                        <div class="fm-section__head">
+                            <p class="fm-eyebrow">What we do</p>
+                            <h2 class="fm-section__title">Seven service lines, one contract.</h2>
+                            <p class="fm-section__lead">
+                                Most buildings need several of these at different
+                                intervals. We run them from a single annual maintenance
+                                contract, on one schedule, with one point of contact.
+                            </p>
+                        </div>
+                        <div class="fm-grid fm-grid--services">
+                            <article class="fm-card" data-svc="pest">
+                                <h3 class="fm-card__title">Pest Control</h3>
+                                <p class="fm-card__text">
+                                    General pest treatment on a recurring schedule, under a
+                                    Dubai Municipality operator permit, with the pesticide
+                                    records Local Order No. 11 requires.
+                                </p>
+                            </article>
+                            <article class="fm-card" data-svc="pest">
+                                <h3 class="fm-card__title">Anti-Termite Treatment</h3>
+                                <p class="fm-card__text">
+                                    Pre- and post-construction soil and structural treatment,
+                                    issued with a warranty certificate.
+                                </p>
+                            </article>
+                            <article class="fm-card" data-svc="plumbing">
+                                <h3 class="fm-card__title">Water Tank Cleaning &amp; Disinfection</h3>
+                                <p class="fm-card__text">
+                                    Drain, scrub, disinfect and refill, closed out with a
+                                    water-quality certificate for the building file.
+                                </p>
+                            </article>
+                            <article class="fm-card" data-svc="cleaning">
+                                <h3 class="fm-card__title">Deep Cleaning</h3>
+                                <p class="fm-card__text">
+                                    One-off restorative cleaning for handover, post-fit-out
+                                    or seasonal reset — kitchens, sanitary areas, façades.
+                                </p>
+                            </article>
+                            <article class="fm-card" data-svc="cleaning">
+                                <h3 class="fm-card__title">Building &amp; Facility Cleaning</h3>
+                                <p class="fm-card__text">
+                                    Daily or periodic housekeeping of common areas, with a
+                                    named team and a written scope per visit.
+                                </p>
+                            </article>
+                            <article class="fm-card" data-svc="hvac">
+                                <h3 class="fm-card__title">AC / HVAC Maintenance</h3>
+                                <p class="fm-card__text">
+                                    Planned servicing of split, ducted and package units —
+                                    coil cleaning, filters, gas, drainage — plus breakdown
+                                    attendance.
+                                </p>
+                            </article>
+                            <article class="fm-card" data-svc="plumbing">
+                                <h3 class="fm-card__title">Plumbing &amp; Sanitary</h3>
+                                <p class="fm-card__text">
+                                    Leaks, blockages, fixtures and drainage, on call-out or
+                                    inside a maintenance contract.
+                                </p>
+                            </article>
+                            <article class="fm-card fm-card--feature">
+                                <h3 class="fm-card__title">Annual Maintenance Contract</h3>
+                                <p class="fm-card__text">
+                                    Comprehensive cover combining the services your property
+                                    actually needs, at a fixed annual price.
+                                </p>
+                                <a href="/services" class="fm-card__link">How a contract works →</a>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="fm-section fm-section--tint">
+                    <div class="container">
+                        <div class="fm-section__head">
+                            <p class="fm-eyebrow">How a contract runs</p>
+                            <h2 class="fm-section__title">You should never have to ask what happened on site.</h2>
+                        </div>
+                        <ol class="fm-steps">
+                            <li class="fm-step">
+                                <span class="fm-step__num">01</span>
+                                <h3 class="fm-step__title">Survey and scope</h3>
+                                <p class="fm-step__text">
+                                    We walk the property, agree what is covered and what is
+                                    excluded in writing, and quote against that scope.
+                                </p>
+                            </li>
+                            <li class="fm-step">
+                                <span class="fm-step__num">02</span>
+                                <h3 class="fm-step__title">Scheduled visits</h3>
+                                <p class="fm-step__text">
+                                    Visits are planned for the whole contract term up front,
+                                    so you know the dates before the year starts.
+                                </p>
+                            </li>
+                            <li class="fm-step">
+                                <span class="fm-step__num">03</span>
+                                <h3 class="fm-step__title">After-service report</h3>
+                                <p class="fm-step__text">
+                                    Every visit closes with a signed report: what was done,
+                                    what was used, what needs attention next.
+                                </p>
+                            </li>
+                            <li class="fm-step">
+                                <span class="fm-step__num">04</span>
+                                <h3 class="fm-step__title">Certificates and renewal</h3>
+                                <p class="fm-step__text">
+                                    Certificates are issued where the work calls for one, and
+                                    we flag renewals before they lapse rather than after.
+                                </p>
+                            </li>
+                        </ol>
+                    </div>
+                </section>
+
+                <section class="fm-section">
+                    <div class="container">
+                        <div class="fm-section__head">
+                            <p class="fm-eyebrow">Where we work</p>
+                            <h2 class="fm-section__title">Four emirates, local teams.</h2>
+                            <p class="fm-section__lead">
+                                Each emirate licenses its own trades, so each branch holds
+                                its own licence and its own crew. Nobody is dispatched
+                                across the country to reach you.
+                            </p>
+                        </div>
+                        <div class="fm-grid fm-grid--branches">
+                            <article class="fm-branch">
+                                <h3 class="fm-branch__city">Dubai</h3>
+                                <p class="fm-branch__addr">
+                                    Safiya Building, Bin Saloom,<br/>Hor Al Anz, Deira
+                                </p>
+                                <a class="fm-branch__tel" href="tel:0555229706">055 522 9706</a>
+                            </article>
+                            <article class="fm-branch">
+                                <h3 class="fm-branch__city">Sharjah</h3>
+                                <p class="fm-branch__addr">Branch office</p>
+                                <a class="fm-branch__tel" href="tel:80022226">800 22226</a>
+                            </article>
+                            <article class="fm-branch">
+                                <h3 class="fm-branch__city">Ajman</h3>
+                                <p class="fm-branch__addr">Head office</p>
+                                <a class="fm-branch__tel" href="tel:80022226">800 22226</a>
+                            </article>
+                            <article class="fm-branch">
+                                <h3 class="fm-branch__city">Abu Dhabi</h3>
+                                <p class="fm-branch__addr">Branch office</p>
+                                <a class="fm-branch__tel" href="tel:80022226">800 22226</a>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+
+                <t t-call="fm_website.contact_band"/>
+                <div class="oe_structure"/>
+            </div>
+        </t>
+    </template>
+
+    <!-- ======================================================== SERVICES -->
+    <template id="page_services_view" name="Services">
+        <t t-call="website.layout">
+            <div id="wrap" class="fm-site">
+                <div class="oe_structure"/>
+
+                <section class="fm-pagehead">
+                    <div class="container">
+                        <p class="fm-eyebrow fm-eyebrow--light">Services</p>
+                        <h1 class="fm-pagehead__title">What we maintain, and how.</h1>
+                        <p class="fm-pagehead__lead">
+                            Each line below can be bought on its own or folded into one
+                            annual maintenance contract. The scope is written down before
+                            work starts — including what is excluded.
+                        </p>
+                    </div>
+                </section>
+
+                <section class="fm-section">
+                    <div class="container">
+                        <div class="fm-detail">
+                            <div class="fm-detail__aside" data-svc="pest">
+                                <h2 class="fm-detail__title">Pest Control</h2>
+                                <p class="fm-detail__tag">Permitted work</p>
+                            </div>
+                            <div class="fm-detail__body">
+                                <p>
+                                    Cockroaches, rodents, bedbugs, ants and flying insects,
+                                    treated on a recurring schedule rather than as one-off
+                                    call-outs — which is what actually breaks a breeding cycle.
+                                </p>
+                                <p>
+                                    Carried out under a Dubai Municipality pest control
+                                    operator permit. Pesticides used, quantities and methods
+                                    are recorded per visit as Local Order No. 11 of 2003
+                                    requires, and the record is yours as much as ours.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="fm-detail">
+                            <div class="fm-detail__aside" data-svc="pest">
+                                <h2 class="fm-detail__title">Anti-Termite Treatment</h2>
+                                <p class="fm-detail__tag">Warranty certificate</p>
+                            </div>
+                            <div class="fm-detail__body">
+                                <p>
+                                    Soil treatment before slab casting, and structural
+                                    treatment for existing buildings showing activity.
+                                    Completed treatments are issued with a warranty
+                                    certificate stating the term and what it covers.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="fm-detail">
+                            <div class="fm-detail__aside" data-svc="plumbing">
+                                <h2 class="fm-detail__title">Water Tank Cleaning &amp; Disinfection</h2>
+                                <p class="fm-detail__tag">Certificate issued</p>
+                            </div>
+                            <div class="fm-detail__body">
+                                <p>
+                                    Draining, manual scrubbing of walls and base, removal of
+                                    sediment, disinfection and refill — for roof tanks,
+                                    ground tanks and underground reservoirs.
+                                </p>
+                                <p>
+                                    Closed out with a water tank cleaning and disinfection
+                                    certificate for the building file, which is what a
+                                    municipality inspection or an owners association will
+                                    ask you to produce.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="fm-detail">
+                            <div class="fm-detail__aside" data-svc="cleaning">
+                                <h2 class="fm-detail__title">Deep Cleaning</h2>
+                                <p class="fm-detail__tag">One-off</p>
+                            </div>
+                            <div class="fm-detail__body">
+                                <p>
+                                    A restorative clean rather than a routine one: kitchens
+                                    and sanitary areas taken back to surface, floors treated,
+                                    glass and façade-accessible areas included. Usual triggers
+                                    are handover, the end of a fit-out, or a tenancy change.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="fm-detail">
+                            <div class="fm-detail__aside" data-svc="cleaning">
+                                <h2 class="fm-detail__title">Building &amp; Facility Cleaning</h2>
+                                <p class="fm-detail__tag">Recurring</p>
+                            </div>
+                            <div class="fm-detail__body">
+                                <p>
+                                    Daily, weekly or periodic housekeeping of lobbies,
+                                    corridors, staircases, lifts, parking and common
+                                    sanitary areas, with a named team and a written scope
+                                    for each visit so nothing quietly drops off the round.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="fm-detail">
+                            <div class="fm-detail__aside" data-svc="hvac">
+                                <h2 class="fm-detail__title">AC / HVAC Maintenance</h2>
+                                <p class="fm-detail__tag">Planned + breakdown</p>
+                            </div>
+                            <div class="fm-detail__body">
+                                <p>
+                                    Planned servicing of split, ducted and package units:
+                                    coil and filter cleaning, gas check, drain line clearing,
+                                    electrical and thermostat checks. Breakdown attendance
+                                    sits inside the same contract, so a failure is not a
+                                    separate negotiation.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="fm-detail">
+                            <div class="fm-detail__aside" data-svc="plumbing">
+                                <h2 class="fm-detail__title">Plumbing &amp; Sanitary</h2>
+                                <p class="fm-detail__tag">Planned + breakdown</p>
+                            </div>
+                            <div class="fm-detail__body">
+                                <p>
+                                    Leak tracing and repair, blocked drains and traps, taps,
+                                    cisterns, mixers and water heaters, pumps and drainage
+                                    lines — as a call-out or as part of a maintenance contract.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="fm-detail fm-detail--amc">
+                            <div class="fm-detail__aside">
+                                <h2 class="fm-detail__title">Annual Maintenance Contract</h2>
+                                <p class="fm-detail__tag">Comprehensive</p>
+                            </div>
+                            <div class="fm-detail__body">
+                                <p>
+                                    One agreement covering the services your property needs,
+                                    at a fixed annual price, with the visit calendar set at
+                                    signing. You get one schedule, one invoice and one number
+                                    to call instead of a supplier per trade.
+                                </p>
+                                <p>
+                                    The contract states the visit frequency per service, what
+                                    is included, what is excluded, and what happens on an
+                                    unscheduled call-out — before you sign it, not after.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <t t-call="fm_website.contact_band"/>
+                <div class="oe_structure"/>
+            </div>
+        </t>
+    </template>
+
+    <!-- ====================================================== COMPLIANCE -->
+    <template id="page_compliance_view" name="Compliance">
+        <t t-call="website.layout">
+            <div id="wrap" class="fm-site">
+                <div class="oe_structure"/>
+
+                <section class="fm-pagehead">
+                    <div class="container">
+                        <p class="fm-eyebrow fm-eyebrow--light">Compliance</p>
+                        <h1 class="fm-pagehead__title">The paperwork is the deliverable.</h1>
+                        <p class="fm-pagehead__lead">
+                            In UAE facility management, work that is not documented may as
+                            well not have happened — an inspector, an owners association or
+                            an insurer will ask for the certificate, not the invoice. So we
+                            treat the record as part of the job.
+                        </p>
+                    </div>
+                </section>
+
+                <section class="fm-section">
+                    <div class="container">
+                        <div class="fm-section__head">
+                            <p class="fm-eyebrow">What you receive</p>
+                            <h2 class="fm-section__title">Documents, and when they are issued.</h2>
+                        </div>
+                        <div class="fm-grid fm-grid--docs">
+                            <article class="fm-doc">
+                                <h3 class="fm-doc__title">After-service report</h3>
+                                <p class="fm-doc__when">Every visit</p>
+                                <p class="fm-doc__text">
+                                    Signed on site. States the work performed, the materials
+                                    and chemicals used, and anything found that needs
+                                    attention before the next visit.
+                                </p>
+                            </article>
+                            <article class="fm-doc">
+                                <h3 class="fm-doc__title">Water tank cleaning &amp; disinfection certificate</h3>
+                                <p class="fm-doc__when">On completion</p>
+                                <p class="fm-doc__text">
+                                    Issued after tank cleaning and disinfection, for the
+                                    building file and for municipality or association
+                                    inspection.
+                                </p>
+                            </article>
+                            <article class="fm-doc">
+                                <h3 class="fm-doc__title">Pesticide usage record</h3>
+                                <p class="fm-doc__when">Every treatment</p>
+                                <p class="fm-doc__text">
+                                    Product, quantity and method logged per visit, kept as
+                                    Dubai Municipality Local Order No. 11 of 2003 requires.
+                                </p>
+                            </article>
+                            <article class="fm-doc">
+                                <h3 class="fm-doc__title">Anti-termite warranty certificate</h3>
+                                <p class="fm-doc__when">On completion</p>
+                                <p class="fm-doc__text">
+                                    States the treatment applied, the warranty term and what
+                                    the warranty does and does not cover.
+                                </p>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="fm-section fm-section--tint">
+                    <div class="container">
+                        <div class="fm-section__head">
+                            <p class="fm-eyebrow">Permits and inspections we work under</p>
+                            <h2 class="fm-section__title">Held, tracked and renewed before they lapse.</h2>
+                            <p class="fm-section__lead">
+                                Our own permits are diarised the same way your certificates
+                                are: an expiry raises a renewal task ahead of the date, not
+                                a scramble after it.
+                            </p>
+                        </div>
+                        <ul class="fm-regimes">
+                            <li class="fm-regime">
+                                <span class="fm-regime__auth">Dubai Municipality</span>
+                                <span class="fm-regime__name">Pest control operator permit</span>
+                                <span class="fm-regime__note">Renewed on cycle</span>
+                            </li>
+                            <li class="fm-regime">
+                                <span class="fm-regime__auth">Civil Defence</span>
+                                <span class="fm-regime__name">Fire &amp; life-safety inspection</span>
+                                <span class="fm-regime__note">Annual</span>
+                            </li>
+                            <li class="fm-regime">
+                                <span class="fm-regime__auth">Dubai Municipality</span>
+                                <span class="fm-regime__name">Local Order No. 11 of 2003 — pesticide handling and records</span>
+                                <span class="fm-regime__note">Per treatment</span>
+                            </li>
+                            <li class="fm-regime">
+                                <span class="fm-regime__auth">Trade licences</span>
+                                <span class="fm-regime__name">One per emirate we operate in</span>
+                                <span class="fm-regime__note">Dubai · Sharjah · Ajman</span>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+                <t t-call="fm_website.contact_band"/>
+                <div class="oe_structure"/>
+            </div>
+        </t>
+    </template>
+
+    <!-- ========================================================= CONTACT -->
+    <template id="page_contact_view" name="Contact">
+        <t t-call="website.layout">
+            <div id="wrap" class="fm-site">
+                <div class="oe_structure"/>
+
+                <section class="fm-pagehead">
+                    <div class="container">
+                        <p class="fm-eyebrow fm-eyebrow--light">Contact</p>
+                        <h1 class="fm-pagehead__title">Talk to someone who can send a team.</h1>
+                        <p class="fm-pagehead__lead">
+                            For a quotation we will usually want to see the property first.
+                            For a breakdown, phone — it is faster than anything else on this
+                            page.
+                        </p>
+                    </div>
+                </section>
+
+                <section class="fm-section">
+                    <div class="container">
+                        <div class="fm-contact">
+                            <div class="fm-contact__primary">
+                                <p class="fm-eyebrow">Toll free</p>
+                                <a class="fm-contact__hero" href="tel:80022226">800 AABAN</a>
+                                <p class="fm-contact__sub">800 22226</p>
+
+                                <div class="fm-contact__rows">
+                                    <div class="fm-contact__row">
+                                        <span class="fm-contact__label">Mobile</span>
+                                        <a href="tel:0558598834">055 859 8834</a>
+                                    </div>
+                                    <div class="fm-contact__row">
+                                        <span class="fm-contact__label">Mobile</span>
+                                        <a href="tel:0558666530">055 866 6530</a>
+                                    </div>
+                                    <div class="fm-contact__row">
+                                        <span class="fm-contact__label">Dubai branch</span>
+                                        <a href="tel:0555229706">055 522 9706</a>
+                                    </div>
+                                    <div class="fm-contact__row">
+                                        <span class="fm-contact__label">Email</span>
+                                        <a href="mailto:infoaabanservices@gmail.com">infoaabanservices@gmail.com</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="fm-contact__branches">
+                                <p class="fm-eyebrow">Offices</p>
+                                <article class="fm-office">
+                                    <h3 class="fm-office__city">Dubai</h3>
+                                    <p class="fm-office__addr">
+                                        Safiya Building, Bin Saloom,<br/>Hor Al Anz, Deira, Dubai
+                                    </p>
+                                </article>
+                                <article class="fm-office">
+                                    <h3 class="fm-office__city">Ajman</h3>
+                                    <p class="fm-office__addr">Head office</p>
+                                </article>
+                                <article class="fm-office">
+                                    <h3 class="fm-office__city">Sharjah</h3>
+                                    <p class="fm-office__addr">Branch office</p>
+                                </article>
+                                <article class="fm-office">
+                                    <h3 class="fm-office__city">Abu Dhabi</h3>
+                                    <p class="fm-office__addr">Branch office</p>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="oe_structure"/>
+            </div>
+        </t>
+    </template>
+
+</odoo>
