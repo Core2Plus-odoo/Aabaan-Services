@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
-from odoo import api, fields, models
+from odoo import api, models
 
 
 class FmContract(models.Model):
-    _inherit = "fm.contract"
+    """Branch-aware contract behaviour.
 
-    branch_id = fields.Many2one("fm.branch", string="Branch", index=True, tracking=True)
+    ``branch_id`` itself is defined on ``sale.order`` (see sale_order.py)
+    and reaches this model through the ``_inherits`` delegation, so the
+    same value shows on the contract in FM and on the order in Sales.
+    Defining it here as well would shadow that one and split the contract
+    across two branches.
+    """
+
+    _inherit = "fm.contract"
 
     @api.onchange("branch_id")
     def _onchange_branch_id_agreement_template(self):

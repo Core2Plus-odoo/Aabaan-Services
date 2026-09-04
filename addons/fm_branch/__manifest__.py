@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Branch",
-    "version": "19.0.1.4.0",
+    "version": "19.0.2.0.0",
     "category": "Facility Management",
     "summary": "Aabaan operating branches (emirate offices) on contracts, work orders and technicians",
     "description": """
@@ -25,6 +25,7 @@ template can be scoped to a branch, a service line, both, or neither.
     "data": [
         "security/ir.model.access.csv",
         "views/fm_branch_views.xml",
+        "views/sale_order_views.xml",
         "views/fm_contract_views.xml",
         "views/fm_contract_agreement_template_views.xml",
         "views/fm_contract_wizard_views.xml",

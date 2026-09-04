@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Branch on the quotation / order in the Sales app, where contracts
+         are also written up. Same field the FM contract shows, reached
+         there through the fm.contract _inherits delegation. -->
+
+    <record id="view_order_form_branch" model="ir.ui.view">
+        <field name="name">sale.order.form.fm.branch</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="branch_id" options="{'no_create': True}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_order_list_branch" model="ir.ui.view">
+        <field name="name">sale.order.list.fm.branch</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="branch_id" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- The Quotations list (sale.view_quotation_tree_with_onboarding) is
+         deliberately not extended: that xmlid is not used anywhere else in
+         this codebase, so it is unverified on this build, and a bad
+         inherit_id fails the whole upgrade. The three views below are all
+         proven in production. -->
+
+    <record id="view_sales_order_filter_branch" model="ir.ui.view">
+        <field name="name">sale.order.search.fm.branch</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.sale_order_view_search_inherit_sale"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="branch_id"/>
+                <filter name="fm_group_branch" string="Branch"
+                        context="{'group_by': 'branch_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

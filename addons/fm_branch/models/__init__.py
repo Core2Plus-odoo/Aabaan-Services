@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from . import fm_branch
+from . import sale_order
 from . import fm_contract
 from . import fm_contract_agreement_template
 from . import fm_contract_wizard
