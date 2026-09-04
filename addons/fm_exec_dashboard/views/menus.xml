@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_fm_exec_dashboard" model="ir.actions.client">
+        <field name="name">CEO Dashboard</field>
+        <field name="tag">fm_exec_dashboard</field>
+    </record>
+
+    <!-- Under the FM app root, restricted to management. Sequence 3 puts it
+         after fm_ceo_dashboard's portfolio view (sequence 2) rather than
+         replacing it: the two answer different questions. -->
+    <menuitem id="menu_fm_exec_dashboard"
+              name="CEO Dashboard — Finance"
+              parent="fm_asset.menu_fm_root"
+              action="action_fm_exec_dashboard"
+              sequence="3"
+              groups="fm_branding.group_fm_account_manager"/>
+
+</odoo>
