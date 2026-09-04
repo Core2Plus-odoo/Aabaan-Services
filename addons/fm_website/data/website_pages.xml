@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!--
+            website.page records make the templates reachable URLs. noupdate
+            so an upgrade never un-publishes a page or resets a URL someone
+            changed in the page editor. The templates themselves stay
+            updatable, which is what lets us ship design fixes.
+        -->
+
+        <record id="page_home" model="website.page">
+            <field name="view_id" ref="fm_website.page_home_view"/>
+            <field name="url">/home</field>
+            <field name="is_published" eval="True"/>
+        </record>
+
+        <record id="page_services" model="website.page">
+            <field name="view_id" ref="fm_website.page_services_view"/>
+            <field name="url">/services</field>
+            <field name="is_published" eval="True"/>
+        </record>
+
+        <record id="page_compliance" model="website.page">
+            <field name="view_id" ref="fm_website.page_compliance_view"/>
+            <field name="url">/compliance</field>
+            <field name="is_published" eval="True"/>
+        </record>
+
+        <record id="page_contact" model="website.page">
+            <field name="view_id" ref="fm_website.page_contact_view"/>
+            <field name="url">/contact-us</field>
+            <field name="is_published" eval="True"/>
+        </record>
+    </data>
+</odoo>

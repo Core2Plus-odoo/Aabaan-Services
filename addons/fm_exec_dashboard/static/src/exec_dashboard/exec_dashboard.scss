@@ -1,0 +1,352 @@
+// =====================================================================
+// Aabaan executive dashboard.
+//
+// Colours come from fm_branding's --fm-* tokens, which are already on
+// web.assets_backend; the fallback in each var() is the same value, present
+// only so the layout still reads if that bundle has not loaded yet. No
+// palette is declared here.
+//
+// Everything is scoped under .fm-x. Charts are CSS bars plus inline SVG —
+// no charting library, because CLAUDE.md §4 records that OWL dashboards in
+// this repo break on stale asset bundles and a dependency is one more way
+// for that to happen.
+// =====================================================================
+
+.fm-x {
+    --x-ink: var(--fm-ink-900, #1A1A1A);
+    --x-muted: var(--fm-ink-600, #5C5C5C);
+    --x-faint: var(--fm-ink-400, #999999);
+    --x-line: var(--fm-border-line, rgba(0, 0, 0, .07));
+    --x-line-strong: var(--fm-border-strong, rgba(0, 0, 0, .12));
+    --x-canvas: var(--fm-bg-canvas, #FFFFFF);
+    --x-page: var(--fm-bg-page, #FAFAF7);
+    --x-tint: var(--fm-bg-tint, #F9F8F4);
+    --x-muted-bg: var(--fm-bg-muted, #EFEFE9);
+    --x-accent: var(--fm-accent, #1C2B3A);
+    --x-highlight: var(--fm-highlight, #EE7A22);
+    --x-good: var(--fm-positive, #2E7D5F);
+    --x-warn: var(--fm-warning, #C18A33);
+    --x-bad: var(--fm-negative, #B83A3A);
+
+    background: var(--x-page);
+    color: var(--x-ink);
+    min-height: 100%;
+    padding-bottom: 3rem;
+
+    h1, h2 { margin: 0; font-weight: 600; }
+    p { margin: 0; }
+    table { width: 100%; border-collapse: collapse; }
+    ul { list-style: none; margin: 0; padding: 0; }
+
+    // ------------------------------------------------------- control bar
+    &__bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem 2rem;
+        align-items: flex-end;
+        justify-content: space-between;
+        padding: 1.4rem 2rem 1.2rem;
+        background: var(--x-accent);
+        color: #fff;
+    }
+    &__title h1 { font-size: 1.45rem; letter-spacing: -.015em; }
+    &__sub { font-size: .82rem; color: rgba(255, 255, 255, .62); margin-top: .3rem; }
+
+    &__controls { display: flex; flex-wrap: wrap; gap: .75rem; }
+    &__ctl {
+        display: flex;
+        flex-direction: column;
+        gap: .3rem;
+        font-size: .66rem;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, .58);
+
+        select, input {
+            font-size: .85rem;
+            text-transform: none;
+            letter-spacing: 0;
+            padding: .45rem .6rem;
+            border-radius: 3px;
+            border: 1px solid rgba(255, 255, 255, .25);
+            background: rgba(255, 255, 255, .08);
+            color: #fff;
+            min-width: 9.5rem;
+
+            &:focus-visible { outline: 2px solid var(--x-highlight); outline-offset: 1px; }
+            option { color: var(--x-ink); }
+        }
+        // Date inputs render a dark native icon on a dark ground otherwise.
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: .7; }
+    }
+
+    // ------------------------------------------------------------- tabs
+    &__tabs {
+        display: flex;
+        gap: .25rem;
+        padding: 0 2rem;
+        border-bottom: 1px solid var(--x-line-strong);
+        background: var(--x-canvas);
+        overflow-x: auto;
+    }
+    &__tab {
+        appearance: none;
+        border: 0;
+        border-bottom: 2px solid transparent;
+        background: transparent;
+        font: inherit;
+        font-size: .88rem;
+        font-weight: 500;
+        color: var(--x-muted);
+        padding: .85rem 1.1rem;
+        cursor: pointer;
+        white-space: nowrap;
+
+        &:hover { color: var(--x-ink); }
+        &.is-active { color: var(--x-ink); border-bottom-color: var(--x-highlight); }
+        &:focus-visible { outline: 2px solid var(--x-highlight); outline-offset: -2px; }
+    }
+
+    &__loading { padding: 3rem 2rem; color: var(--x-muted); }
+
+    // ------------------------------------------------------------- KPIs
+    &__kpis {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+        gap: 1px;
+        background: var(--x-line-strong);
+        border-bottom: 1px solid var(--x-line-strong);
+    }
+    &__kpi {
+        background: var(--x-canvas);
+        padding: 1.15rem 1.4rem;
+        border-left: 3px solid var(--x-highlight);
+        display: flex;
+        flex-direction: column;
+        gap: .3rem;
+    }
+    &__kpi-label {
+        font-size: .66rem;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--x-faint);
+        font-weight: 600;
+    }
+    &__kpi-value {
+        font-size: 1.65rem;
+        font-weight: 600;
+        line-height: 1.1;
+        letter-spacing: -.02em;
+        font-variant-numeric: tabular-nums;
+    }
+    &__kpi-note { font-size: .76rem; color: var(--x-muted); }
+
+    // ----------------------------------------------------------- blocks
+    &__block {
+        background: var(--x-canvas);
+        border: 1px solid var(--x-line);
+        border-radius: 3px;
+        padding: 1.35rem 1.45rem;
+        margin: 1.15rem 2rem 0;
+        min-width: 0;
+    }
+    &__pair {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(370px, 1fr));
+        align-items: start;
+        > .fm-x__block { margin-right: 0; }
+        > .fm-x__block + .fm-x__block { margin-left: .8rem; }
+    }
+    &__h2 { font-size: .98rem; }
+    &__cap { font-size: .78rem; color: var(--x-muted); margin-top: .2rem !important; }
+    &__note {
+        margin-top: .9rem !important;
+        font-size: .78rem;
+        line-height: 1.55;
+        color: var(--x-muted);
+        border-left: 2px solid var(--x-warn);
+        padding-left: .75rem;
+        &--wide { margin: 1.15rem 2rem 0 !important; }
+    }
+    &__empty { color: var(--x-faint); font-size: .84rem; padding: 1rem 0; }
+    &__stamp { margin: 1.4rem 2rem 0 !important; font-size: .73rem; color: var(--x-faint); }
+
+    // ----------------------------------------------------------- tables
+    &__scroll { overflow-x: auto; margin-top: 1rem; }
+    &__table {
+        font-size: .84rem;
+        th, td {
+            padding: .58rem .7rem;
+            text-align: left;
+            border-bottom: 1px solid var(--x-line);
+            white-space: nowrap;
+        }
+        th {
+            font-size: .66rem;
+            letter-spacing: .07em;
+            text-transform: uppercase;
+            color: var(--x-faint);
+            font-weight: 600;
+            border-bottom: 1px solid var(--x-line-strong);
+        }
+        .num { text-align: right; font-variant-numeric: tabular-nums; }
+        tbody tr:hover { background: var(--x-tint); }
+    }
+    &__mono {
+        font-family: var(--fm-font-mono, ui-monospace, 'SF Mono', Menlo, monospace);
+        font-size: .78rem;
+    }
+
+    // ------------------------------------------------- pills and deltas
+    .fm-x-pill {
+        display: inline-block;
+        padding: .12rem .5rem;
+        border-radius: 2px;
+        font-size: .7rem;
+        font-weight: 600;
+        text-transform: capitalize;
+        &--good { background: var(--fm-positive-soft, #E8F1EC); color: var(--x-good); }
+        &--warn { background: var(--fm-warning-soft, #FAF1E4); color: var(--x-warn); }
+        &--bad { background: var(--fm-negative-soft, #F9E9E9); color: var(--x-bad); }
+        &--neutral { background: var(--x-muted-bg); color: var(--x-muted); }
+    }
+    .fm-x-up { color: var(--x-good); }
+    .fm-x-down { color: var(--x-bad); }
+    .fm-x-flat { color: var(--x-faint); }
+
+    // ---------------------------------------------------- column charts
+    &__combo { position: relative; }
+    &__cols {
+        display: flex;
+        align-items: flex-end;
+        gap: .35rem;
+        height: 150px;
+        margin-top: 1.2rem;
+        padding-bottom: 1.4rem;
+    }
+    &__col {
+        flex: 1 1 0;
+        min-width: 0;
+        height: 100%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+    &__stack {
+        display: flex;
+        flex-direction: column-reverse;
+        justify-content: flex-start;
+        height: 100%;
+        border-radius: 1px;
+        overflow: hidden;
+    }
+    // Inflow and outflow sit side by side, not stacked: they are two
+    // measures of the same month, not two parts of one total.
+    &__stack--pair {
+        flex-direction: row;
+        align-items: flex-end;
+        gap: 2px;
+        > * { flex: 1 1 0; }
+    }
+    &__seg {
+        width: 100%;
+        min-height: 0;
+        transition: opacity .12s ease;
+        &:hover { opacity: .82; }
+    }
+    &__col-label {
+        position: absolute;
+        bottom: -1.3rem;
+        left: 0; right: 0;
+        text-align: center;
+        font-size: .62rem;
+        color: var(--x-faint);
+        white-space: nowrap;
+    }
+    &__overlay {
+        position: absolute;
+        top: 1.2rem; left: 0;
+        width: 100%;
+        height: 150px;
+        pointer-events: none;
+    }
+    &__legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .35rem 1rem;
+        margin-top: .7rem;
+        font-size: .74rem;
+        color: var(--x-muted);
+        span { display: inline-flex; align-items: center; gap: .35rem; }
+        i { width: .62rem; height: .62rem; border-radius: 1px; display: inline-block; }
+    }
+
+    // -------------------------------------------------------- bar lists
+    &__bars {
+        margin-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: .58rem;
+        li {
+            display: grid;
+            grid-template-columns: minmax(6.5rem, 11rem) 1fr auto;
+            gap: .75rem;
+            align-items: center;
+            font-size: .81rem;
+        }
+    }
+    &__bar-label {
+        color: var(--x-muted);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    &__bar-track {
+        background: var(--x-muted-bg);
+        border-radius: 1px;
+        height: .8rem;
+        overflow: hidden;
+        i { display: block; height: 100%; background: var(--x-highlight); }
+    }
+    &__bar-val { font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+
+    // -------------------------------------------------------------- pie
+    &__pie-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.4rem;
+        align-items: center;
+        margin-top: 1rem;
+    }
+    &__pie { width: 155px; height: 155px; flex: 0 0 auto; }
+    &__keys {
+        flex: 1 1 11rem;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: .38rem;
+        font-size: .81rem;
+        li { display: grid; grid-template-columns: auto 1fr auto; gap: .55rem; align-items: center; }
+        i { width: .62rem; height: .62rem; border-radius: 1px; display: inline-block; }
+    }
+    &__key-label {
+        color: var(--x-muted);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    &__key-val { font-variant-numeric: tabular-nums; font-weight: 600; }
+
+    // ------------------------------------------------------------ narrow
+    @media (max-width: 900px) {
+        &__bar { padding-inline: 1rem; }
+        &__tabs { padding-inline: 1rem; }
+        &__block { margin-inline: 1rem; }
+        &__pair > .fm-x__block + .fm-x__block { margin-left: 1rem; }
+        &__note--wide { margin-inline: 1rem !important; }
+        &__stamp { margin-inline: 1rem !important; }
+        &__bars li { grid-template-columns: 1fr auto; }
+        &__bar-track { grid-column: 1 / -1; }
+    }
+}

@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="fm_exec_dashboard.FmExecDashboard">
+  <div class="fm-x">
+
+    <!-- ============================================== control bar -->
+    <div class="fm-x__bar">
+      <div class="fm-x__title">
+        <h1>CEO Dashboard</h1>
+        <p class="fm-x__sub" t-if="state.data">
+          <t t-esc="state.data.company_label"/> · <t t-esc="periodLabel"/>
+        </p>
+      </div>
+      <div class="fm-x__controls">
+        <label class="fm-x__ctl">
+          <span>Period</span>
+          <select t-on-change="onPresetChange">
+            <t t-if="state.data">
+              <t t-foreach="state.data.period.presets" t-as="p" t-key="p.key">
+                <option t-att-value="p.key"
+                        t-att-selected="p.key === state.preset ? 'selected' : undefined">
+                  <t t-esc="p.label"/>
+                </option>
+              </t>
+            </t>
+          </select>
+        </label>
+        <label class="fm-x__ctl" t-if="state.preset === 'custom'">
+          <span>From</span>
+          <input type="date" t-att-value="state.dateFrom"
+                 t-on-change="(ev) => this.onDateChange('from', ev)"/>
+        </label>
+        <label class="fm-x__ctl" t-if="state.preset === 'custom'">
+          <span>To</span>
+          <input type="date" t-att-value="state.dateTo"
+                 t-on-change="(ev) => this.onDateChange('to', ev)"/>
+        </label>
+        <label class="fm-x__ctl">
+          <span>Branch</span>
+          <select t-on-change="onBranchChange">
+            <option value="">All branches</option>
+            <t t-if="state.data">
+              <t t-foreach="state.data.branches" t-as="b" t-key="b.id">
+                <option t-att-value="b.id"
+                        t-att-selected="b.id === state.branchId ? 'selected' : undefined">
+                  <t t-esc="b.name"/>
+                </option>
+              </t>
+            </t>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div t-if="state.loading" class="fm-x__loading">Reading posted records…</div>
+
+    <t t-if="!state.loading and state.data">
+      <div class="fm-x__tabs">
+        <button class="fm-x__tab" t-att-class="{'is-active': state.section === 'overview'}"
+                t-on-click="() => this.showSection('overview')">1 · Overview</button>
+        <button class="fm-x__tab" t-att-class="{'is-active': state.section === 'expenses'}"
+                t-on-click="() => this.showSection('expenses')">2 · Expenses</button>
+        <button class="fm-x__tab" t-att-class="{'is-active': state.section === 'cash'}"
+                t-on-click="() => this.showSection('cash')">3 · Cash &amp; Bank</button>
+      </div>
+
+      <!-- ================================================ OVERVIEW -->
+      <t t-if="state.section === 'overview'">
+        <t t-set="o" t-value="state.data.overview"/>
+
+        <div class="fm-x__kpis">
+          <div class="fm-x__kpi">
+            <span class="fm-x__kpi-label">Total Revenue</span>
+            <span class="fm-x__kpi-value"><t t-esc="money(o.kpis.revenue)"/></span>
+            <span t-attf-class="fm-x__kpi-note {{deltaClass(o.kpis.revenue_delta)}}"><t t-esc="delta(o.kpis.revenue_delta)"/></span>
+          </div>
+          <div class="fm-x__kpi">
+            <span class="fm-x__kpi-label">Target Achieved</span>
+            <span class="fm-x__kpi-value"><t t-esc="pct(o.kpis.target_achv)"/></span>
+            <span class="fm-x__kpi-note" t-if="o.kpis.target">of <t t-esc="money(o.kpis.target)"/></span>
+            <span class="fm-x__kpi-note fm-x-flat" t-else="">no branch target set</span>
+          </div>
+          <div class="fm-x__kpi">
+            <span class="fm-x__kpi-label">Jobs Completed</span>
+            <span class="fm-x__kpi-value"><t t-esc="o.kpis.jobs"/></span>
+            <span t-attf-class="fm-x__kpi-note {{deltaClass(o.kpis.jobs_delta)}}"><t t-esc="delta(o.kpis.jobs_delta)"/></span>
+          </div>
+          <div class="fm-x__kpi">
+            <span class="fm-x__kpi-label">New Clients</span>
+            <span class="fm-x__kpi-value"><t t-esc="o.kpis.new_clients"/></span>
+            <span t-attf-class="fm-x__kpi-note {{deltaClass(o.kpis.clients_delta)}}"><t t-esc="delta(o.kpis.clients_delta)"/></span>
+          </div>
+          <div class="fm-x__kpi">
+            <span class="fm-x__kpi-label">Receivables</span>
+            <span class="fm-x__kpi-value"><t t-esc="money(o.kpis.receivables)"/></span>
+            <span class="fm-x__kpi-note fm-x-down" t-if="o.kpis.overdue"><t t-esc="money(o.kpis.overdue)"/> overdue</span>
+            <span class="fm-x__kpi-note fm-x-up" t-else="">nothing overdue</span>
+          </div>
+          <div class="fm-x__kpi">
+            <span class="fm-x__kpi-label">Branches</span>
+            <span class="fm-x__kpi-value"><t t-esc="o.kpis.branch_count"/></span>
+            <span class="fm-x__kpi-note" t-if="o.kpis.team_count"><t t-esc="o.kpis.team_count"/> team members</span>
+          </div>
+        </div>
+
+        <section class="fm-x__block">
+          <h2 class="fm-x__h2">City &amp; Team Performance</h2>
+          <div class="fm-x__scroll">
+            <table class="fm-x__table">
+              <thead>
+                <tr>
+                  <th>City</th><th>Manager</th><th class="num">Revenue</th>
+                  <th class="num">Target</th><th class="num">Achv</th>
+                  <th class="num">Jobs</th><th class="num">Receivables</th><th class="num">Overdue</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr t-foreach="o.cities" t-as="c" t-key="c.id">
+                  <td><t t-esc="c.city"/></td>
+                  <td><t t-esc="c.manager"/></td>
+                  <td class="num"><t t-esc="exact(c.revenue)"/></td>
+                  <td class="num"><t t-esc="exact(c.target)"/></td>
+                  <td class="num">
+                    <span t-if="c.achv !== false" t-att-class="achvClass(c.achv)"><t t-esc="c.achv"/>%</span>
+                    <t t-else="">—</t>
+                  </td>
+                  <td class="num"><t t-esc="exact(c.jobs)"/></td>
+                  <td class="num"><t t-esc="exact(c.receivables)"/></td>
+                  <td t-attf-class="num {{c.overdue ? 'fm-x-down' : ''}}"><t t-esc="exact(c.overdue)"/></td>
+                </tr>
+                <tr t-if="!o.cities.length"><td colspan="8" class="fm-x__empty">No branches configured.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <div class="fm-x__pair">
+          <section class="fm-x__block">
+            <h2 class="fm-x__h2">Revenue Trend by City</h2>
+            <p class="fm-x__cap">Monthly revenue, stacked by branch</p>
+            <t t-if="o.revenue_trend.max">
+              <div class="fm-x__cols">
+                <div class="fm-x__col" t-foreach="o.revenue_trend.months" t-as="m" t-key="m_index">
+                  <div class="fm-x__stack">
+                    <div class="fm-x__seg" t-foreach="o.revenue_trend.series" t-as="s" t-key="s.label"
+                         t-attf-style="height: {{segment(s.values[m_index], o.revenue_trend.max)}}; background: {{s.color}};"
+                         t-att-title="s.label + ': ' + exact(s.values[m_index])"/>
+                  </div>
+                  <span class="fm-x__col-label"><t t-esc="m"/></span>
+                </div>
+              </div>
+              <div class="fm-x__legend">
+                <span t-foreach="o.revenue_trend.series" t-as="s" t-key="s.label">
+                  <i t-attf-style="background: {{s.color}};"/><t t-esc="s.label"/>
+                </span>
+              </div>
+            </t>
+            <p t-else="" class="fm-x__empty">No revenue posted in this period.</p>
+          </section>
+
+          <section class="fm-x__block">
+            <h2 class="fm-x__h2">Revenue by Service Line</h2>
+            <p class="fm-x__cap">Share of total revenue</p>
+            <div class="fm-x__pie-wrap" t-if="o.service_mix.slices.length">
+              <svg class="fm-x__pie" viewBox="-105 -105 210 210" role="img" aria-label="Revenue by service line">
+                <path t-foreach="o.service_mix.slices" t-as="s" t-key="s.label"
+                      t-att-d="s.path" t-att-fill="s.color" stroke="#fff" stroke-width="1.5"/>
+              </svg>
+              <ul class="fm-x__keys">
+                <li t-foreach="o.service_mix.slices" t-as="s" t-key="s.label">
+                  <i t-attf-style="background: {{s.color}};"/>
+                  <span class="fm-x__key-label"><t t-esc="s.label"/></span>
+                  <span class="fm-x__key-val"><t t-esc="s.pct"/>%</span>
+                </li>
+              </ul>
+            </div>
+            <p t-else="" class="fm-x__empty">No revenue posted in this period.</p>
+          </section>
+        </div>
+
+        <div class="fm-x__pair">
+          <section class="fm-x__block">
+            <h2 class="fm-x__h2">Sales Team Performance</h2>
+            <p class="fm-x__cap">Revenue invoiced per salesperson</p>
+            <ul class="fm-x__bars">
+              <li t-foreach="o.sales_team" t-as="r" t-key="r.label">
+                <span class="fm-x__bar-label" t-att-title="r.label"><t t-esc="r.label"/></span>
+                <span class="fm-x__bar-track"><i t-attf-style="width: {{r.pct}}%;"/></span>
+                <span class="fm-x__bar-val"><t t-esc="money(r.value)"/></span>
+              </li>
+              <li t-if="!o.sales_team.length" class="fm-x__empty">No invoices in this period.</li>
+            </ul>
+          </section>
+
+          <section class="fm-x__block">
+            <h2 class="fm-x__h2">Receivables Aging</h2>
+            <p class="fm-x__cap">Outstanding by age bucket</p>
+            <ul class="fm-x__bars">
+              <li t-foreach="o.aging" t-as="a" t-key="a.key">
+                <span class="fm-x__bar-label"><t t-esc="a.label"/></span>
+                <span class="fm-x__bar-track"><i t-attf-style="width: {{a.pct}}%; background: {{a.color}};"/></span>
+                <span class="fm-x__bar-val"><t t-esc="money(a.value)"/></span>
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="fm-x__pair">
+          <section class="fm-x__block">
+            <h2 class="fm-x__h2">Job Status Split</h2>
+            <p class="fm-x__cap">All work orders, by stage</p>
+            <div class="fm-x__pie-wrap" t-if="o.job_status.slices.length">
+              <svg class="fm-x__pie" viewBox="-105 -105 210 210" role="img" aria-label="Job status split">
+                <path t-foreach="o.job_status.slices" t-as="s" t-key="s.label"
+                      t-att-d="s.path" t-att-fill="s.color" stroke="#fff" stroke-width="1.5"/>
+              </svg>
+              <ul class="fm-x__keys">
+                <li t-foreach="o.job_status.slices" t-as="s" t-key="s.label">
+                  <i t-attf-style="background: {{s.color}};"/>
+                  <span class="fm-x__key-label"><t t-esc="s.label"/></span>
+                  <span class="fm-x__key-val"><t t-esc="s.value"/></span>
+                </li>
+              </ul>
+            </div>
+            <p t-else="" class="fm-x__empty">No work orders raised yet.</p>
+          </section>
+
+          <section class="fm-x__block">
+            <h2 class="fm-x__h2">Key Accounts — Open Balance</h2>
+            <p class="fm-x__cap">Largest unpaid invoices</p>
+            <div class="fm-x__scroll">
+              <table class="fm-x__table">
+                <thead>
+                  <tr><th>Client</th><th>Invoice</th><th>Branch</th><th class="num">Open</th><th>Due</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                  <tr t-foreach="o.accounts" t-as="a" t-key="a.ref">
+                    <td><t t-esc="a.partner"/></td>
+                    <td class="fm-x__mono"><t t-esc="a.ref"/></td>
+                    <td><t t-esc="a.branch"/></td>
+                    <td class="num"><t t-esc="exact(a.value)"/></td>
+                    <td class="fm-x__mono"><t t-esc="a.due"/></td>
+                    <td>
+                      <span t-attf-class="fm-x-pill fm-x-pill--{{a.status === 'overdue' ? 'bad' : (a.status === 'partial' ? 'warn' : 'neutral')}}">
+                        <t t-esc="a.status"/>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr t-if="!o.accounts.length"><td colspan="6" class="fm-x__empty">Nothing outstanding.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </t>
+
+      <!-- ================================================ EXPENSES -->
+      <t t-if="state.section === 'expenses'">
+        <t t-set="e" t-value="state.data.expenses"/>
+
+        <div class="fm-x__kpis">
+          <div class="fm-x__kpi">
+            <span class="fm-x__kpi-label">Total Expenses</span>
+            <span class="fm-x__kpi-value"><t t-esc="money(e.kpis.expenses)"/></span>
+            <span t-attf-class="fm-x__kpi-note {{deltaClass(e.kpis.expenses_delta, true)}}"><t t-esc="delta(e.kpis.expenses_delta)"/></span>
+          </div>
+          <div class="fm-x__kpi">
+            <span class="fm-x__kpi-label">Net Profit</span>
+            <span class="fm-x__kpi-value"><t t-esc="money(e.kpis.profit)"/></span>
+            <span t-attf-class="fm-x__kpi-note {{e.kpis.profit >= 0 ? 'fm-x-up' : 'fm-x-down'}}">
+              <t t-esc="e.kpis.profit >= 0 ? 'Profitable' : 'Loss-making'"/>
+            </span>
+          </div>
+          <div class="fm-x__kpi">
+            <span class="fm-x__kpi-label">Net Margin</span>
+            <span class="fm-x__kpi-value"><t t-esc="pct(e.kpis.margin)"/></span>
+            <span class="fm-x__kpi-note">revenue less expenses</span>
+          </div>
+          <div class="fm-x__kpi">
+            <span class="fm-x__kpi-label">Payroll Share</span>
+            <span class="fm-x__kpi-value"><t t-esc="pct(e.kpis.payroll_share, 0)"/></span>
+            <span class="fm-x__kpi-note">of total spend</span>
+          </div>
+        </div>
+
+        <div class="fm-x__pair">
+          <section class="fm-x__block">
+            <h2 class="fm-x__h2">Monthly Expense Trend</h2>
+            <p class="fm-x__cap">Expense columns, revenue line over them</p>
+            <t t-if="e.trend.max">
+              <div class="fm-x__combo">
+                <div class="fm-x__cols">
+                  <div class="fm-x__col" t-foreach="e.trend.months" t-as="m" t-key="m_index">
+                    <div class="fm-x__stack">
+                      <div class="fm-x__seg"
+                           t-attf-style="height: {{segment(e.trend.expenses[m_index], e.trend.max)}}; background: #EE7A22;"
+                           t-att-title="'Expenses: ' + exact(e.trend.expenses[m_index])"/>
+                    </div>
+                    <span class="fm-x__col-label"><t t-esc="m"/></span>
+                  </div>
+                </div>
+                <svg class="fm-x__overlay" viewBox="0 0 560 150" preserveAspectRatio="none" aria-hidden="true">
+                  <polyline t-att-points="e.trend.revenue_points" fill="none" stroke="#2E7D5F" stroke-width="2.5"/>
+                </svg>
+              </div>
+              <div class="fm-x__legend">
+                <span><i style="background: #EE7A22;"/>Expenses</span>
+                <span><i style="background: #2E7D5F;"/>Revenue</span>
+              </div>
+            </t>
+            <p t-else="" class="fm-x__empty">Nothing posted in this period.</p>
+          </section>
+
+          <section class="fm-x__block">
+            <h2 class="fm-x__h2">Expenses by Category</h2>
+            <p class="fm-x__cap">Share of total spend</p>
+            <div class="fm-x__pie-wrap" t-if="e.category_slices.length">
+              <svg class="fm-x__pie" viewBox="-105 -105 210 210" role="img" aria-label="Expenses by category">
+                <path t-foreach="e.category_slices" t-as="s" t-key="s.label"
+                      t-att-d="s.path" t-att-fill="s.color" stroke="#fff" stroke-width="1.5"/>
+              </svg>
+              <ul class="fm-x__keys">
+                <li t-foreach="e.category_slices" t-as="s" t-key="s.label">
+                  <i t-attf-style="background: {{s.color}};"/>
+                  <span class="fm-x__key-label" t-att-title="s.label"><t t-esc="s.label"/></span>
+                  <span class="fm-x__key-val"><t t-esc="s.pct"/>%</span>
+                </li>
+              </ul>
+            </div>
+            <p t-else="" class="fm-x__empty">No expenses posted in this period.</p>
+          </section>
+        </div>
+
+        <section class="fm-x__block">
+          <h2 class="fm-x__h2">Expenses by City</h2>
+          <p class="fm-x__cap">Operating cost allocation</p>
+          <ul class="fm-x__bars">
+            <li t-foreach="e.by_city.rows" t-as="r" t-key="r.label">
+              <span class="fm-x__bar-label"><t t-esc="r.label"/></span>
+              <span class="fm-x__bar-track"><i t-attf-style="width: {{r.pct}}%; background: {{r.color}};"/></span>
+              <span class="fm-x__bar-val"><t t-esc="money(r.value)"/></span>
+            </li>
+            <li t-if="!e.by_city.rows.length" class="fm-x__empty">No branch-tagged expenses in this period.</li>
+          </ul>
+          <p class="fm-x__note" t-if="e.by_city.unallocated">
+            <t t-esc="money(e.by_city.unallocated)"/> of spend names no branch and is not
+            shown above. Set Branch on those bills and journal entries, or agree an
+            allocation rule for shared overheads — this dashboard will not spread
+            them on a guess.
+          </p>
+        </section>
+
+        <section class="fm-x__block">
+          <h2 class="fm-x__h2">Expense Detail</h2>
+          <p class="fm-x__cap">By expense account, ranked by spend</p>
+          <div class="fm-x__scroll">
+            <table class="fm-x__table">
+              <thead>
+                <tr><th>Category</th><th>Code</th><th class="num">Amount</th>
+                    <th class="num">% of Spend</th><th class="num">% of Revenue</th><th class="num">vs Prior</th></tr>
+              </thead>
+              <tbody>
+                <tr t-foreach="e.categories" t-as="c" t-key="c.label">
+                  <td><t t-esc="c.label"/></td>
+                  <td class="fm-x__mono"><t t-esc="c.code"/></td>
+                  <td class="num"><t t-esc="exact(c.value)"/></td>
+                  <td class="num"><t t-esc="pct(c.share)"/></td>
+                  <td class="num"><t t-esc="pct(c.of_revenue)"/></td>
+                  <td t-attf-class="num {{deltaClass(c.delta, true)}}">
+                    <t t-if="c.delta === false">—</t>
+                    <t t-else=""><t t-esc="(c.delta > 0 ? '+' : '') + c.delta"/>%</t>
+                  </td>
+                </tr>
+                <tr t-if="!e.categories.length"><td colspan="6" class="fm-x__empty">No expenses posted in this period.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </t>
+
+      <!-- ============================================ CASH &amp; BANK -->
+      <t t-if="state.section === 'cash'">
+        <t t-set="c" t-value="state.data.cash"/>
+
+        <div class="fm-x__kpis">
+          <div class="fm-x__kpi">
+            <span class="fm-x__kpi-label">Total Cash &amp; Bank</span>
+            <span class="fm-x__kpi-value"><t t-esc="money(c.kpis.total_cash)"/></span>
+            <span class="fm-x__kpi-note"><t t-esc="c.kpis.account_count"/> accounts</span>
+          </div>
+          <div class="fm-x__kpi">
+            <span class="fm-x__kpi-label">Inflow</span>
+            <span class="fm-x__kpi-value"><t t-esc="money(c.kpis.inflow)"/></span>
+            <span class="fm-x__kpi-note">in this period</span>
+          </div>
+          <div class="fm-x__kpi">
+            <span class="fm-x__kpi-label">Outflow</span>
+            <span class="fm-x__kpi-value"><t t-esc="money(c.kpis.outflow)"/></span>
+            <span class="fm-x__kpi-note">in this period</span>
+          </div>
+          <div class="fm-x__kpi">
+            <span class="fm-x__kpi-label">Net Cash Flow</span>
+            <span class="fm-x__kpi-value"><t t-esc="money(c.kpis.net)"/></span>
+            <span t-attf-class="fm-x__kpi-note {{c.kpis.net >= 0 ? 'fm-x-up' : 'fm-x-down'}}">
+              <t t-esc="c.kpis.net >= 0 ? 'Positive' : 'Negative'"/>
+            </span>
+          </div>
+        </div>
+
+        <p class="fm-x__note fm-x__note--wide">
+          Cash is company-wide: a bank account belongs to the company, not to an
+          emirate, so the Branch filter does not apply on this tab. Splitting a
+          shared account between branches would be a made-up number.
+        </p>
+
+        <section class="fm-x__block">
+          <h2 class="fm-x__h2">Bank Accounts</h2>
+          <div class="fm-x__scroll">
+            <table class="fm-x__table">
+              <thead><tr><th>Account</th><th>Type</th><th>Number</th><th class="num">Balance</th></tr></thead>
+              <tbody>
+                <tr t-foreach="c.accounts" t-as="a" t-key="a.name">
+                  <td><t t-esc="a.name"/></td>
+                  <td><t t-esc="a.type"/></td>
+                  <td class="fm-x__mono"><t t-esc="a.number"/></td>
+                  <td class="num"><t t-esc="exact(a.balance)"/></td>
+                </tr>
+                <tr t-if="!c.accounts.length"><td colspan="4" class="fm-x__empty">No bank or cash journals configured.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <div class="fm-x__pair">
+          <section class="fm-x__block">
+            <h2 class="fm-x__h2">Cash Flow Trend</h2>
+            <p class="fm-x__cap">Monthly inflow against outflow</p>
+            <t t-if="c.flow.max">
+              <div class="fm-x__cols">
+                <div class="fm-x__col" t-foreach="c.flow.months" t-as="m" t-key="m_index">
+                  <div class="fm-x__stack fm-x__stack--pair">
+                    <div class="fm-x__seg" t-attf-style="height: {{segment(c.flow.inflow[m_index], c.flow.max)}}; background: #2E7D5F;"
+                         t-att-title="'In: ' + exact(c.flow.inflow[m_index])"/>
+                    <div class="fm-x__seg" t-attf-style="height: {{segment(c.flow.outflow[m_index], c.flow.max)}}; background: #A05E5E;"
+                         t-att-title="'Out: ' + exact(c.flow.outflow[m_index])"/>
+                  </div>
+                  <span class="fm-x__col-label"><t t-esc="m"/></span>
+                </div>
+              </div>
+              <div class="fm-x__legend">
+                <span><i style="background: #2E7D5F;"/>Inflow</span>
+                <span><i style="background: #A05E5E;"/>Outflow</span>
+              </div>
+            </t>
+            <p t-else="" class="fm-x__empty">No cash movement in this period.</p>
+          </section>
+
+          <section class="fm-x__block">
+            <h2 class="fm-x__h2">Cash Position by Account</h2>
+            <p class="fm-x__cap">Balance at period end</p>
+            <ul class="fm-x__bars">
+              <li t-foreach="c.accounts" t-as="a" t-key="a.name">
+                <span class="fm-x__bar-label" t-att-title="a.name"><t t-esc="a.name"/></span>
+                <span class="fm-x__bar-track"><i t-attf-style="width: {{a.pct}}%; background: {{a.color}};"/></span>
+                <span class="fm-x__bar-val"><t t-esc="money(a.balance)"/></span>
+              </li>
+              <li t-if="!c.accounts.length" class="fm-x__empty">No accounts to show.</li>
+            </ul>
+          </section>
+        </div>
+
+        <section class="fm-x__block">
+          <h2 class="fm-x__h2">Recent Transactions</h2>
+          <div class="fm-x__scroll">
+            <table class="fm-x__table">
+              <thead><tr><th>Date</th><th>Account</th><th>Description</th><th>Counterparty</th><th class="num">Amount</th></tr></thead>
+              <tbody>
+                <tr t-foreach="c.transactions" t-as="t" t-key="t_index">
+                  <td class="fm-x__mono"><t t-esc="t.date"/></td>
+                  <td><t t-esc="t.account"/></td>
+                  <td><t t-esc="t.label"/></td>
+                  <td><t t-esc="t.partner"/></td>
+                  <td t-attf-class="num {{t.amount >= 0 ? 'fm-x-up' : 'fm-x-down'}}">
+                    <t t-esc="(t.amount > 0 ? '+' : '') + exact(t.amount)"/>
+                  </td>
+                </tr>
+                <tr t-if="!c.transactions.length"><td colspan="5" class="fm-x__empty">No transactions recorded.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </t>
+
+      <p class="fm-x__stamp">
+        Read from posted records at <t t-esc="state.updatedAt"/>.
+        Comparison period <t t-esc="state.data.period.prior_from"/> → <t t-esc="state.data.period.prior_to"/>.
+      </p>
+    </t>
+  </div>
+</t>
+
+</templates>

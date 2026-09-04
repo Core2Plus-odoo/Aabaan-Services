@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The revenue target the dashboard measures Achv % against. Placed on
+         the branch form because that is where a manager already goes to set
+         up a branch. -->
+    <record id="view_fm_branch_form_target" model="ir.ui.view">
+        <field name="name">fm.branch.form.exec.target</field>
+        <field name="model">fm.branch</field>
+        <field name="inherit_id" ref="fm_branch.view_fm_branch_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='manager_id']" position="after">
+                <field name="currency_id" invisible="1"/>
+                <field name="monthly_revenue_target"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
