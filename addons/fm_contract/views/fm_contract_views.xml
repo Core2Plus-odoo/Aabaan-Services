@@ -28,7 +28,7 @@
         <field name="name">fm.contract.list</field>
         <field name="model">fm.contract</field>
         <field name="arch" type="xml">
-            <list string="Contracts">
+            <list string="Contracts" create="0" duplicate="0">
                 <field name="contract_number"/>
                 <field name="partner_id"/>
                 <field name="service_line"/>
@@ -52,7 +52,7 @@
         <field name="name">fm.contract.form</field>
         <field name="model">fm.contract</field>
         <field name="arch" type="xml">
-            <form string="Contract">
+            <form string="Contract" create="0" duplicate="0">
                 <header>
                     <button name="action_activate" type="object" string="Activate"
                             class="btn-primary" invisible="state == 'active'"/>
@@ -196,6 +196,20 @@
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="view_fm_contract_search"/>
         <field name="context">{'search_default_group_state': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No FM contracts here</p>
+            <p>
+                Contracts are written in <b>Sales</b>. Raise a quotation for the
+                customer and confirm it: the visit schedule, the invoicing and
+                the signed document all follow from that order, so the order is
+                the one record that has to be right.
+            </p>
+            <p>
+                This list stays as a read-only view of contracts already made.
+                Existing ones remain fully editable; only creating new ones has
+                moved.
+            </p>
+        </field>
     </record>
 
 </odoo>
