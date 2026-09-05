@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class SaleOrder(models.Model):
@@ -22,3 +22,16 @@ class SaleOrder(models.Model):
         "fm.branch", string="Branch", index=True, tracking=True,
         help="The Aabaan branch delivering this contract. Groups contracts, "
              "work orders and reporting by emirate.")
+
+    @api.onchange("branch_id")
+    def _onchange_branch_id_agreement_template(self):
+        """Re-suggest a wording template when the branch changes and the
+        current template (if any) doesn't match this branch. Same rule as
+        the legacy contract model; the lookup is shared (fm.agreement.mixin),
+        only the covered-assets field name differs."""
+        if not self._fm_branch_template_needs_resuggesting():
+            return
+        service_line = self._fm_infer_service_from_assets(self.fm_asset_ids)
+        template = self._fm_branch_template_for_service(service_line)
+        if template:
+            self.agreement_template_id = template.id

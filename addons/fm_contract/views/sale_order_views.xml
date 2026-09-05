@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The sale order IS the contract. Everything FM adds to it lives on
+         one notebook page plus a flag, so an ordinary quotation looks
+         exactly as it did before and a contract is one tick away.
+
+         Requiredness is expressed here, not in the columns: these fields
+         are mandatory because a record is a contract, and most sale orders
+         in this database never will be. A required column would stop every
+         ordinary quotation saving. -->
+    <record id="view_order_form_fm_contract" model="ir.ui.view">
+        <field name="name">sale.order.form.fm.contract</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//header" position="inside">
+                <button name="action_fm_set_renewal" type="object"
+                        string="Move to Renewal"
+                        invisible="fm_lifecycle != 'active'"/>
+                <button name="action_fm_terminate" type="object"
+                        string="Terminate Contract"
+                        invisible="fm_lifecycle not in ('active', 'renewal_pipeline')"/>
+                <button name="action_fm_reactivate" type="object"
+                        string="Reactivate Contract"
+                        invisible="fm_lifecycle not in ('expired', 'terminated')"/>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="is_fm_contract"/>
+                <field name="fm_contract_number" invisible="not fm_contract_number"/>
+                <field name="fm_lifecycle" invisible="not is_fm_contract"
+                       readonly="1"/>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="FM Contract" name="fm_contract"
+                      invisible="not is_fm_contract">
+                    <group>
+                        <group string="Term">
+                            <field name="fm_service_line"
+                                   required="is_fm_contract"
+                                   placeholder="What service is this for?"/>
+                            <field name="fm_contract_type" required="is_fm_contract"/>
+                            <field name="fm_start_date" required="is_fm_contract"/>
+                            <field name="fm_end_date" required="is_fm_contract"/>
+                            <field name="fm_days_to_renewal"/>
+                            <field name="fm_auto_renew"/>
+                            <field name="fm_renewal_term_months" invisible="not fm_auto_renew"/>
+                        </group>
+                        <group string="Commercials &amp; Health">
+                            <field name="fm_acv"/>
+                            <field name="fm_tcv"/>
+                            <field name="fm_billing_frequency"/>
+                            <field name="fm_next_invoice_date"/>
+                            <field name="fm_account_manager_id" required="is_fm_contract"/>
+                            <field name="fm_health_score"/>
+                            <field name="fm_health_band" widget="badge"/>
+                        </group>
+                    </group>
+                    <separator string="Scope"/>
+                    <group>
+                        <field name="fm_asset_ids" widget="many2many_tags"/>
+                    </group>
+                    <group>
+                        <field name="fm_service_inclusions" widget="many2many_tags" string="Inclusions"/>
+                        <field name="fm_service_exclusions" widget="many2many_tags" string="Exclusions"/>
+                    </group>
+                    <group>
+                        <field name="fm_customer_contact_ids" widget="many2many_tags"
+                               string="Customer Contacts"/>
+                    </group>
+                    <separator string="SLA Rules"/>
+                    <field name="fm_sla_rule_ids">
+                        <list editable="bottom">
+                            <field name="name"/>
+                            <field name="severity"/>
+                            <field name="response_target_minutes"/>
+                            <field name="resolution_target_minutes"/>
+                            <field name="business_hours_only"/>
+                            <field name="penalty_per_breach"/>
+                            <field name="credit_per_breach"/>
+                            <field name="currency_id" column_invisible="1"/>
+                        </list>
+                    </field>
+                    <separator string="Penalty Clauses"/>
+                    <field name="fm_penalty_clause_ids">
+                        <list editable="bottom">
+                            <field name="name"/>
+                            <field name="trigger"/>
+                            <field name="amount"/>
+                            <field name="currency_id" column_invisible="1"/>
+                            <field name="notes"/>
+                        </list>
+                    </field>
+                </page>
+
+                <page string="Printed Agreement" name="fm_agreement"
+                      invisible="not is_fm_contract">
+                    <p class="text-muted">
+                        Wording used by the printed Quotation and Service Agreement.
+                        Leave a field blank to fall back to a sensible default.
+                    </p>
+                    <group>
+                        <field name="subject" placeholder="e.g. PEST CONTROL TREATMENT FOR ROYAL APARTMENT G+11"/>
+                        <field name="agreement_template_id"
+                               placeholder="Generic wording (no template selected)"
+                               options="{'no_create': True}"/>
+                    </group>
+                    <p class="text-muted" invisible="not agreement_template_id">
+                        Selecting a template copies its wording into the fields below —
+                        edit them freely, your changes only affect this contract.
+                    </p>
+                    <group>
+                        <group string="Scope &amp; Treatment">
+                            <field name="scope_notes" nolabel="1" placeholder="Areas/site covered..."/>
+                            <field name="treatment_notes" nolabel="1" placeholder="Treatment methods (optional)..."/>
+                        </group>
+                        <group string="Commercial Terms">
+                            <field name="payment_terms_note" placeholder="e.g. 50% at signing, 50% after 6 months"/>
+                            <field name="unscheduled_visits_included"/>
+                            <field name="termination_notice_days"/>
+                            <field name="complaint_response_hours"/>
+                        </group>
+                    </group>
+                    <separator string="Editable Agreement Wording (from template, or write your own)"/>
+                    <group col="1">
+                        <group string="Quotation Intro">
+                            <field name="quotation_intro_text" nolabel="1" placeholder="Quotation greeting/intro paragraph..."/>
+                        </group>
+                        <group string="Quotation — Scope of Work Methodology">
+                            <field name="scope_method_text" nolabel="1" placeholder="Quotation Scope of Work methodology..."/>
+                        </group>
+                        <group string="Service Agreement — Article 2 (Service)">
+                            <field name="service_text" nolabel="1" placeholder="Service Agreement Article 2 (Service)..."/>
+                        </group>
+                        <group string="Service Agreement — Article 4 (Service Schedule)">
+                            <field name="schedule_text" nolabel="1" placeholder="Service Agreement Article 4 (Service Schedule)..."/>
+                        </group>
+                        <group string="Default Exclusions">
+                            <field name="exclusions_text" nolabel="1" placeholder="Default exclusions wording..."/>
+                        </group>
+                    </group>
+                    <group string="Additional Terms (editable)">
+                        <field name="agreement_line_ids" nolabel="1">
+                            <list editable="bottom">
+                                <field name="sequence" widget="handle"/>
+                                <field name="name" placeholder="e.g. Tank Details"/>
+                                <field name="body" placeholder="Body text..."/>
+                            </list>
+                        </field>
+                    </group>
+                    <field name="agreement_standalone" invisible="1"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_order_list_fm_contract" model="ir.ui.view">
+        <field name="name">sale.order.list.fm.contract</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <list string="Contracts">
+                <field name="fm_contract_number"/>
+                <field name="name" string="Sales Order"/>
+                <field name="partner_id"/>
+                <field name="fm_service_line"/>
+                <field name="fm_contract_type"/>
+                <field name="fm_start_date"/>
+                <field name="fm_end_date"/>
+                <field name="fm_acv" sum="ACV"/>
+                <field name="fm_health_band" widget="badge"
+                       decoration-success="fm_health_band == 'healthy'"
+                       decoration-warning="fm_health_band == 'watch'"
+                       decoration-danger="fm_health_band in ('at_risk', 'critical')"/>
+                <field name="fm_lifecycle" widget="badge"
+                       decoration-success="fm_lifecycle == 'active'"
+                       decoration-muted="fm_lifecycle in ('expired', 'terminated')"/>
+                <field name="state" widget="badge"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_order_search_fm_contract" model="ir.ui.view">
+        <field name="name">sale.order.search.fm.contract</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <search string="Contracts">
+                <field name="fm_contract_number"/>
+                <field name="name" string="Sales Order"/>
+                <field name="partner_id"/>
+                <field name="fm_service_line"/>
+                <field name="fm_account_manager_id"/>
+                <separator/>
+                <filter name="active_contracts" string="Active"
+                        domain="[('fm_lifecycle', '=', 'active')]"/>
+                <filter name="renewal" string="In Renewal"
+                        domain="[('fm_lifecycle', '=', 'renewal_pipeline')]"/>
+                <filter name="not_yet_confirmed" string="Not Yet Confirmed"
+                        domain="[('state', 'in', ('draft', 'sent'))]"/>
+                <filter name="my_contracts" string="My Contracts"
+                        domain="[('fm_account_manager_id', '=', uid)]"/>
+                <separator/>
+                <filter name="group_lifecycle" string="Contract Stage"
+                        context="{'group_by': 'fm_lifecycle'}"/>
+                <filter name="group_order_state" string="Order Status"
+                        context="{'group_by': 'state'}"/>
+                <filter name="group_type" string="Type"
+                        context="{'group_by': 'fm_contract_type'}"/>
+                <filter name="group_service" string="Service"
+                        context="{'group_by': 'fm_service_line'}"/>
+                <filter name="group_band" string="Health"
+                        context="{'group_by': 'fm_health_band'}"/>
+                <filter name="group_am" string="Account Manager"
+                        context="{'group_by': 'fm_account_manager_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_fm_contract_order" model="ir.actions.act_window">
+        <field name="name">Contracts</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_order_search_fm_contract"/>
+        <field name="domain">[('is_fm_contract', '=', True)]</field>
+        <field name="context">{'default_is_fm_contract': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Write the first contract</p>
+            <p>
+                A contract is a sale order. Add the customer and the priced
+                service lines, fill in the <b>FM Contract</b> tab, then confirm
+                the order: confirming it is what makes the contract active.
+            </p>
+        </field>
+    </record>
+
+    <!-- The action's own list/form come from these two views; the generic
+         sale order list would show none of the contract columns. -->
+    <record id="action_fm_contract_order_list" model="ir.actions.act_window.view">
+        <field name="sequence" eval="10"/>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_order_list_fm_contract"/>
+        <field name="act_window_id" ref="action_fm_contract_order"/>
+    </record>
+
+    <record id="action_fm_contract_order_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="20"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="sale.view_order_form"/>
+        <field name="act_window_id" ref="action_fm_contract_order"/>
+    </record>
+
+</odoo>
