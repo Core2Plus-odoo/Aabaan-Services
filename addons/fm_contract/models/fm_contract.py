@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 from odoo.addons.fm_asset.models.fm_asset_category import SERVICE_LINES
 
@@ -356,10 +357,40 @@ class FmContract(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        self._fm_check_creation_allowed()
         for vals in vals_list:
             if vals.get("contract_number", "/") in (False, "/"):
                 vals["contract_number"] = self.env["ir.sequence"].next_by_code("fm.contract") or "/"
         return super().create(vals_list)
+
+    @api.model
+    def _fm_check_creation_allowed(self):
+        """Contracts are written in Sales now, not here.
+
+        A contract is a sale order: fm.contract already wraps one by
+        delegation, and the platform is consolidating onto the order itself
+        so there is a single place a commitment to a customer is made, a
+        single thing to quote, sign, schedule visits from and invoice.
+
+        create="0" on the views only hides the New button. This is the check
+        that actually holds, because the button is not the only way in --
+        import, RPC and a stray script all reach create() directly.
+
+        The escape hatch is a context key rather than a group: the people who
+        legitimately still need this are code paths (data migration, tests),
+        not a category of user. Nobody gets a permanent right to reopen a
+        door the platform is closing.
+        """
+        if self.env.context.get("fm_allow_contract_create"):
+            return
+        raise UserError(_(
+            "FM contracts are no longer created here.\n\n"
+            "Create the contract as a quotation in Sales and confirm it. The "
+            "visit schedule, invoicing and the customer's signed document all "
+            "follow from that order, so the order is the one record that has "
+            "to be right.\n\n"
+            "Existing FM contracts stay readable and editable; only creating "
+            "new ones has moved."))
 
     def action_activate(self):
         self.write({"state": "active"})

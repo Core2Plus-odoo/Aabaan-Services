@@ -164,12 +164,22 @@
         <field name="target">new</field>
     </record>
 
-    <!-- First entry under Contracts. NOTE: parent= repeated deliberately —
-         see the menuitem parent-reset gotcha in CLAUDE.md §4. -->
+    <!-- Retired entry point. Contracts are written in Sales now: a contract
+         is a sale order, and the platform is consolidating onto the order so
+         there is one place a commitment to a customer is made.
+
+         The menu is deactivated rather than deleted, and the wizard's code
+         and action are left intact, so the change is reversible while the
+         consolidation is in flight. fm.contract.create() refuses regardless:
+         a hidden menu is not a control.
+
+         NOTE: parent= repeated deliberately, see the menuitem parent-reset
+         gotcha in CLAUDE.md §4. -->
     <menuitem id="menu_fm_contract_wizard"
               name="New Contract (Guided)"
               parent="fm_contract.menu_fm_contracts_root"
               action="action_fm_contract_wizard"
-              sequence="1"/>
+              sequence="1"
+              active="False"/>
 
 </odoo>
