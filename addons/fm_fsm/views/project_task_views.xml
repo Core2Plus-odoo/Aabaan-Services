@@ -9,7 +9,9 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='partner_id']" position="before">
                 <field name="fm_asset_id"/>
-                <field name="fm_contract_id"/>
+                <field name="fm_contract_order_id"/>
+                <field name="fm_contract_id" invisible="not fm_contract_id"
+                       readonly="1"/>
                 <field name="fm_service_line"/>
                 <field name="fm_severity"/>
                 <field name="fm_wo_type"/>
@@ -19,9 +21,9 @@
 
     <!-- Visit calendar: auto-scheduled and reactive FM work orders by date.
          Coloured by status (stage), keyed on the visit date (date_deadline).
-         Each event shows the customer/site as its title (see the visit name in
-         fm_contract._generate_schedule), with asset, technician, service line
-         and status in the popup. -->
+         Each event shows the customer/site as its title (see the visit name
+         in the shared generator, fm.visit.schedule.mixin), with asset,
+         technician, service line and status in the popup. -->
     <record id="view_fm_task_calendar" model="ir.ui.view">
         <field name="name">project.task.calendar.fm</field>
         <field name="model">project.task</field>
@@ -33,7 +35,7 @@
                 <field name="stage_id" filters="1"/>
                 <field name="fm_service_line" filters="1"/>
                 <field name="fm_asset_id"/>
-                <field name="fm_contract_id"/>
+                <field name="fm_contract_order_id"/>
                 <field name="fm_severity"/>
                 <field name="user_ids" widget="many2many_avatar_user" filters="1"/>
             </calendar>
@@ -59,7 +61,7 @@
                 <filter name="fm_group_technician" string="Technician"
                         context="{'group_by': 'user_ids'}"/>
                 <filter name="fm_group_contract" string="AMC Contract"
-                        context="{'group_by': 'fm_contract_id'}"/>
+                        context="{'group_by': 'fm_contract_order_id'}"/>
             </xpath>
         </field>
     </record>

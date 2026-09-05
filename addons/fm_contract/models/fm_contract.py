@@ -12,7 +12,7 @@ class FmContract(models.Model):
     currency and the customer come from the standard sales document, while FM
     adds scope, SLA, penalties and a renewal lifecycle.
 
-    Visits/work orders are linked by ``fm_fsm`` (``task_ids`` on this model →
+    Visits/work orders are linked by ``fm_fsm`` (``fm_task_ids`` on this model →
     native FSM ``project.task``). ``health_score`` / ``health_band`` are
     account-manager-maintained fields (10 = healthy); no automatic computation.
     """

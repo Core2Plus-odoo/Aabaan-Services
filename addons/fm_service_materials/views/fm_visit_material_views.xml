@@ -34,7 +34,7 @@
                 <field name="date_deadline"/>
                 <field name="material_id"/>
                 <field name="partner_id"/>
-                <field name="contract_id"/>
+                <field name="order_id"/>
                 <field name="qty_expected" sum="Expected"/>
                 <field name="qty_used" sum="Used"/>
                 <field name="uom_id"/>
@@ -51,14 +51,14 @@
             <search>
                 <field name="material_id"/>
                 <field name="partner_id"/>
-                <field name="contract_id"/>
+                <field name="order_id"/>
                 <filter name="future" string="Upcoming"
                         domain="[('date_deadline','&gt;=', context_today())]"/>
                 <filter name="billable" string="Billable" domain="[('billable','=',True)]"/>
                 <separator/>
                 <filter name="group_material" string="Material" context="{'group_by': 'material_id'}"/>
                 <filter name="group_service_line" string="Service Line" context="{'group_by': 'service_line'}"/>
-                <filter name="group_contract" string="Contract" context="{'group_by': 'contract_id'}"/>
+                <filter name="group_contract" string="Contract" context="{'group_by': 'order_id'}"/>
                 <filter name="group_month" string="Visit Month" context="{'group_by': 'date_deadline:month'}"/>
             </search>
         </field>

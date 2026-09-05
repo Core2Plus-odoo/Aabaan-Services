@@ -41,7 +41,8 @@
                                 <strong>Service Details / تفاصيل الخدمة</strong>
                                 <div t-if="o.fm_asset_id"><strong>Asset:</strong> <span t-field="o.fm_asset_id"/></div>
                                 <div t-if="o.fm_location_id"><strong>Location:</strong> <span t-field="o.fm_location_id"/></div>
-                                <div t-if="o.fm_contract_id"><strong>Contract:</strong> <span t-field="o.fm_contract_id"/></div>
+                                <div t-if="o.fm_contract_order_id"><strong>Contract:</strong> <span t-field="o.fm_contract_order_id"/></div>
+                                <div t-if="not o.fm_contract_order_id and o.fm_contract_id"><strong>Contract:</strong> <span t-field="o.fm_contract_id"/></div>
                                 <div t-if="o.user_ids"><strong>Technician:</strong> <span t-field="o.user_ids"/></div>
                             </div>
                         </div>

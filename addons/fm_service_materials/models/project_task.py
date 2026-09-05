@@ -28,15 +28,25 @@ class ProjectTask(models.Model):
             task.fm_material_expected_cost = sum(task.fm_material_line_ids.mapped("cost_expected"))
             task.fm_material_used_cost = sum(task.fm_material_line_ids.mapped("cost_used"))
 
-    @api.onchange("fm_contract_id")
+    def _fm_contract_services(self):
+        """Service products on the contract behind this visit that carry a
+        material composition. Reads the contract's sale order through
+        ``_fm_contract_order()``, so a visit linked either way answers."""
+        self.ensure_one()
+        order = self._fm_contract_order()
+        if not order:
+            return self.env["product.template"]
+        return order.order_line.product_id.product_tmpl_id.filtered(
+            lambda p: p.type == "service" and p.fm_service_material_ids
+        )
+
+    @api.onchange("fm_contract_order_id", "fm_contract_id")
     def _onchange_fm_contract_default_service(self):
         """Default the service from the contract when it has a single service product."""
         for task in self:
-            if task.fm_service_product_id or not task.fm_contract_id:
+            if task.fm_service_product_id:
                 continue
-            services = task.fm_contract_id.order_line.product_id.product_tmpl_id.filtered(
-                lambda p: p.type == "service" and p.fm_service_material_ids
-            )
+            services = task._fm_contract_services()
             if len(services) == 1:
                 task.fm_service_product_id = services
 
@@ -65,10 +75,8 @@ class ProjectTask(models.Model):
         """Server-side helper: set a single-service default and load its materials.
         Used when generating visits so the forecast has data without manual clicks."""
         for task in self:
-            if not task.fm_service_product_id and task.fm_contract_id:
-                services = task.fm_contract_id.order_line.product_id.product_tmpl_id.filtered(
-                    lambda p: p.type == "service" and p.fm_service_material_ids
-                )
+            if not task.fm_service_product_id:
+                services = task._fm_contract_services()
                 if len(services) == 1:
                     task.fm_service_product_id = services
             if task.fm_service_product_id and not task.fm_material_line_ids:
