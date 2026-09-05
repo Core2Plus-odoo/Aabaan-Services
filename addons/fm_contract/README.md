@@ -32,9 +32,10 @@ read-only, until it is retired. Depends on `fm_asset` and `sale_management`.
 2. Tick **Facility Management Contract**. A contract number is issued then —
    not at creation, so ordinary quotations never burn one.
 3. Fill the **FM Contract** and **Printed Agreement** tabs.
-4. **Confirm the order.** That is what makes the contract Active: one action,
-   one meaning, and no window where the order is confirmed but the contract
-   is not.
+4. **Confirm the order.** That is what makes the contract Active *and* fills
+   its visit calendar (`fm_fsm`): one action, one meaning, no window where
+   the order is confirmed but the contract is not, and no separate
+   "generate the schedule" step to forget.
 
 `fm.sla.rule`, `fm.contract.penalty` and `fm.contract.agreement.line` each
 carry both an `order_id` and a legacy `contract_id`. Neither is required
