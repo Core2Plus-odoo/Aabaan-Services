@@ -12,11 +12,22 @@
               action="action_fm_customer"
               sequence="5"/>
 
-    <menuitem id="menu_fm_contract"
+    <!-- Contracts are sale orders now. This menu opens the orders flagged
+         as FM contracts; the legacy fm.contract list below stays reachable
+         while the consolidation finishes, for admins only, so records made
+         before the move can still be read. -->
+    <menuitem id="menu_fm_contract_order"
               name="Contracts"
               parent="menu_fm_contracts_root"
-              action="action_fm_contract"
+              action="action_fm_contract_order"
               sequence="10"/>
+
+    <menuitem id="menu_fm_contract"
+              name="Contracts (legacy)"
+              parent="menu_fm_contracts_root"
+              action="action_fm_contract"
+              groups="fm_branding.group_fm_admin"
+              sequence="15"/>
 
     <menuitem id="menu_fm_contract_service_item"
               name="Service Items"

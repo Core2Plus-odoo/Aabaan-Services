@@ -20,7 +20,7 @@ app is a single cockpit that operates them.
 | Scheduling / recurring visits | `project.task` + daily cron | `fm_fsm` contract-driven `_generate_schedule` |
 | Calendar | native `calendar.event` on tasks | — |
 | SLA | (native SLA policies to be configured) | SLA targets kept on `fm.sla.rule` (in `fm_contract`) |
-| Contracts / AMC billing | **Sales** + **Subscriptions** (`sale.subscription`) | `fm.contract` `_inherits sale.order`; `fm_subscription` |
+| Contracts / AMC billing | **Sales** — the contract IS the `sale.order` — + **Subscriptions** (`sale.subscription`) | `fm_contract` adds FM fields to `sale.order`; `fm_subscription`. The old `fm.contract` model is frozen and being retired |
 | Invoicing | native `account.move` (FTA tax invoice) | — |
 | Assets | **Maintenance** (`maintenance.equipment`) | `fm.asset` |
 | Compliance | Activities / Documents | `fm_compliance` regimes + certificates |
@@ -47,8 +47,12 @@ creating a new one.
    `--fm-*` design tokens. Only module with `application=True`.
 2. `fm_asset` — `fm.asset` (inherits `maintenance.equipment`), categories,
    locations. Owns the FM app root menu `menu_fm_root`.
-3. `fm_contract` — `fm.contract` (`_inherits sale.order`), `fm.sla.rule`,
-   service items, penalties, contract health. Customers menu.
+3. `fm_contract` — **the FM layer on `sale.order`**: `is_fm_contract`, term,
+   ACV/TCV, covered assets, inclusions/exclusions, `fm_lifecycle` (starts
+   where `sale.order.state` stops), health, and the printed agreement wording
+   (`fm.agreement.mixin`). Also `fm.sla.rule`, service items, penalties and
+   the Customers menu. The legacy `fm.contract` model (`_inherits sale.order`)
+   is frozen — nothing creates it, dependants are being re-pointed off it.
 4. `fm_fsm` — **the re-base core**. FM Field Service project, task stages,
    FM fields on `project.task`, contract-driven visit auto-scheduling + cron,
    `menu_fm_config_root`.
