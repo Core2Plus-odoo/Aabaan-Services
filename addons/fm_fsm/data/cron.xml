@@ -1,16 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo noupdate="1">
 
-    <!-- Keep a rolling horizon of planned FSM visits populated for active,
-         auto-scheduled contracts. -->
+    <!-- Kept a rolling horizon of planned FSM visits populated for active,
+         auto-scheduled fm.contract records.
+
+         SHIPPED INACTIVE, deliberately. There are two visit generators
+         writing to project.task on this platform:
+
+           1. fm.contract._generate_schedule()          (this cron)
+           2. sale.order._generate_visit_schedule()     (aabaan_visit_schedule)
+
+         Both create project.task records for the same customer's visits, and
+         this one runs unattended every day. A customer reachable from both
+         sides would silently get two sets of visits, with no error and
+         nothing on screen to say why.
+
+         The platform is consolidating onto the sale order as the contract
+         (see the retirement of fm.contract), so the sale-order generator is
+         the one that stays. Leaving this cron on during that transition means
+         the duplication starts the moment anyone creates an FM contract.
+
+         Re-enabling it is a two-minute job from Settings > Technical >
+         Scheduled Actions if the direction ever changes, but read the
+         above first: the duplicate visits are silent. -->
     <record id="cron_fm_fsm_auto_schedule" model="ir.cron">
-        <field name="name">FM: Auto-schedule Field Service visits</field>
+        <field name="name">FM: Auto-schedule Field Service visits (retired)</field>
         <field name="model_id" ref="fm_contract.model_fm_contract"/>
         <field name="state">code</field>
         <field name="code">model._cron_auto_schedule()</field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
-        <field name="active" eval="True"/>
+        <field name="active" eval="False"/>
     </record>
 
 </odoo>
