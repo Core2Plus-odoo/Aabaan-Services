@@ -95,8 +95,21 @@ class SaleOrder(models.Model):
              "until confirmation — until then the order's own status "
              "(draft / sent) is the whole story.",
     )
-    fm_start_date = fields.Date(string="Start Date", tracking=True)
-    fm_end_date = fields.Date(string="End Date", tracking=True)
+    # Labelled "Contract Start/End", not "Start/End Date". sale_subscription
+    # already puts start_date and end_date on sale.order, and two fields on one
+    # model sharing a label is not cosmetic: Odoo warns about it at every
+    # registry load, and import/export by column name becomes ambiguous.
+    #
+    # The deeper fix is to drop these two and use the subscription pair, which
+    # is what a contract term already means on a sale order. Not done blind:
+    # those fields drive the recurrence and next-invoice date when an order has
+    # a subscription plan, and this environment cannot reach an instance to
+    # check what writing them on a non-subscription order does. It needs one
+    # test against a real database, not a guess. fm_command_centre's
+    # FIELD_ALIASES already reads whichever pair exists, so that change costs
+    # the dashboard nothing.
+    fm_start_date = fields.Date(string="Contract Start", tracking=True)
+    fm_end_date = fields.Date(string="Contract End", tracking=True)
     fm_auto_renew = fields.Boolean(string="Auto-Renew", default=False)
     fm_renewal_term_months = fields.Integer(string="Renewal Term (months)", default=12)
     fm_days_to_renewal = fields.Integer(

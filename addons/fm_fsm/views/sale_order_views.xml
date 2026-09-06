@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Visit scheduling on the contract. Inherits fm_contract's own
+         extension of the order form rather than the native form, so the
+         "FM Contract" page it adds is guaranteed to be there to hang the
+         Scheduling page off. -->
+    <record id="view_order_form_fm_scheduling" model="ir.ui.view">
+        <field name="name">sale.order.form.fm.scheduling</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="fm_contract.view_order_form_fm_contract"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//header" position="inside">
+                <button name="action_generate_visits" type="object"
+                        string="Generate Visits" class="btn-secondary"
+                        invisible="not is_fm_contract or not fm_asset_ids"/>
+            </xpath>
+
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_tasks" type="object"
+                        class="oe_stat_button" icon="fa-wrench"
+                        invisible="not is_fm_contract">
+                    <field name="fm_task_count" widget="statinfo" string="Visits"/>
+                </button>
+            </xpath>
+
+            <xpath expr="//page[@name='fm_contract']" position="after">
+                <page string="Scheduling" name="fm_scheduling"
+                      invisible="not is_fm_contract">
+                    <group>
+                        <group string="Auto-scheduling">
+                            <field name="auto_schedule"/>
+                            <field name="visit_frequency"/>
+                            <field name="custom_interval_days"
+                                   invisible="visit_frequency != 'custom'"
+                                   required="visit_frequency == 'custom'"/>
+                            <field name="skip_weekends"/>
+                            <field name="preferred_technician_id"/>
+                            <field name="auto_schedule_state"/>
+                        </group>
+                        <group string="Projection">
+                            <field name="planned_visit_count"/>
+                            <field name="visit_start_time" widget="float_time"/>
+                            <field name="visit_duration_hours" widget="float_time"/>
+                        </group>
+                    </group>
+                    <p class="text-muted">
+                        Visits are created as native Field Service tasks in the
+                        Facility Management project. Confirming the order fills a
+                        rolling horizon of planned visits, one per covered asset at
+                        the chosen frequency; <b>Generate Visits</b> schedules the
+                        full remaining term now.
+                    </p>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>
