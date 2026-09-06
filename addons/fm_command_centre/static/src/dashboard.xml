@@ -1,0 +1,617 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<!-- ══ shared fragments ══════════════════════════════════════════════ -->
+
+<t t-name="fm_command_centre.Kpi">
+    <button t-attf-class="kpi {{ item.hero ? 'hero' : '' }} {{ item.model ? 'clickable' : '' }}"
+            t-on-click="() => this.open(item)">
+        <span class="k" t-out="item.label"/>
+
+        <span class="v" t-if="item.gross !== undefined and item.gross !== null"
+              t-out="money(item.gross)"/>
+        <span class="v" t-elif="item.value" t-out="item.value"/>
+        <span class="v" t-elif="item.pct !== undefined" t-out="pct(item.pct)"/>
+        <span class="v" t-elif="item.count !== undefined and item.count !== null"
+              t-out="item.count.toLocaleString()"/>
+        <span class="v muted" t-else="">—</span>
+
+        <span class="d" t-if="item.delta !== undefined and item.delta !== null">
+            <span t-attf-class="dl {{ deltaClass(item.delta, item.invert) }}"
+                  t-out="deltaText(item.delta)"/>
+            vs previous <t t-out="state.data.period_label.toLowerCase()"/>
+        </span>
+        <span class="d" t-if="item.count !== undefined and item.count !== null and item.gross !== undefined and item.gross !== null">
+            <t t-out="item.count.toLocaleString()"/> record<t t-if="item.count != 1">s</t>
+            <t t-if="item.net !== undefined"> · <t t-out="money(item.net)"/> net of VAT</t>
+        </span>
+        <span class="d" t-if="item.note" t-out="item.note"/>
+
+        <span class="d sub" t-if="item.sub_gross"
+              t-on-click.stop="() => this.openSub(item)">
+            <span class="crit"><t t-out="money(item.sub_gross)"/>
+                <t t-out="item.sub_label"/> (<t t-out="item.sub_count"/>)</span>
+        </span>
+
+        <span class="hint" t-if="item.model">Open records</span>
+    </button>
+</t>
+
+<t t-name="fm_command_centre.Ring">
+    <div class="ringwrap">
+        <div class="ring" t-attf-style="{{ ringStyle(item.pct, item.invert) }}">
+            <div class="hole">
+                <span class="rv" t-out="pct(item.pct)"/>
+            </div>
+        </div>
+        <div class="rl">
+            <b t-out="item.label"/>
+            <small t-if="item.note" t-out="item.note"/>
+        </div>
+    </div>
+</t>
+
+<t t-name="fm_command_centre.BarsMoney">
+    <div class="bars">
+        <button class="bar" t-foreach="items" t-as="item" t-key="item.key"
+                t-on-click="() => this.open(item)">
+            <span class="lbl" t-out="item.label"/>
+            <span class="track"><span class="fill s1"
+                  t-attf-style="width: {{ barWidth(items, item) }}%"/></span>
+            <span class="num"><t t-out="money(item.gross)"/>
+                <t t-if="item.count"> · <t t-out="item.count"/></t></span>
+        </button>
+    </div>
+</t>
+
+<t t-name="fm_command_centre.BarsCount">
+    <div class="bars">
+        <button class="bar" t-foreach="items" t-as="item" t-key="item.key"
+                t-on-click="() => this.open(item)">
+            <span class="lbl" t-out="item.label"/>
+            <span class="track"><span class="fill s2"
+                  t-attf-style="width: {{ barCount(items, item) }}%"/></span>
+            <span class="num"><t t-out="item.count"/>
+                <t t-if="item.open"> · <t t-out="item.open"/> open</t></span>
+        </button>
+    </div>
+</t>
+
+<t t-name="fm_command_centre.MonthCols">
+    <div class="months">
+        <button class="mcol" t-foreach="items" t-as="item" t-key="item.key"
+                t-on-click="() => this.open(item)"
+                t-att-title="item.label + ': ' + money(item.gross) + ' / ' + item.count">
+            <span class="mv" t-out="item.count ? fmt(item.gross) : ''"/>
+            <span class="mtrack">
+                <span t-attf-class="mfill {{ item.status or '' }}"
+                      t-attf-style="height: {{ monthHeight(items, item) }}%"/>
+            </span>
+            <span class="ml" t-out="item.label"/>
+        </button>
+    </div>
+</t>
+
+<t t-name="fm_command_centre.Cards">
+    <div class="renew">
+        <button t-foreach="items" t-as="item" t-key="item.key"
+                t-attf-class="rn {{ item.status or '' }}"
+                t-on-click="() => this.open(item)">
+            <span class="k" t-out="item.label"/>
+            <span class="v" t-if="item.gross !== undefined" t-out="money(item.gross)"/>
+            <span class="v" t-else="" t-out="item.count"/>
+            <span class="d" t-if="item.gross !== undefined"><t t-out="item.count"/> contracts</span>
+            <span class="d" t-else="">visits</span>
+        </button>
+    </div>
+</t>
+
+<!-- ══ main ═════════════════════════════════════════════════════════ -->
+
+<t t-name="fm_command_centre.Dashboard">
+    <div class="o_fm_cc_dash">
+
+        <div class="o_fm_cc_dash_mast">
+            <div class="o_fm_cc_dash_slash"/>
+            <div class="o_fm_cc_dash_mast_in">
+                <div>
+                    <div class="brand">Aab<span class="a">a</span>n <span class="light">Services</span></div>
+                    <div class="tag">Executive Command Centre</div>
+                </div>
+                <div class="right">
+                    <div class="asof" t-if="state.shell">
+                        Live from database · <t t-out="state.shell.as_of"/>
+                        <button class="rfr" t-on-click="() => this.refresh()"
+                                title="Reload every figure on this tab">⟳ Refresh</button>
+                    </div>
+                </div>
+            </div>
+            <div class="o_fm_cc_tabs" t-if="state.shell">
+                <button t-foreach="state.shell.tabs" t-as="t" t-key="t.key"
+                        t-attf-class="tb {{ state.tab === t.key ? 'on' : '' }}"
+                        t-on-click="() => this.selectTab(t.key)"
+                        t-out="t.label"/>
+            </div>
+        </div>
+
+        <div class="o_fm_cc_dash_body">
+
+            <div class="o_fm_cc_periods" t-if="state.shell">
+                <span class="pl">Period</span>
+                <button t-foreach="state.shell.periods" t-as="p" t-key="p.key"
+                        t-attf-class="pb {{ state.period === p.key ? 'on' : '' }}"
+                        t-on-click="() => this.selectPeriod(p.key)"
+                        t-out="p.label"/>
+                <span class="pr" t-if="state.data" t-out="state.data.range"/>
+            </div>
+
+            <div t-if="state.error" class="o_fm_cc_dash_state error">
+                Could not load this tab: <t t-out="state.error"/>
+            </div>
+            <div t-elif="state.loading" class="o_fm_cc_dash_state">Loading…</div>
+            <div t-elif="!state.data" class="o_fm_cc_dash_state">Loading…</div>
+
+            <div t-else="">
+
+                <div class="o_fm_cc_notes" t-if="hasAny(state.data.notes)">
+                    <div t-foreach="state.data.notes" t-as="n" t-key="n_index" t-out="n"/>
+                </div>
+
+                <!-- ══ Executive Overview ══ -->
+                <t t-if="state.tab === 'executive'">
+                    <div class="o_fm_cc_exc" t-if="hasAny(state.data.exceptions)">
+                        <span class="xh">Needs action</span>
+                        <button t-foreach="state.data.exceptions" t-as="item" t-key="item.key"
+                                t-attf-class="xc {{ item.status }}"
+                                t-on-click="() => this.open(item)">
+                            <b t-out="item.count"/>
+                            <span t-out="item.label"/>
+                            <span class="xg" t-if="item.gross !== undefined"
+                                  t-out="money(item.gross)"/>
+                        </button>
+                    </div>
+                    <div class="o_fm_cc_dash_tiles">
+                        <t t-foreach="state.data.tiles" t-as="item" t-key="item.label">
+                            <t t-call="fm_command_centre.Kpi"/>
+                        </t>
+                    </div>
+                    <div class="o_fm_cc_dash_grid">
+                        <div class="card wide">
+                            <h2><t t-out="state.data.period_label"/> — against the previous window of the same length</h2>
+                            <div class="renew">
+                                <button class="rn" t-foreach="state.data.period_block" t-as="item"
+                                        t-key="item.label" t-on-click="() => this.open(item)">
+                                    <span class="k" t-out="item.label"/>
+                                    <span class="v" t-out="money(item.gross)"/>
+                                    <span class="d">
+                                        <span t-attf-class="dl {{ deltaClass(item.delta) }}"
+                                              t-out="deltaText(item.delta)"/>
+                                        <t t-if="item.delta === null">no baseline</t>
+                                        · was <t t-out="money(item.prev_gross)"/>
+                                    </span>
+                                    <span class="d"><t t-out="item.count"/> record<t t-if="item.count != 1">s</t></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card wide">
+                            <h2>Invoiced revenue — last 12 months</h2>
+                            <div t-if="!someCount(state.data.revenue_months)" class="empty">
+                                Populates as customer invoices are posted. Net of VAT; credit notes deduct.
+                            </div>
+                            <t t-else=""><t t-set="items" t-value="state.data.revenue_months"/>
+                                <t t-call="fm_command_centre.MonthCols"/></t>
+                        </div>
+
+                        <div class="card wide">
+                            <h2>Cash collected — last 12 months</h2>
+                            <div t-if="!someCount(state.data.collections_months)" class="empty">
+                                Populates as customer payments are registered.
+                            </div>
+                            <t t-else=""><t t-set="items" t-value="state.data.collections_months"/>
+                                <t t-call="fm_command_centre.MonthCols"/></t>
+                        </div>
+
+                        <div class="card">
+                            <h2>Top customers — share of the book</h2>
+                            <div t-if="!hasAny(state.data.top_customers)" class="empty">
+                                Populates with the first confirmed contracts.
+                            </div>
+                            <div class="bars" t-else="">
+                                <button class="bar" t-foreach="state.data.top_customers" t-as="item"
+                                        t-key="item.key" t-on-click="() => this.open(item)">
+                                    <span class="lbl" t-out="item.label"/>
+                                    <span class="track"><span class="fill s1"
+                                          t-attf-style="width: {{ barWidth(state.data.top_customers, item) }}%"/></span>
+                                    <span class="num"><t t-out="money(item.gross)"/> · <t t-out="item.share"/>%</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h2>Book by service line</h2>
+                            <div t-if="!hasAny(state.data.service_lines)" class="empty">
+                                Populates once confirmed contracts carry a service line.
+                            </div>
+                            <t t-else=""><t t-set="items" t-value="state.data.service_lines"/>
+                                <t t-call="fm_command_centre.BarsMoney"/></t>
+                        </div>
+
+                        <div class="card">
+                            <h2>Book by emirate regime</h2>
+                            <div t-if="!hasAny(state.data.emirates)" class="empty">
+                                Populates once confirmed contracts carry an emirate regime.
+                            </div>
+                            <t t-else=""><t t-set="items" t-value="state.data.emirates"/>
+                                <t t-call="fm_command_centre.BarsMoney"/></t>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- ══ Field Operations ══ -->
+                <t t-if="state.tab === 'field'">
+                    <div class="o_fm_cc_dash_tiles">
+                        <t t-foreach="state.data.kpis" t-as="item" t-key="item.label">
+                            <t t-call="fm_command_centre.Kpi"/>
+                        </t>
+                    </div>
+                    <div class="o_fm_cc_dash_grid">
+                        <div class="card wide" t-if="hasAny(state.data.cards)">
+                            <h2>Needs attention now — regardless of the period filter</h2>
+                            <t t-set="items" t-value="state.data.cards"/>
+                            <t t-call="fm_command_centre.Cards"/>
+                        </div>
+
+                        <div class="card">
+                            <h2>Technicians — visits completed and hours on site</h2>
+                            <div t-if="!hasAny(state.data.technicians)" class="empty">
+                                Populates once technicians check in and complete visits.
+                                Hours come from real check-in / check-out stamps.
+                            </div>
+                            <div class="bars" t-else="">
+                                <button class="bar" t-foreach="state.data.technicians" t-as="item"
+                                        t-key="item.key" t-on-click="() => this.open(item)">
+                                    <span class="lbl" t-out="item.label"/>
+                                    <span class="track"><span class="fill s2"
+                                          t-attf-style="width: {{ barHours(state.data.technicians, item) }}%"/></span>
+                                    <span class="num"><t t-out="item.count"/> done ·
+                                        <t t-out="item.hours"/>h · <t t-out="item.open"/> open</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h2>Open visits by stage</h2>
+                            <div t-if="!hasAny(state.data.stages)" class="empty">
+                                No open visits — the schedule is clear.
+                            </div>
+                            <t t-else=""><t t-set="items" t-value="state.data.stages"/>
+                                <t t-call="fm_command_centre.BarsCount"/></t>
+                        </div>
+
+                        <div class="card">
+                            <h2>Visits by type</h2>
+                            <div t-if="!hasAny(state.data.by_type)" class="empty">
+                                Populates once visits carry a visit type.
+                            </div>
+                            <t t-else=""><t t-set="items" t-value="state.data.by_type"/>
+                                <t t-call="fm_command_centre.BarsCount"/></t>
+                        </div>
+
+                        <div class="card">
+                            <h2>Visit workload by emirate</h2>
+                            <div t-if="!hasAny(state.data.emirates)" class="empty">
+                                Populates once visits exist for contracts carrying an emirate regime.
+                            </div>
+                            <t t-else=""><t t-set="items" t-value="state.data.emirates"/>
+                                <t t-call="fm_command_centre.BarsCount"/></t>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- ══ Sales & CRM ══ -->
+                <t t-if="state.tab === 'sales'">
+                    <div class="o_fm_cc_dash_tiles">
+                        <t t-foreach="state.data.kpis" t-as="item" t-key="item.label">
+                            <t t-call="fm_command_centre.Kpi"/>
+                        </t>
+                    </div>
+                    <div class="o_fm_cc_dash_grid">
+                        <div class="card wide">
+                            <h2>Contracts signed — last 12 months</h2>
+                            <div t-if="!someCount(state.data.signed_months)" class="empty">
+                                Populates as quotations are confirmed.
+                            </div>
+                            <t t-else=""><t t-set="items" t-value="state.data.signed_months"/>
+                                <t t-call="fm_command_centre.MonthCols"/></t>
+                        </div>
+
+                        <div class="card">
+                            <h2>Pipeline by stage</h2>
+                            <div t-if="!hasAny(state.data.pipeline)" class="empty">
+                                Populates once there are open leads and opportunities.
+                            </div>
+                            <t t-else=""><t t-set="items" t-value="state.data.pipeline"/>
+                                <t t-call="fm_command_centre.BarsMoney"/></t>
+                        </div>
+
+                        <div class="card">
+                            <h2>Lead sources — created in this window</h2>
+                            <div t-if="!hasAny(state.data.sources)" class="empty">
+                                Populates once leads carry a source.
+                            </div>
+                            <t t-else=""><t t-set="items" t-value="state.data.sources"/>
+                                <t t-call="fm_command_centre.BarsCount"/></t>
+                        </div>
+
+                        <div class="card">
+                            <h2>Why we lost — this window</h2>
+                            <div t-if="!hasAny(state.data.lost_reasons)" class="empty">
+                                Nothing lost in this window, or lost reasons are not recorded.
+                            </div>
+                            <t t-else=""><t t-set="items" t-value="state.data.lost_reasons"/>
+                                <t t-call="fm_command_centre.BarsCount"/></t>
+                        </div>
+
+                        <div class="card">
+                            <h2>Contract size mix</h2>
+                            <t t-set="items" t-value="state.data.size_bands"/>
+                            <t t-call="fm_command_centre.BarsMoney"/>
+                        </div>
+
+                        <div class="card">
+                            <h2>Book by service line</h2>
+                            <div t-if="!hasAny(state.data.service_lines)" class="empty">
+                                Populates once confirmed contracts carry a service line.
+                            </div>
+                            <t t-else=""><t t-set="items" t-value="state.data.service_lines"/>
+                                <t t-call="fm_command_centre.BarsMoney"/></t>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- ══ Finance ══ -->
+                <t t-if="state.tab === 'finance'">
+                    <div class="o_fm_cc_dash_tiles">
+                        <t t-foreach="state.data.kpis" t-as="item" t-key="item.label">
+                            <t t-call="fm_command_centre.Kpi"/>
+                        </t>
+                    </div>
+                    <div class="o_fm_cc_dash_grid">
+                        <div class="card wide">
+                            <h2>Receivables ageing — measured from the due date</h2>
+                            <div class="bars">
+                                <button class="bar" t-foreach="state.data.ageing" t-as="item"
+                                        t-key="item.key" t-on-click="() => this.open(item)">
+                                    <span class="lbl" t-out="item.label"/>
+                                    <span class="track"><span
+                                          t-attf-class="fill {{ item.status === 'critical' ? 'sc' : item.status === 'warning' ? 'sw' : 's1' }}"
+                                          t-attf-style="width: {{ barWidth(state.data.ageing, item) }}%"/></span>
+                                    <span class="num"><t t-out="money(item.gross)"/> ·
+                                        <t t-out="item.share"/>% · <t t-out="item.count"/></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card wide" t-if="hasAny(state.data.recovery)">
+                            <h2>Recovery classification</h2>
+                            <t t-set="items" t-value="state.data.recovery"/>
+                            <t t-call="fm_command_centre.Cards"/>
+                        </div>
+
+                        <div class="card wide">
+                            <h2>Invoiced against collected — last 12 months</h2>
+                            <div class="dual">
+                                <div class="dcol">
+                                    <div class="dh">Invoiced, net of VAT</div>
+                                    <t t-set="items" t-value="state.data.revenue_months"/>
+                                    <t t-call="fm_command_centre.MonthCols"/>
+                                </div>
+                                <div class="dcol">
+                                    <div class="dh">Cash collected</div>
+                                    <t t-set="items" t-value="state.data.collections_months"/>
+                                    <t t-call="fm_command_centre.MonthCols"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h2>Top debtors</h2>
+                            <div t-if="!hasAny(state.data.top_debtors)" class="empty">
+                                Nothing outstanding — every posted invoice is settled.
+                            </div>
+                            <div class="bars" t-else="">
+                                <button class="bar" t-foreach="state.data.top_debtors" t-as="item"
+                                        t-key="item.key" t-on-click="() => this.open(item)">
+                                    <span class="lbl" t-out="item.label"/>
+                                    <span class="track"><span class="fill s1"
+                                          t-attf-style="width: {{ barWidth(state.data.top_debtors, item) }}%"/></span>
+                                    <span class="num"><t t-out="money(item.gross)"/>
+                                        <t t-if="item.overdue"> · <span class="crit"><t t-out="money(item.overdue)"/> overdue</span></t></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card" t-if="hasAny(state.data.services)">
+                            <h2>Outstanding by service</h2>
+                            <t t-set="items" t-value="state.data.services"/>
+                            <t t-call="fm_command_centre.BarsMoney"/>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- ══ Expenses &amp; Margin ══ -->
+                <t t-if="state.tab === 'expenses'">
+                    <div class="o_fm_cc_dash_tiles">
+                        <t t-foreach="state.data.kpis" t-as="item" t-key="item.label">
+                            <t t-call="fm_command_centre.Kpi"/>
+                        </t>
+                    </div>
+                    <div class="o_fm_cc_dash_grid">
+                        <div class="card wide">
+                            <h2>Invoiced against spent — last 12 months</h2>
+                            <div class="dual">
+                                <div class="dcol">
+                                    <div class="dh">Invoiced, net of VAT</div>
+                                    <t t-set="items" t-value="state.data.revenue_months"/>
+                                    <t t-call="fm_command_centre.MonthCols"/>
+                                </div>
+                                <div class="dcol">
+                                    <div class="dh">Expenses booked</div>
+                                    <t t-set="items" t-value="state.data.expense_months"/>
+                                    <t t-call="fm_command_centre.MonthCols"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h2>Where the money went</h2>
+                            <div t-if="!hasAny(state.data.by_account)" class="empty">
+                                No expense posted in this window.
+                            </div>
+                            <t t-else="">
+                                <t t-set="items" t-value="state.data.by_account"/>
+                                <t t-call="fm_command_centre.BarsMoney"/>
+                            </t>
+                        </div>
+
+                        <div class="card">
+                            <h2>Cost by emirate</h2>
+                            <div t-if="!hasAny(state.data.by_emirate)" class="empty">
+                                No cost carries an Emirate analytic tag in this window.
+                                Spend with no tag is not spread across branches on an
+                                assumption — tag it, or agree an allocation rule for
+                                shared overheads.
+                            </div>
+                            <t t-else="">
+                                <t t-set="items" t-value="state.data.by_emirate"/>
+                                <t t-call="fm_command_centre.BarsMoney"/>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- ══ Cash &amp; Bank ══ -->
+                <t t-if="state.tab === 'cash'">
+                    <div class="o_fm_cc_dash_tiles">
+                        <t t-foreach="state.data.kpis" t-as="item" t-key="item.label">
+                            <t t-call="fm_command_centre.Kpi"/>
+                        </t>
+                    </div>
+                    <div class="o_fm_cc_dash_grid">
+                        <div class="card wide">
+                            <h2>Money in against money out — last 12 months</h2>
+                            <div class="dual">
+                                <div class="dcol">
+                                    <div class="dh">Money in</div>
+                                    <t t-set="items" t-value="state.data.flow_months"/>
+                                    <t t-call="fm_command_centre.MonthCols"/>
+                                </div>
+                                <div class="dcol">
+                                    <div class="dh">Money out</div>
+                                    <t t-set="items" t-value="state.data.out_months"/>
+                                    <t t-call="fm_command_centre.MonthCols"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h2>Balance by account</h2>
+                            <div t-if="!hasAny(state.data.accounts)" class="empty">
+                                No bank or cash journal has a default account set.
+                            </div>
+                            <t t-else="">
+                                <t t-set="items" t-value="state.data.accounts"/>
+                                <t t-call="fm_command_centre.BarsMoney"/>
+                            </t>
+                        </div>
+
+                        <div class="card">
+                            <h2>Recent movements</h2>
+                            <div t-if="!state.data.transactions.length" class="empty">
+                                Nothing moved through the bank in this window.
+                            </div>
+                            <div class="bars" t-else="">
+                                <button class="bar txn" t-foreach="state.data.transactions"
+                                        t-as="item" t-key="item.key"
+                                        t-on-click="() => this.open(item)">
+                                    <span class="lbl">
+                                        <t t-out="item.label"/>
+                                        <small><t t-out="item.date"/> · <t t-out="item.account"/></small>
+                                    </span>
+                                    <span t-attf-class="num {{ item.gross &lt; 0 ? 'crit' : '' }}"
+                                          t-out="money(item.gross)"/>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- ══ AMC &amp; Renewals ══ -->
+                <t t-if="state.tab === 'amc'">
+                    <div class="o_fm_cc_dash_tiles">
+                        <t t-foreach="state.data.kpis" t-as="item" t-key="item.label">
+                            <t t-call="fm_command_centre.Kpi"/>
+                        </t>
+                    </div>
+                    <div class="o_fm_cc_dash_grid">
+                        <div class="card wide" t-if="hasAny(state.data.buckets)">
+                            <h2>Renewal pipeline</h2>
+                            <t t-set="items" t-value="state.data.buckets"/>
+                            <t t-call="fm_command_centre.Cards"/>
+                            <t t-if="hasAny(state.data.timeline)">
+                                <t t-set="items" t-value="state.data.timeline"/>
+                                <t t-call="fm_command_centre.MonthCols"/>
+                            </t>
+                        </div>
+
+                        <div class="card wide">
+                            <h2>Contracts at risk — ranked by escalations, then overdue visits</h2>
+                            <div t-if="!hasAny(state.data.at_risk)" class="empty">
+                                No contract currently has an overdue or escalated visit.
+                            </div>
+                            <div class="risk" t-else="">
+                                <button class="rr" t-foreach="state.data.at_risk" t-as="item"
+                                        t-key="item.key" t-on-click="() => this.openRecord(item)">
+                                    <span class="rn2">
+                                        <b t-out="item.label"/>
+                                        <small t-out="item.partner"/>
+                                    </span>
+                                    <span class="rw" t-out="item.reason"/>
+                                    <span class="rv2" t-out="money(item.gross)"/>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card" t-if="hasAny(state.data.documents)">
+                            <h2>Compliance documents</h2>
+                            <t t-set="items" t-value="state.data.documents"/>
+                            <t t-call="fm_command_centre.Cards"/>
+                        </div>
+
+                        <div class="card">
+                            <h2>Book by emirate regime</h2>
+                            <div t-if="!hasAny(state.data.emirates)" class="empty">
+                                Populates once confirmed contracts carry an emirate regime.
+                            </div>
+                            <t t-else=""><t t-set="items" t-value="state.data.emirates"/>
+                                <t t-call="fm_command_centre.BarsMoney"/></t>
+                        </div>
+
+                        <div class="card">
+                            <h2>Book by service line</h2>
+                            <div t-if="!hasAny(state.data.service_lines)" class="empty">
+                                Populates once confirmed contracts carry a service line.
+                            </div>
+                            <t t-else=""><t t-set="items" t-value="state.data.service_lines"/>
+                                <t t-call="fm_command_centre.BarsMoney"/></t>
+                        </div>
+                    </div>
+                </t>
+
+            </div>
+        </div>
+    </div>
+</t>
+
+</templates>

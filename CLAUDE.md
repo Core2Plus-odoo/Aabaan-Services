@@ -24,7 +24,7 @@ app is a single cockpit that operates them.
 | Invoicing | native `account.move` (FTA tax invoice) | — |
 | Assets | **Maintenance** (`maintenance.equipment`) | `fm.asset` |
 | Compliance | Activities / Documents | `fm_compliance` regimes + certificates |
-| Dashboards | native graph/pivot actions | `fm_dashboards` (JS-free) |
+| Dashboards | native graph/pivot actions | `fm_dashboards` (JS-free); `fm_command_centre` is the executive one (OWL, seven tabs) |
 
 **Standard covers it — configure, don't code** (see
 `docs/FM_LIFECYCLE_WORKFLOW.md`): checklists = **FSM Worksheet Templates**
@@ -66,6 +66,16 @@ creating a new one.
    and `project.task`; branch on `hr.employee` and PDFs.
 8. `fm_dashboards` — native Operations & Contracts graph/pivot dashboards.
 9. `fm_reports` — OWL "Reports Hub" catalog of native actions.
+9b. `fm_command_centre` — **the executive dashboard**: seven tabs (overview,
+    field ops, sales, finance, expenses, cash, AMC renewals), each loaded on
+    demand. Ported from the `aabaan` build rather than rewritten, and still
+    runs on both: it resolves each business fact through the `FIELD_ALIASES`
+    table (`fm_service_line` here, `x_service_line` there) and collapses any
+    section whose concept nothing answers. Deliberately does NOT depend on
+    `aabaan_visit_schedule` — that is the second visit generator.
+    **Supersedes `fm_ceo_dashboard` and `fm_exec_dashboard`**, which are still
+    installed and still menu'd; retiring them is pending confirmation that the
+    Command Centre reads correctly against production data.
 10. `fm_subscription` — bills `fm.contract` via `sale.subscription`.
 11. `fm_aabaan_config` — **seed data**: branches, service categories, UAE
     compliance regimes, service products. Makes the platform Aabaan-ready.
