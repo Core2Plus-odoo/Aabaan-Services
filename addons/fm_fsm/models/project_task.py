@@ -23,8 +23,13 @@ class ProjectTask(models.Model):
         tracking=True,
         help="Facility asset this job services.",
     )
+    # "Asset Service Line", not "Service Line": this database also carries a
+    # manual x_service_line on project.task with that label, and Odoo warns
+    # about the clash at every registry load. This one is the asset's, which
+    # is the more precise name anyway.
     fm_service_line = fields.Selection(
-        related="fm_asset_id.service_line", store=True, index=True, string="Service Line"
+        related="fm_asset_id.service_line", store=True, index=True,
+        string="Asset Service Line",
     )
     fm_location_id = fields.Many2one(
         related="fm_asset_id.location_fm_id", store=True, string="Asset Location"
