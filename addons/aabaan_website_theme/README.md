@@ -40,6 +40,22 @@ kept), and every legacy page is unpublished —
 except the keep-list (`/booking`, `/contactus`, legal pages). Old pages
 stay in the website page manager and can be republished with one click.
 
+## Native Odoo views this site switches
+
+Two things the stock site shows that this one should not. Both are handled
+by flipping views Odoo's own builder toggles -- not by overriding
+templates -- in `NATIVE_VIEW_STATE` (`__init__.py`):
+
+| View | Set to | Why |
+|---|---|---|
+| `website.footer_no_copyright` | active | The branded footer already carries the copyright. Odoo's copyright bar duplicated it *and* still showed the stock placeholder `Copyright (c) Company name`. |
+| `website.header_call_to_action` | inactive | It renders a `Contact Us` button to `/contactus`, competing with `Book a visit` (the primary CTA) and the `Contact` menu entry. |
+
+Each is resolved with `raise_if_not_found=False`: if a future Odoo renames
+or drops one, the hook logs and moves on. It runs on every install and
+migration, so a hard reference would fail the install and take the registry
+with it -- the cost of losing a footer tweak is not worth that.
+
 ## Uninstalling
 
 The pages are XML records and go with the module. The menus are **not** —

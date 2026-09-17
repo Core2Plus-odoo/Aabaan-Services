@@ -223,6 +223,7 @@ def _apply_site_structure(env):
         _rebuild_menu(env, website, root)
 
     _retire_legacy_pages(env)
+    _apply_native_view_state(env)
 
 
 def _post_init_hook(env):
@@ -238,6 +239,43 @@ def _owned_menu_urls():
         for _c_name, c_url, _c_seq in children:
             urls.add(c_url)
     return urls - set(KEEP_PUBLISHED_URLS)
+
+
+# Native Odoo views this site turns on or off. Both are switches Odoo's own
+# builder toggles -- not template overrides -- so nothing here can break a
+# page render; the worst case is a view that no longer exists, handled below.
+NATIVE_VIEW_STATE = [
+    # The branded footer already carries the copyright ("(c) Aaban Classic
+    # Building Cleaning L.L.C. -- Ajman . Sharjah . Dubai"), so Odoo's own
+    # copyright bar is a duplicate -- and it ships the placeholder text
+    # "Copyright (c) Company name", which reads as broken on a live site.
+    ('website.footer_no_copyright', True),
+    # Odoo's header call-to-action is a "Contact Us" button pointing at
+    # /contactus. This site already has "Book a visit" as its primary call
+    # to action and "Contact" in the menu, so the native button competes
+    # with both.
+    ('website.header_call_to_action', False),
+]
+
+
+def _apply_native_view_state(env):
+    """Flip the native website views this site wants on or off.
+
+    Each is looked up with raise_if_not_found=False: if a future Odoo
+    renames or drops one, this logs and moves on rather than failing the
+    install and taking the registry with it.
+    """
+    for xmlid, active in NATIVE_VIEW_STATE:
+        view = env.ref(xmlid, raise_if_not_found=False)
+        if not view:
+            _logger.warning(
+                "aabaan_website_theme: %s not found; leaving site as is.",
+                xmlid)
+            continue
+        if view.active != active:
+            view.active = active
+            _logger.info("aabaan_website_theme: set %s active=%s.",
+                         xmlid, active)
 
 
 def _uninstall_hook(env):
