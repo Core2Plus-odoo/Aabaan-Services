@@ -1,8 +1,8 @@
 {
     'name': 'Aabaan Website',
-    'version': '19.0.1.1.0',
+    'version': '19.0.1.2.0',
     'category': 'Website',
-    'summary': 'Public website for Aabaan Services — pages, brand styling, enquiry routing',
+    'summary': 'Public website for Aabaan Services — pages, brand styling, structured data',
     'description': """
 Aabaan Services public website
 ==============================
@@ -15,12 +15,14 @@ touching this module.
 
 What the module contributes
 ---------------------------
-* Four pages: Home, Services, Compliance, Contact.
+* Five pages: Home, Services, Compliance, About, Contact.
 * A brand stylesheet on web.assets_frontend that reuses the same design
   tokens as the FM backend (fm_branding), so the public site and the
   internal cockpit read as one company.
 * A post-init hook that points the website's homepage at our Home page and
   adds the top menu entries — both guarded, both skipped if already set.
+* Schema.org LocalBusiness structured data assembled from the company and
+  the branch records, and two robots.txt rules appended to Odoo's own.
 
 What it deliberately does NOT contribute
 ----------------------------------------
@@ -42,6 +44,7 @@ What it deliberately does NOT contribute
     'data': [
         'views/templates.xml',
         'views/pages.xml',
+        'views/seo.xml',
         'data/website_pages.xml',
     ],
     'assets': {

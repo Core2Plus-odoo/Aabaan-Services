@@ -1,3 +1,4 @@
+from . import models
 from . import hooks
 
 # Odoo resolves post_init_hook with getattr() on the package, so the name has

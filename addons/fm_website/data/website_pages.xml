@@ -31,5 +31,11 @@
             <field name="url">/contact-us</field>
             <field name="is_published" eval="True"/>
         </record>
+
+        <record id="page_about" model="website.page">
+            <field name="view_id" ref="fm_website.page_about_view"/>
+            <field name="url">/about</field>
+            <field name="is_published" eval="True"/>
+        </record>
     </data>
 </odoo>
