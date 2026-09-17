@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Structured data and crawler rules. Everything else about SEO — the
+        per-page title, description and social image — is native and belongs
+        in the page editor, not here.
+    -->
+
+    <!--
+        Schema.org LocalBusiness, built from the company record and, when the
+        FM suite is installed, the branches. Rendered only when there is
+        something true to say: see website._fm_localbusiness_jsonld.
+
+        Odoo's own <head> already carries the title, canonical and Open Graph
+        tags for every page, so this adds the one thing it cannot know — that
+        this is a local business, where it is, and which emirates it covers.
+    -->
+    <template id="layout_jsonld" inherit_id="website.layout"
+              name="Aabaan: LocalBusiness structured data">
+        <xpath expr="//head" position="inside">
+            <t t-set="fm_jsonld" t-value="website._fm_localbusiness_jsonld()"/>
+            <script t-if="fm_jsonld" type="application/ld+json" t-out="fm_jsonld"/>
+        </xpath>
+    </template>
+
+    <!--
+        robots.txt. Appended to Odoo's own, never replacing it — the native
+        template already emits the Sitemap line pointing at this website's
+        real domain, and losing that at launch would cost more than these two
+        Disallow rules gain.
+
+        /web is the backend. /website/info leaks the installed module list.
+    -->
+    <template id="robots" inherit_id="website.robots" name="Aabaan: robots.txt">
+        <xpath expr="." position="inside">
+Disallow: /web
+Disallow: /website/info
+        </xpath>
+    </template>
+
+</odoo>

@@ -539,4 +539,113 @@
         </t>
     </template>
 
+    <!--
+        About. A trust page, not a brochure: procurement and owners
+        associations look for who holds the licence and how the work is
+        recorded. Every claim traces to the repository or the licences
+        (Rule 4) — there is no founding year, headcount or customer count
+        here because no such figure is on record.
+    -->
+    <template id="page_about_view" name="About">
+        <t t-call="website.layout">
+            <div id="wrap" class="fm-site">
+                <div class="oe_structure"/>
+
+                <section class="fm-pagehead">
+                    <div class="container">
+                        <p class="fm-eyebrow fm-eyebrow--light">About</p>
+                        <h1 class="fm-pagehead__title">A maintenance company that keeps the paperwork.</h1>
+                        <p class="fm-pagehead__lead">
+                            Aabaan Services maintains buildings across four emirates —
+                            pest control, water tanks, cleaning, HVAC and plumbing — under
+                            written contracts with a scope agreed before anyone is sent
+                            out.
+                        </p>
+                    </div>
+                </section>
+
+                <section class="fm-section">
+                    <div class="container">
+                        <div class="fm-section__head">
+                            <h2 class="fm-section__title">Why the certificate matters more than the invoice</h2>
+                            <p class="fm-section__lead">
+                                In UAE facility management the thing you are eventually asked
+                                to produce is a document: the pest control permit, the tank
+                                disinfection certificate, the fire and life safety inspection.
+                                An inspector, an insurer or an owners association asks for the
+                                record, not for a description of the work.
+                            </p>
+                        </div>
+
+                        <div class="fm-detail">
+                            <div class="fm-detail__aside">
+                                <h3 class="fm-detail__title">Written scope</h3>
+                                <p class="fm-detail__tag">Before work starts</p>
+                            </div>
+                            <div class="fm-detail__body">
+                                <p>
+                                    A survey, then a scope that states what is included and —
+                                    the part that causes arguments later — what is not. The
+                                    quotation follows the scope rather than the other way
+                                    round.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="fm-detail">
+                            <div class="fm-detail__aside">
+                                <h3 class="fm-detail__title">Recorded visits</h3>
+                                <p class="fm-detail__tag">Every job</p>
+                            </div>
+                            <div class="fm-detail__body">
+                                <p>
+                                    Each visit is scheduled against the contract, not booked ad
+                                    hoc, and closed out with what was done and what was used.
+                                    For pest control that record — pesticide, quantity, method —
+                                    is what Local Order No. 11 of 2003 requires, and it is
+                                    yours as much as ours.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="fm-detail">
+                            <div class="fm-detail__aside">
+                                <h3 class="fm-detail__title">Local teams</h3>
+                                <p class="fm-detail__tag">Four emirates</p>
+                            </div>
+                            <div class="fm-detail__body">
+                                <p>
+                                    Offices in Dubai, Sharjah, Ajman and Fujairah, with the head
+                                    office in Ajman. Work is dispatched from the branch that
+                                    covers the building, which is why a routine visit does not
+                                    have to cross the country to reach you.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <t t-call="fm_website.compliance_strip"/>
+
+                <section class="fm-section fm-section--tint">
+                    <div class="container">
+                        <div class="fm-section__head">
+                            <h2 class="fm-section__title">Licensed where we work</h2>
+                            <p class="fm-section__lead">
+                                A separate trade licence is held in each emirate we operate in,
+                                and pest control is carried out under a Dubai Municipality
+                                operator permit. Copies are available on request — a procurement
+                                team should never have to take that on trust.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <t t-call="fm_website.contact_band"/>
+
+                <div class="oe_structure"/>
+            </div>
+        </t>
+    </template>
+
 </odoo>

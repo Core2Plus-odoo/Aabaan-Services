@@ -7,6 +7,7 @@ _logger = logging.getLogger(__name__)
 TOP_MENU = [
     ('/services', 'Services', 20),
     ('/compliance', 'Compliance', 30),
+    ('/about', 'About', 35),
     ('/contact-us', 'Contact', 40),
 ]
 
