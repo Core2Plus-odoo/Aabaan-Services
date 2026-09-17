@@ -1,0 +1,442 @@
+/* Aabaan website theme — brand ink #17171a, orange #ef7d25.
+   All .ab-* classes used by the code-defined pages live here so every page
+   shares one look and the templates stay markup-only. The dark angular
+   hero echoes the letterhead: ink band + orange slash. */
+
+/* ── Brand basics ─────────────────────────────────────────────── */
+.ab-orange { color: #c94f16; }
+
+.btn-primary,
+.btn-primary:focus {
+    background-color: #ef7d25;
+    border-color: #ef7d25;
+}
+.btn-primary:hover,
+.btn-primary:active {
+    background-color: #c94f16;
+    border-color: #c94f16;
+}
+
+/* Header: ink links, orange hover, and the Book a visit menu as a button */
+header .navbar .nav-link { color: #17171a; font-weight: 600; }
+header .navbar .nav-link:hover { color: #c94f16; }
+header .navbar .nav-link[href="/booking"] {
+    background: #ef7d25;
+    color: #fff !important;
+    border-radius: 10px;
+    padding: 6px 16px !important;
+    font-weight: 800;
+}
+
+/* ── Dark angular hero (letterhead motif) ─────────────────────── */
+.ab-hero-dark {
+    position: relative;
+    overflow: hidden;
+    background: #17171a;
+    color: #f4f2ee;
+    padding: 64px 0 56px;
+}
+.ab-hero-dark.ab-hero-sm { padding: 44px 0 36px; }
+.ab-hero-dark::before {          /* orange slash */
+    content: "";
+    position: absolute;
+    top: -10%;
+    bottom: -10%;
+    right: -90px;
+    width: 260px;
+    background: #ef7d25;
+    transform: skewX(-16deg);
+}
+.ab-hero-dark::after {           /* echo band left of the slash */
+    content: "";
+    position: absolute;
+    top: -10%;
+    bottom: -10%;
+    right: 190px;
+    width: 46px;
+    background: rgba(239, 125, 37, .22);
+    transform: skewX(-16deg);
+}
+.ab-hero-dark .container { position: relative; z-index: 2; }
+.ab-hero-dark h1 { font-weight: 800; max-width: 24ch; letter-spacing: -.01em; }
+.ab-hero-dark .ab-orange { color: #ef7d25; }
+.ab-sub { color: #b9b6ae; }
+.ab-back { color: #b9b6ae; font-size: .8rem; text-decoration: none; display: inline-block; margin-bottom: 10px; }
+.ab-back:hover { color: #ef7d25; }
+@media (max-width: 767.98px) {
+    .ab-hero-dark::before { right: -170px; }
+    .ab-hero-dark::after { display: none; }
+}
+
+/* Chips (on the dark hero) */
+.ab-chip {
+    display: inline-block;
+    border: 1px solid rgba(244, 242, 238, .3);
+    border-radius: 999px;
+    padding: 4px 14px;
+    margin: 3px;
+    color: #e8e5df;
+    font-size: .85rem;
+    text-decoration: none;
+}
+.ab-chip:hover { border-color: #ef7d25; color: #ef7d25; }
+
+/* ── Services mega menu (native website.menu mega-menu) ───────── */
+/* The old theme leaves dropdown panels transparent — pin a solid
+   surface so the panel never blends into the page behind it. */
+header .dropdown-menu { background: #fff; }
+.o_mega_menu {
+    background: #fff !important;
+    border: 0;
+    border-top: 3px solid #ef7d25;
+    box-shadow: 0 24px 48px rgba(23, 23, 26, .18);
+}
+.ab-mega { padding: 26px 0 22px; }
+.ab-mega-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    text-decoration: none;
+    color: #17171a;
+    transition: all .15s;
+}
+.ab-mega-item,
+.ab-mega-item:visited { color: #17171a !important; }
+.ab-mega-item:hover {
+    background: rgba(239, 125, 37, .07);
+    border-color: rgba(239, 125, 37, .35);
+    color: #17171a !important;
+}
+.ab-mega-item .ic {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(239, 125, 37, .12);
+    border-radius: 10px;
+    font-size: 1.2rem;
+}
+.ab-mega-item .tx b { display: block; font-size: .92rem; color: #17171a; }
+.ab-mega-item .tx small { color: #6b675f !important; line-height: 1.3; display: block; }
+.ab-mega-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    border-top: 1px solid #eee7dc;
+    margin-top: 14px;
+    padding-top: 12px;
+}
+.ab-mega-all { font-weight: 800; color: #c94f16 !important; text-decoration: none; }
+.ab-mega-all:hover { color: #ef7d25 !important; }
+.ab-mega-chip {
+    font-size: .75rem;
+    color: #6b675f;
+    background: #f6f4ef;
+    border-radius: 999px;
+    padding: 4px 12px;
+}
+.ab-mega-rail {
+    position: relative;
+    overflow: hidden;
+    background: #17171a;
+    color: #c9c6bf;
+    border-radius: 14px;
+    padding: 20px;
+    height: 100%;
+    font-size: .88rem;
+}
+.ab-mega-rail::before {
+    content: "";
+    position: absolute;
+    top: -10%; bottom: -10%;
+    right: -50px;
+    width: 110px;
+    background: rgba(239, 125, 37, .2);
+    transform: skewX(-16deg);
+}
+.ab-mega-rail > * { position: relative; z-index: 2; }
+.ab-mega-rail b { color: #f4f2ee; }
+.ab-mega-rail .ab-kick { color: #ef7d25; }
+.ab-mega-rail ul { padding-left: 18px; margin: 0 0 12px; }
+.ab-mega-rail li { margin: 3px 0; }
+.ab-mega-call a,
+.ab-mega-call a:visited { color: #c9c6bf !important; text-decoration: none; }
+.ab-mega-call a:hover { color: #ef7d25 !important; }
+.ab-mega-call .ab-o { color: #ef7d25 !important; font-weight: 800; }
+
+/* ── Section furniture ────────────────────────────────────────── */
+.ab-kick {
+    display: block;
+    font-size: .75rem;
+    font-weight: 800;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: #c94f16;
+    margin-bottom: 6px;
+}
+
+.ab-trust { background: #f6f4ef; padding: 16px 0; font-size: .85rem; color: #6b675f; }
+.ab-trust span {
+    background: #fff;
+    border: 1px solid #e5e0d8;
+    border-radius: 999px;
+    padding: 6px 14px;
+}
+.ab-trust b { color: #17171a; }
+
+.ab-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #eae5dc;
+    border-radius: 16px;
+    padding: 22px;
+    background: #fff;
+    transition: all .15s;
+}
+/* Full-height only where one card fills one column (tile grids). A column
+   stacking several cards must NOT stretch each to the column height —
+   that made the booking sidebar overflow onto the footer. */
+a.ab-card,
+.ab-card:only-child { height: 100%; }
+a.ab-card::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 3px;
+    background: #ef7d25;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .2s;
+}
+a.ab-card:hover {
+    border-color: #ef7d25;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(23, 23, 26, .08);
+}
+a.ab-card:hover::after { transform: scaleX(1); }
+.ab-card .ic {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(239, 125, 37, .12);
+    border-radius: 12px;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+.ab-from b { color: #c94f16; }
+
+.ab-step-n {
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: #17171a;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    box-shadow: 0 0 0 3px rgba(239, 125, 37, .35);
+}
+
+.ab-amc { border-left: 4px solid #ef7d25; }
+
+.ab-price-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee7dc;
+    padding: 9px 0;
+    font-size: .95rem;
+}
+.ab-price-row b { color: #c94f16; white-space: nowrap; }
+
+.ab-tick li { margin: 5px 0; }
+
+.ab-btn-book { background: #ef7d25; color: #fff !important; font-weight: 800; border-radius: 10px; }
+.ab-btn-book:hover { background: #c94f16; }
+.ab-btn-wa { background: #0a7d33; color: #fff !important; font-weight: 800; border-radius: 10px; }
+.ab-btn-call { background: #17171a; color: #fff !important; font-weight: 800; border-radius: 10px; }
+
+.ab-cta-band {
+    position: relative;
+    overflow: hidden;
+    background: #17171a;
+    color: #f4f2ee;
+    padding: 26px 0;
+}
+.ab-cta-band::before {
+    content: "";
+    position: absolute;
+    top: -10%; bottom: -10%;
+    right: -60px;
+    width: 180px;
+    background: rgba(239, 125, 37, .25);
+    transform: skewX(-16deg);
+}
+.ab-cta-band .container { position: relative; z-index: 2; }
+.ab-cta-band .ab-o { color: #ef7d25; font-weight: 800; }
+
+/* ── Contact page ─────────────────────────────────────────────── */
+/* Hide the stock photo cover that follows the inserted branded hero */
+.ab-contact-hero + section { display: none; }
+.ab-ct {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    border: 1px solid rgba(244, 242, 238, .25);
+    border-radius: 14px;
+    padding: 16px;
+    height: 100%;
+    background: rgba(244, 242, 238, .05);
+    text-decoration: none;
+    color: #f4f2ee !important;
+    transition: all .15s;
+}
+.ab-ct:hover {
+    border-color: #ef7d25;
+    background: rgba(239, 125, 37, .12);
+    color: #fff !important;
+}
+.ab-ct .ic {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(239, 125, 37, .18);
+    border-radius: 12px;
+    font-size: 1.3rem;
+}
+.ab-ct b { display: block; color: #f4f2ee; }
+.ab-ct small { color: #b9b6ae; line-height: 1.35; }
+
+/* ── Forms (contact, booking — every website form) ────────────── */
+.s_website_form label,
+.s_website_form .s_website_form_label { font-weight: 600; color: #17171a; }
+.s_website_form .form-control,
+.s_website_form .form-select {
+    border: 1px solid #e5e0d8;
+    border-radius: 10px;
+    padding: 10px 14px;
+}
+.s_website_form .form-control:focus,
+.s_website_form .form-select:focus {
+    border-color: #ef7d25;
+    box-shadow: 0 0 0 .2rem rgba(239, 125, 37, .15);
+}
+.s_website_form .s_website_form_send,
+.s_website_form .btn-primary {
+    background: #ef7d25;
+    border-color: #ef7d25;
+    font-weight: 800;
+    border-radius: 10px;
+}
+.s_website_form .s_website_form_send:hover,
+.s_website_form .btn-primary:hover {
+    background: #c94f16;
+    border-color: #c94f16;
+}
+
+/* Stat strip (About page) */
+.ab-stat { text-align: center; }
+.ab-stat .n { font-size: 1.9rem; font-weight: 800; color: #c94f16; }
+.ab-stat .l { font-size: .85rem; color: #6b675f; }
+
+/* FAQ accordion (native <details>, no JS) */
+.ab-faq details {
+    border: 1px solid #e5e0d8;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    background: #fff;
+}
+.ab-faq summary {
+    font-weight: 700;
+    color: #17171a;
+    cursor: pointer;
+    list-style: none;
+    position: relative;
+    padding-right: 26px;
+}
+.ab-faq summary::-webkit-details-marker { display: none; }
+.ab-faq summary::after {
+    content: "+";
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: #ef7d25;
+    font-weight: 800;
+    font-size: 1.1rem;
+    line-height: 1.2;
+}
+.ab-faq details[open] { border-color: #ef7d25; }
+.ab-faq details[open] summary::after { content: "–"; }
+.ab-faq details p, .ab-faq details ul { margin: 10px 0 0; font-size: .92rem; color: #6b675f; }
+
+/* ── Site-wide footer ─────────────────────────────────────────── */
+/* The native wrapper (and its copyright strip) matches the dark band.
+   The old theme's purple link palette must not bleed into the footer,
+   so links are pinned — including :visited — with priority. */
+#wrapwrap > footer, .o_footer { background: #17171a; color: #c9c6bf; }
+#wrapwrap footer a,
+#wrapwrap footer a:visited { color: #c9c6bf !important; }
+#wrapwrap footer a:hover { color: #ef7d25 !important; }
+#wrapwrap footer .ab-o { color: #ef7d25 !important; }
+.o_footer_copyright,
+.o_footer_copyright span,
+.o_footer_copyright div,
+.o_footer_copyright li { color: #8f8c85; }
+
+/* Content links follow the brand, not the old theme's purple */
+#wrapwrap main a:not(.btn):not(.ab-card):not(.ab-chip):not(.nav-link) { color: #c94f16; }
+#wrapwrap main a:not(.btn):not(.ab-card):not(.ab-chip):not(.nav-link):hover { color: #ef7d25; }
+.ab-sitefoot {
+    background: #17171a;
+    color: #c9c6bf;
+    border-top: 4px solid #ef7d25;
+    padding: 36px 0 20px;
+    font-size: .9rem;
+}
+.ab-sitefoot b, .ab-sitefoot h5 { color: #f4f2ee; }
+.ab-sitefoot h5 { font-size: .95rem; font-weight: 800; margin-bottom: 10px; }
+.ab-sitefoot a { color: #c9c6bf; text-decoration: none; }
+.ab-sitefoot a:hover { color: #ef7d25; }
+.ab-sitefoot .ab-o { color: #ef7d25; font-weight: 700; }
+.ab-sitefoot ul { list-style: none; padding: 0; margin: 0; }
+.ab-sitefoot li { margin: 4px 0; }
+.ab-sitefoot .ab-bottom {
+    border-top: 1px solid rgba(244, 242, 238, .12);
+    margin-top: 24px;
+    padding-top: 14px;
+    font-size: .8rem;
+    color: #8f8c85;
+}
+
+/* ── Fixed mobile action bar (site-wide, from the footer template) ── */
+.ab-actionbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1030;
+    background: #fff;
+    border-top: 3px solid #ef7d25;
+    padding: 8px 12px;
+    display: flex;
+    gap: 8px;
+}
+.ab-actionbar .btn { flex: 1 1 0; font-size: .9rem; }
+@media (min-width: 992px) {
+    .ab-actionbar { display: none; }
+}
+@media (max-width: 991.98px) {
+    #wrapwrap { padding-bottom: 64px; }
+}

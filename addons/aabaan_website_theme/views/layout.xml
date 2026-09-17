@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Site-wide branded footer. Replaces the default footer content on
+         every page (native pages like /contactus included). If the live
+         website had already customised its footer in the builder, that
+         website-specific copy may still win — resetting the footer template
+         in the builder picks this one up. -->
+    <template id="footer_aabaan" inherit_id="website.footer_custom" name="Aabaan Footer">
+        <xpath expr="//div[@id='footer']" position="replace">
+            <div id="footer" class="oe_structure oe_structure_solo ab-sitefoot">
+                <section class="container">
+                    <div class="row g-4">
+                        <div class="col-lg-4 col-md-6">
+                            <h5>Aaban Classic Building Cleaning L.L.C.</h5>
+                            <p class="mb-2">Municipality-approved pest control, water-tank
+                                cleaning, anti-termite and deep cleaning across the UAE.</p>
+                            <span>Trade Licence <t t-out="res_company.company_registry or '103074'"/><br/>TRN <t t-out="res_company.vat or '104302919600003'"/></span>
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6">
+                            <h5>Services</h5>
+                            <ul>
+                                <li><a href="/services/pest-control">Pest Control</a></li>
+                                <li><a href="/services/water-tank">Water Tank Cleaning</a></li>
+                                <li><a href="/services/anti-termite">Anti-Termite</a></li>
+                                <li><a href="/services/deep-cleaning">Deep Cleaning</a></li>
+                                <li><a href="/services">All services</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6">
+                            <h5>Company</h5>
+                            <ul>
+                                <li><a href="/about">About us</a></li>
+                                <li><a href="/faq">FAQ</a></li>
+                                <li><a href="/contactus">Contact</a></li>
+                                <li><a href="/booking">Book a visit</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <h5>Talk to us</h5>
+                            <ul>
+                                <li><b>Call</b> <a href="tel:80022226"><span class="ab-o">800 AABAN</span> (800 22226)</a></li>
+                                <li><a href="tel:+971558598834">055 859 8834</a> · <a href="tel:+971558666530">055 866 6530</a></li>
+                                <li><a href="https://wa.me/971558598834">WhatsApp us</a></li>
+                                <li><a href="mailto:infoaabanservices@gmail.com">infoaabanservices@gmail.com</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="ab-bottom d-flex flex-wrap justify-content-between gap-2">
+                        <span>© Aaban Classic Building Cleaning L.L.C. — Ajman · Sharjah · Dubai</span>
+                        <span>Same-day complaint response in Dubai · 24–48h Ajman &amp; Sharjah</span>
+                    </div>
+                </section>
+                <!-- Fixed mobile action bar (hidden on desktop via CSS) -->
+                <div class="ab-actionbar">
+                    <a href="/booking" class="btn ab-btn-book">📅 Book</a>
+                    <a href="https://wa.me/971558598834" class="btn ab-btn-wa">WhatsApp</a>
+                    <a href="tel:80022226" class="btn ab-btn-call">☎ 800 AABAN</a>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- The booking-first page used to live at /home-v2; it is now the
+         homepage itself, so old links and search results get a 301. -->
+    <record id="rewrite_home_v2" model="website.rewrite">
+        <field name="name">/home-v2 → / (booking-first page became the homepage)</field>
+        <field name="redirect_type">301</field>
+        <field name="url_from">/home-v2</field>
+        <field name="url_to">/</field>
+    </record>
+</odoo>

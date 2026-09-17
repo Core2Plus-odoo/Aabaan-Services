@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ══ Booking page — owns /booking ══
+         The form uses the native website-form pattern (same field names as
+         the working /contactus lead form), posting into CRM as a lead. -->
+    <template id="page_booking" name="Book a Visit">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <section class="ab-hero-dark ab-hero-sm">
+                    <div class="container">
+                        <span class="ab-kick">Book a visit</span>
+                        <h1 class="h3 fw-bold">Booked in <span class="ab-orange">60 seconds</span></h1>
+                        <p class="ab-sub col-lg-7 px-0">Tell us what you need and where — we confirm
+                            your visit day and the fixed price the same working day.
+                            Same-day complaint response in Dubai.</p>
+                    </div>
+                </section>
+
+                <section class="py-5"><div class="container"><div class="row g-4">
+                    <div class="col-lg-7">
+                        <div class="ab-card">
+                            <h2 class="h6 fw-bold mb-3">Your visit request</h2>
+                            <section class="s_website_form" data-vcss="001" data-snippet="s_website_form">
+                                <form action="/website/form/" method="post" enctype="multipart/form-data"
+                                      class="o_mark_required" data-mark="*" data-model_name="crm.lead"
+                                      data-success-mode="redirect" data-success-page="/booking-thanks">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <div class="s_website_form_rows row s_col_no_bgcolor">
+                                        <div class="form-group s_website_form_field mb-3 col-12 s_website_form_required" data-type="char" data-name="Field">
+                                            <label class="s_website_form_label" for="ab_book_service">
+                                                <span class="s_website_form_label_content">Service</span>
+                                                <span class="s_website_form_mark"> *</span>
+                                            </label>
+                                            <select class="form-select s_website_form_input" name="name" id="ab_book_service" required="required">
+                                                <option value="Pest control — home visit">Pest control — home visit</option>
+                                                <option value="Pest control — business / AMC quote">Pest control — business / AMC quote</option>
+                                                <option value="Water tank cleaning">Water tank cleaning</option>
+                                                <option value="Anti-termite survey">Anti-termite survey</option>
+                                                <option value="Deep cleaning">Deep cleaning</option>
+                                                <option value="Emergency — call me back now">Emergency — call me back now</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group s_website_form_field mb-3 col-md-6 s_website_form_required" data-type="char" data-name="Field">
+                                            <label class="s_website_form_label" for="ab_book_name">
+                                                <span class="s_website_form_label_content">Your name</span>
+                                                <span class="s_website_form_mark"> *</span>
+                                            </label>
+                                            <input type="text" class="form-control s_website_form_input" name="contact_name" id="ab_book_name" required="required"/>
+                                        </div>
+                                        <div class="form-group s_website_form_field mb-3 col-md-6 s_website_form_required" data-type="char" data-name="Field">
+                                            <label class="s_website_form_label" for="ab_book_phone">
+                                                <span class="s_website_form_label_content">Phone / WhatsApp</span>
+                                                <span class="s_website_form_mark"> *</span>
+                                            </label>
+                                            <input type="tel" class="form-control s_website_form_input" name="phone" id="ab_book_phone" required="required" placeholder="05x xxx xxxx"/>
+                                        </div>
+                                        <div class="form-group s_website_form_field mb-3 col-md-6" data-type="email" data-name="Field">
+                                            <label class="s_website_form_label" for="ab_book_email">
+                                                <span class="s_website_form_label_content">Email</span>
+                                            </label>
+                                            <input type="email" class="form-control s_website_form_input" name="email_from" id="ab_book_email"/>
+                                        </div>
+                                        <div class="form-group s_website_form_field mb-3 col-md-6" data-type="char" data-name="Field">
+                                            <label class="s_website_form_label" for="ab_book_company">
+                                                <span class="s_website_form_label_content">Company (for business visits)</span>
+                                            </label>
+                                            <input type="text" class="form-control s_website_form_input" name="partner_name" id="ab_book_company"/>
+                                        </div>
+                                        <div class="form-group s_website_form_field mb-3 col-12 s_website_form_required" data-type="text" data-name="Field">
+                                            <label class="s_website_form_label" for="ab_book_details">
+                                                <span class="s_website_form_label_content">Property &amp; problem</span>
+                                                <span class="s_website_form_mark"> *</span>
+                                            </label>
+                                            <textarea class="form-control s_website_form_input" name="description" id="ab_book_details" rows="4" required="required" placeholder="Area / emirate, property type and size, and what you're seeing — e.g. 'Ajman, 2BR apartment, cockroaches in the kitchen'"/>
+                                        </div>
+                                        <div class="form-group col-12 s_website_form_submit" data-name="Submit Button">
+                                            <span id="s_website_form_result"></span>
+                                            <button type="submit" class="btn btn-primary btn-lg s_website_form_send w-100">Request my visit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </section>
+                            <p class="small text-muted mb-0 mt-2">Prefer to talk?
+                                Call <a href="tel:80022226" class="fw-bold">800 AABAN (800 22226)</a> or
+                                <a href="https://wa.me/971558598834" class="fw-bold">WhatsApp us</a>.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="ab-card mb-3">
+                            <h2 class="h6 fw-bold mb-2">What happens next</h2>
+                            <ul class="ab-tick small text-muted mb-0">
+                                <li><b>Same working day</b> — we confirm your visit day and the fixed price</li>
+                                <li>A uniformed, municipality-approved technician arrives on the day</li>
+                                <li>You get the service report — and certificate where due</li>
+                            </ul>
+                        </div>
+                        <div class="ab-card ab-amc mb-3">
+                            <h2 class="h6 fw-bold mb-2">Fixed prices, up front</h2>
+                            <div class="ab-price-row"><span>Pest control — residential</span><b>AED 200 – 320</b></div>
+                            <div class="ab-price-row"><span>Water tank cleaning</span><b>from AED 0.35/gal</b></div>
+                            <div class="ab-price-row"><span>Anti-termite treatment</span><b>AED 14.50 – 18/m²</b></div>
+                            <p class="small text-muted mt-2 mb-0">From the signed rate card — no surprises on site.</p>
+                        </div>
+                        <div class="ab-card">
+                            <h2 class="h6 fw-bold mb-2">🚨 Can't wait?</h2>
+                            <p class="small text-muted mb-2">Same-day response in Dubai, 24–48h in the
+                                other emirates.</p>
+                            <a href="tel:80022226" class="btn ab-btn-call btn-sm fw-bold">☎ Call 800 AABAN now</a>
+                        </div>
+                    </div>
+                </div></div></section>
+            </div>
+        </t>
+    </template>
+    <record id="page_rec_booking" model="website.page">
+        <field name="name">Book a Visit</field>
+        <field name="url">/booking</field>
+        <field name="view_id" ref="page_booking"/>
+        <field name="is_published" eval="True"/>
+        <field name="website_meta_description">Book a pest control, water tank cleaning, anti-termite or deep cleaning visit — fixed price confirmed the same working day. Same-day response in Dubai.</field>
+    </record>
+
+    <!-- ══ Thank-you page after booking ══ -->
+    <template id="page_booking_thanks" name="Booking Received">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <section class="ab-hero-dark ab-hero-sm">
+                    <div class="container">
+                        <span class="ab-kick">Request received</span>
+                        <h1 class="h3 fw-bold">Thank you — <span class="ab-orange">we're on it</span></h1>
+                        <p class="ab-sub col-lg-7 px-0">Your visit request is with our team. We confirm
+                            the visit day and the fixed price the same working day — by phone or WhatsApp.</p>
+                        <a href="/" class="btn ab-btn-book px-4 me-2">Back to home</a>
+                        <a href="tel:80022226" class="btn btn-outline-light">☎ 800 AABAN</a>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+    <record id="page_rec_booking_thanks" model="website.page">
+        <field name="name">Booking Received</field>
+        <field name="url">/booking-thanks</field>
+        <field name="view_id" ref="page_booking_thanks"/>
+        <field name="is_published" eval="True"/>
+    </record>
+</odoo>

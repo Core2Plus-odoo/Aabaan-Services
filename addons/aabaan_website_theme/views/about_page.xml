@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="page_about" name="About Aaban">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <section class="ab-hero-dark ab-hero-sm"><div class="container">
+                    <h1 class="h3 fw-bold">About <span class="ab-orange">Aaban</span></h1>
+                    <p class="ab-sub col-lg-7 px-0">Aaban Classic Building Cleaning L.L.C. is a
+                        municipality-approved pest control and cleaning company headquartered in Ajman,
+                        serving homes, buildings and businesses across three emirates.</p>
+                </div></section>
+
+                <!-- Numbers strip (source: contract master data sheet) -->
+                <section class="ab-trust"><div class="container">
+                    <div class="row g-3 py-2">
+                        <div class="col-6 col-md-3 ab-stat"><div class="n">600+</div><div class="l">annual contracts under management</div></div>
+                        <div class="col-6 col-md-3 ab-stat"><div class="n">4,500+</div><div class="l">scheduled visits a year</div></div>
+                        <div class="col-6 col-md-3 ab-stat"><div class="n">3</div><div class="l">emirates covered</div></div>
+                        <div class="col-6 col-md-3 ab-stat"><div class="n">10-yr</div><div class="l">anti-termite warranty</div></div>
+                    </div>
+                </div></section>
+
+                <section class="py-5"><div class="container"><div class="row g-3">
+                    <div class="col-md-6"><div class="ab-card">
+                        <h2 class="h6 fw-bold mb-3">Licensed &amp; approved</h2>
+                        <ul class="ab-tick small text-muted mb-0">
+                            <li><b>Trade Licence <t t-out="res_company.company_registry or '103074'"/></b> · TRN <t t-out="res_company.vat or '104302919600003'"/></li>
+                            <li>Municipality approvals — Ajman &amp; Sharjah</li>
+                            <li><b>Dubai Public Health Pest Control Agreement</b> (Local Order 11 of 2003)</li>
+                            <li>MOCCAE-approved pesticides only</li>
+                        </ul>
+                    </div></div>
+                    <div class="col-md-6"><div class="ab-card">
+                        <h2 class="h6 fw-bold mb-3">How we work</h2>
+                        <ul class="ab-tick small text-muted mb-0">
+                            <li>Fixed prices from the signed rate card — agreed before the visit</li>
+                            <li>Uniformed technicians, written report after every job</li>
+                            <li>Free follow-ups every 3 days until an infestation clears</li>
+                            <li>Complaint response: <b>same-day Dubai</b>, 24–48h other emirates</li>
+                        </ul>
+                    </div></div>
+                    <div class="col-md-6"><div class="ab-card">
+                        <h2 class="h6 fw-bold mb-3">Who we serve</h2>
+                        <p class="small text-muted mb-0">Residential buildings and villas, restaurants and
+                            F&amp;B groups, hypermarkets, schools, industrial facilities and government sites —
+                            from single visits to multi-site annual programmes with municipality reporting handled.</p>
+                    </div></div>
+                    <div class="col-md-6"><div class="ab-card">
+                        <h2 class="h6 fw-bold mb-3">Where we work</h2>
+                        <p class="small text-muted mb-0"><b>Ajman</b> (head of operations) · <b>Sharjah</b> ·
+                            <b>Dubai</b> — same or next-day slots around Ajman.</p>
+                    </div></div>
+                </div></div></section>
+
+                <t t-call="aabaan_website_theme.service_cta_band"/>
+            </div>
+        </t>
+    </template>
+    <record id="page_rec_about" model="website.page">
+        <field name="name">About us</field>
+        <field name="url">/about</field>
+        <field name="view_id" ref="page_about"/>
+        <field name="is_published" eval="True"/>
+        <field name="website_meta_description">Aaban Classic Building Cleaning L.L.C. — municipality-approved pest control and cleaning from Ajman, 600+ annual contracts across three emirates. Municipality approved, TRN registered.</field>
+    </record>
+</odoo>

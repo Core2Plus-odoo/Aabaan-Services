@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Beautifies the native /contactus page while keeping the native
+         lead form untouched (website_crm keeps posting into CRM). A
+         branded hero with contact tiles is inserted above the original
+         content; the original photo cover is hidden by the theme CSS
+         (.ab-contact-hero + section); the CTA band closes the page. -->
+    <template id="contactus_aabaan" inherit_id="website.contactus" name="Aabaan Contact Page">
+        <xpath expr="//div[@id='wrap']/*[1]" position="before">
+            <section class="ab-hero-dark ab-hero-sm ab-contact-hero">
+                <div class="container">
+                    <span class="ab-kick">Contact</span>
+                    <h1 class="h3 fw-bold">Talk to <span class="ab-orange">Aaban</span> — we answer fast</h1>
+                    <p class="ab-sub col-lg-7 px-0 mb-4">Same-day complaint response in Dubai,
+                        24–48 hours in the other emirates. Call, WhatsApp, email — or use the
+                        form below and we come back to you the same working day.</p>
+                    <div class="row g-3">
+                        <div class="col-md-4"><a href="tel:80022226" class="ab-ct">
+                            <span class="ic">📞</span>
+                            <span class="tx"><b>Call us</b>
+                            <small>800 AABAN (800 22226)<br/>055 859 8834 · 055 866 6530</small></span></a></div>
+                        <div class="col-md-4"><a href="https://wa.me/971558598834" class="ab-ct">
+                            <span class="ic">💬</span>
+                            <span class="tx"><b>WhatsApp</b>
+                            <small>Fastest for photos of the problem —<br/>send them and we reply</small></span></a></div>
+                        <div class="col-md-4"><a href="mailto:infoaabanservices@gmail.com" class="ab-ct">
+                            <span class="ic">✉️</span>
+                            <span class="tx"><b>Email</b>
+                            <small>infoaabanservices@gmail.com<br/>Quotes, contracts &amp; documents</small></span></a></div>
+                    </div>
+                </div>
+            </section>
+        </xpath>
+        <xpath expr="//div[@id='wrap']" position="inside">
+            <t t-call="aabaan_website_theme.service_cta_band"/>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="page_faq" name="FAQ">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <section class="ab-hero-dark ab-hero-sm"><div class="container">
+                    <h1 class="h3 fw-bold">Frequently asked <span class="ab-orange">questions</span></h1>
+                    <p class="ab-sub col-lg-7 px-0">The short answers. Anything else —
+                        call <a href="tel:80022226" class="ab-orange fw-bold">800 AABAN</a> and ask.</p>
+                </div></section>
+
+                <section class="py-5"><div class="container col-lg-8 px-3 ab-faq">
+                    <details>
+                        <summary>How fast can you come?</summary>
+                        <p>Complaint visits are <b>same-day in Dubai</b> and within 24–48 hours in the other
+                            emirates. Around Ajman we usually have same or next-day slots for new bookings.</p>
+                    </details>
+                    <details>
+                        <summary>Are the chemicals safe for my family and pets?</summary>
+                        <p>We only use <b>MOCCAE-approved pesticides</b>, applied by trained, municipality-approved
+                            technicians. The technician tells you before the visit what precautions apply — usually
+                            keeping children and pets away from treated areas until dry.</p>
+                    </details>
+                    <details>
+                        <summary>What if the pests come back after a treatment?</summary>
+                        <p>Contract clients get <b>free follow-up visits every 3 days</b> until the infestation
+                            clears — that's in the agreement, not a favour.</p>
+                    </details>
+                    <details>
+                        <summary>What is Dubai LO 11 and does my restaurant need it?</summary>
+                        <p>Local Order 11 of 2003 is Dubai Municipality's public-health regulation. Food businesses
+                            in Dubai need a pest-control contract with an approved company — <b>2 visits per month</b> —
+                            and monthly reporting to the municipality. We hold the Public Health Pest Control
+                            Agreement and handle the returns for you.</p>
+                    </details>
+                    <details>
+                        <summary>Do I get a certificate?</summary>
+                        <p>Yes, where one applies:</p>
+                        <ul>
+                            <li><b>Water tank cleaning</b> — a cleaning certificate for building compliance after every clean.</li>
+                            <li><b>Anti-termite treatment</b> — a written <b>10-year warranty certificate</b> on completion.</li>
+                            <li>Every visit closes with a service report.</li>
+                        </ul>
+                    </details>
+                    <details>
+                        <summary>How does pricing work?</summary>
+                        <p>Prices come from our signed rate card and are fixed before the visit — residential pest
+                            control by property size (AED 200–320/visit), water tanks from AED 0.35/gallon,
+                            anti-termite AED 14.50–18.00/m². No surprises on site.</p>
+                    </details>
+                    <details>
+                        <summary>What does an annual contract (AMC) include?</summary>
+                        <p>A yearly programme of 12, 4 or 2 visits scheduled in advance, free follow-ups until any
+                            infestation clears, priority complaint response, and municipality reporting where it
+                            applies. One invoice, one number to call.</p>
+                    </details>
+                    <details>
+                        <summary>Which areas do you cover?</summary>
+                        <p>Ajman (head of operations), Sharjah and Dubai.</p>
+                    </details>
+                </div></section>
+
+                <t t-call="aabaan_website_theme.service_cta_band"/>
+            </div>
+        </t>
+    </template>
+    <record id="page_rec_faq" model="website.page">
+        <field name="name">FAQ</field>
+        <field name="url">/faq</field>
+        <field name="view_id" ref="page_faq"/>
+        <field name="is_published" eval="True"/>
+        <field name="website_meta_description">Answers on response times, chemical safety, follow-up visits, Dubai LO 11 compliance, certificates and pricing from Aaban pest control and cleaning.</field>
+    </record>
+</odoo>
