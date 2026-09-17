@@ -2,7 +2,9 @@ from odoo.tests import TransactionCase, tagged
 
 from odoo.addons.aabaan_website_theme import (
     KEEP_PUBLISHED_URLS,
+    NATIVE_VIEW_STATE,
     SITE_MENUS,
+    _apply_native_view_state,
     _apply_site_structure,
     _owned_menu_urls,
 )
@@ -164,3 +166,34 @@ class TestWebsiteOverhaul(TransactionCase):
                         entry_url, owned,
                         "menu %r (%s) would be orphaned on uninstall"
                         % (name, entry_url))
+
+    def test_native_views_are_switched(self):
+        """The copyright bar is off and the native Contact Us button is gone.
+
+        Both duplicated something the branded site already has: the footer
+        carries its own copyright line, and "Book a visit" is the primary
+        call to action. Odoo's copyright bar also ships the placeholder
+        text "Copyright (c) Company name", which reads as broken to a
+        visitor.
+        """
+        for xmlid, expected in NATIVE_VIEW_STATE:
+            view = self.env.ref(xmlid, raise_if_not_found=False)
+            if not view:
+                continue  # a future Odoo may rename it; the hook tolerates that
+            self.assertEqual(
+                view.active, expected,
+                "%s should be active=%s on this site" % (xmlid, expected))
+
+    def test_native_view_switch_survives_a_missing_view(self):
+        """A renamed or dropped Odoo view must not fail the install.
+
+        This runs on every install and migration, so a hard env.ref here
+        would take the registry down rather than lose a footer tweak.
+        """
+        from odoo.addons import aabaan_website_theme as theme
+        original = theme.NATIVE_VIEW_STATE
+        theme.NATIVE_VIEW_STATE = [('website.no_such_view_exists', True)]
+        try:
+            _apply_native_view_state(self.env)  # must not raise
+        finally:
+            theme.NATIVE_VIEW_STATE = original
