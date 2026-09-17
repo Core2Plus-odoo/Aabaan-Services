@@ -17,14 +17,14 @@ app is a single cockpit that operates them.
 | Capability | Native engine used | FM layer |
 |---|---|---|
 | Work orders | **Field Service** (`industry_fsm`, `project.task`, `is_fsm`) | `fm_fsm` adds asset/contract/severity/type fields + stages |
-| Scheduling / recurring visits | `project.task` + daily cron | `fm_fsm` contract-driven `_generate_schedule` |
+| Scheduling / recurring visits | `project.task` | `fm_fsm` — **one** generator, `fm.visit.schedule.mixin`, driven from the contract (the `sale.order`). Confirming the order fills the horizon; the daily cron is shipped off |
 | Calendar | native `calendar.event` on tasks | — |
 | SLA | (native SLA policies to be configured) | SLA targets kept on `fm.sla.rule` (in `fm_contract`) |
 | Contracts / AMC billing | **Sales** — the contract IS the `sale.order` — + **Subscriptions** (`sale.subscription`) | `fm_contract` adds FM fields to `sale.order`; `fm_subscription`. The old `fm.contract` model is frozen and being retired |
 | Invoicing | native `account.move` (FTA tax invoice) | — |
 | Assets | **Maintenance** (`maintenance.equipment`) | `fm.asset` |
 | Compliance | Activities / Documents | `fm_compliance` regimes + certificates |
-| Dashboards | native graph/pivot actions | `fm_dashboards` (JS-free) |
+| Dashboards | native graph/pivot actions | `fm_dashboards` (JS-free); `fm_command_centre` is the executive one (OWL, seven tabs) |
 
 **Standard covers it — configure, don't code** (see
 `docs/FM_LIFECYCLE_WORKFLOW.md`): checklists = **FSM Worksheet Templates**
@@ -54,8 +54,10 @@ creating a new one.
    the Customers menu. The legacy `fm.contract` model (`_inherits sale.order`)
    is frozen — nothing creates it, dependants are being re-pointed off it.
 4. `fm_fsm` — **the re-base core**. FM Field Service project, task stages,
-   FM fields on `project.task`, contract-driven visit auto-scheduling + cron,
-   `menu_fm_config_root`.
+   FM fields on `project.task` (`fm_contract_order_id` → the contract's
+   `sale.order`; legacy `fm_contract_id` kept until `fm.contract` goes),
+   visit auto-scheduling in `fm.visit.schedule.mixin` — **the platform's
+   only visit generator** — and `menu_fm_config_root`.
 5. `fm_compliance` — `fm.compliance.regime` / `fm.compliance.certificate`,
    watchdog cron; remediation creates a `project.task`.
 6. `fm_documents` — QWeb PDF layouts (Work Order job sheet, Contract,
@@ -64,6 +66,16 @@ creating a new one.
    and `project.task`; branch on `hr.employee` and PDFs.
 8. `fm_dashboards` — native Operations & Contracts graph/pivot dashboards.
 9. `fm_reports` — OWL "Reports Hub" catalog of native actions.
+9b. `fm_command_centre` — **the executive dashboard**: seven tabs (overview,
+    field ops, sales, finance, expenses, cash, AMC renewals), each loaded on
+    demand. Ported from the `aabaan` build rather than rewritten, and still
+    runs on both: it resolves each business fact through the `FIELD_ALIASES`
+    table (`fm_service_line` here, `x_service_line` there) and collapses any
+    section whose concept nothing answers. Deliberately does NOT depend on
+    `aabaan_visit_schedule` — that is the second visit generator.
+    **Supersedes `fm_ceo_dashboard` and `fm_exec_dashboard`**, which are still
+    installed and still menu'd; retiring them is pending confirmation that the
+    Command Centre reads correctly against production data.
 10. `fm_subscription` — bills `fm.contract` via `sale.subscription`.
 11. `fm_aabaan_config` — **seed data**: branches, service categories, UAE
     compliance regimes, service products. Makes the platform Aabaan-ready.
@@ -140,7 +152,16 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   `create()`** on this build (verified live) — it comes back `False` even
   though the field is stored/writable. A `write()` immediately after `create()`
   is the only way it sticks. `planned_date_begin` and `allocated_hours` persist
-  fine on `create()`. See `fm_fsm/models/fm_contract.py::_generate_schedule`.
+  fine on `create()`. See
+  `fm_fsm/models/fm_visit_schedule_mixin.py::_generate_schedule`.
+- **Extending an `AbstractModel` only reaches models built *before* the
+  extension is registered.** A model composes its class from the abstract
+  models it inherits at build time, so extending a mixin from a later module
+  does NOT retro-fit models that already inherited it — no error is raised,
+  the behaviour just never runs. Either declare the concrete models in the
+  same module, importing the mixin file first (see `fm_branch/models/`), or
+  mix a plain Python class into each model explicitly (see
+  `fm_service_materials/models/fm_visit_schedule_mixin.py`).
 
 ---
 

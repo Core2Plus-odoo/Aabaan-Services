@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_command_centre" model="ir.actions.client">
+        <field name="name">Command Centre</field>
+        <field name="tag">fm_command_centre</field>
+    </record>
+
+    <!-- Under the FM app root rather than at top level: fm_branding is the
+         only module in this repo that declares application=True, and a
+         second root menu would put the platform in two places at once.
+         Sequence 1 puts it above the older dashboards. -->
+    <menuitem id="menu_fm_command_centre"
+              name="Command Centre"
+              parent="fm_asset.menu_fm_root"
+              action="action_command_centre"
+              sequence="1"
+              groups="fm_branding.group_fm_account_manager"/>
+
+</odoo>

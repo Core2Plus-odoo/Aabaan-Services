@@ -391,7 +391,7 @@ class FmContractWizard(models.TransientModel):
     def action_create_and_schedule(self):
         contracts = self._create_contracts()
         contracts.action_activate()  # generates visits when auto_schedule is on
-        tasks = contracts.mapped("task_ids")
+        tasks = contracts.mapped("fm_task_ids")
         if not self.auto_schedule or not tasks:
             return self._action_open_contracts(contracts)
         return {

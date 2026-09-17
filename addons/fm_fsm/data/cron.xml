@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo noupdate="1">
 
-    <!-- Kept a rolling horizon of planned FSM visits populated for active,
-         auto-scheduled fm.contract records.
+    <!-- Keeps a rolling horizon of planned FSM visits populated for active,
+         auto-scheduled contracts.
 
-         SHIPPED INACTIVE, deliberately.
+         Now reads sale.order, because a contract is a sale order. It used to
+         read fm.contract, which is frozen and being retired; a cron pointing
+         at a model on its way out is a build failure waiting for the day the
+         model goes.
 
-         CORRECTION to what this comment said when the cron was switched off:
-         it named sale.order._generate_visit_schedule() (aabaan_visit_schedule)
-         as a second generator running "on this platform". That module is in
-         the separate Core2Plus-odoo/aabaan repository, deployed to a
-         different Odoo.sh instance, so the two do not in fact collide on
-         this database. Only this cron generates visits here.
+         STILL SHIPPED INACTIVE. Turning it on is a deliberate decision, not
+         a side effect of this re-point: it writes visits into people's
+         calendars unattended, and a schedule that appears with nothing on
+         screen to say what made it is worse than one somebody pressed a
+         button for. Confirming an order already fills its horizon, and
+         Generate Visits schedules the full term on demand, so nothing
+         depends on this cron today.
 
-         The reason to leave it off stands on its own. Contracts are written
-         in Sales now, and visits are being re-pointed to follow the sale
-         order rather than fm.contract, which is frozen and on its way out.
-         This cron reads fm.contract and runs unattended every day: while the
-         re-point is in flight it would generate visits from the model being
-         retired, against contracts nobody can create, with nothing on screen
-         to say why.
+         Switching it on is a two-minute job from Settings > Technical >
+         Scheduled Actions.
 
-         Re-enabling it is a two-minute job from Settings > Technical >
-         Scheduled Actions if the direction ever changes, but read the above
-         first: visits appear with nothing on screen to say what made them. -->
+         (An earlier version of this comment claimed a second generator,
+         sale.order._generate_visit_schedule in aabaan_visit_schedule, ran
+         on this platform too. It does not: that module is in the separate
+         Core2Plus-odoo/aabaan repository on a different Odoo.sh instance.) -->
     <record id="cron_fm_fsm_auto_schedule" model="ir.cron">
-        <field name="name">FM: Auto-schedule Field Service visits (retired)</field>
-        <field name="model_id" ref="fm_contract.model_fm_contract"/>
+        <field name="name">FM: Auto-schedule Field Service visits (off by default)</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
         <field name="state">code</field>
         <field name="code">model._cron_auto_schedule()</field>
         <field name="interval_number">1</field>

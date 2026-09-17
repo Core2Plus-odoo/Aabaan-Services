@@ -19,7 +19,7 @@
                 <div class="oe_button_box" name="button_box">
                     <button name="action_view_tasks" type="object"
                             class="oe_stat_button" icon="fa-wrench">
-                        <field name="task_count" widget="statinfo" string="Visits"/>
+                        <field name="fm_task_count" widget="statinfo" string="Visits"/>
                     </button>
                 </div>
             </xpath>

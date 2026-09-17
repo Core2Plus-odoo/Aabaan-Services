@@ -10,7 +10,24 @@
             <xpath expr="//button[@name='action_generate_visits']" position="after">
                 <button name="action_load_visit_materials" type="object"
                         string="Load Visit Materials" class="btn-secondary"
-                        invisible="not task_count"/>
+                        invisible="not fm_task_count"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- The same button on the contract as written in Sales. Inherits
+         fm_fsm's scheduling view so the Generate Visits button it anchors
+         on is guaranteed to be present. -->
+    <record id="view_order_form_materials" model="ir.ui.view">
+        <field name="name">sale.order.form.materials</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="fm_fsm.view_order_form_fm_scheduling"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_generate_visits']" position="after">
+                <button name="action_load_visit_materials" type="object"
+                        string="Load Visit Materials" class="btn-secondary"
+                        invisible="not is_fm_contract or not fm_task_count"/>
             </xpath>
         </field>
     </record>
