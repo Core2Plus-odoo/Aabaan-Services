@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="home_v2" name="Aabaan Home (Booking-first)">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+
+                <!-- Hero -->
+                <section class="ab-hero-dark">
+                    <div class="container">
+                        <h1 class="display-6">Pest-free, clean and certified —
+                            <span class="ab-orange">booked in 60 seconds</span></h1>
+                        <p class="ab-sub col-lg-7 px-0">Municipality-approved pest control,
+                            water-tank cleaning, anti-termite and deep cleaning. Same-day response
+                            in Dubai. Trusted by businesses and homes across the UAE.</p>
+                        <a href="/booking" class="btn btn-lg ab-btn-book px-4">Book a visit now</a>
+                        <div class="mt-3">
+                            <a class="ab-chip" href="/booking">Cockroaches</a>
+                            <a class="ab-chip" href="/booking">Bed bugs</a>
+                            <a class="ab-chip" href="/booking">Termites</a>
+                            <a class="ab-chip" href="/booking">Water tank</a>
+                            <a class="ab-chip" href="/booking">Deep clean</a>
+                            <a class="ab-chip" href="/booking">Rodents</a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Trust bar -->
+                <section class="ab-trust">
+                    <div class="container d-flex flex-wrap gap-3">
+                        <span>✓ <b>Municipality approved</b> — Ajman, Sharjah &amp; Dubai LO 11</span>
+                        <span>✓ MOCCAE-approved pesticides</span>
+                        <span>✓ <b>10-year</b> termite warranty</span>
+                        <span>✓ TRN <t t-out="res_company.vat or '104302919600003'"/></span>
+                    </div>
+                </section>
+
+                <!-- Services -->
+                <section class="py-5">
+                    <div class="container">
+                        <span class="ab-kick">Services</span>
+                        <h2 class="h4 fw-bold mb-1">What do you need done?</h2>
+                        <p class="text-muted mb-4">Fixed, upfront prices from the signed rate card — no surprises on site.</p>
+                        <div class="row g-3">
+                            <div class="col-md-4 col-sm-6"><a href="/services/pest-control" class="d-block text-decoration-none text-reset ab-card">
+                                <div class="ic">🪳</div><h3 class="h6 fw-bold mb-1">Pest Control — Home</h3>
+                                <div class="ab-from small text-muted">1BR apartment <b>from AED 200</b>/visit</div>
+                                <div class="ab-orange fw-bold small mt-2">Book a visit →</div></a></div>
+                            <div class="col-md-4 col-sm-6"><a href="/services/pest-control" class="d-block text-decoration-none text-reset ab-card">
+                                <div class="ic">🏢</div><h3 class="h6 fw-bold mb-1">Pest Control — Business</h3>
+                                <div class="ab-from small text-muted">Restaurants &amp; F&amp;B — <b>LO 11 compliant</b>, 2 visits/month</div>
+                                <div class="ab-orange fw-bold small mt-2">Get AMC quote →</div></a></div>
+                            <div class="col-md-4 col-sm-6"><a href="/services/water-tank" class="d-block text-decoration-none text-reset ab-card">
+                                <div class="ic">💧</div><h3 class="h6 fw-bold mb-1">Water Tank Cleaning</h3>
+                                <div class="ab-from small text-muted">From <b>AED 0.35</b>/gallon · certificate issued</div>
+                                <div class="ab-orange fw-bold small mt-2">Book a clean →</div></a></div>
+                            <div class="col-md-4 col-sm-6"><a href="/services/anti-termite" class="d-block text-decoration-none text-reset ab-card">
+                                <div class="ic">🐜</div><h3 class="h6 fw-bold mb-1">Anti-Termite Treatment</h3>
+                                <div class="ab-from small text-muted"><b>AED 14.50–18</b>/m² · 10-year warranty</div>
+                                <div class="ab-orange fw-bold small mt-2">Request survey →</div></a></div>
+                            <div class="col-md-4 col-sm-6"><a href="/services/deep-cleaning" class="d-block text-decoration-none text-reset ab-card">
+                                <div class="ic">🧽</div><h3 class="h6 fw-bold mb-1">Deep Cleaning</h3>
+                                <div class="ab-from small text-muted">Room-by-room scope, one-off or move-in</div>
+                                <div class="ab-orange fw-bold small mt-2">Get a price →</div></a></div>
+                            <div class="col-md-4 col-sm-6"><a href="tel:80022226" class="d-block text-decoration-none text-reset ab-card">
+                                <div class="ic">🚨</div><h3 class="h6 fw-bold mb-1">Emergency Call-out</h3>
+                                <div class="ab-from small text-muted">Same-day in Dubai · 24–48h elsewhere</div>
+                                <div class="ab-orange fw-bold small mt-2">Call 800 AABAN →</div></a></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3 steps -->
+                <section class="py-5" style="background:#f6f4ef;">
+                    <div class="container">
+                        <span class="ab-kick">How it works</span>
+                        <h2 class="h4 fw-bold mb-4">Booked in three steps</h2>
+                        <div class="row g-3">
+                            <div class="col-md-4"><div class="ab-card bg-white">
+                                <div class="ab-step-n mb-2">1</div><h3 class="h6 fw-bold">Pick the service</h3>
+                                <p class="small text-muted mb-0">Choose the problem and your property type — the price shows before you commit.</p></div></div>
+                            <div class="col-md-4"><div class="ab-card bg-white">
+                                <div class="ab-step-n mb-2">2</div><h3 class="h6 fw-bold">Pick a day</h3>
+                                <p class="small text-muted mb-0">Choose a visit day that suits you. Same-day for complaints in Dubai.</p></div></div>
+                            <div class="col-md-4"><div class="ab-card bg-white">
+                                <div class="ab-step-n mb-2">3</div><h3 class="h6 fw-bold">Certified visit</h3>
+                                <p class="small text-muted mb-0">A uniformed technician treats, and you get the report — and certificate where due.</p></div></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- AMC + coverage -->
+                <section class="py-5">
+                    <div class="container"><div class="row g-3">
+                        <div class="col-md-6"><div class="ab-card ab-amc">
+                            <h3 class="h6 fw-bold">Annual contracts (AMC) — for buildings &amp; businesses</h3>
+                            <ul class="small text-muted mb-3">
+                                <li><b>Yearly 12 / 4 / 2 visits</b> — scheduled for you, reminders included</li>
+                                <li>Free follow-up every 3 days until any infestation clears</li>
+                                <li>Complaint response: <b>same-day Dubai</b>, 24–48h other emirates</li>
+                                <li>Municipality reporting handled (Dubai LO 11 monthly returns)</li>
+                            </ul>
+                            <a href="/contactus" class="btn btn-dark btn-sm fw-bold">Request an AMC proposal</a>
+                        </div></div>
+                        <div class="col-md-6"><div class="ab-card">
+                            <h3 class="h6 fw-bold">Where we work</h3>
+                            <ul class="small text-muted mb-0">
+                                <li><b>Ajman</b> — head of operations, same/next-day slots</li>
+                                <li><b>Sharjah</b> — incl. municipality fee handling</li>
+                                <li><b>Dubai</b> — Public Health Pest Control Agreement (LO 11)</li>
+                            </ul>
+                        </div></div>
+                    </div></div>
+                </section>
+
+            </div>
+        </t>
+    </template>
+
+    <record id="page_home_v2" model="website.page">
+        <field name="name">Home</field>
+        <field name="url">/</field>
+        <field name="view_id" ref="home_v2"/>
+        <field name="is_published" eval="True"/>
+        <field name="website_meta_description">Municipality-approved pest control, water tank cleaning, anti-termite and deep cleaning across the UAE. Same-day response in Dubai. Call 800 AABAN.</field>
+    </record>
+</odoo>

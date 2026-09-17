@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Pre-footer call-to-action band shared by all content pages. -->
+    <template id="service_cta_band" name="Aabaan Service CTA Band">
+        <section class="ab-cta-band">
+            <div class="container d-flex flex-wrap align-items-center gap-3 justify-content-between">
+                <span class="h6 fw-bold m-0">Ready when you are — same-day response in Dubai.</span>
+                <span>
+                    <a href="/booking" class="btn ab-btn-book me-2">📅 Book online</a>
+                    <a href="tel:80022226" class="btn btn-outline-light">☎ <span class="ab-o">800 AABAN</span></a>
+                </span>
+            </div>
+        </section>
+    </template>
+
+    <!-- ══ Pest Control ══ -->
+    <template id="page_svc_pest" name="Pest Control Service">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <section class="ab-hero-dark ab-hero-sm"><div class="container">
+                    <a href="/services" class="ab-back">← All services</a>
+                    <h1 class="h3 fw-bold">Pest Control — <span class="ab-orange">homes &amp; businesses</span></h1>
+                    <p class="ab-sub col-lg-7 px-0">Cockroaches, ants, rodents and bed bugs treated with
+                        MOCCAE-approved pesticides, by municipality-approved technicians. Report after every visit.</p>
+                    <a href="/booking" class="btn btn-lg ab-btn-book px-4">Book a visit</a>
+                </div></section>
+                <section class="py-5"><div class="container"><div class="row g-3">
+                    <div class="col-md-6"><div class="ab-card">
+                        <h2 class="h6 fw-bold mb-3">Residential — per visit</h2>
+                        <div class="ab-price-row"><span>Apartments &amp; villas, by size</span><b>AED 200 – 320</b></div>
+                        <div class="ab-price-row"><span>Annual contract (AMC), 12 or 4 visits/year</span><b>best rate — quoted</b></div>
+                        <p class="small text-muted mt-3 mb-0">Exact price shows on the booking form once you pick
+                            your property type. AMC includes free follow-ups every 3 days until any infestation clears.</p>
+                    </div></div>
+                    <div class="col-md-6"><div class="ab-card">
+                        <h2 class="h6 fw-bold mb-3">Business &amp; F&amp;B</h2>
+                        <ul class="ab-tick small text-muted mb-0">
+                            <li><b>Dubai LO 11 (2003) compliant</b> — 2 visits/month for F&amp;B, monthly municipality returns handled</li>
+                            <li>Restaurants, cafeterias, hypermarkets, schools, real estate portfolios</li>
+                            <li>Complaint response: <b>same-day Dubai</b>, 24–48h other emirates</li>
+                            <li>Sharjah municipality charge (AED 275) handled with the first invoice</li>
+                        </ul>
+                    </div></div>
+                </div></div></section>
+                <t t-call="aabaan_website_theme.service_cta_band"/>
+            </div>
+        </t>
+    </template>
+    <record id="page_rec_svc_pest" model="website.page">
+        <field name="name">Pest Control</field>
+        <field name="url">/services/pest-control</field>
+        <field name="view_id" ref="page_svc_pest"/>
+        <field name="is_published" eval="True"/>
+        <field name="website_meta_description">Municipality-approved pest control for homes and businesses in the UAE. Residential visits AED 200–320, Dubai LO 11 compliant AMCs for F&amp;B. Call 800 AABAN.</field>
+    </record>
+
+    <!-- ══ Water Tank ══ -->
+    <template id="page_svc_tank" name="Water Tank Cleaning Service">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <section class="ab-hero-dark ab-hero-sm"><div class="container">
+                    <a href="/services" class="ab-back">← All services</a>
+                    <h1 class="h3 fw-bold">Water Tank <span class="ab-orange">Cleaning &amp; Disinfection</span></h1>
+                    <p class="ab-sub col-lg-7 px-0">Municipality-approved cleaning for roof and underground
+                        tanks — drained, scrubbed, disinfected, refilled, and certified.</p>
+                    <a href="/booking" class="btn btn-lg ab-btn-book px-4">Book a clean</a>
+                </div></section>
+                <section class="py-5"><div class="container"><div class="row g-3">
+                    <div class="col-md-6"><div class="ab-card">
+                        <h2 class="h6 fw-bold mb-3">Pricing</h2>
+                        <div class="ab-price-row"><span>Per gallon of tank capacity</span><b>from AED 0.35</b></div>
+                        <div class="ab-price-row"><span>Typical cadence</span><b>2 × / year</b></div>
+                        <p class="small text-muted mt-3 mb-0">Tell us your tank size on the booking form and the
+                            price is fixed before we arrive.</p>
+                    </div></div>
+                    <div class="col-md-6"><div class="ab-card">
+                        <h2 class="h6 fw-bold mb-3">Every clean includes</h2>
+                        <ul class="ab-tick small text-muted mb-0">
+                            <li>Full drain-down, sludge removal and wall scrubbing</li>
+                            <li>Disinfection to municipality standard</li>
+                            <li>Before / after photos in the service report</li>
+                            <li><b>Cleaning certificate issued</b> for building compliance</li>
+                        </ul>
+                    </div></div>
+                </div></div></section>
+                <t t-call="aabaan_website_theme.service_cta_band"/>
+            </div>
+        </t>
+    </template>
+    <record id="page_rec_svc_tank" model="website.page">
+        <field name="name">Water Tank Cleaning</field>
+        <field name="url">/services/water-tank</field>
+        <field name="view_id" ref="page_svc_tank"/>
+        <field name="is_published" eval="True"/>
+        <field name="website_meta_description">Water tank cleaning and disinfection from AED 0.35 per gallon, with a compliance certificate issued after every clean. Serving Ajman, Sharjah, Dubai and beyond.</field>
+    </record>
+
+    <!-- ══ Anti-Termite ══ -->
+    <template id="page_svc_termite" name="Anti-Termite Service">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <section class="ab-hero-dark ab-hero-sm"><div class="container">
+                    <a href="/services" class="ab-back">← All services</a>
+                    <h1 class="h3 fw-bold">Anti-Termite Treatment — <span class="ab-orange">10-year warranty</span></h1>
+                    <p class="ab-sub col-lg-7 px-0">Pre-construction soil treatment and post-construction
+                        injection, per municipality-approved procedures, with a written warranty certificate.</p>
+                    <a href="/contactus" class="btn btn-lg ab-btn-book px-4">Request a survey</a>
+                </div></section>
+                <section class="py-5"><div class="container"><div class="row g-3">
+                    <div class="col-md-6"><div class="ab-card">
+                        <h2 class="h6 fw-bold mb-3">Pricing</h2>
+                        <div class="ab-price-row"><span>Per m², by treatment stage</span><b>AED 14.50 – 18.00</b></div>
+                        <div class="ab-price-row"><span>Billing</span><b>on completion</b></div>
+                        <p class="small text-muted mt-3 mb-0">Plot surveys are free — we quote from your drawings
+                            or a site visit.</p>
+                    </div></div>
+                    <div class="col-md-6"><div class="ab-card">
+                        <h2 class="h6 fw-bold mb-3">The treatment</h2>
+                        <ul class="ab-tick small text-muted mb-0">
+                            <li>Injection and spray across all construction stages</li>
+                            <li>Municipality-approved chemicals and methods</li>
+                            <li><b>10-year warranty</b> on treated areas — free service during warranty</li>
+                            <li>Warranty certificate issued on completion</li>
+                        </ul>
+                    </div></div>
+                </div></div></section>
+                <t t-call="aabaan_website_theme.service_cta_band"/>
+            </div>
+        </t>
+    </template>
+    <record id="page_rec_svc_termite" model="website.page">
+        <field name="name">Anti-Termite Treatment</field>
+        <field name="url">/services/anti-termite</field>
+        <field name="view_id" ref="page_svc_termite"/>
+        <field name="is_published" eval="True"/>
+        <field name="website_meta_description">Anti-termite treatment at AED 14.50–18.00 per m² with a 10-year written warranty. Pre- and post-construction, municipality-approved. Free plot surveys.</field>
+    </record>
+
+    <!-- ══ Deep Cleaning ══ -->
+    <template id="page_svc_cleaning" name="Deep Cleaning Service">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <section class="ab-hero-dark ab-hero-sm"><div class="container">
+                    <a href="/services" class="ab-back">← All services</a>
+                    <h1 class="h3 fw-bold">Deep Cleaning — <span class="ab-orange">move-in ready</span></h1>
+                    <p class="ab-sub col-lg-7 px-0">One-off deep cleans for villas, apartments and offices —
+                        room-by-room scope agreed up front, priced before we start.</p>
+                    <a href="/booking" class="btn btn-lg ab-btn-book px-4">Get a price</a>
+                </div></section>
+                <section class="py-5"><div class="container"><div class="row g-3">
+                    <div class="col-md-6"><div class="ab-card">
+                        <h2 class="h6 fw-bold mb-3">How pricing works</h2>
+                        <p class="small text-muted mb-0">Deep cleaning is scoped room by room — kitchen degrease,
+                            bathrooms, floors, windows, balconies — and quoted as a fixed price for the whole job.
+                            Tell us the property size on the booking form and we confirm the same day.</p>
+                    </div></div>
+                    <div class="col-md-6"><div class="ab-card">
+                        <h2 class="h6 fw-bold mb-3">Popular scopes</h2>
+                        <ul class="ab-tick small text-muted mb-0">
+                            <li>Move-in / move-out full deep clean</li>
+                            <li>Post-construction dust removal</li>
+                            <li>Kitchen &amp; bathroom intensive</li>
+                            <li>Combine with pest control in one visit</li>
+                        </ul>
+                    </div></div>
+                </div></div></section>
+                <t t-call="aabaan_website_theme.service_cta_band"/>
+            </div>
+        </t>
+    </template>
+    <record id="page_rec_svc_cleaning" model="website.page">
+        <field name="name">Deep Cleaning</field>
+        <field name="url">/services/deep-cleaning</field>
+        <field name="view_id" ref="page_svc_cleaning"/>
+        <field name="is_published" eval="True"/>
+        <field name="website_meta_description">Fixed-price deep cleaning for villas, apartments and offices — move-in/move-out, post-construction and intensive kitchen and bathroom cleans across the UAE.</field>
+    </record>
+</odoo>

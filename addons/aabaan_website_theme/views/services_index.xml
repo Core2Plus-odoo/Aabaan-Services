@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="page_services_index" name="Services Overview">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <section class="ab-hero-dark ab-hero-sm"><div class="container">
+                    <h1 class="h3 fw-bold">Our <span class="ab-orange">services</span></h1>
+                    <p class="ab-sub col-lg-7 px-0">Every job is done by municipality-approved technicians,
+                        priced from the signed rate card, and closed with a written service report.</p>
+                </div></section>
+
+                <section class="py-5"><div class="container"><div class="row g-3">
+                    <div class="col-md-4 col-sm-6"><a href="/services/pest-control" class="d-block text-decoration-none text-reset ab-card">
+                        <div class="ic">🪳</div><h2 class="h6 fw-bold mb-1">Pest Control — Home</h2>
+                        <div class="ab-from small text-muted">Cockroaches, ants, rodents, bed bugs — <b>from AED 200</b>/visit</div>
+                        <div class="ab-orange fw-bold small mt-2">See prices →</div></a></div>
+                    <div class="col-md-4 col-sm-6"><a href="/services/pest-control" class="d-block text-decoration-none text-reset ab-card">
+                        <div class="ic">🏢</div><h2 class="h6 fw-bold mb-1">Pest Control — Business</h2>
+                        <div class="ab-from small text-muted">F&amp;B AMCs, <b>Dubai LO 11 compliant</b>, municipality returns handled</div>
+                        <div class="ab-orange fw-bold small mt-2">See what's included →</div></a></div>
+                    <div class="col-md-4 col-sm-6"><a href="/services/water-tank" class="d-block text-decoration-none text-reset ab-card">
+                        <div class="ic">💧</div><h2 class="h6 fw-bold mb-1">Water Tank Cleaning</h2>
+                        <div class="ab-from small text-muted">From <b>AED 0.35</b>/gallon · compliance certificate issued</div>
+                        <div class="ab-orange fw-bold small mt-2">See prices →</div></a></div>
+                    <div class="col-md-4 col-sm-6"><a href="/services/anti-termite" class="d-block text-decoration-none text-reset ab-card">
+                        <div class="ic">🐜</div><h2 class="h6 fw-bold mb-1">Anti-Termite Treatment</h2>
+                        <div class="ab-from small text-muted"><b>AED 14.50–18</b>/m² · 10-year written warranty</div>
+                        <div class="ab-orange fw-bold small mt-2">See the treatment →</div></a></div>
+                    <div class="col-md-4 col-sm-6"><a href="/services/deep-cleaning" class="d-block text-decoration-none text-reset ab-card">
+                        <div class="ic">🧽</div><h2 class="h6 fw-bold mb-1">Deep Cleaning</h2>
+                        <div class="ab-from small text-muted">Room-by-room scope, fixed price before we start</div>
+                        <div class="ab-orange fw-bold small mt-2">See scopes →</div></a></div>
+                    <div class="col-md-4 col-sm-6"><a href="tel:80022226" class="d-block text-decoration-none text-reset ab-card">
+                        <div class="ic">🚨</div><h2 class="h6 fw-bold mb-1">Emergency Call-out</h2>
+                        <div class="ab-from small text-muted">Same-day in Dubai · 24–48h other emirates</div>
+                        <div class="ab-orange fw-bold small mt-2">Call 800 AABAN →</div></a></div>
+                </div></div></section>
+
+                <section class="pb-5"><div class="container">
+                    <div class="ab-card ab-amc">
+                        <h2 class="h6 fw-bold">On an annual contract? Everything is scheduled for you.</h2>
+                        <p class="small text-muted mb-2">AMC clients get their yearly 12 / 4 / 2 visits planned in
+                            advance, free follow-ups every 3 days until any infestation clears, and municipality
+                            reporting handled — with one number to call when something can't wait.</p>
+                        <a href="/contactus" class="btn btn-dark btn-sm fw-bold">Request an AMC proposal</a>
+                    </div>
+                </div></section>
+
+                <t t-call="aabaan_website_theme.service_cta_band"/>
+            </div>
+        </t>
+    </template>
+    <record id="page_rec_services_index" model="website.page">
+        <field name="name">Services</field>
+        <field name="url">/services</field>
+        <field name="view_id" ref="page_services_index"/>
+        <field name="is_published" eval="True"/>
+        <field name="website_meta_description">Pest control, water tank cleaning, anti-termite treatment and deep cleaning — municipality-approved, fixed prices, across three emirates. Call 800 AABAN.</field>
+    </record>
+</odoo>

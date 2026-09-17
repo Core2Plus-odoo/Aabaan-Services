@@ -76,6 +76,16 @@ creating a new one.
     **Supersedes `fm_ceo_dashboard` and `fm_exec_dashboard`**, which are still
     installed and still menu'd; retiring them is pending confirmation that the
     Command Centre reads correctly against production data.
+9c. `aabaan_website_theme` — **the public website**: booking-first homepage
+    at `/`, `/services` + four service pages with rate cards, `/about`,
+    `/faq`, `/booking` -> `crm.lead`, branded footer and mobile action bar,
+    brand SCSS (`#17171a` / `#ef7d25`). Maintained in the `aabaan` repo and
+    ported here verbatim (same technical name) because an Odoo.sh project
+    only loads its own addons path. **Supersedes `fm_website`**, whose four
+    pages claim the same URLs; the theme's install hook parks any clashing
+    page at `<url>-classic`, unpublished, so the two do not fight — but
+    `fm_website` should be uninstalled from Apps and then deleted from
+    source (see §5).
 10. `fm_subscription` — bills `fm.contract` via `sale.subscription`.
 11. `fm_aabaan_config` — **seed data**: branches, service categories, UAE
     compliance regimes, service products. Makes the platform Aabaan-ready.
