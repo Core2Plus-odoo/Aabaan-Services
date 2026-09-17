@@ -90,17 +90,14 @@ creating a new one.
 11. `fm_aabaan_config` — **seed data**: branches, service categories, UAE
     compliance regimes, service products. Makes the platform Aabaan-ready.
 
-**Migration / one-off tools — now RETIRED STUBS** (jobs done; empty stub +
-`migrations/19.0.9.0.0/pre-migration.py` self-purges on the prod upgrade, see
-§5). Uninstall them from Apps after the upgrade, then delete from source:
-
-- `fm_aabaan_migration` — was the `aabaan.service.contract/visit` → `fm.contract`
-  + `project.task` wizard.
-- `fm_wo_migration` — was the leftover-`fm_workorder`-table → `project.task`
-  SQL converter.
-- `fm_data_import` — was the XML-RPC master-data importer; its pre-migration
-  also **drops the `odoo_master_data_config` table** (which stored source API
-  keys), purging those credentials.
+**Migration / one-off tools — DONE AND REMOVED.** `fm_aabaan_migration`
+(legacy contract/visit → `fm.contract` + `project.task` wizard),
+`fm_wo_migration` (leftover-`fm_workorder`-table → `project.task` SQL
+converter) and `fm_data_import` (XML-RPC master-data importer, whose
+pre-migration also **dropped the `odoo_master_data_config` table** and with
+it the stored source API keys) each ran their `19.0.9.0.0` pre-migration on
+the production upgrade, were uninstalled from Apps, and have been deleted
+from source per §5.
 
 **Retired stubs — removed.** `fm_workorder`, `fm_ppm`, `fm_sla`,
 `fm_integrations` were empty placeholder modules that existed only so an
