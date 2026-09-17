@@ -160,8 +160,21 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   does NOT retro-fit models that already inherited it — no error is raised,
   the behaviour just never runs. Either declare the concrete models in the
   same module, importing the mixin file first (see `fm_branch/models/`), or
-  mix a plain Python class into each model explicitly (see
+  just write a plain `_inherit` extension on each concrete model and share
+  the body through a module-level function (see
   `fm_service_materials/models/fm_visit_schedule_mixin.py`).
+- **NEVER mix a plain Python class into a model's bases** —
+  `class SaleOrder(SomePlainClass, models.Model)` — even though it looks like
+  the tidy way to share a method across two models. A plain class carries an
+  `object` instance layout, and when the registry rebuilds the model with
+  `model_cls.__bases__ = model_cls._base_classes__` Python refuses:
+  `TypeError: __bases__ assignment: 'SaleOrder' object layout differs from
+  'SaleOrder'`. **The registry then fails to load and the database will not
+  start.** This took production down on the #96 upgrade. Nothing local
+  catches it: `py_compile` passes, XML parses, and it only fires when the
+  registry is assembled — so a *dev* build that fails earlier (e.g. on demo
+  data) will never reach it either. Any class listed in a model's bases must
+  itself derive from `models.Model` / `models.AbstractModel`.
 
 ---
 

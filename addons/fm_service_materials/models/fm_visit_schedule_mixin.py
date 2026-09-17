@@ -1,46 +1,66 @@
 # -*- coding: utf-8 -*-
+"""Expected materials follow the visit schedule.
+
+Both contract models get the same two methods. They are written out on each
+model rather than shared through a base class, and that is deliberate — see
+the two things that do NOT work below.
+
+**Not by extending ``fm.visit.schedule.mixin``.** An Odoo model composes its
+class from the abstract models it inherits *at the moment it is built*.
+``sale.order`` and ``fm.contract`` are both built in fm_fsm, before this
+module loads, so extending the abstract mixin here would register, raise
+nothing, and never run.
+
+**Not by mixing a plain Python class into the model bases either** — i.e.
+``class SaleOrder(MaterialsOnSchedule, models.Model)``. That reads like the
+obvious fix and it takes production down: a plain class carries an ``object``
+instance layout, and when the registry rebuilds the model with
+``model_cls.__bases__ = model_cls._base_classes__`` Python refuses the
+assignment with ``TypeError: __bases__ assignment: 'SaleOrder' object layout
+differs from 'SaleOrder'``. The registry then fails to load and the database
+will not start. It cannot be caught by compiling or parsing — only by
+building the registry.
+
+So: plain ``_inherit`` extensions, which is all this ever needed. The bodies
+are one line each, delegating to the module-level helpers so the logic is
+still written once.
+"""
 from odoo import _, models
 
 
-class MaterialsOnSchedule:
-    """Expected materials follow the visit schedule.
-
-    A plain Python base class, not an Odoo ``AbstractModel``, and that is
-    deliberate. Extending ``fm.visit.schedule.mixin`` from here would not
-    reach ``sale.order`` or ``fm.contract``: an Odoo model composes its
-    class from the abstract models it inherits *at the moment it is built*,
-    and both of those were built in fm_fsm, before this module loads. The
-    extension would register, no error would be raised, and the materials
-    would silently stop loading.
-
-    Mixing this class into both models instead makes the composition
-    explicit and order-independent. Neither method reads anything
-    model-specific: ``_generate_schedule`` and ``fm_task_ids`` are the shared
-    scheduling interface, so the same body serves both.
-    """
-
-    def _generate_schedule(self, horizon_end=None):
-        """After scheduling visits, auto-populate their expected materials from
-        the service composition so the forecast has data."""
-        created = super()._generate_schedule(horizon_end=horizon_end)
-        if created:
-            created._fm_autoload_materials()
-        return created
-
-    def action_load_visit_materials(self):
-        """Populate expected materials on this contract's open visits."""
-        self.ensure_one()
-        open_tasks = self.fm_task_ids.filtered(lambda t: not t.stage_id.fold)
-        open_tasks._fm_autoload_materials()
-        self.message_post(
-            body=_("Expected materials loaded on %s open visit(s).") % len(open_tasks)
-        )
-        return True
+def _autoload_materials(created):
+    """Populate expected materials on freshly scheduled visits."""
+    if created:
+        created._fm_autoload_materials()
+    return created
 
 
-class SaleOrder(MaterialsOnSchedule, models.Model):
+def _load_open_visit_materials(contract):
+    """Populate expected materials on a contract's open visits."""
+    contract.ensure_one()
+    open_tasks = contract.fm_task_ids.filtered(lambda t: not t.stage_id.fold)
+    open_tasks._fm_autoload_materials()
+    contract.message_post(
+        body=_("Expected materials loaded on %s open visit(s).") % len(open_tasks)
+    )
+    return True
+
+
+class SaleOrder(models.Model):
     _inherit = "sale.order"
 
+    def _generate_schedule(self, horizon_end=None):
+        return _autoload_materials(super()._generate_schedule(horizon_end=horizon_end))
 
-class FmContract(MaterialsOnSchedule, models.Model):
+    def action_load_visit_materials(self):
+        return _load_open_visit_materials(self)
+
+
+class FmContract(models.Model):
     _inherit = "fm.contract"
+
+    def _generate_schedule(self, horizon_end=None):
+        return _autoload_materials(super()._generate_schedule(horizon_end=horizon_end))
+
+    def action_load_visit_materials(self):
+        return _load_open_visit_materials(self)
