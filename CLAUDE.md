@@ -47,7 +47,8 @@ creating a new one.
    `--fm-*` design tokens. Only module with `application=True`.
 2. `fm_asset` — `fm.asset` (inherits `maintenance.equipment`), categories,
    locations. Owns the FM app root menu `menu_fm_root`.
-3. `fm_contract` — **the FM layer on `sale.order`**: `is_fm_contract`, term,
+3. `fm_contract` — **the FM layer on `sale.order`** *(and on `crm.lead`:
+   the Sales → Accounts → Operations handover, see §4)*: `is_fm_contract`, term,
    ACV/TCV, covered assets, inclusions/exclusions, `fm_lifecycle` (starts
    where `sale.order.state` stops), health, and the printed agreement wording
    (`fm.agreement.mixin`). Also `fm.sla.rule`, service items, penalties and
@@ -170,6 +171,68 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   just write a plain `_inherit` extension on each concrete model and share
   the body through a module-level function (see
   `fm_service_materials/models/fm_visit_schedule_mixin.py`).
+- **A monthly cadence is a calendar step, not `365/12` days.** Visit
+  recurrence lives in `fm_fsm/models/fm_visit_schedule_mixin.py`
+  (`FREQUENCY_MONTHS` / `_fm_visit_dates`). Stepping by `round(365/12)=30`
+  days drifts: a contract signed for the 19th lands on the 18th by visit 3
+  and the 15th by visit 12 — silently, on every recurring contract. The
+  monthly family (monthly, bi-monthly, quarterly, semi-annual, annual) steps
+  by whole months, **anchored on the contract start** so a short month does
+  not drag later ones back (31 Jan → 28 Feb → **31** Mar). Weekly and
+  fortnightly stay day-based, because months do not preserve weekdays.
+  Client requirement: *"A job created for 19-Sep-2026 on a monthly frequency
+  must reflect on the 19th of every following month."*
+  **Still unconfirmed by the client** (their process document lists these as
+  open): the exact date spacing for an "8 times / year" plan, whether
+  "twice a month" means two fixed dates or a 14-day step, and what happens
+  to future visits when a contract is renewed, paused or cancelled. Short
+  months clamp to the last day, which that document suggests but does not
+  confirm.
+- **The time slot on a visit is derived, not stored twice.**
+  `project.task.fm_time_slot` (Morning / Day / Night) is a stored compute off
+  `planned_date_begin` — so a job dragged to another slot on the Gantt, or
+  created by hand, is always tagged correctly and no tag can go stale. The
+  contract picks a slot, which fills in `visit_start_time`; the *time* stays
+  the single source of truth and the slot is the label. Start times
+  (08:00 / 13:00 / 21:00) come from the client's technician screen; the
+  **boundaries between slots are ours** — under 12:00 morning, under 18:00
+  day, otherwise night — because that document names the slots and their
+  start times but never where one ends. **Also unconfirmed:**
+  `planned_date_begin` is a UTC Datetime while the generator writes
+  `visit_start_time` into it as a wall clock, so both sides currently share
+  that one interpretation. Correcting it is a separate change — it would
+  move every already-planned visit by the UTC offset.
+- **A computed field with no `store=` cannot be searched** without an
+  explicit `search="_search_..."` method — the field renders fine in a list
+  and then the first filter using it fails at runtime, not at parse time.
+  See `project.task.fm_has_service_document`, which backs the "Awaiting
+  Documents" filter.
+- **The service-document gate is a flag on the stage, not a stage id.**
+  `project.task.type.fm_requires_document` marks Completed and Signed Off;
+  `project.task.write()` refuses to enter any flagged stage while nothing is
+  attached to the visit. Enforced in `write()` rather than the view so it
+  holds for kanban drag, form, mobile app, import and RPC alike — the client
+  requires it "enforced in the system logic, not optional for any user
+  role". Note `data/fsm_stages.xml` is `noupdate="1"`, so the flag and the
+  re-sequencing around the new **Pending Documents** stage had to be applied
+  to existing databases by `migrations/19.0.2.8.0` — shipping them in the
+  data file alone would have left the gate doing nothing on exactly the
+  databases that have real visits.
+- **The Accounts → Operations gate is a constraint, not a button check.**
+  The client's process flow says Operations confirmation is *"allowed only
+  after Accounts confirmation"*. `crm.lead` carries three dated, attributed
+  confirmations (`fm_sales_qualified_*`, `fm_accounts_confirmed_*`,
+  `fm_ops_confirmed_*`) and `_check_fm_confirmation_order` enforces the
+  ordering — so the rule also holds for import, RPC and server actions, and
+  catches the reverse hole of *clearing* the Accounts date under a lead
+  Operations already confirmed. The buttons only supply the friendly
+  message. Modelled as confirmations rather than CRM stages because the
+  handover is not a single ordered list: step 2 drips the qualified lead to
+  Accounts **and** Operations at once, and only then does the ordering
+  between those two apply. **Still unconfirmed by the client:** which users
+  are "Accounts" and which are "Operations" — the ordering is enforced for
+  everyone, but no role restriction is applied, because that is their org
+  chart to define, not ours.
 - **NEVER mix a plain Python class into a model's bases** —
   `class SaleOrder(SomePlainClass, models.Model)` — even though it looks like
   the tidy way to share a method across two models. A plain class carries an

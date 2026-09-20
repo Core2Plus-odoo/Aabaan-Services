@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The CRM -> Sales -> Accounts -> Operations handover, on the lead.
+         Each button appears only when it is that team's turn, so the order
+         is visible in the form and not only enforced in the constraint. -->
+    <record id="crm_lead_view_form_fm_handover" model="ir.ui.view">
+        <field name="name">crm.lead.form.fm.handover</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//header" position="inside">
+                <button name="action_fm_sales_qualify" type="object"
+                        string="Sales Qualify" class="btn-primary"
+                        invisible="fm_sales_qualified_date"/>
+                <button name="action_fm_accounts_confirm" type="object"
+                        string="Accounts Confirm" class="btn-primary"
+                        invisible="not fm_sales_qualified_date or fm_accounts_confirmed_date"/>
+                <button name="action_fm_ops_confirm" type="object"
+                        string="Operations Confirm" class="btn-primary"
+                        invisible="not fm_accounts_confirmed_date or fm_ops_confirmed_date"/>
+                <field name="fm_pipeline_stage" widget="statusbar"
+                       options="{'clickable': '0'}"/>
+            </xpath>
+
+            <xpath expr="//sheet" position="inside">
+                <group string="FM Handover" name="fm_handover">
+                    <group>
+                        <field name="fm_sales_qualified_date"/>
+                        <field name="fm_sales_qualified_uid"/>
+                        <field name="fm_accounts_confirmed_date"/>
+                        <field name="fm_accounts_confirmed_uid"/>
+                    </group>
+                    <group>
+                        <field name="fm_ops_confirmed_date"/>
+                        <field name="fm_ops_confirmed_uid"/>
+                    </group>
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- Group-by for the dashboard funnel: leads created, sales qualified,
+         accounts confirmed, operations confirmed, AMC contract set up. -->
+    <record id="crm_lead_view_search_fm_pipeline" model="ir.ui.view">
+        <field name="name">crm.lead.search.fm.pipeline</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter name="fm_group_pipeline_stage" string="FM Pipeline Stage"
+                        context="{'group_by': 'fm_pipeline_stage'}"/>
+                <filter name="fm_awaiting_accounts" string="Awaiting Accounts"
+                        domain="[('fm_sales_qualified_date', '!=', False),
+                                 ('fm_accounts_confirmed_date', '=', False)]"/>
+                <filter name="fm_awaiting_operations" string="Awaiting Operations"
+                        domain="[('fm_accounts_confirmed_date', '!=', False),
+                                 ('fm_ops_confirmed_date', '=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -25,20 +25,31 @@
         <field name="sequence">4</field>
     </record>
 
+    <!-- A visit whose work is done but whose service document is still
+         missing. The client's process document makes this a first-class
+         status: "7 jobs awaiting documents. These stay open until the
+         technician uploads the service photo/report." -->
+    <record id="fsm_stage_pending_docs" model="project.task.type">
+        <field name="name">Pending Documents</field>
+        <field name="sequence">5</field>
+    </record>
+
     <record id="fsm_stage_completed" model="project.task.type">
         <field name="name">Completed</field>
-        <field name="sequence">5</field>
+        <field name="sequence">6</field>
+        <field name="fm_requires_document" eval="True"/>
     </record>
 
     <record id="fsm_stage_signed_off" model="project.task.type">
         <field name="name">Signed Off</field>
-        <field name="sequence">6</field>
+        <field name="sequence">7</field>
+        <field name="fm_requires_document" eval="True"/>
         <field name="fold" eval="True"/>
     </record>
 
     <record id="fsm_stage_cancelled" model="project.task.type">
         <field name="name">Cancelled</field>
-        <field name="sequence">7</field>
+        <field name="sequence">8</field>
         <field name="fold" eval="True"/>
     </record>
 

@@ -6,3 +6,4 @@ from . import fm_sla_rule
 from . import fm_contract
 from . import fm_contract_penalty
 from . import sale_order
+from . import crm_lead

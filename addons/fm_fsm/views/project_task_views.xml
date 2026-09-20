@@ -15,6 +15,8 @@
                 <field name="fm_service_line"/>
                 <field name="fm_severity"/>
                 <field name="fm_wo_type"/>
+                <field name="fm_time_slot"/>
+                <field name="fm_has_service_document"/>
             </xpath>
         </field>
     </record>
@@ -60,6 +62,11 @@
                         context="{'group_by': 'fm_severity'}"/>
                 <filter name="fm_group_technician" string="Technician"
                         context="{'group_by': 'user_ids'}"/>
+                <filter name="fm_group_time_slot" string="Time Slot"
+                        context="{'group_by': 'fm_time_slot'}"/>
+                <separator/>
+                <filter name="fm_awaiting_documents" string="Awaiting Documents"
+                        domain="[('fm_has_service_document', '=', False)]"/>
                 <filter name="fm_group_contract" string="AMC Contract"
                         context="{'group_by': 'fm_contract_order_id'}"/>
             </xpath>
