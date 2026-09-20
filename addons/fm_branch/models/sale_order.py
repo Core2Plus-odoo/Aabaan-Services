@@ -57,8 +57,20 @@ class SaleOrder(models.Model):
     # ------------------------------------------------------------------
     # What the branch contributes to a contract
     # ------------------------------------------------------------------
+    # Labelled "Branch Operating Licence", not "Operating Licence No.".
+    #
+    # The plain label is already taken on this model: the Studio layer has
+    # a manual x_licence_no under exactly it, and shipping a second field
+    # with the same name on the same form is how the wrong box gets filled
+    # in -- the thing two migrations have now had to undo.
+    #
+    # The longer label is not a workaround here, it is the better name.
+    # This field is read-only and derived: the number belongs to the
+    # branch, and saying so on the form is the whole point of the design.
+    # A relabel migration is for when the module field genuinely wants the
+    # plain label, as Premises Type and Warranty (years) did.
     fm_licence_number = fields.Char(
-        string="Operating Licence No.",
+        string="Branch Operating Licence",
         related="branch_id.licence_number",
         readonly=True,
         help="The licence the delivering branch operates under. Printed on "

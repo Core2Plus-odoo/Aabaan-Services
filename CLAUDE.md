@@ -483,6 +483,47 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   field on `sale.order` that shadows a module field rather than deleting
   it — a manual field owns a real column with real data, and whether that
   data is still wanted is the client's call, not a migration's.
+- **Check a new field's LABEL against the Studio fields before choosing
+  it.** Porting a Studio field into a module recreates its label
+  collision every time, because a good port keeps the name the user
+  already knows — and the label is exactly what collides. Three of the
+  five fields in the first service-terms port landed on a Studio label,
+  and each cost a migration or a rename. Two boxes with one name on one
+  form is how the wrong one gets filled in, silently.
+  **Run `tools/db_customisations.py` first** (§ above) — its first
+  section prints every manual field with its label. As of 20 Sep 2026,
+  on `sale.order`:
+
+  | Studio field | Label |
+  |---|---|
+  | `x_callout_allowance` | Free Call-outs Allowed |
+  | `x_emirate_regime` | Emirate / Regime |
+  | `x_followup_days` | Follow-up Interval (days) |
+  | `x_include_weekend` | Schedule on Fri/Sat |
+  | `x_licence_no` | Operating Licence No. |
+  | `x_preamble` | Agreement Preamble *(also on `sale.order.template`)* |
+  | `x_service_line` | Service Line |
+  | `x_site_address` | Site / Premises |
+  | `x_terms_locked` | Lock terms (stop auto-rebuild) |
+  | `x_visit_count` | Visits per Year |
+
+  Four more are already relabelled with their technical name by
+  `fm_fsm/migrations/19.0.3.4.0` and `fm_contract/migrations/19.0.3.9.0`
+  (`x_visit_frequency`, `x_premises_type`, `x_complaint_sla`,
+  `x_warranty_years`). **A relabel migration is not always the answer:**
+  it is for when the module field genuinely wants the plain label. Where
+  a longer name is *more accurate*, rename ours instead —
+  `sale.order.fm_licence_number` is "Branch Operating Licence" because
+  the number belongs to the branch, which is the design, not a dodge.
+  `tools/check_relabel_migration.py` is the jsonb fixture for the
+  migration route.
+- **A Studio field can be the INVERSE of a module field, and nothing
+  warns.** `x_include_weekend` is labelled "Schedule on Fri/Sat";
+  fm_fsm's `skip_weekends` is "Skip Weekends (Fri/Sat)". Different
+  labels, so Odoo is silent — but a user who ticks *Schedule on Fri/Sat*
+  expecting weekend visits gets none, because no module reads that
+  field. A duplicate is ignored; an inversion actively misleads. The
+  label collision warning only catches the easy half of this problem.
 - **NEVER mix a plain Python class into a model's bases** —
   `class SaleOrder(SomePlainClass, models.Model)` — even though it looks like
   the tidy way to share a method across two models. A plain class carries an

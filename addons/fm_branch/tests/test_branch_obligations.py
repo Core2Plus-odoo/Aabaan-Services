@@ -56,6 +56,29 @@ class TestBranchObligations(TransactionCase):
         order = self._contract(branch_id=self.dubai.id)
         self.assertEqual(order.fm_licence_number, "TEST-LICENCE-1")
 
+    def test_the_licence_label_does_not_collide_with_the_studio_field(self):
+        """Two fields with one label on one form is how the wrong box
+        gets filled in, and it has cost two migrations already. The
+        Studio layer holds x_licence_no under 'Operating Licence No.',
+        so this one says whose licence it is -- which is also the more
+        accurate name for a read-only field derived from the branch.
+
+        Asserted rather than left to the build log, because the log line
+        is a warning nobody reads until something breaks.
+        """
+        label = self.env["sale.order"]._fields["fm_licence_number"].string
+        self.assertEqual(label, "Branch Operating Licence")
+        clashes = self.env["ir.model.fields"].search([
+            ("model", "=", "sale.order"),
+            ("field_description", "=", label),
+            ("name", "!=", "fm_licence_number"),
+        ])
+        self.assertFalse(
+            clashes,
+            "another sale.order field already uses this label: %s"
+            % clashes.mapped("name"),
+        )
+
     def test_a_branch_with_no_licence_shows_nothing(self):
         """Blank prints nothing on the agreement, which is visibly wrong.
         A guessed number prints confidently, which is not."""
