@@ -92,6 +92,33 @@ class TestBranchObligations(TransactionCase):
         order.action_confirm()
         self.assertEqual(order.fm_callout_allowance, 4)
 
+    def test_a_contract_recognised_on_confirmation_gets_the_allowance_too(self):
+        """The order nobody ticked.
+
+        fm_branch loads last, so its action_confirm runs first -- before
+        fm_contract has recognised the order as a contract. Filling
+        before super() would serve the contracts somebody remembered to
+        tick and skip exactly the ones nobody did, which are the
+        contracts least likely to carry an allowance of their own.
+        """
+        contract_product = self.env["product.product"].create({
+            "name": "Annual Pest Control AMC",
+            "type": "service",
+            "list_price": 4000.0,
+            "fm_is_contract_service": True,
+        })
+        order = self.env["sale.order"].create({
+            "partner_id": self.partner.id,
+            "branch_id": self.dubai.id,
+            "order_line": [(0, 0, {
+                "product_id": contract_product.id, "product_uom_qty": 1,
+            })],
+        })
+        self.assertFalse(order.is_fm_contract)
+        order.action_confirm()
+        self.assertTrue(order.is_fm_contract, "the order was not recognised")
+        self.assertEqual(order.fm_callout_allowance, 2)
+
     def test_a_branch_with_no_standard_fills_nothing(self):
         order = self._contract(branch_id=self.sharjah.id, visit_frequency="monthly")
         order.action_confirm()

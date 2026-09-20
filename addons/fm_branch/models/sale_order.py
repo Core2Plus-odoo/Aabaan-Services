@@ -102,8 +102,23 @@ class SaleOrder(models.Model):
             ))
 
     def action_confirm(self):
+        """Fill after ``super()``, not before.
+
+        fm_branch loads last, so this is the first ``action_confirm`` in
+        the chain -- and at that point an order that Sales wrote as an
+        ordinary quotation is not yet marked as a contract.
+        ``_fm_autodetect_contracts`` recognises it further down, inside
+        ``super()``. Filling first would hand the branch's allowance to
+        contracts somebody remembered to tick and silently skip exactly
+        the ones nobody did, which are the contracts least likely to have
+        an allowance of their own.
+
+        Nothing downstream reads the allowance during confirmation, so
+        unlike fm_subscription's plan there is no reason to be early.
+        """
+        res = super().action_confirm()
         self.filtered("is_fm_contract")._fm_fill_from_branch()
-        return super().action_confirm()
+        return res
 
     # ------------------------------------------------------------------
     # The municipal visit floor
