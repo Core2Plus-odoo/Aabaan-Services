@@ -47,7 +47,8 @@ creating a new one.
    `--fm-*` design tokens. Only module with `application=True`.
 2. `fm_asset` — `fm.asset` (inherits `maintenance.equipment`), categories,
    locations. Owns the FM app root menu `menu_fm_root`.
-3. `fm_contract` — **the FM layer on `sale.order`**: `is_fm_contract`, term,
+3. `fm_contract` — **the FM layer on `sale.order`** *(and on `crm.lead`:
+   the Sales → Accounts → Operations handover, see §4)*: `is_fm_contract`, term,
    ACV/TCV, covered assets, inclusions/exclusions, `fm_lifecycle` (starts
    where `sale.order.state` stops), health, and the printed agreement wording
    (`fm.agreement.mixin`). Also `fm.sla.rule`, service items, penalties and
@@ -217,6 +218,21 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   to existing databases by `migrations/19.0.2.8.0` — shipping them in the
   data file alone would have left the gate doing nothing on exactly the
   databases that have real visits.
+- **The Accounts → Operations gate is a constraint, not a button check.**
+  The client's process flow says Operations confirmation is *"allowed only
+  after Accounts confirmation"*. `crm.lead` carries three dated, attributed
+  confirmations (`fm_sales_qualified_*`, `fm_accounts_confirmed_*`,
+  `fm_ops_confirmed_*`) and `_check_fm_confirmation_order` enforces the
+  ordering — so the rule also holds for import, RPC and server actions, and
+  catches the reverse hole of *clearing* the Accounts date under a lead
+  Operations already confirmed. The buttons only supply the friendly
+  message. Modelled as confirmations rather than CRM stages because the
+  handover is not a single ordered list: step 2 drips the qualified lead to
+  Accounts **and** Operations at once, and only then does the ordering
+  between those two apply. **Still unconfirmed by the client:** which users
+  are "Accounts" and which are "Operations" — the ordering is enforced for
+  everyone, but no role restriction is applied, because that is their org
+  chart to define, not ours.
 - **NEVER mix a plain Python class into a model's bases** —
   `class SaleOrder(SomePlainClass, models.Model)` — even though it looks like
   the tidy way to share a method across two models. A plain class carries an
