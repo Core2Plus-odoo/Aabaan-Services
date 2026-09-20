@@ -59,6 +59,21 @@
                             <field name="fm_health_band" widget="badge"/>
                         </group>
                     </group>
+                    <separator string="Service Terms"/>
+                    <group>
+                        <group string="The Site">
+                            <field name="fm_premises_type"/>
+                        </group>
+                        <group string="What the Contract Promises">
+                            <field name="fm_complaint_sla"/>
+                            <field name="fm_complaint_sla_hours"
+                                   invisible="not fm_complaint_sla"/>
+                            <field name="fm_callout_allowance"/>
+                            <field name="fm_followup_days"/>
+                            <field name="fm_warranty_years"/>
+                        </group>
+                    </group>
+
                     <separator string="Scope"/>
                     <group>
                         <field name="fm_asset_ids" widget="many2many_tags"/>

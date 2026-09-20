@@ -45,6 +45,14 @@
                                    options="{'no_create': True}"
                                    placeholder="Suggested from the service line"/>
                         </group>
+                        <group string="Service Terms" name="fm_profile_terms">
+                            <field name="fm_premises_type"
+                                   placeholder="Asked per contract"/>
+                            <field name="fm_complaint_sla"/>
+                            <field name="fm_callout_allowance"/>
+                            <field name="fm_followup_days"/>
+                            <field name="fm_warranty_years"/>
+                        </group>
                     </group>
                     <p class="text-muted">
                         Orders created from this template become FM contracts

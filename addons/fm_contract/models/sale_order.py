@@ -23,6 +23,43 @@ BILLING_FREQUENCIES = [
     ("annual", "Annual"),
 ]
 
+# ----------------------------------------------------------------------
+# The contracted service terms
+# ----------------------------------------------------------------------
+# What an AMC promises beyond a price and a visit cadence: how quickly a
+# complaint is answered, how many call-outs are free, how long the work is
+# warranted. These were being kept by a set of server actions built on the
+# database through Studio, which is where they had real teeth -- one of them
+# refuses a call-out once the allowance is spent, citing "Article 5" -- and
+# no version history, no tests, and nothing a reader of this repository
+# could see. They are ported here because rules with teeth belong in code.
+#
+# Every value below comes from that Studio layer or is left blank; none is
+# invented. Where the client's rule set a figure unconditionally it is the
+# default here and says so; where the figure depended on something this
+# module cannot see (the emirate, which lives on the branch) the field is
+# simply left at zero for the contract or the profile to fill.
+
+# Local Order No. 11, which the client's own rule cites, sets a minimum
+# number of pest control visits a year and turns that minimum on whether
+# the premises handle food. Only that distinction is modelled: a selection
+# is what a constraint later reads, so a value invented here would be a
+# rule applied to a category nobody agreed.
+PREMISES_TYPES = [
+    ("food", "Food & Beverage"),
+    ("non_food", "Non-Food"),
+]
+
+# How fast a customer complaint is answered. The hours are the client's
+# own: their call-out logger reads {'same': 8, '24h': 24, '48h': 48}, so
+# "same day" is a promise of eight hours, not of midnight.
+COMPLAINT_SLA = [
+    ("same_day", "Same day"),
+    ("24h", "Within 24 hours"),
+    ("48h", "Within 48 hours"),
+]
+COMPLAINT_SLA_HOURS = {"same_day": 8, "24h": 24, "48h": 48}
+
 
 class SaleOrder(models.Model):
     """A contract is a sale order.
@@ -159,6 +196,63 @@ class SaleOrder(models.Model):
     fm_next_invoice_date = fields.Date(string="Next Invoice Date")
 
     # ------------------------------------------------------------------
+    # Contracted service terms
+    # ------------------------------------------------------------------
+    # These are promises to the customer, printed on the signed agreement
+    # and answered for afterwards. They are stored on the contract rather
+    # than looked up from the service or the emirate at the moment they are
+    # needed, because what binds is what was agreed on the day -- a branch
+    # that later changes its standard allowance must not silently rewrite
+    # the terms of a contract signed under the old one.
+    fm_premises_type = fields.Selection(
+        PREMISES_TYPES,
+        string="Premises Type",
+        tracking=True,
+        compute="_compute_fm_from_template", store=True, readonly=False,
+        help="Whether the site handles food. Sets the minimum number of "
+             "visits a year the contract has to promise where a municipal "
+             "rule imposes one.",
+    )
+    fm_callout_allowance = fields.Integer(
+        string="Free Call-Outs Included",
+        tracking=True,
+        compute="_compute_fm_from_template", store=True, readonly=False,
+        help="How many complaint call-outs are included in the contract "
+             "price before one is chargeable. Zero means none are included "
+             "-- not that they are unlimited.",
+    )
+    fm_complaint_sla = fields.Selection(
+        COMPLAINT_SLA,
+        string="Complaint Response",
+        tracking=True,
+        compute="_compute_fm_from_template", store=True, readonly=False,
+        help="How quickly a complaint call-out is attended. Printed on the "
+             "agreement and used to date the response due on a call-out.",
+    )
+    fm_complaint_sla_hours = fields.Integer(
+        string="Complaint Response (hours)",
+        compute="_compute_fm_complaint_sla_hours", store=True,
+        help="The response promise in hours, so it can be compared and "
+             "filtered on. Same day means eight working hours.",
+    )
+    fm_followup_days = fields.Integer(
+        string="Follow-Up Within (days)",
+        tracking=True,
+        compute="_compute_fm_from_template", store=True, readonly=False,
+        help="How long after a complaint call-out the follow-up visit is "
+             "due. Zero means the agreement states no follow-up.",
+    )
+    fm_warranty_years = fields.Integer(
+        string="Warranty (years)",
+        tracking=True,
+        compute="_compute_fm_from_template", store=True, readonly=False,
+        help="How long the work is warranted for. Zero means the agreement "
+             "states no warranty. This varies by service -- a waterproofing "
+             "job and a pest treatment do not carry the same one -- so it "
+             "is set per contract, or per contract profile, never globally.",
+    )
+
+    # ------------------------------------------------------------------
     # Scope
     # ------------------------------------------------------------------
     fm_asset_ids = fields.Many2many(
@@ -290,6 +384,11 @@ class SaleOrder(models.Model):
                 order.fm_start_date = saved.fm_start_date
                 order.fm_account_manager_id = saved.fm_account_manager_id
                 order.agreement_template_id = saved.agreement_template_id
+                order.fm_premises_type = saved.fm_premises_type
+                order.fm_callout_allowance = saved.fm_callout_allowance
+                order.fm_complaint_sla = saved.fm_complaint_sla
+                order.fm_warranty_years = saved.fm_warranty_years
+                order.fm_followup_days = saved.fm_followup_days
                 continue
             order.is_fm_contract = True
             order.fm_service_line = profile.fm_service_line or saved.fm_service_line
@@ -307,6 +406,34 @@ class SaleOrder(models.Model):
             order.agreement_template_id = (
                 profile.fm_agreement_template_id or saved.agreement_template_id
             )
+            # The profile leads, and what it leaves blank keeps whatever the
+            # order already had. A profile that states no warranty is not
+            # the same as one that has not been filled in, so a zero on the
+            # profile does not wipe a warranty typed on the contract.
+            order.fm_premises_type = profile.fm_premises_type or saved.fm_premises_type
+            order.fm_callout_allowance = (
+                profile.fm_callout_allowance or saved.fm_callout_allowance
+            )
+            order.fm_complaint_sla = profile.fm_complaint_sla or saved.fm_complaint_sla
+            order.fm_followup_days = (
+                profile.fm_followup_days or saved.fm_followup_days
+            )
+            order.fm_warranty_years = (
+                profile.fm_warranty_years or saved.fm_warranty_years
+            )
+
+    @api.depends("fm_complaint_sla")
+    def _compute_fm_complaint_sla_hours(self):
+        """The response promise as a number, so it can be compared.
+
+        Stored rather than derived at the point of use: a call-out logged
+        against this contract dates its response from these hours, and a
+        contract signed on a same-day promise must keep meaning eight hours
+        even if the company later decides same-day means something else.
+        """
+        for order in self:
+            order.fm_complaint_sla_hours = COMPLAINT_SLA_HOURS.get(
+                order.fm_complaint_sla, 0)
 
     @api.depends("sale_order_template_id", "fm_start_date")
     def _compute_fm_end_date(self):
