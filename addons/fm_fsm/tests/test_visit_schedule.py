@@ -155,6 +155,64 @@ class TestVisitSchedule(TransactionCase):
         self.assertTrue(all(d.weekday() == dates[0].weekday() for d in dates))
 
     # ------------------------------------------------------------------
+    # The weekend
+    #
+    # The UAE weekend is Friday and Saturday. Sunday is an ordinary
+    # working day, and the client schedules visits on it -- "visits can
+    # be made for every Sunday".
+    #
+    # _next_working_day skipped Sat/Sun until that was pointed out, so
+    # every Sunday visit on every contract was silently moved to the
+    # Monday. Nothing reported it: the visits existed, they were simply
+    # on the wrong day.
+    # ------------------------------------------------------------------
+    def test_a_sunday_visit_stays_on_sunday(self):
+        order = self._contract(skip_weekends=True)
+        # 2026-09-20 is a Sunday.
+        sunday = date(2026, 9, 20)
+        self.assertEqual(sunday.weekday(), 6, "fixture sanity: that is a Sunday")
+        self.assertEqual(order._next_working_day(sunday), sunday)
+
+    def test_friday_and_saturday_move_to_sunday(self):
+        order = self._contract(skip_weekends=True)
+        friday = date(2026, 9, 18)
+        saturday = date(2026, 9, 19)
+        self.assertEqual(friday.weekday(), 4)
+        self.assertEqual(saturday.weekday(), 5)
+        sunday = date(2026, 9, 20)
+        self.assertEqual(order._next_working_day(friday), sunday)
+        self.assertEqual(order._next_working_day(saturday), sunday)
+
+    def test_every_sunday_weekly_contract_stays_on_sundays(self):
+        """The case that found the bug: a weekly contract anchored on a
+        Sunday, with weekend-skipping on, must visit on Sundays.
+
+        Goes through _generate_schedule and reads the tasks, not through
+        _fm_visit_dates: the weekend shift is applied during generation,
+        so a test on the raw dates would pass whether the bug was there
+        or not.
+        """
+        order = self._contract(
+            visit_frequency="weekly",
+            skip_weekends=True,
+            fm_start_date=date(2026, 9, 20),      # a Sunday
+            fm_end_date=date(2026, 11, 1),
+        )
+        created = order._generate_schedule()
+        self.assertTrue(created, "the contract should have generated visits")
+        days = sorted(t.date_deadline.date() for t in created)
+        self.assertTrue(
+            all(d.weekday() == 6 for d in days),
+            "every visit should fall on a Sunday, got %s"
+            % [(d.isoformat(), d.strftime("%a")) for d in days],
+        )
+
+    def test_skip_weekends_off_leaves_friday_alone(self):
+        order = self._contract(skip_weekends=False)
+        friday = date(2026, 9, 18)
+        self.assertEqual(order._next_working_day(friday), friday)
+
+    # ------------------------------------------------------------------
     # Twice a month
     #
     # The client's frequency table gives this as 24 visits a year on "two

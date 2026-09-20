@@ -66,8 +66,12 @@ creating a new one.
 4. `fm_fsm` — **the re-base core**. FM Field Service project, task stages,
    FM fields on `project.task` (`fm_contract_order_id` → the contract's
    `sale.order`; legacy `fm_contract_id` kept until `fm.contract` goes),
-   visit auto-scheduling in `fm.visit.schedule.mixin` — **the platform's
-   only visit generator** — and `menu_fm_config_root`.
+   visit auto-scheduling in `fm.visit.schedule.mixin` — and
+   `menu_fm_config_root`. **It is not the only visit generator on the
+   production database**: a Studio server action, *Generate Visit
+   Schedule*, creates `project.task` rows too, keyed on
+   `sale_order_id` + `x_visit_type`. See §4 on database-only
+   customisation; the two are to be reconciled.
 5. `fm_compliance` — `fm.compliance.regime` / `fm.compliance.certificate`,
    watchdog cron; remediation creates a `project.task`.
 6. `fm_documents` — QWeb PDF layouts (Work Order job sheet, Contract,
@@ -411,6 +415,25 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   `ir.model.data._process_end` deletes a module's stale records on
   upgrade, newest id first, so inheriting child views go before their
   parents.
+- **The UAE weekend is Friday and Saturday. Sunday is a working day.**
+  `_next_working_day` skipped `weekday() >= 5` — Sat and Sun — so on every
+  contract with `skip_weekends` on (the default), **every Sunday visit was
+  silently moved to the Monday**. The client schedules visits on Sundays;
+  nothing reported it, because the visits existed and were merely on the
+  wrong day. The weekend is `WEEKEND_DAYS = (4, 5)` in
+  `fm_fsm/models/fm_visit_schedule_mixin.py`. Note the test has to go
+  through `_generate_schedule`, not `_fm_visit_dates`: the shift is applied
+  during generation, so a test on the raw dates passes either way.
+  The Studio layer on the database had this right before we did.
+- **Making an existing field computed silently replaces its default.**
+  `skip_weekends` is `default=True`, but once it became a
+  `compute=... store=True readonly=False` field for the contract profile,
+  the no-profile branch read `order._origin.skip_weekends` — empty on a
+  new record — and the default became False. `or` cannot express a boolean
+  default of True, so that branch needs
+  `saved.skip_weekends if saved else True`. Check every default when
+  converting a stored field to a compute; the ones that are falsy by
+  default (`False`, `0`, `""`) hide the change completely.
 - **A translatable column is `jsonb`, and raw SQL against it must say so.**
   `ir_model_fields.field_description`, `ir_ui_view.name`, any `translate=True`
   field: Odoo 19 stores them as `{"en_US": "..."}`, not text. `LIKE` straight

@@ -65,6 +65,12 @@ FREQUENCY_SELECTION = [
     ("custom", "Custom — enter interval"),
 ]
 
+# The UAE weekend: Friday and Saturday (Python weekday() 4 and 5).
+# Sunday is a working day -- a contract can legitimately be visited every
+# Sunday, and treating it as a weekend silently moved every such visit to
+# the Monday.
+WEEKEND_DAYS = (4, 5)
+
 TIME_SLOTS = [
     ("morning", "Morning"),
     ("day", "Day"),
@@ -204,9 +210,10 @@ class FmVisitScheduleMixin(models.AbstractModel):
             record.visit_day_2 = ((start.day + 13) % 28) + 1
 
     skip_weekends = fields.Boolean(
-        string="Skip Weekends",
+        string="Skip Weekends (Fri/Sat)",
         default=True,
-        help="Push visits that fall on Sat/Sun to the next working day.",
+        help="Push visits that fall on Friday or Saturday to the next "
+             "working day. Sunday is a working day in the UAE.",
     )
     preferred_technician_id = fields.Many2one("hr.employee", string="Preferred Technician")
     auto_schedule_state = fields.Selection(
@@ -387,9 +394,17 @@ class FmVisitScheduleMixin(models.AbstractModel):
             self._fm_covered_assets())
 
     def _next_working_day(self, day):
+        """Move a visit off the weekend -- which in the UAE is Fri/Sat.
+
+        This skipped Sat/Sun until it was caught against the client's own
+        schedule: a contract visited every Sunday had every single visit
+        pushed to Monday, silently, because Python's weekday() makes
+        Sunday 6 and the test was ``>= 5``. Sunday is an ordinary working
+        day here; Friday is not.
+        """
         self.ensure_one()
         if self.skip_weekends:
-            while day.weekday() >= 5:  # 5=Sat, 6=Sun
+            while day.weekday() in WEEKEND_DAYS:
                 day += timedelta(days=1)
         return day
 
