@@ -267,3 +267,79 @@ class TestVisitSchedule(TransactionCase):
         self.assertEqual(visit.fm_time_slot, "night")
         visit.planned_date_begin = visit.planned_date_begin.replace(hour=8)
         self.assertEqual(visit.fm_time_slot, "morning")
+
+    # ------------------------------------------------------------------
+    # Service document gate
+    #
+    # "Validation must be enforced in the system logic, not optional for any
+    # user role." -- the client's process document, which also shows the
+    # technician's "Mark as Completed" button locked until a file is up.
+    # ------------------------------------------------------------------
+    def _a_visit(self):
+        order = self._contract(visit_frequency="monthly")
+        order.action_confirm()
+        visit = order.fm_task_ids.filtered("planned_date_begin")[:1]
+        self.assertTrue(visit, "confirming the contract should plan visits")
+        return visit
+
+    def _attach_report(self, visit):
+        return self.env["ir.attachment"].create({
+            "name": "report_%s.jpg" % visit.id,
+            "res_model": "project.task",
+            "res_id": visit.id,
+            "datas": b"aGVsbG8=",
+        })
+
+    def test_completed_is_refused_without_a_document(self):
+        visit = self._a_visit()
+        completed = self.env.ref("fm_fsm.fsm_stage_completed")
+        self.assertFalse(visit.fm_has_service_document)
+        with self.assertRaises(UserError):
+            visit.stage_id = completed
+
+    def test_completed_is_allowed_once_a_document_is_attached(self):
+        visit = self._a_visit()
+        self._attach_report(visit)
+        visit.invalidate_recordset(["fm_has_service_document"])
+        self.assertTrue(visit.fm_has_service_document)
+        visit.stage_id = self.env.ref("fm_fsm.fsm_stage_completed")
+        self.assertEqual(visit.stage_id, self.env.ref("fm_fsm.fsm_stage_completed"))
+
+    def test_signed_off_is_gated_too(self):
+        """Closing a visit by skipping Completed must not dodge the gate."""
+        visit = self._a_visit()
+        with self.assertRaises(UserError):
+            visit.stage_id = self.env.ref("fm_fsm.fsm_stage_signed_off")
+
+    def test_pending_documents_is_always_reachable(self):
+        """The stage a visit without its report belongs in is never blocked."""
+        visit = self._a_visit()
+        pending = self.env.ref("fm_fsm.fsm_stage_pending_docs")
+        visit.stage_id = pending
+        self.assertEqual(visit.stage_id, pending)
+
+    def test_pending_documents_sorts_before_completed(self):
+        pending = self.env.ref("fm_fsm.fsm_stage_pending_docs")
+        completed = self.env.ref("fm_fsm.fsm_stage_completed")
+        self.assertLess(
+            pending.sequence, completed.sequence,
+            "Pending Documents must sit before Completed on the kanban")
+
+    def test_the_gate_is_a_stage_flag_not_a_hardcoded_id(self):
+        for xmlid in ("fm_fsm.fsm_stage_completed", "fm_fsm.fsm_stage_signed_off"):
+            self.assertTrue(self.env.ref(xmlid).fm_requires_document, xmlid)
+        for xmlid in ("fm_fsm.fsm_stage_in_progress",
+                      "fm_fsm.fsm_stage_pending_docs",
+                      "fm_fsm.fsm_stage_cancelled"):
+            self.assertFalse(self.env.ref(xmlid).fm_requires_document, xmlid)
+
+    def test_awaiting_documents_filter_is_searchable(self):
+        """A non-stored compute needs a search method or the filter 500s."""
+        visit = self._a_visit()
+        Task = self.env["project.task"]
+        self.assertIn(
+            visit, Task.search([("fm_has_service_document", "=", False)]))
+        self._attach_report(visit)
+        visit.invalidate_recordset(["fm_has_service_document"])
+        self.assertIn(
+            visit, Task.search([("fm_has_service_document", "=", True)]))

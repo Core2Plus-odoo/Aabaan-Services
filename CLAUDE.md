@@ -201,6 +201,22 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   `visit_start_time` into it as a wall clock, so both sides currently share
   that one interpretation. Correcting it is a separate change — it would
   move every already-planned visit by the UTC offset.
+- **A computed field with no `store=` cannot be searched** without an
+  explicit `search="_search_..."` method — the field renders fine in a list
+  and then the first filter using it fails at runtime, not at parse time.
+  See `project.task.fm_has_service_document`, which backs the "Awaiting
+  Documents" filter.
+- **The service-document gate is a flag on the stage, not a stage id.**
+  `project.task.type.fm_requires_document` marks Completed and Signed Off;
+  `project.task.write()` refuses to enter any flagged stage while nothing is
+  attached to the visit. Enforced in `write()` rather than the view so it
+  holds for kanban drag, form, mobile app, import and RPC alike — the client
+  requires it "enforced in the system logic, not optional for any user
+  role". Note `data/fsm_stages.xml` is `noupdate="1"`, so the flag and the
+  re-sequencing around the new **Pending Documents** stage had to be applied
+  to existing databases by `migrations/19.0.2.8.0` — shipping them in the
+  data file alone would have left the gate doing nothing on exactly the
+  databases that have real visits.
 - **NEVER mix a plain Python class into a model's bases** —
   `class SaleOrder(SomePlainClass, models.Model)` — even though it looks like
   the tidy way to share a method across two models. A plain class carries an
