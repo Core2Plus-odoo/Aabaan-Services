@@ -43,6 +43,38 @@ class FmBranch(models.Model):
              "is a management decision.",
     )
 
+    # ------------------------------------------------------------------
+    # What this emirate requires of us
+    # ------------------------------------------------------------------
+    # A branch is the company operating in one emirate, and each emirate
+    # licenses and regulates that operation separately. These two answer
+    # "what does trading here oblige us to?", so they belong on the branch
+    # rather than on every contract written from it -- and as configuration
+    # rather than as constants in code, because a licence is renewed and a
+    # standard allowance is a commercial decision, neither of which should
+    # need a deployment.
+    #
+    # Both are deliberately blank. The Studio layer these came from carries
+    # figures, but a licence number printed on a customer's signed agreement
+    # and an allowance the customer can hold us to are not things to inherit
+    # from an undocumented server action on the say-so of whoever wrote it.
+    # Blank prints nothing, which is visibly wrong; a wrong number prints
+    # confidently, which is not.
+    licence_number = fields.Char(
+        string="Operating Licence No.",
+        help="The trade or operating licence this branch works under in its "
+             "emirate, as it should appear on the printed service "
+             "agreement. Blank prints nothing rather than a guess.",
+    )
+    default_callout_allowance = fields.Integer(
+        string="Standard Free Call-Outs",
+        help="How many complaint call-outs a contract written from this "
+             "branch normally includes in its price. Filled onto a new "
+             "contract that does not set its own, and the contract can "
+             "always override it. Zero means this branch includes none as "
+             "standard.",
+    )
+
     contract_count = fields.Integer(compute="_compute_counts")
     workorder_count = fields.Integer(compute="_compute_counts")
     technician_count = fields.Integer(compute="_compute_counts")

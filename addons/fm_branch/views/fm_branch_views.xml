@@ -48,6 +48,13 @@
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                     </group>
+                    <group string="Operating in this Emirate">
+                        <group>
+                            <field name="licence_number"
+                                   placeholder="Blank prints nothing on the agreement"/>
+                            <field name="default_callout_allowance"/>
+                        </group>
+                    </group>
                     <group>
                         <field name="contract_count"/>
                         <field name="technician_count"/>
