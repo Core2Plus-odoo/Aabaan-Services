@@ -40,7 +40,7 @@ class ProjectTask(models.Model):
             lambda p: p.type == "service" and p.fm_service_material_ids
         )
 
-    @api.onchange("fm_contract_order_id", "fm_contract_id")
+    @api.onchange("fm_contract_order_id")
     def _onchange_fm_contract_default_service(self):
         """Default the service from the contract when it has a single service product."""
         for task in self:

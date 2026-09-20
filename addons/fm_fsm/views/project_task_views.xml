@@ -10,8 +10,6 @@
             <xpath expr="//field[@name='partner_id']" position="before">
                 <field name="fm_asset_id"/>
                 <field name="fm_contract_order_id"/>
-                <field name="fm_contract_id" invisible="not fm_contract_id"
-                       readonly="1"/>
                 <field name="fm_service_line"/>
                 <field name="fm_severity"/>
                 <field name="fm_wo_type"/>

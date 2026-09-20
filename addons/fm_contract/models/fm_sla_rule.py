@@ -12,10 +12,11 @@ SEVERITY = [
 class FmSlaRule(models.Model):
     """Per-contract SLA targets by severity (brief §5.5).
 
-    Hangs off whichever record is the contract: ``order_id`` for a contract
-    written in Sales, ``contract_id`` for a legacy ``fm.contract``. Neither
-    is required at column level while both exist — a rule belongs to exactly
-    one of them, so requiring either would make the other impossible.
+    Hangs off the contract, which is the sale order. ``order_id`` is not
+    required at column level: it shared that column with a ``contract_id``
+    onto the retired ``fm.contract`` until that model was dropped, and a
+    rule created from the order's list gets it filled in by the One2many
+    anyway.
     """
 
     _name = "fm.sla.rule"
@@ -24,9 +25,6 @@ class FmSlaRule(models.Model):
 
     order_id = fields.Many2one(
         "sale.order", string="Contract", ondelete="cascade", index=True
-    )
-    contract_id = fields.Many2one(
-        "fm.contract", string="Contract (legacy)", ondelete="cascade", index=True
     )
     name = fields.Char(required=True)
     severity = fields.Selection(SEVERITY, required=True, default="p3_medium")
@@ -39,8 +37,8 @@ class FmSlaRule(models.Model):
         "res.currency", compute="_compute_currency_id", store=True
     )
 
-    @api.depends("order_id.currency_id", "contract_id.currency_id")
+    @api.depends("order_id.currency_id")
     def _compute_currency_id(self):
         for rule in self:
-            parent = rule.order_id or rule.contract_id
+            parent = rule.order_id
             rule.currency_id = parent.currency_id
