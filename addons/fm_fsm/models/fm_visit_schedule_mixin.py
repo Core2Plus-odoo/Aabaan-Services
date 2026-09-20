@@ -71,6 +71,11 @@ FREQUENCY_SELECTION = [
 # the Monday.
 WEEKEND_DAYS = (4, 5)
 
+WEEKDAYS = [
+    ("0", "Monday"), ("1", "Tuesday"), ("2", "Wednesday"), ("3", "Thursday"),
+    ("4", "Friday"), ("5", "Saturday"), ("6", "Sunday"),
+]
+
 TIME_SLOTS = [
     ("morning", "Morning"),
     ("day", "Day"),
@@ -209,6 +214,14 @@ class FmVisitScheduleMixin(models.AbstractModel):
             # visit cannot land in the next one.
             record.visit_day_2 = ((start.day + 13) % 28) + 1
 
+    fm_visit_weekday = fields.Selection(
+        WEEKDAYS,
+        string="Visits On",
+        help="For a weekly or fortnightly contract, the day of the week the "
+             "customer is visited. Left blank, the day is taken from the "
+             "contract start date -- which is whenever the contract happened "
+             "to be signed, not necessarily the day anyone agreed to.",
+    )
     skip_weekends = fields.Boolean(
         string="Skip Weekends (Fri/Sat)",
         default=True,
@@ -343,11 +356,38 @@ class FmVisitScheduleMixin(models.AbstractModel):
                     break
         else:
             interval = timedelta(days=self._visit_interval_days())
-            day = start
+            day = self._fm_first_day_of_series(start)
             while day <= end:
                 dates.append(day)
                 day += interval
         return dates
+
+    def _fm_day_is_chosen(self):
+        """Whether this cadence names the day, rather than landing on one.
+
+        Weekly and fortnightly repeat on a weekday: "every Sunday" is the
+        agreement. The monthly family repeats on a date -- the 19th -- and
+        which weekday that is drifts month to month. The distinction
+        decides whether the weekend rule may move a visit: it may move a
+        date that happened to land on a Friday, and it may not move a day
+        the customer chose.
+        """
+        self.ensure_one()
+        return self.visit_frequency in FREQUENCY_DAYS
+
+    def _fm_first_day_of_series(self, start):
+        """Where a day-stepped series begins.
+
+        ``fm_visit_weekday`` set: the first such weekday on or after the
+        term start, so "every Sunday" means Sundays whatever day the
+        contract was signed. Left blank the series starts on the term
+        start, which is what it has always done.
+        """
+        self.ensure_one()
+        if not (self._fm_day_is_chosen() and self.fm_visit_weekday):
+            return start
+        wanted = int(self.fm_visit_weekday)
+        return start + timedelta(days=(wanted - start.weekday()) % 7)
 
     def _fm_twice_monthly_days(self):
         """The two chosen days, ordered, ignoring anything out of range."""
@@ -403,6 +443,11 @@ class FmVisitScheduleMixin(models.AbstractModel):
         day here; Friday is not.
         """
         self.ensure_one()
+        if self._fm_day_is_chosen():
+            # The weekday IS the agreement. A customer contracted for every
+            # Friday gets Fridays; moving them would quietly rewrite the
+            # contract, which is the same mistake in the other direction.
+            return day
         if self.skip_weekends:
             while day.weekday() in WEEKEND_DAYS:
                 day += timedelta(days=1)

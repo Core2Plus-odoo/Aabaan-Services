@@ -425,6 +425,20 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   through `_generate_schedule`, not `_fm_visit_dates`: the shift is applied
   during generation, so a test on the raw dates passes either way.
   The Studio layer on the database had this right before we did.
+- **"Skip the weekend" and "visit on a fixed day" are two different
+  things, and one must not override the other.** Weekly and fortnightly
+  repeat on a *weekday* — "every Sunday" is the agreement. The monthly
+  family repeats on a *date* — the 19th — and which weekday that lands on
+  drifts month to month. So the weekend rule may move a date that
+  happened to fall on a Friday, and may **not** move a day the customer
+  chose: a contract for every Friday was silently becoming every Sunday,
+  the same error as the Sundays in the opposite direction.
+  `_fm_day_is_chosen()` (true for `FREQUENCY_DAYS`, i.e. weekly and
+  fortnightly) makes `_next_working_day` stand aside.
+  `fm_visit_weekday` states the day outright instead of inheriting it
+  from the contract start — which is whenever the thing happened to be
+  signed, not a day anyone agreed to. Left blank the series still runs
+  from the term start, so the field is additive.
 - **Making an existing field computed silently replaces its default.**
   `skip_weekends` is `default=True`, but once it became a
   `compute=... store=True readonly=False` field for the contract profile,

@@ -207,6 +207,57 @@ class TestVisitSchedule(TransactionCase):
             % [(d.isoformat(), d.strftime("%a")) for d in days],
         )
 
+    def test_a_chosen_weekday_is_never_moved_by_the_weekend_rule(self):
+        """A fixed day and the weekend rule are different things.
+
+        A customer contracted for every Friday gets Fridays. Shifting
+        them off the weekend would rewrite the agreement -- the same
+        mistake as moving the Sundays, in the other direction.
+        """
+        order = self._contract(
+            visit_frequency="weekly",
+            skip_weekends=True,
+            fm_visit_weekday="4",                 # Friday
+            fm_start_date=date(2026, 9, 20),      # a Sunday
+            fm_end_date=date(2026, 11, 1),
+        )
+        created = order._generate_schedule()
+        self.assertTrue(created)
+        days = sorted(t.date_deadline.date() for t in created)
+        self.assertTrue(
+            all(d.weekday() == 4 for d in days),
+            "every visit should be a Friday, got %s"
+            % [(d.isoformat(), d.strftime("%a")) for d in days],
+        )
+
+    def test_a_chosen_weekday_starts_on_the_first_such_day(self):
+        """Signed on a Sunday, visited on Wednesdays: the series starts
+        on the first Wednesday, not the signing date."""
+        order = self._contract(
+            visit_frequency="weekly",
+            fm_visit_weekday="2",                 # Wednesday
+            fm_start_date=date(2026, 9, 20),      # a Sunday
+            fm_end_date=date(2026, 10, 18),
+        )
+        dates = order._fm_visit_dates(date(2026, 9, 20), date(2026, 10, 18))
+        self.assertEqual(dates[0], date(2026, 9, 23), "the first Wednesday")
+        self.assertTrue(all(d.weekday() == 2 for d in dates))
+
+    def test_no_weekday_chosen_still_follows_the_start_date(self):
+        """Left blank it behaves exactly as before -- the series runs
+        from the term start."""
+        order = self._contract(visit_frequency="weekly", fm_visit_weekday=False)
+        dates = order._fm_visit_dates(date(2026, 9, 20), date(2026, 10, 18))
+        self.assertEqual(dates[0], date(2026, 9, 20))
+
+    def test_a_monthly_date_still_moves_off_the_weekend(self):
+        """The monthly family names a date, not a day, so which weekday
+        it lands on is incidental and the weekend rule still applies."""
+        order = self._contract(visit_frequency="monthly", skip_weekends=True)
+        friday = date(2026, 9, 18)
+        self.assertEqual(friday.weekday(), 4)
+        self.assertEqual(order._next_working_day(friday), date(2026, 9, 20))
+
     def test_skip_weekends_off_leaves_friday_alone(self):
         order = self._contract(skip_weekends=False)
         friday = date(2026, 9, 18)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import fields, models
 
-from .fm_visit_schedule_mixin import FREQUENCY_SELECTION, TIME_SLOTS
+from .fm_visit_schedule_mixin import FREQUENCY_SELECTION, TIME_SLOTS, WEEKDAYS
 
 
 class SaleOrderTemplate(models.Model):
@@ -24,6 +24,11 @@ class SaleOrderTemplate(models.Model):
     fm_custom_interval_days = fields.Integer(
         string="Custom Interval (days)",
         help="Used when Visit Frequency is 'Custom'.",
+    )
+    fm_visit_weekday = fields.Selection(
+        WEEKDAYS, string="Visits On",
+        help="Weekly and fortnightly contracts only -- the day of the week "
+             "these customers are visited.",
     )
     fm_visit_day_1 = fields.Integer(string="1st Visit Day", default=1)
     fm_visit_day_2 = fields.Integer(string="2nd Visit Day", default=15)
