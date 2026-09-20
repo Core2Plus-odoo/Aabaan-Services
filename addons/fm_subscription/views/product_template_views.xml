@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Beside "Sold as an FM Contract" (fm_contract), because the two are
+         read together: one decides the order is a contract, the other
+         decides it bills on a recurrence. -->
+    <record id="view_product_template_form_fm_subscription" model="ir.ui.view">
+        <field name="name">product.template.form.fm.subscription</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="fm_contract.view_product_template_form_fm_contract"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='fm_is_contract_service']" position="after">
+                <field name="fm_bills_as_subscription"
+                       groups="fm_branding.group_fm_manager"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
