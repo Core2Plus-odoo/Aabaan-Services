@@ -101,9 +101,66 @@ class TestVisitSchedule(TransactionCase):
     # ------------------------------------------------------------------
     # Cadence
     # ------------------------------------------------------------------
-    def test_frequency_sets_the_interval(self):
+    def test_day_based_frequency_sets_the_interval(self):
+        """Weekly and fortnightly really are fixed day steps."""
+        self.assertEqual(self._contract(visit_frequency="weekly")._visit_interval_days(), 7)
+        self.assertEqual(
+            self._contract(visit_frequency="fortnightly")._visit_interval_days(), 14)
+
+    # ------------------------------------------------------------------
+    # Recurrence dates
+    #
+    # The client's process document is explicit: "A job created for
+    # 19-Sep-2026 on a monthly frequency must reflect on the 19th of every
+    # following month." Stepping by round(365/12)=30 days put the third
+    # visit on the 18th and the twelfth on the 15th.
+    # ------------------------------------------------------------------
+    def test_monthly_lands_on_the_same_day_of_month(self):
+        order = self._contract(visit_frequency="monthly")
+        dates = order._fm_visit_dates(date(2026, 9, 19), date(2027, 9, 18))
+        self.assertEqual(len(dates), 12)
+        self.assertEqual(
+            [d.day for d in dates], [19] * 12,
+            "a monthly AMC signed for the 19th must fall on the 19th every month")
+
+    def test_month_end_start_clamps_without_walking_backwards(self):
+        """31 Jan -> 28 Feb -> 31 Mar, not 28 Feb -> 28 Mar.
+
+        Each date is anchored on the contract start, so a short month
+        borrows nothing from the months after it.
+        """
+        order = self._contract(visit_frequency="monthly")
+        dates = order._fm_visit_dates(date(2027, 1, 31), date(2027, 5, 31))
+        self.assertEqual(
+            [(d.month, d.day) for d in dates],
+            [(1, 31), (2, 28), (3, 31), (4, 30), (5, 31)])
+
+    def test_february_29_in_a_leap_year(self):
+        order = self._contract(visit_frequency="monthly")
+        dates = order._fm_visit_dates(date(2028, 1, 30), date(2028, 3, 30))
+        self.assertEqual([(d.month, d.day) for d in dates],
+                         [(1, 30), (2, 29), (3, 30)])
+
+    def test_quarterly_keeps_the_date_every_three_months(self):
         order = self._contract(visit_frequency="quarterly")
-        self.assertEqual(order._visit_interval_days(), round(365 / 4))
+        dates = order._fm_visit_dates(date(2026, 9, 19), date(2027, 9, 18))
+        self.assertEqual([(d.month, d.day) for d in dates],
+                         [(9, 19), (12, 19), (3, 19), (6, 19)])
+
+    def test_weekly_keeps_the_same_weekday(self):
+        """Months do not preserve weekdays, so weekly stays a day step."""
+        order = self._contract(visit_frequency="weekly")
+        dates = order._fm_visit_dates(date(2026, 9, 19), date(2026, 10, 24))
+        self.assertEqual(len(dates), 6)
+        self.assertTrue(all(d.weekday() == dates[0].weekday() for d in dates))
+
+    def test_planned_count_matches_the_dates_actually_generated(self):
+        """The number on the contract must be the number of visits."""
+        order = self._contract(visit_frequency="monthly")
+        start, end = order._fm_term()
+        self.assertEqual(
+            order._fm_planned_visit_count(),
+            len(order._fm_visit_dates(start, end)) * len(order._fm_covered_assets()))
 
     def test_custom_interval_is_honoured(self):
         order = self._contract(visit_frequency="custom", custom_interval_days=45)

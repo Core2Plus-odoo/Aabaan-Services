@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
+import calendar
 from datetime import datetime, timedelta
 
 from odoo import _, fields, models
 from odoo.exceptions import UserError
 
-# How many visits per asset per year for each cadence.
+# How many visits per asset per year for each cadence. Used for the planned
+# count shown on the contract; the actual dates come from _fm_visit_dates.
 FREQUENCY_PER_YEAR = {
     "weekly": 52,
     "fortnightly": 26,
@@ -13,6 +15,27 @@ FREQUENCY_PER_YEAR = {
     "quarterly": 4,
     "semi_annual": 2,
     "annual": 1,
+}
+
+# Cadences that step by CALENDAR MONTHS, not by a fixed number of days.
+#
+# A monthly AMC signed for the 19th must fall on the 19th of every month.
+# Stepping by round(365/12)=30 days instead puts the third visit on the 18th
+# and the twelfth on the 15th -- four days adrift by the end of a one-year
+# contract, silently, on every recurring contract in the system.
+FREQUENCY_MONTHS = {
+    "monthly": 1,
+    "bi_monthly": 2,
+    "quarterly": 3,
+    "semi_annual": 6,
+    "annual": 12,
+}
+
+# Cadences that genuinely are a fixed number of days: a weekly visit belongs
+# on the same weekday, which months do not preserve.
+FREQUENCY_DAYS = {
+    "weekly": 7,
+    "fortnightly": 14,
 }
 
 # Rolling window the cron keeps populated ahead of today.
@@ -127,23 +150,74 @@ class FmVisitScheduleMixin(models.AbstractModel):
     # ------------------------------------------------------------------
     def _visit_interval_days(self):
         """Days between visits for one asset, honouring a custom interval
-        when Visit Frequency is set to 'Custom' instead of a preset cadence."""
+        when Visit Frequency is set to 'Custom' instead of a preset cadence.
+
+        Only meaningful for the day-based cadences and 'custom'. The monthly
+        family does not have a constant day interval -- use _fm_visit_dates
+        for the actual schedule.
+        """
         self.ensure_one()
         if self.visit_frequency == "custom":
             return max(1, self.custom_interval_days or 30)
+        if self.visit_frequency in FREQUENCY_DAYS:
+            return FREQUENCY_DAYS[self.visit_frequency]
         per_year = FREQUENCY_PER_YEAR.get(self.visit_frequency, 12)
         return max(1, round(365 / per_year))
+
+    @staticmethod
+    def _fm_add_months(anchor, months):
+        """``anchor`` shifted by whole months, clamped to the month's length.
+
+        Anchored on the contract start, never on the previous visit: stepping
+        month-by-month from a clamped date walks the schedule backwards (31
+        Jan -> 28 Feb -> 28 Mar -> ...), while anchoring keeps 31 Jan -> 28
+        Feb -> 31 Mar, which is what a contract for "the 31st" means.
+
+        Clamping short months to their last day is the reading the client's
+        process document itself suggests ("e.g. move to last day of month")
+        but lists as still to confirm -- see the module README.
+        """
+        total = anchor.month - 1 + months
+        year = anchor.year + total // 12
+        month = total % 12 + 1
+        return anchor.replace(
+            year=year, month=month,
+            day=min(anchor.day, calendar.monthrange(year, month)[1]),
+        )
+
+    def _fm_visit_dates(self, start, end):
+        """Every visit date from ``start`` to ``end`` inclusive, at this
+        contract's cadence. Calendar-stepped for the monthly family, day-
+        stepped for weekly/fortnightly/custom."""
+        self.ensure_one()
+        months = FREQUENCY_MONTHS.get(self.visit_frequency)
+        dates = []
+        if months:
+            occurrence = 0
+            while True:
+                day = self._fm_add_months(start, months * occurrence)
+                if day > end:
+                    break
+                dates.append(day)
+                occurrence += 1
+                if occurrence > 1200:  # a 100-year monthly contract; bail out
+                    break
+        else:
+            interval = timedelta(days=self._visit_interval_days())
+            day = start
+            while day <= end:
+                dates.append(day)
+                day += interval
+        return dates
 
     def _fm_planned_visit_count(self):
         """How many visits the current settings would produce over the term."""
         self.ensure_one()
-        interval = self._visit_interval_days()
         start, end = self._fm_term()
-        years = 1.0
-        if start and end and end > start:
-            years = (end - start).days / 365.0
-        visits_per_year = 365.0 / interval
-        return max(1, round(visits_per_year * years)) * len(self._fm_covered_assets())
+        if not start or not end or end <= start:
+            return max(1, len(self._fm_covered_assets()))
+        return max(1, len(self._fm_visit_dates(start, end))) * len(
+            self._fm_covered_assets())
 
     def _next_working_day(self, day):
         self.ensure_one()
@@ -182,8 +256,8 @@ class FmVisitScheduleMixin(models.AbstractModel):
             start, term_end = contract._fm_term()
             if not (assets and contract.visit_frequency and start and term_end):
                 continue
-            interval = contract._visit_interval_days()
             end = min(term_end, horizon_end or term_end)
+            visit_dates = contract._fm_visit_dates(start, end)
             company = contract._fm_company()
             link_vals = contract._fm_visit_link_vals()
             contract_ref = contract._fm_contract_ref()
@@ -200,8 +274,7 @@ class FmVisitScheduleMixin(models.AbstractModel):
             vals_list = []
             end_dt_list = []
             for asset in assets:
-                day = start
-                while day <= end:
+                for day in visit_dates:
                     sched_day = contract._next_working_day(day)
                     if sched_day not in existing.setdefault(asset.id, set()):
                         # Title = customer/site so the calendar reads by client;
@@ -261,7 +334,6 @@ class FmVisitScheduleMixin(models.AbstractModel):
                         vals_list.append(vals)
                         end_dt_list.append(end_dt)
                         existing[asset.id].add(sched_day)
-                    day += timedelta(days=interval)
             if vals_list:
                 new_tasks = Task.create(vals_list)
                 for task, task_end_dt in zip(new_tasks, end_dt_list):

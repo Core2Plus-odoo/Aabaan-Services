@@ -170,6 +170,23 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   just write a plain `_inherit` extension on each concrete model and share
   the body through a module-level function (see
   `fm_service_materials/models/fm_visit_schedule_mixin.py`).
+- **A monthly cadence is a calendar step, not `365/12` days.** Visit
+  recurrence lives in `fm_fsm/models/fm_visit_schedule_mixin.py`
+  (`FREQUENCY_MONTHS` / `_fm_visit_dates`). Stepping by `round(365/12)=30`
+  days drifts: a contract signed for the 19th lands on the 18th by visit 3
+  and the 15th by visit 12 — silently, on every recurring contract. The
+  monthly family (monthly, bi-monthly, quarterly, semi-annual, annual) steps
+  by whole months, **anchored on the contract start** so a short month does
+  not drag later ones back (31 Jan → 28 Feb → **31** Mar). Weekly and
+  fortnightly stay day-based, because months do not preserve weekdays.
+  Client requirement: *"A job created for 19-Sep-2026 on a monthly frequency
+  must reflect on the 19th of every following month."*
+  **Still unconfirmed by the client** (their process document lists these as
+  open): the exact date spacing for an "8 times / year" plan, whether
+  "twice a month" means two fixed dates or a 14-day step, and what happens
+  to future visits when a contract is renewed, paused or cancelled. Short
+  months clamp to the last day, which that document suggests but does not
+  confirm.
 - **NEVER mix a plain Python class into a model's bases** —
   `class SaleOrder(SomePlainClass, models.Model)` — even though it looks like
   the tidy way to share a method across two models. A plain class carries an
