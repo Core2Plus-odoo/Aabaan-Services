@@ -53,7 +53,11 @@ creating a new one.
    where `sale.order.state` stops), health, and the printed agreement wording
    (`fm.agreement.mixin`). Also `fm.sla.rule`, service items, penalties and
    the Customers menu. The legacy `fm.contract` model (`_inherits sale.order`)
-   is frozen — nothing creates it, dependants are being re-pointed off it.
+   is frozen — `create()` raises, the guided-contract wizard that wrote to
+   it is `active="False"`, and its records are carried onto the orders they
+   wrap by `fm_fsm/migrations/19.0.2.9.0` (fields, SLA rules, penalties,
+   agreement wording and visits). The model and its seven dependant layers
+   go once that is verified on production.
 4. `fm_fsm` — **the re-base core**. FM Field Service project, task stages,
    FM fields on `project.task` (`fm_contract_order_id` → the contract's
    `sale.order`; legacy `fm_contract_id` kept until `fm.contract` goes),
