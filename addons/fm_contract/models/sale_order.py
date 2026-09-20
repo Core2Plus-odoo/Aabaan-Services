@@ -269,33 +269,43 @@ class SaleOrder(models.Model):
     def _compute_fm_from_template(self):
         for order in self:
             profile = order.sale_order_template_id
+            # ``_origin`` rather than reading the field itself. While a
+            # compute runs its own fields are *protected*, and a protected
+            # read on an unsaved record returns False rather than what is
+            # there (fields.py, Field.__get__: ``if env.is_protected(...):
+            # value = convert_to_cache(False, ...)``). So ``order.x or
+            # default`` inside x's own compute silently discards whatever
+            # the user typed. ``_origin`` is the persisted record -- itself
+            # for a saved order, empty for a brand new one -- so this reads
+            # the real stored value without re-entering the compute.
+            saved = order._origin
             if not profile or not profile.fm_is_contract_profile:
-                # Not from a contract profile: leave whatever is there. A
-                # compute must still assign on a new record, or the field
-                # comes back unset rather than defaulted.
-                order.is_fm_contract = order.is_fm_contract
-                order.fm_service_line = order.fm_service_line
-                order.fm_contract_type = order.fm_contract_type or "amc_comprehensive"
-                order.fm_billing_frequency = order.fm_billing_frequency or "monthly"
-                order.fm_start_date = order.fm_start_date
-                order.fm_account_manager_id = order.fm_account_manager_id
-                order.agreement_template_id = order.agreement_template_id
+                # Not a contract profile: keep what is already stored. A
+                # compute must still assign on every record, or the field
+                # comes back unset instead of defaulted.
+                order.is_fm_contract = saved.is_fm_contract
+                order.fm_service_line = saved.fm_service_line
+                order.fm_contract_type = saved.fm_contract_type or "amc_comprehensive"
+                order.fm_billing_frequency = saved.fm_billing_frequency or "monthly"
+                order.fm_start_date = saved.fm_start_date
+                order.fm_account_manager_id = saved.fm_account_manager_id
+                order.agreement_template_id = saved.agreement_template_id
                 continue
             order.is_fm_contract = True
-            order.fm_service_line = profile.fm_service_line or order.fm_service_line
+            order.fm_service_line = profile.fm_service_line or saved.fm_service_line
             order.fm_contract_type = profile.fm_contract_type or "amc_comprehensive"
             order.fm_billing_frequency = profile.fm_billing_frequency or "monthly"
             # Start today unless a date is already set. A contract written
             # now almost always starts now, and an end date cannot be
             # derived from a term without one.
-            order.fm_start_date = order.fm_start_date or fields.Date.context_today(order)
+            order.fm_start_date = saved.fm_start_date or fields.Date.context_today(order)
             order.fm_account_manager_id = (
                 profile.fm_account_manager_id
-                or order.fm_account_manager_id
+                or saved.fm_account_manager_id
                 or order.env.user
             )
             order.agreement_template_id = (
-                profile.fm_agreement_template_id or order.agreement_template_id
+                profile.fm_agreement_template_id or saved.agreement_template_id
             )
 
     @api.depends("sale_order_template_id", "fm_start_date")

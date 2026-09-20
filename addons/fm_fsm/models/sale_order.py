@@ -76,17 +76,22 @@ class SaleOrder(models.Model):
         """
         for order in self:
             profile = order.sale_order_template_id
+            # _origin, not the field itself: a compute's own fields are
+            # protected while it runs, and a protected read on an unsaved
+            # record returns False rather than the stored value. See the
+            # same note in fm_contract's _compute_fm_from_template.
+            saved = order._origin
             if not profile or not profile.fm_is_contract_profile:
                 # A compute must assign on every record, or a new order
                 # comes back with these unset rather than defaulted.
-                order.visit_frequency = order.visit_frequency or "monthly"
-                order.custom_interval_days = order.custom_interval_days
-                order.visit_day_1 = order.visit_day_1 or 1
-                order.visit_day_2 = order.visit_day_2 or 15
-                order.fm_time_slot = order.fm_time_slot or "morning"
-                order.visit_start_time = order.visit_start_time or 8.0
-                order.visit_duration_hours = order.visit_duration_hours or 2.0
-                order.skip_weekends = order.skip_weekends
+                order.visit_frequency = saved.visit_frequency or "monthly"
+                order.custom_interval_days = saved.custom_interval_days
+                order.visit_day_1 = saved.visit_day_1 or 1
+                order.visit_day_2 = saved.visit_day_2 or 15
+                order.fm_time_slot = saved.fm_time_slot or "morning"
+                order.visit_start_time = saved.visit_start_time or 8.0
+                order.visit_duration_hours = saved.visit_duration_hours or 2.0
+                order.skip_weekends = saved.skip_weekends
                 continue
             order.visit_frequency = profile.fm_visit_frequency or "monthly"
             order.custom_interval_days = profile.fm_custom_interval_days

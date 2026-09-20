@@ -114,6 +114,35 @@ class TestContractProfile(TransactionCase):
         self.assertEqual(order.visit_duration_hours, 1.5)
         self.assertEqual(order.fm_end_date, date(2030, 1, 1))
 
+    def test_a_start_date_already_typed_is_not_overwritten(self):
+        """The profile fills the start date only when there isn't one.
+
+        Regression: the compute originally read `order.fm_start_date` to
+        decide. A compute's own fields are protected while it runs, and a
+        protected read on an unsaved record returns False -- so it always
+        looked empty and always overwrote. Silently, and it moves the end
+        date, the visit schedule and the billing with it.
+        """
+        order = self.env["sale.order"].create({
+            "partner_id": self.partner.id,
+            "fm_start_date": date(2027, 6, 1),
+        })
+        order.sale_order_template_id = self.profile.id
+        self.assertEqual(order.fm_start_date, date(2027, 6, 1))
+        self.assertEqual(order.fm_end_date, date(2029, 6, 1))
+
+    def test_a_non_profile_template_keeps_a_hand_ticked_contract(self):
+        """Same defect, other direction: picking an ordinary template must
+        not silently untick a contract somebody marked by hand."""
+        order = self.env["sale.order"].create({
+            "partner_id": self.partner.id,
+            "is_fm_contract": True,
+            "fm_service_line": "water_tank",
+        })
+        order.sale_order_template_id = self.plain.id
+        self.assertTrue(order.is_fm_contract)
+        self.assertEqual(order.fm_service_line, "water_tank")
+
     def test_an_ordinary_template_makes_an_ordinary_quotation(self):
         """A quotation template that is not a contract profile must not
         drag an unrelated sale into the FM app."""
