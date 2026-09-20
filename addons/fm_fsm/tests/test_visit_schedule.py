@@ -7,7 +7,7 @@ real money is a second set of visits appearing for a job already scheduled.
 """
 from datetime import date, timedelta
 
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 from odoo.tests import TransactionCase, tagged
 
 
@@ -153,6 +153,71 @@ class TestVisitSchedule(TransactionCase):
         dates = order._fm_visit_dates(date(2026, 9, 19), date(2026, 10, 24))
         self.assertEqual(len(dates), 6)
         self.assertTrue(all(d.weekday() == dates[0].weekday() for d in dates))
+
+    # ------------------------------------------------------------------
+    # Twice a month
+    #
+    # The client's frequency table gives this as 24 visits a year on "two
+    # fixed dates per month". Before it existed the nearest option was
+    # fortnightly, which is 26 and walks the dates backwards through the
+    # month -- a customer contracted for the 5th and 20th would be visited
+    # on the 5th and 19th, then the 2nd and 16th.
+    # ------------------------------------------------------------------
+    def test_twice_a_month_is_twenty_four_visits_on_fixed_dates(self):
+        order = self._contract(
+            visit_frequency="twice_monthly", visit_day_1=5, visit_day_2=20)
+        dates = order._fm_visit_dates(date(2026, 1, 1), date(2026, 12, 31))
+        self.assertEqual(len(dates), 24)
+        self.assertEqual(
+            sorted({d.day for d in dates}), [5, 20],
+            "the two dates are fixed; they must not drift through the month")
+
+    def test_twice_a_month_is_not_fortnightly(self):
+        """The distinction this cadence exists for."""
+        window = (date(2026, 1, 1), date(2026, 12, 31))
+        twice = self._contract(
+            visit_frequency="twice_monthly", visit_day_1=5, visit_day_2=20)
+        fortnightly = self._contract(visit_frequency="fortnightly")
+        self.assertNotEqual(
+            len(twice._fm_visit_dates(*window)),
+            len(fortnightly._fm_visit_dates(*window)))
+
+    def test_a_day_the_month_does_not_have_falls_on_its_last(self):
+        order = self._contract(
+            visit_frequency="twice_monthly", visit_day_1=15, visit_day_2=31)
+        dates = order._fm_visit_dates(date(2026, 1, 1), date(2026, 4, 30))
+        self.assertIn(date(2026, 2, 28), dates)
+        self.assertIn(date(2026, 4, 30), dates)
+        self.assertIn(date(2026, 1, 31), dates, "a long month keeps its 31st")
+
+    def test_both_days_clamping_together_is_one_visit_not_two(self):
+        """The 30th and 31st are the same day in February. Booking a
+        technician onto a site twice over is worse than the near miss."""
+        order = self._contract(
+            visit_frequency="twice_monthly", visit_day_1=30, visit_day_2=31)
+        dates = order._fm_visit_dates(date(2026, 2, 1), date(2026, 2, 28))
+        self.assertEqual(dates, [date(2026, 2, 28)])
+
+    def test_no_visit_lands_before_the_term_starts(self):
+        order = self._contract(
+            visit_frequency="twice_monthly", visit_day_1=5, visit_day_2=20)
+        start = date(2026, 1, 10)
+        dates = order._fm_visit_dates(start, date(2026, 3, 31))
+        self.assertTrue(all(d >= start for d in dates))
+        self.assertNotIn(date(2026, 1, 5), dates)
+
+    def test_the_same_day_twice_is_refused(self):
+        """Sold as 24 visits, delivered as 12, and nothing downstream
+        would notice. Enforced as a constraint so import and RPC are
+        covered too, not just the form."""
+        with self.assertRaises(ValidationError):
+            self._contract(
+                visit_frequency="twice_monthly", visit_day_1=9, visit_day_2=9)
+
+    def test_a_day_outside_the_month_is_refused(self):
+        with self.assertRaises(ValidationError):
+            self._contract(
+                visit_frequency="twice_monthly", visit_day_1=0, visit_day_2=15)
 
     def test_planned_count_matches_the_dates_actually_generated(self):
         """The number on the contract must be the number of visits."""

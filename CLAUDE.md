@@ -88,11 +88,11 @@ creating a new one.
     `/faq`, `/booking` -> `crm.lead`, branded footer and mobile action bar,
     brand SCSS (`#17171a` / `#ef7d25`). Maintained in the `aabaan` repo and
     ported here verbatim (same technical name) because an Odoo.sh project
-    only loads its own addons path. **Supersedes `fm_website`**, whose four
-    pages claim the same URLs; the theme's install hook parks any clashing
-    page at `<url>-classic`, unpublished, so the two do not fight — but
-    `fm_website` should be uninstalled from Apps and then deleted from
-    source (see §5).
+    only loads its own addons path. **Replaced `fm_website`**, which claimed
+    the same URLs and is now uninstalled and deleted. The install hook that
+    parked a clashing page at `<url>-classic` is kept: it costs nothing and
+    is the only thing standing between a future URL collision and a silent
+    404.
 10. `fm_subscription` — recurring AMC billing on the **`sale.order`**:
     `product.template.fm_bills_as_subscription` opts a product in, and
     confirming a contract that sells one puts the order on the
@@ -111,15 +111,18 @@ it the stored source API keys) each ran their `19.0.9.0.0` pre-migration on
 the production upgrade, were uninstalled from Apps, and have been deleted
 from source per §5.
 
-**Retired stubs — awaiting uninstall.** `fm_ceo_dashboard`,
-`fm_exec_dashboard` and `fm_dashboards` — three dashboards under one app
-root, two of them named "CEO Dashboard", all superseded by the Command
-Centre. Each is now an empty `19.0.9.0.0` stub with a pre-migration (§5);
-uninstall them from Apps once the production upgrade has run, then delete
-the stubs from source. `fm_exec_dashboard`'s two *stored* fields were not
-dashboard code and moved to `fm_branch`, which owns them:
-`account.move.branch_id` and `fm.branch.monthly_revenue_target` — columns
-and data untouched.
+**Retired dashboards — removed.** `fm_ceo_dashboard`, `fm_exec_dashboard`
+and `fm_dashboards` — three dashboards under one app root, two of them
+named "CEO Dashboard", all superseded by the Command Centre. Each ran its
+`19.0.9.0.0` stub pre-migration on the production upgrade (§5), was
+uninstalled from Apps, and has been deleted from source.
+`fm_exec_dashboard`'s two *stored* fields were not dashboard code and
+moved to `fm_branch`, which owns them now: `account.move.branch_id` and
+`fm.branch.monthly_revenue_target` — columns and data untouched.
+
+**`fm_website` — removed.** Superseded by `aabaan_website_theme`, which
+claims the same URLs. Uninstalled from Apps (its five `website.page`
+records and nine views went with it) and deleted from source.
 
 **Retired stubs — removed.** `fm_workorder`, `fm_ppm`, `fm_sla`,
 `fm_integrations` were empty placeholder modules that existed only so an
@@ -205,12 +208,24 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   fortnightly stay day-based, because months do not preserve weekdays.
   Client requirement: *"A job created for 19-Sep-2026 on a monthly frequency
   must reflect on the 19th of every following month."*
+- **"Twice a month" is not fortnightly** — 24 visits a year on two fixed
+  dates, against 26 on a 14-day step that walks the dates backwards
+  through the month. A customer contracted for the 5th and 20th would be
+  visited on the 5th and 19th, then the 2nd and 16th. So `twice_monthly`
+  steps by calendar month like the monthly family and lands twice, on
+  `visit_day_1` / `visit_day_2`. Both days are plain inputs with a
+  suggested default, because the client's own table calls them *fixed*
+  dates — chosen per contract, not derived. A day the month does not have
+  falls on its last; when both clamp onto the same last day (the 30th and
+  31st in February) it is **one** visit, not a technician booked onto a
+  site twice. Two identical days are refused by a constraint rather than
+  the form: sold as 24 and delivered as 12 is not something anything
+  downstream would notice.
   **Still unconfirmed by the client** (their process document lists these as
-  open): the exact date spacing for an "8 times / year" plan, whether
-  "twice a month" means two fixed dates or a 14-day step, and what happens
-  to future visits when a contract is renewed, paused or cancelled. Short
-  months clamp to the last day, which that document suggests but does not
-  confirm.
+  open): the exact date spacing for an "8 times / year" plan, and what
+  happens to future visits when a contract is renewed, paused or cancelled.
+  Short months clamp to the last day, which that document suggests but does
+  not confirm.
 - **The time slot on a visit is derived, not stored twice.**
   `project.task.fm_time_slot` (Morning / Day / Night) is a stored compute off
   `planned_date_begin` — so a job dragged to another slot on the Gantt, or
@@ -350,9 +365,9 @@ module directly. Instead:
 2. If migrating legacy data: **FM → Configuration → Convert Legacy Work Orders**
    (once), then **Migrate Aabaan Data**.
 3. Verify **FM → Work Orders** and the **Command Centre** app.
-4. Uninstall the retired dashboard stubs (`fm_ceo_dashboard`,
-   `fm_exec_dashboard`, `fm_dashboards`) from Apps once their
-   pre-migrations have run, then delete the stubs from source.
+4. Retiring a module: deploy the stub, let its pre-migration run, uninstall
+   it from Apps, and only then delete it from source (§5). The dashboard
+   stubs and `fm_website` have all been through this and are gone.
 
 **Odoo.sh builds:** dev-branch builds do a **fresh install** (migrations do NOT
 run); **production does an upgrade** (migrations DO run). A green dev build does

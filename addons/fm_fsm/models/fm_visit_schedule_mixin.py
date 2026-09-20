@@ -3,13 +3,14 @@ import calendar
 from datetime import datetime, timedelta
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 # How many visits per asset per year for each cadence. Used for the planned
 # count shown on the contract; the actual dates come from _fm_visit_dates.
 FREQUENCY_PER_YEAR = {
     "weekly": 52,
     "fortnightly": 26,
+    "twice_monthly": 24,
     "monthly": 12,
     "bi_monthly": 6,
     "quarterly": 4,
@@ -37,6 +38,14 @@ FREQUENCY_DAYS = {
     "weekly": 7,
     "fortnightly": 14,
 }
+
+# "Twice a month" is NOT fortnightly, and the difference is not cosmetic.
+# The client's frequency table gives it as 24 visits a year on "two fixed
+# dates per month"; a 14-day step gives 26 and the dates walk backwards
+# through the month. A customer contracted for the 5th and the 20th would
+# be visited on the 5th and 19th, then the 2nd and 16th, and so on. So it
+# steps by calendar month like the monthly family, but lands twice.
+TWICE_MONTHLY = "twice_monthly"
 
 # Time-slot tagging. The client's process document requires that "every job
 # carries exactly one time-slot tag" and shows the three slots on both the
@@ -112,6 +121,7 @@ class FmVisitScheduleMixin(models.AbstractModel):
         [
             ("weekly", "Weekly"),
             ("fortnightly", "Every 2 Weeks"),
+            ("twice_monthly", "Twice a Month"),
             ("monthly", "Monthly"),
             ("bi_monthly", "Every 2 Months"),
             ("quarterly", "Quarterly"),
@@ -128,6 +138,66 @@ class FmVisitScheduleMixin(models.AbstractModel):
              "visits for each covered asset, e.g. 45 for a 45-day cadence that "
              "doesn't fit the preset options.",
     )
+    # The two dates for "Twice a Month". The client's table calls them "two
+    # fixed dates per month" -- fixed meaning chosen per contract, not
+    # derived, so these are plain inputs with a workable default rather than
+    # something computed from the start date behind the user's back.
+    visit_day_1 = fields.Integer(
+        string="1st Visit Day",
+        default=1,
+        help="Day of the month for the first of the two monthly visits. "
+             "A day later than the month has (say the 31st in February) "
+             "falls on the last day of that month.",
+    )
+    visit_day_2 = fields.Integer(
+        string="2nd Visit Day",
+        default=15,
+        help="Day of the month for the second of the two monthly visits.",
+    )
+
+    @api.constrains("visit_frequency", "visit_day_1", "visit_day_2")
+    def _check_fm_twice_monthly_days(self):
+        """Two real, different days -- caught here rather than in the form.
+
+        A contract imported or written over RPC with both days the same
+        would quietly schedule twelve visits a year on a cadence sold as
+        twenty-four, and nothing downstream would notice.
+        """
+        for record in self:
+            if record.visit_frequency != TWICE_MONTHLY:
+                continue
+            for day in (record.visit_day_1, record.visit_day_2):
+                if not 1 <= day <= 31:
+                    raise ValidationError(_(
+                        "A twice-monthly visit day must be between 1 and 31; "
+                        "got %s.", day))
+            if record.visit_day_1 == record.visit_day_2:
+                raise ValidationError(_(
+                    "Twice a month needs two different days of the month. "
+                    "Both are set to %s, which is once a month.",
+                    record.visit_day_1))
+
+    @api.onchange("visit_frequency")
+    def _onchange_fm_twice_monthly_days(self):
+        """Start the two days from the contract's own start date.
+
+        Only a suggestion, and only when the fields are still at their
+        defaults: the client chose the phrase "fixed dates", so the person
+        writing the contract has the last word.
+        """
+        for record in self:
+            if record.visit_frequency != TWICE_MONTHLY:
+                continue
+            if (record.visit_day_1, record.visit_day_2) != (1, 15):
+                continue
+            start = record._fm_term()[0]
+            if not start:
+                continue
+            record.visit_day_1 = start.day
+            # A fortnight on, wrapped inside a 28-day month so the second
+            # visit cannot land in the next one.
+            record.visit_day_2 = ((start.day + 13) % 28) + 1
+
     skip_weekends = fields.Boolean(
         string="Skip Weekends",
         default=True,
@@ -245,6 +315,8 @@ class FmVisitScheduleMixin(models.AbstractModel):
         contract's cadence. Calendar-stepped for the monthly family, day-
         stepped for weekly/fortnightly/custom."""
         self.ensure_one()
+        if self.visit_frequency == TWICE_MONTHLY:
+            return self._fm_twice_monthly_dates(start, end)
         months = FREQUENCY_MONTHS.get(self.visit_frequency)
         dates = []
         if months:
@@ -264,6 +336,41 @@ class FmVisitScheduleMixin(models.AbstractModel):
                 dates.append(day)
                 day += interval
         return dates
+
+    def _fm_twice_monthly_days(self):
+        """The two chosen days, ordered, ignoring anything out of range."""
+        self.ensure_one()
+        days = {d for d in (self.visit_day_1, self.visit_day_2) if 1 <= d <= 31}
+        return sorted(days) or [1]
+
+    def _fm_twice_monthly_dates(self, start, end):
+        """Both chosen days in every month the term touches.
+
+        Walks whole months rather than stepping by days, so the dates stay
+        put: the client's table asks for 24 visits a year on two fixed
+        dates, and a 14-day step drifts them backwards through the month.
+
+        A day the month does not have falls on its last day, matching the
+        monthly family. When both days clamp onto that same last day -- the
+        30th and 31st in February -- it is one visit, not two booked on top
+        of each other.
+        """
+        self.ensure_one()
+        days = self._fm_twice_monthly_days()
+        dates = []
+        month = start.replace(day=1)
+        guard = 0
+        while month <= end:
+            last = calendar.monthrange(month.year, month.month)[1]
+            for day in days:
+                visit = month.replace(day=min(day, last))
+                if start <= visit <= end and visit not in dates:
+                    dates.append(visit)
+            month = self._fm_add_months(month, 1)
+            guard += 1
+            if guard > 1200:  # a 100-year contract; bail out
+                break
+        return sorted(dates)
 
     def _fm_planned_visit_count(self):
         """How many visits the current settings would produce over the term."""
