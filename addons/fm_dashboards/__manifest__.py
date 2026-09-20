@@ -1,32 +1,30 @@
 # -*- coding: utf-8 -*-
 {
-    "name": "FM Dashboards",
-    "version": "19.0.2.0.0",
+    "name": "FM Dashboards (retired)",
+    "version": "19.0.9.0.0",
     "category": "Facility Management",
-    "summary": "Native FM dashboards — Operations (work orders) and Contracts graph/pivot analysis",
+    "summary": "Retired \u2014 superseded by the standalone Command Centre app",
     "description": """
-FM Platform — Dashboards
-========================
-Native, JavaScript-free management dashboards built from standard Odoo
-graph/pivot/kanban actions over the native records:
+FM Dashboards \u2014 retired
+=======================
 
-* **Operations Dashboard** — Field Service work orders (project.task) by service
-  line, severity, stage and branch.
-* **Contracts Dashboard** — AMC / break-fix contracts by state, health and value.
+Two native graph/pivot actions, both already covered elsewhere. The
+Operations Dashboard repeated FM → Work Orders, which carries the same
+domain and the same pivot and graph views; the Contracts Dashboard read
+fm.contract, the frozen legacy model that nothing creates any more, so it
+was permanently empty.
 
-Replaces the earlier OWL client-action dashboard, which depended on a custom JS
-bundle; native actions cannot fail with a client-action registry error and need
-no asset rebuild.
+This is an empty stub. It exists only so an installed database still loads
+while ``migrations/19.0.9.0.0/pre-migration.py`` removes the module's
+residual records (menus, actions, views, model metadata) in FK-safe order.
+Uninstall it from Apps once the production upgrade has run, then the stub
+itself can be deleted from source. See CLAUDE.md section 5.
 """,
     "author": "C2P Consultants FZC LLC",
     "website": "https://c2p.ae",
     "license": "OPL-1",
-    "depends": [
-        "fm_fsm",
-    ],
-    "data": [
-        "views/menus.xml",
-    ],
+    "depends": ["base"],
+    "data": [],
     "installable": True,
     "application": False,
     "auto_install": False,

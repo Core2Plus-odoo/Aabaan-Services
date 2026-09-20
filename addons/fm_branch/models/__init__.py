@@ -9,3 +9,4 @@ from . import fm_contract_agreement_template
 from . import fm_contract_wizard
 from . import project_task
 from . import hr_employee
+from . import account_move

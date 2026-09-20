@@ -1,7 +1,9 @@
 # FM Command Centre (`fm_command_centre`)
 
 Seven tabs, live from the database, every figure one click from its
-evidence. Menu: **FM → Command Centre** (FM account managers and up).
+evidence. Its own app: the **Command Centre** root menu, granted through the
+**Command Centre Viewer** group. It does not live inside the FM app and does
+not depend on the FM suite.
 
 ## Ported, not rewritten — and it still runs on both platforms
 

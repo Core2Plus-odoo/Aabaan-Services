@@ -243,19 +243,28 @@ class TestCommandCentreFieldAliases(TransactionCase):
         self.assertFalse(self.Dash._field('sale.order', 'not_a_concept'))
         self.assertFalse(self.Dash._field('no.such.model', 'service_line'))
 
+    # The module no longer depends on the FM suite, so these three assert
+    # what the aliases resolve to *when the FM suite is installed* and skip
+    # when it is not — the dashboard is meant to run on a build without it.
     def test_the_fm_contract_link_resolves_on_this_build(self):
         """fm_contract_order_id is what a visit carries here. If this ever
         returns sale_order_id, visits stopped following the contract."""
+        if 'fm_contract_order_id' not in self.env['project.task']._fields:
+            self.skipTest('the FM suite is not installed on this build')
         self.assertEqual(
             self.Dash._field('project.task', 'contract'),
             'fm_contract_order_id')
 
     def test_the_fm_service_line_wins_over_a_manual_field(self):
+        if 'fm_service_line' not in self.env['project.task']._fields:
+            self.skipTest('the FM suite is not installed on this build')
         self.assertEqual(
             self.Dash._field('project.task', 'service_line'),
             'fm_service_line')
 
     def test_compliance_source_is_the_fm_certificate(self):
+        if 'fm.compliance.certificate' not in self.env:
+            self.skipTest('fm_compliance is not installed on this build')
         model, fname = self.Dash._compliance_source()
         self.assertEqual(model, 'fm.compliance.certificate')
         self.assertIn(fname, self.env[model]._fields)

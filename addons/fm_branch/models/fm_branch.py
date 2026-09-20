@@ -28,6 +28,20 @@ class FmBranch(models.Model):
     city = fields.Char()
     active = fields.Boolean(default=True)
 
+    # Moved here from fm_exec_dashboard when that dashboard was retired: a
+    # branch's revenue target and currency belong to the branch, not to
+    # whichever screen happens to read them.
+    currency_id = fields.Many2one(
+        "res.currency", related="company_id.currency_id", readonly=True)
+    monthly_revenue_target = fields.Monetary(
+        string="Monthly Revenue Target",
+        currency_field="currency_id",
+        help="Target revenue for this branch in a calendar month, excluding "
+             "tax. Zero means no target is set \u2014 a dashboard then shows no "
+             "target rather than inferring one from history, because a target "
+             "is a management decision.",
+    )
+
     contract_count = fields.Integer(compute="_compute_counts")
     workorder_count = fields.Integer(compute="_compute_counts")
     technician_count = fields.Integer(compute="_compute_counts")

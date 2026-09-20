@@ -6,15 +6,22 @@
         <field name="tag">fm_command_centre</field>
     </record>
 
-    <!-- Under the FM app root rather than at top level: fm_branding is the
-         only module in this repo that declares application=True, and a
-         second root menu would put the platform in two places at once.
-         Sequence 1 puts it above the older dashboards. -->
-    <menuitem id="menu_fm_command_centre"
+    <!-- Its own app, not a menu inside Facility Management.
+
+         The Command Centre is the executive view of the whole business —
+         sales, finance, expenses, cash and renewals, not just facility
+         management — and it is installable without the FM suite. Burying
+         it under the FM app made it look like an FM report and tied its
+         visibility to an FM role. It is now a root menu of its own, which
+         is also what "one command centre" means in practice: the two older
+         dashboards that sat beside it under FM are retired.
+
+         No web_icon: a file path in that field crashes on this build
+         (see fm_asset/views/menus.xml); the default app icon is used. -->
+    <menuitem id="menu_command_centre_root"
               name="Command Centre"
-              parent="fm_asset.menu_fm_root"
               action="action_command_centre"
-              sequence="1"
-              groups="fm_branding.group_fm_account_manager"/>
+              sequence="5"
+              groups="fm_command_centre.group_command_centre_viewer"/>
 
 </odoo>

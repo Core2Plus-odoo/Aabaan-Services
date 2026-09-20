@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'FM Command Centre',
-    'version': '19.0.1.0.0',
+    'version': '19.0.2.0.0',
     'category': 'Reporting',
     'summary': 'Seven-tab live executive dashboard: overview, field ops, sales, finance, expenses, cash, AMC renewals',
     'description': """
@@ -46,17 +46,23 @@ Design rules held throughout: aggregation batched via _read_group;
 platform fields resolved at runtime so a missing one collapses its own
 section instead of raising; and no figure estimated — where a number cannot
 be derived from real records it is left out and the reason is stated on
-screen. Menu: FM → Command Centre (FM account managers and up).
+screen. Its own app menu, granted through the Command Centre Viewer group.
 """,
     'author': 'C2P Consultants FZC LLC',
     'license': 'OPL-1',
+    # Standalone: the executive view of the whole business, installable
+    # without the FM suite. Every platform-specific field it reads is
+    # resolved at runtime through FIELD_ALIASES / COMPLIANCE_SOURCES and a
+    # concept nothing answers collapses its own section, so depending on
+    # fm_fsm and fm_compliance bought nothing but a hard tie to one build.
     'depends': [
-        'fm_fsm',
-        'fm_compliance',
+        'project',
+        'sale_management',
         'account',
         'crm',
     ],
     'data': [
+        'security/command_centre_security.xml',
         'views/menu.xml',
     ],
     'assets': {
@@ -65,5 +71,5 @@ screen. Menu: FM → Command Centre (FM account managers and up).
         ],
     },
     'installable': True,
-    'application': False,
+    'application': True,
 }
