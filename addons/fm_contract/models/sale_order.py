@@ -3,7 +3,6 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
-from odoo.tools import format_date
 
 from odoo.addons.fm_asset.models.fm_asset_category import SERVICE_LINES
 
@@ -476,6 +475,11 @@ class SaleOrder(models.Model):
             line.body for line in self.agreement_line_ids
         ]
 
+    @api.model
+    def _fm_agreement_date(self, value):
+        """A date as an agreement should state it: 20 September 2026."""
+        return value.strftime("%d %B %Y") if value else ""
+
     def _fm_agreement_placeholder_values(self):
         """What a contract knows about itself.
 
@@ -499,8 +503,12 @@ class SaleOrder(models.Model):
                 .replace("\n", ", ").strip(", ")
                 if site else ""
             ),
-            "START": format_date(self.env, self.fm_start_date) if self.fm_start_date else "",
-            "END": format_date(self.env, self.fm_end_date) if self.fm_end_date else "",
+            # Spelled out rather than formatted to the reader's locale.
+            # "09/10/2026" is a different date in Dubai than it is in New
+            # York, and this one is going onto a signed agreement. The
+            # month in words cannot be read two ways.
+            "START": self._fm_agreement_date(self.fm_start_date),
+            "END": self._fm_agreement_date(self.fm_end_date),
             "CALLOUTS": self.fm_callout_allowance or "",
             "WARRANTY": (
                 _("%s year(s)", self.fm_warranty_years)

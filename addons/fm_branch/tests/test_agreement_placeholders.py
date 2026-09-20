@@ -13,6 +13,8 @@ concrete models built before the extension is registered -- and
 sale.order was composed back in fm_contract. The mixin version would
 load cleanly and never run. These tests are what would catch that.
 """
+from datetime import date
+
 from odoo.tests import TransactionCase, tagged
 
 
@@ -175,8 +177,27 @@ class TestAgreementPlaceholders(TransactionCase):
     def test_a_quotation_with_no_customer_renders(self):
         """Wording is often written before anyone is on the order. An
         empty partner must not raise inside _display_address -- which
-        would surface on a print, not on a save."""
-        order = self.env["sale.order"].create({"partner_id": self.partner.id})
-        order.partner_id = False
-        order.partner_shipping_id = False
+        would surface on a print, not on a save.
+
+        Built with new() rather than create(): partner_id is required on
+        sale.order, so clearing it on a saved record raises at flush and
+        the test would fail without ever reaching the code it is about.
+        """
+        order = self.env["sale.order"].new({})
+        self.assertFalse(order.partner_id)
         self.assertIn("✎", order._fm_render_agreement_text("Site: {{SITE}}"))
+        self.assertIn("✎", order._fm_render_agreement_text("For {{CLIENT}}"))
+
+    def test_a_customer_with_no_address_is_a_missing_fact_not_a_crash(self):
+        bare = self.env["res.partner"].create({"name": "No Address Co"})
+        order = self._contract(partner_id=bare.id)
+        order.service_text = "Site: {{SITE}}"
+        self.assertEqual(order.fm_agreement_unresolved_count, 1)
+
+    def test_dates_are_spelled_out_so_they_cannot_be_read_two_ways(self):
+        """09/10/2026 is a different date in Dubai than in New York, and
+        this one goes onto a signed agreement."""
+        order = self._contract(fm_start_date=date(2026, 9, 20))
+        self.assertEqual(
+            order._fm_agreement_placeholder_values()["START"], "20 September 2026",
+        )
