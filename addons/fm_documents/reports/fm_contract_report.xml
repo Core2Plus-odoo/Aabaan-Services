@@ -3,12 +3,20 @@
 
     <record id="action_report_fm_contract" model="ir.actions.report">
         <field name="name">Service Agreement</field>
-        <field name="model">fm.contract</field>
+        <field name="model">sale.order</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">fm_documents.report_fm_contract_document</field>
         <field name="report_file">fm_documents.report_fm_contract_document</field>
-        <field name="binding_model_id" ref="fm_contract.model_fm_contract"/>
-        <field name="binding_type">report</field>
+        <!-- Deliberately NOT bound into the Print menu: sale.order already
+             offers "Quotation / Order" there, and a second entry named
+             Quotation on every ordinary sale is worse than no entry. The
+             two buttons in views/sale_order_views.xml print these, gated
+             on is_fm_contract. The binding is cleared explicitly rather
+             than just dropped from this file, because an upgrade only
+             writes the fields it finds here. The old binding would
+             otherwise survive pointing at fm.contract, and its
+             ondelete=cascade would take this action down with that model. -->
+        <field name="binding_model_id" eval="False"/>
         <field name="paperformat_id" ref="base.paperformat_euro"/>
     </record>
 
@@ -41,11 +49,11 @@
                                 <table style="width:100%; border-collapse:collapse;">
                                     <tr>
                                         <td style="padding:3px 8px; border:1px solid #ddd; background:#f7f7f7; font-weight:bold;">Ref#</td>
-                                        <td style="padding:3px 8px; border:1px solid #ddd; text-align:right;"><span t-field="o.contract_number"/></td>
+                                        <td style="padding:3px 8px; border:1px solid #ddd; text-align:right;"><span t-field="o.fm_contract_number"/></td>
                                     </tr>
                                     <tr>
                                         <td style="padding:3px 8px; border:1px solid #ddd; background:#f7f7f7; font-weight:bold;">Date</td>
-                                        <td style="padding:3px 8px; border:1px solid #ddd; text-align:right;"><span t-field="o.start_date"/></td>
+                                        <td style="padding:3px 8px; border:1px solid #ddd; text-align:right;"><span t-field="o.fm_start_date"/></td>
                                     </tr>
                                 </table>
                             </div>
@@ -74,11 +82,11 @@
                                     <div style="padding:8px 10px;">
                                         <div t-field="o.partner_id"
                                              t-options='{"widget": "contact", "fields": ["name", "address", "phone"]}'/>
-                                        <t t-if="o.customer_contact_ids">
+                                        <t t-if="o.fm_customer_contact_ids">
                                             <div class="text-muted">
-                                                Contact: <span t-esc="o.customer_contact_ids[0].name"/>
-                                                <span t-if="o.customer_contact_ids[0].phone">
-                                                    — <span t-field="o.customer_contact_ids[0].phone"/>
+                                                Contact: <span t-esc="o.fm_customer_contact_ids[0].name"/>
+                                                <span t-if="o.fm_customer_contact_ids[0].phone">
+                                                    — <span t-field="o.fm_customer_contact_ids[0].phone"/>
                                                 </span>
                                             </div>
                                         </t>
@@ -89,8 +97,8 @@
 
                         <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 1 — Duration of the Contract</h5>
                         <p>
-                            This contract is valid from <span t-field="o.start_date"/>
-                            to <span t-field="o.end_date"/>.
+                            This contract is valid from <span t-field="o.fm_start_date"/>
+                            to <span t-field="o.fm_end_date"/>.
                         </p>
 
                         <!-- ==========================================================
@@ -111,11 +119,11 @@
                                 <p t-esc="aline.body" style="white-space:pre-wrap;"/>
                             </t>
 
-                            <t t-if="o.scope_notes or o.service_inclusions">
+                            <t t-if="o.scope_notes or o.fm_service_inclusions">
                                 <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Covered Area</h5>
                                 <p t-if="o.scope_notes" t-esc="o.scope_notes" style="white-space:pre-wrap;"/>
-                                <ul t-elif="o.service_inclusions">
-                                    <li t-foreach="o.service_inclusions" t-as="incl" t-esc="incl.name"/>
+                                <ul t-elif="o.fm_service_inclusions">
+                                    <li t-foreach="o.fm_service_inclusions" t-as="incl" t-esc="incl.name"/>
                                 </ul>
                             </t>
                             <p t-if="o.treatment_notes" style="white-space:pre-wrap;">
@@ -191,8 +199,8 @@
 
                         <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 3 — Scope of Work</h5>
                         <p t-if="o.scope_notes" t-esc="o.scope_notes" style="white-space:pre-wrap;"/>
-                        <ul t-elif="o.service_inclusions">
-                            <li t-foreach="o.service_inclusions" t-as="incl" t-esc="incl.name"/>
+                        <ul t-elif="o.fm_service_inclusions">
+                            <li t-foreach="o.fm_service_inclusions" t-as="incl" t-esc="incl.name"/>
                         </ul>
                         <p t-else="" class="text-muted">Scope of work as agreed with the Second Party for the site stated above.</p>
 
@@ -264,8 +272,8 @@
                         </p>
 
                         <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 6 — Exclusions</h5>
-                        <ul t-if="o.service_exclusions">
-                            <li t-foreach="o.service_exclusions" t-as="excl" t-esc="excl.name"/>
+                        <ul t-if="o.fm_service_exclusions">
+                            <li t-foreach="o.fm_service_exclusions" t-as="excl" t-esc="excl.name"/>
                         </ul>
                         <p t-elif="o.exclusions_text or o.agreement_template_id.exclusions_default_text"
                            t-esc="o.exclusions_text or o.agreement_template_id.exclusions_default_text" style="white-space:pre-wrap;"/>
@@ -377,7 +385,7 @@
                         </t>
                         </t> <!-- end skeleton mode -->
 
-                        <t t-if="o.sla_rule_ids">
+                        <t t-if="o.fm_sla_rule_ids">
                             <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Annex A — Service Levels</h5>
                             <table class="table table-sm mb-3" style="border-collapse:collapse; width:100%;">
                                 <thead>
@@ -388,7 +396,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr t-foreach="o.sla_rule_ids" t-as="s">
+                                    <tr t-foreach="o.fm_sla_rule_ids" t-as="s">
                                         <td style="padding:6px 8px; border:1px solid #ddd;"><span t-field="s.severity"/></td>
                                         <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="s.response_target_minutes"/></td>
                                         <td style="padding:6px 8px; border:1px solid #ddd; text-align:right;"><span t-field="s.resolution_target_minutes"/></td>

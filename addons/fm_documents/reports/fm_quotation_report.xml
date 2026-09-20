@@ -3,12 +3,20 @@
 
     <record id="action_report_fm_quotation" model="ir.actions.report">
         <field name="name">Quotation</field>
-        <field name="model">fm.contract</field>
+        <field name="model">sale.order</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">fm_documents.report_fm_quotation_document</field>
         <field name="report_file">fm_documents.report_fm_quotation_document</field>
-        <field name="binding_model_id" ref="fm_contract.model_fm_contract"/>
-        <field name="binding_type">report</field>
+        <!-- Deliberately NOT bound into the Print menu: sale.order already
+             offers "Quotation / Order" there, and a second entry named
+             Quotation on every ordinary sale is worse than no entry. The
+             two buttons in views/sale_order_views.xml print these, gated
+             on is_fm_contract. The binding is cleared explicitly rather
+             than just dropped from this file, because an upgrade only
+             writes the fields it finds here. The old binding would
+             otherwise survive pointing at fm.contract, and its
+             ondelete=cascade would take this action down with that model. -->
+        <field name="binding_model_id" eval="False"/>
         <field name="paperformat_id" ref="base.paperformat_euro"/>
     </record>
 
@@ -42,7 +50,7 @@
                                 <table style="width:100%; border-collapse:collapse;">
                                     <tr>
                                         <td style="padding:3px 8px; border:1px solid #ddd; background:#f7f7f7; font-weight:bold;">Ref#</td>
-                                        <td style="padding:3px 8px; border:1px solid #ddd; text-align:right;"><span t-field="o.contract_number"/></td>
+                                        <td style="padding:3px 8px; border:1px solid #ddd; text-align:right;"><span t-field="o.fm_contract_number"/></td>
                                     </tr>
                                     <tr>
                                         <td style="padding:3px 8px; border:1px solid #ddd; background:#f7f7f7; font-weight:bold;">Date</td>
@@ -61,7 +69,7 @@
                         </div>
 
                         <p>
-                            Dear <span t-esc="(o.customer_contact_ids and o.customer_contact_ids[0].name) or o.partner_id.name"/>,
+                            Dear <span t-esc="(o.fm_customer_contact_ids and o.fm_customer_contact_ids[0].name) or o.partner_id.name"/>,
                         </p>
                         <p t-if="o.quotation_intro_text or o.agreement_template_id.quotation_intro_text"
                            t-esc="o.quotation_intro_text or o.agreement_template_id.quotation_intro_text" style="white-space:pre-wrap;"/>
@@ -82,8 +90,8 @@
 
                         <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Covered Area</h5>
                         <p t-if="o.scope_notes" t-esc="o.scope_notes" style="white-space:pre-wrap;"/>
-                        <ul t-elif="o.service_inclusions">
-                            <li t-foreach="o.service_inclusions" t-as="incl" t-esc="incl.name"/>
+                        <ul t-elif="o.fm_service_inclusions">
+                            <li t-foreach="o.fm_service_inclusions" t-as="incl" t-esc="incl.name"/>
                         </ul>
                         <p t-else="" class="text-muted">Covered area to be confirmed following site inspection.</p>
 
