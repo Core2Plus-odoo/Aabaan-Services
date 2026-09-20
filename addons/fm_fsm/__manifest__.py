@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Field Service",
-    "version": "19.0.3.3.0",
+    "version": "19.0.3.4.0",
     "category": "Facility Management",
     "summary": "Facility Management on Odoo Field Service — FSM project, stages and asset-linked tasks",
     "description": """
