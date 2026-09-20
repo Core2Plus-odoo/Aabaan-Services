@@ -16,6 +16,32 @@
         </field>
     </record>
 
+    <!-- The licence the delivering branch works under, beside the terms
+         it helps set.
+
+         Inherits fm_contract's FM Contract page rather than the native
+         sale order form, because fm_premises_type is fm_contract's field
+         and only its view puts it on the form. Two views inheriting the
+         same native form are applied in whatever order their ids fall,
+         so an xpath from here onto fm_contract's field is a coin toss
+         that fails the module load when it lands wrong.
+
+         Read-only on purpose: a licence belongs to the branch, and a
+         per-contract copy of it is a second number free to be wrong on a
+         signed agreement. -->
+    <record id="view_order_form_branch_licence" model="ir.ui.view">
+        <field name="name">sale.order.form.fm.branch.licence</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="fm_contract.view_order_form_fm_contract"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='fm_premises_type']" position="after">
+                <field name="fm_licence_number"
+                       invisible="not branch_id"
+                       placeholder="Set on the branch"/>
+            </xpath>
+        </field>
+    </record>
+
     <record id="view_order_list_branch" model="ir.ui.view">
         <field name="name">sale.order.list.fm.branch</field>
         <field name="model">sale.order</field>
