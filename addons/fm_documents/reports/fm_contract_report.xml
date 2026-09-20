@@ -116,18 +116,18 @@
                                 <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">
                                     <t t-esc="'Article %d — %s' % (aline_index + 2, aline.name)"/>
                                 </h5>
-                                <p t-esc="aline.body" style="white-space:pre-wrap;"/>
+                                <p t-esc="o._fm_render_agreement_text(aline.body)" style="white-space:pre-wrap;"/>
                             </t>
 
                             <t t-if="o.scope_notes or o.fm_service_inclusions">
                                 <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Covered Area</h5>
-                                <p t-if="o.scope_notes" t-esc="o.scope_notes" style="white-space:pre-wrap;"/>
+                                <p t-if="o.scope_notes" t-esc="o._fm_render_agreement_text(o.scope_notes)" style="white-space:pre-wrap;"/>
                                 <ul t-elif="o.fm_service_inclusions">
                                     <li t-foreach="o.fm_service_inclusions" t-as="incl" t-esc="incl.name"/>
                                 </ul>
                             </t>
                             <p t-if="o.treatment_notes" style="white-space:pre-wrap;">
-                                <strong>Treatment / Method:</strong> <span t-esc="o.treatment_notes"/>
+                                <strong>Treatment / Method:</strong> <span t-esc="o._fm_render_agreement_text(o.treatment_notes)"/>
                             </p>
 
                             <!-- Pricing table (keep in sync with the skeleton branch below). -->
@@ -174,7 +174,7 @@
                             <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">
                                 <t t-esc="'Article %d — Payment Terms' % (len(o.agreement_line_ids) + 2)"/>
                             </h5>
-                            <p t-if="o.payment_terms_note" t-esc="o.payment_terms_note" style="white-space:pre-wrap;"/>
+                            <p t-if="o.payment_terms_note" t-esc="o._fm_render_agreement_text(o.payment_terms_note)" style="white-space:pre-wrap;"/>
                             <p t-else="">
                                 <span t-field="o.payment_term_id"/>
                             </p>
@@ -188,7 +188,7 @@
                         <t t-if="not o.agreement_standalone">
                         <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 2 — Service</h5>
                         <p t-if="o.service_text or o.agreement_template_id.service_text"
-                           t-esc="o.service_text or o.agreement_template_id.service_text" style="white-space:pre-wrap;"/>
+                           t-esc="o._fm_render_agreement_text(o.service_text or o.agreement_template_id.service_text)" style="white-space:pre-wrap;"/>
                         <p t-else="">
                             <span t-field="o.company_id.name"/> agrees to supply the services described
                             below to the Second Party at the site stated above, in accordance with the
@@ -198,14 +198,14 @@
                         </p>
 
                         <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 3 — Scope of Work</h5>
-                        <p t-if="o.scope_notes" t-esc="o.scope_notes" style="white-space:pre-wrap;"/>
+                        <p t-if="o.scope_notes" t-esc="o._fm_render_agreement_text(o.scope_notes)" style="white-space:pre-wrap;"/>
                         <ul t-elif="o.fm_service_inclusions">
                             <li t-foreach="o.fm_service_inclusions" t-as="incl" t-esc="incl.name"/>
                         </ul>
                         <p t-else="" class="text-muted">Scope of work as agreed with the Second Party for the site stated above.</p>
 
                         <p t-if="o.treatment_notes" style="white-space:pre-wrap;">
-                            <strong>Treatment / Method:</strong> <span t-esc="o.treatment_notes"/>
+                            <strong>Treatment / Method:</strong> <span t-esc="o._fm_render_agreement_text(o.treatment_notes)"/>
                         </p>
 
                         <t t-set="priced_lines" t-value="o.order_line.filtered(lambda l: not l.display_type)"/>
@@ -250,7 +250,7 @@
 
                         <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 4 — Service Schedule</h5>
                         <p t-if="o.schedule_text or o.agreement_template_id.schedule_text"
-                           t-esc="o.schedule_text or o.agreement_template_id.schedule_text" style="white-space:pre-wrap;"/>
+                           t-esc="o._fm_render_agreement_text(o.schedule_text or o.agreement_template_id.schedule_text)" style="white-space:pre-wrap;"/>
                         <p t-else="">
                             The customer agrees to fulfil all technical guidelines requested by
                             <span t-field="o.company_id.name"/> to secure the best results. The Second
@@ -276,7 +276,7 @@
                             <li t-foreach="o.fm_service_exclusions" t-as="excl" t-esc="excl.name"/>
                         </ul>
                         <p t-elif="o.exclusions_text or o.agreement_template_id.exclusions_default_text"
-                           t-esc="o.exclusions_text or o.agreement_template_id.exclusions_default_text" style="white-space:pre-wrap;"/>
+                           t-esc="o._fm_render_agreement_text(o.exclusions_text or o.agreement_template_id.exclusions_default_text)" style="white-space:pre-wrap;"/>
                         <p t-else="">This contract excludes anything not explicitly listed under Article 3.</p>
 
                         <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 7 — Commencement of Services</h5>
@@ -295,7 +295,7 @@
                         </p>
 
                         <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:20px; margin-bottom:8px;">Article 9 — Payment Terms</h5>
-                        <p t-if="o.payment_terms_note" t-esc="o.payment_terms_note" style="white-space:pre-wrap;"/>
+                        <p t-if="o.payment_terms_note" t-esc="o._fm_render_agreement_text(o.payment_terms_note)" style="white-space:pre-wrap;"/>
                         <p t-else="">
                             <span t-field="o.payment_term_id"/>
                         </p>
@@ -380,7 +380,7 @@
                                 <h5 style="color:#1C2B3A; font-size:14px; font-weight:700; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:16px; margin-bottom:8px;">
                                     <span t-esc="aline.name"/>
                                 </h5>
-                                <p t-esc="aline.body" style="white-space:pre-wrap;"/>
+                                <p t-esc="o._fm_render_agreement_text(aline.body)" style="white-space:pre-wrap;"/>
                             </t>
                         </t>
                         </t> <!-- end skeleton mode -->
