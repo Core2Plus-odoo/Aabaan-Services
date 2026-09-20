@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- ===================================================================
+         "Technician login to view only their assigned daily jobs."
+         (client process document, required feature #10)
+
+         A GLOBAL rule, deliberately. Odoo OR-s together the rules of every
+         group a user belongs to and AND-s the global ones
+         (ir_rule._compute_domain). A technician is also a project user, and
+         project's own group rule lets a project user see the project's
+         tasks — so a group-scoped rule added here would simply be OR-ed
+         with that one and restrict nothing at all. Only a global rule is
+         actually a restriction.
+
+         Scoped to FM visits: a task with no fm_wo_type is not a work order
+         and is none of this rule's business.
+
+         Anyone who dispatches or manages is exempt — group_fm_manager,
+         group_fm_account_manager and group_fm_admin all imply
+         group_fm_dispatcher, so naming the dispatcher covers all three.
+
+         perm_create is off: a technician raising a reactive job should not
+         be blocked mid-save for not having put their own name on it yet.
+         Reading it back afterwards still follows the rule.
+         =================================================================== -->
+    <record id="rule_fm_visit_technician_own" model="ir.rule">
+        <field name="name">FM visits: a technician sees only their own</field>
+        <field name="model_id" ref="project.model_project_task"/>
+        <field name="domain_force">
+            ['|', ('fm_wo_type', '=', False), ('user_ids', 'in', [user.id])]
+            if user.has_group('fm_branding.group_fm_technician')
+            and not user.has_group('fm_branding.group_fm_dispatcher')
+            else [(1, '=', 1)]
+        </field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+</odoo>

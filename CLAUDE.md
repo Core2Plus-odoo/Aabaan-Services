@@ -287,6 +287,19 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   entirely on `fm.contract`, a frozen model nothing creates, reached
   through an admin-only "Contracts (legacy)" menu — so every AMC written
   as a `sale.order` had no way to bill recurrently, silently.
+- **A restrictive `ir.rule` must be GLOBAL, or it restricts nothing.**
+  Odoo OR-s together the rules of every group a user belongs to and AND-s
+  the global ones (`ir_rule._compute_domain`). A technician is also a
+  project user, and `project`'s own group rule lets a project user read
+  the project's tasks — so a group-scoped rule limiting technicians to
+  their own visits would simply be OR-ed with that one and change
+  nothing. `fm_fsm/security/security.xml` therefore declares no `groups`
+  at all (`global` is computed from `not groups`, so it must not be set
+  by hand) and switches on `user.has_group(...)` inside `domain_force`,
+  which is evaluated with the `res.users` record in scope. The trap is
+  that the naive version *looks* right and a test asserting "the
+  technician sees their own job" passes against it — only a test for the
+  job they must **not** see catches it.
 - **NEVER mix a plain Python class into a model's bases** —
   `class SaleOrder(SomePlainClass, models.Model)` — even though it looks like
   the tidy way to share a method across two models. A plain class carries an
