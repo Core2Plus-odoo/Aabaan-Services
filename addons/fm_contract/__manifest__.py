@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Contract",
-    "version": "19.0.3.3.0",
+    "version": "19.0.3.4.0",
     "category": "Facility Management",
     "summary": "AMC contracts, SLA rules, scope and renewal lifecycle",
     "description": """
@@ -30,6 +30,7 @@ contract health is maintained by the account manager.
         "security/ir.model.access.csv",
         "security/security.xml",
         "data/ir_sequence.xml",
+        "data/sale_report_repair.xml",
         "views/fm_contract_service_item_views.xml",
         "views/fm_contract_agreement_template_views.xml",
         "views/fm_sla_rule_views.xml",
