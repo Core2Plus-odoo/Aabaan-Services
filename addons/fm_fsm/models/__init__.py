@@ -4,3 +4,4 @@
 from . import fm_visit_schedule_mixin
 from . import project_task
 from . import sale_order
+from . import sale_order_template

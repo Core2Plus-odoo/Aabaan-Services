@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The FM contract profile on a quotation template.
+
+         A quotation template already carries the repeating part of a
+         contract: the priced service lines, the terms, the validity. This
+         adds the part FM needs, so writing the twentieth pest control AMC
+         of the month is customer -> template -> confirm instead of the
+         same fifteen fields typed again.
+
+         Everything here is a default. The order's own fields stay editable
+         after the template fills them.
+
+         The Visit Schedule half of this page is added by fm_fsm, which is
+         where those fields live. fm_contract loads first and cannot name
+         them. See fm_fsm/views/sale_order_template_views.xml.
+
+         Anchors are named rather than positional on purpose: the native
+         form has two <notebook> elements (main_book and a nested
+         description one) and several fields called "name", so a bare
+         //notebook or //field[@name='name'] would silently attach to
+         whichever comes first. -->
+    <record id="view_sale_order_template_form_fm" model="ir.ui.view">
+        <field name="name">sale.order.template.form.fm</field>
+        <field name="model">sale.order.template</field>
+        <field name="inherit_id" ref="sale_management.sale_order_template_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//group[@name='sale_info']" position="inside">
+                <field name="fm_is_contract_profile"/>
+            </xpath>
+
+            <xpath expr="//notebook[@name='main_book']" position="inside">
+                <page string="FM Contract Profile" name="fm_profile"
+                      invisible="not fm_is_contract_profile">
+                    <group>
+                        <group string="Contract" name="fm_profile_contract">
+                            <field name="fm_service_line"/>
+                            <field name="fm_contract_type"/>
+                            <field name="fm_term_months"/>
+                            <field name="fm_billing_frequency"/>
+                            <field name="fm_account_manager_id"/>
+                            <field name="fm_agreement_template_id"
+                                   options="{'no_create': True}"
+                                   placeholder="Suggested from the service line"/>
+                        </group>
+                    </group>
+                    <p class="text-muted">
+                        Orders created from this template become FM contracts
+                        with these defaults filled in, and every one of them
+                        stays editable on the order. The contract start is
+                        today unless another date is set; the end follows from
+                        the term. <b>Covered assets are the one thing this
+                        cannot fill</b> — they are the customer's own site, so
+                        they are picked per contract.
+                    </p>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

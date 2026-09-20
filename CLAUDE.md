@@ -57,7 +57,12 @@ creating a new one.
    `fm.contract.penalty` / `fm.contract.agreement.line`, and
    `project.task.fm_contract_id` — dropped by
    `fm_contract/migrations/19.0.3.6.0`. A contract is a `sale.order`, and
-   only a `sale.order`.
+   only a `sale.order`. Writing one is fast because the **quotation
+   template carries a contract profile**: `sale.order.template` gains the
+   FM defaults (service, type, term, billing, account manager, agreement
+   wording here; the visit cadence in `fm_fsm`), and they land on the
+   order through Odoo's own template mechanism. Customer → template →
+   confirm; covered assets are the only thing left to pick.
 4. `fm_fsm` — **the re-base core**. FM Field Service project, task stages,
    FM fields on `project.task` (`fm_contract_order_id` → the contract's
    `sale.order`; legacy `fm_contract_id` kept until `fm.contract` goes),
@@ -353,6 +358,28 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   `fm_documents/tests/test_contract_reports.py`, which renders both
   documents fully populated **and** empty, because a quotation is printed
   long before the contract is complete.
+- **A quotation template is applied by stored `readonly=False`
+  computes, not by an onchange — except its lines, which are.**
+  `sale_management` fills `note`, `validity_date`, `require_signature`
+  and the rest with `@api.depends('sale_order_template_id')` computes
+  that are `store=True, readonly=False`, so the value lands on an order
+  created by import or RPC and is still editable afterwards. The FM
+  contract profile follows that shape exactly
+  (`_compute_fm_from_template`, `_compute_fm_schedule_from_template`).
+  **The asymmetry is Odoo's:** the template's *order lines* are copied by
+  `_onchange_sale_order_template_id`, which only runs in the form — so an
+  order built by RPC gets the FM profile but no lines. Two further traps:
+  a compute must assign on **every** record it is given, including the
+  ones it has no template for, or the field comes back unset instead of
+  defaulted; and a compute may only assign fields it **declares**, which
+  is why `agreement_template_id` is redefined on `sale.order` rather than
+  written to from the mixin's definition.
+- **The native Quotation Template form has two `<notebook>`s and several
+  fields called `name`.** `//notebook` and `//field[@name='name']` both
+  silently attach to whichever comes first — use
+  `//notebook[@name='main_book']` and the named groups
+  (`//group[@name='sale_info']`). Same class of trap as the report
+  templates: the view loads, it is just in the wrong place.
 - **An `ondelete="cascade"` link only takes the rows that carry it —
   which is not the same as "only legacy rows".** Retiring `fm.contract`
   meant deleting its rows, and `fm.sla.rule`, `fm.contract.penalty` and

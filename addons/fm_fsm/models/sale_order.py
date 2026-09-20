@@ -3,7 +3,7 @@ from datetime import timedelta
 
 from odoo import _, api, fields, models
 
-from .fm_visit_schedule_mixin import ROLLING_HORIZON_DAYS
+from .fm_visit_schedule_mixin import ROLLING_HORIZON_DAYS, SLOT_START_HOUR
 
 
 class SaleOrder(models.Model):
@@ -28,6 +28,74 @@ class SaleOrder(models.Model):
     fm_task_ids = fields.One2many(
         "project.task", "fm_contract_order_id", string="Visits / Work Orders"
     )
+
+    # ------------------------------------------------------------------
+    # The cadence half of a contract profile
+    # ------------------------------------------------------------------
+    # These mirror fm.visit.schedule.mixin's fields, redefined here so the
+    # quotation template can fill them -- a compute may only assign the
+    # fields it declares. Each stays readonly=False, so a contract that
+    # needs a different cadence than its profile is one edit away.
+    visit_frequency = fields.Selection(
+        compute="_compute_fm_schedule_from_template", store=True, readonly=False,
+    )
+    custom_interval_days = fields.Integer(
+        compute="_compute_fm_schedule_from_template", store=True, readonly=False,
+    )
+    visit_day_1 = fields.Integer(
+        compute="_compute_fm_schedule_from_template", store=True, readonly=False,
+    )
+    visit_day_2 = fields.Integer(
+        compute="_compute_fm_schedule_from_template", store=True, readonly=False,
+    )
+    fm_time_slot = fields.Selection(
+        compute="_compute_fm_schedule_from_template", store=True, readonly=False,
+    )
+    visit_start_time = fields.Float(
+        compute="_compute_fm_schedule_from_template", store=True, readonly=False,
+    )
+    visit_duration_hours = fields.Float(
+        compute="_compute_fm_schedule_from_template", store=True, readonly=False,
+    )
+    skip_weekends = fields.Boolean(
+        compute="_compute_fm_schedule_from_template", store=True, readonly=False,
+    )
+
+    @api.depends("sale_order_template_id")
+    def _compute_fm_schedule_from_template(self):
+        """Fill the visit cadence from the order's contract profile.
+
+        Same shape as fm_contract's _compute_fm_from_template, and the same
+        reason: Odoo applies a quotation template through stored editable
+        computes, so this reaches orders created by import or RPC too.
+
+        The slot sets the start time here exactly as the form's onchange
+        does -- the time is the single source of truth and the slot is its
+        label -- because an onchange does not run for an order built by a
+        profile without anybody opening it.
+        """
+        for order in self:
+            profile = order.sale_order_template_id
+            if not profile or not profile.fm_is_contract_profile:
+                # A compute must assign on every record, or a new order
+                # comes back with these unset rather than defaulted.
+                order.visit_frequency = order.visit_frequency or "monthly"
+                order.custom_interval_days = order.custom_interval_days
+                order.visit_day_1 = order.visit_day_1 or 1
+                order.visit_day_2 = order.visit_day_2 or 15
+                order.fm_time_slot = order.fm_time_slot or "morning"
+                order.visit_start_time = order.visit_start_time or 8.0
+                order.visit_duration_hours = order.visit_duration_hours or 2.0
+                order.skip_weekends = order.skip_weekends
+                continue
+            order.visit_frequency = profile.fm_visit_frequency or "monthly"
+            order.custom_interval_days = profile.fm_custom_interval_days
+            order.visit_day_1 = profile.fm_visit_day_1 or 1
+            order.visit_day_2 = profile.fm_visit_day_2 or 15
+            order.fm_time_slot = profile.fm_time_slot or "morning"
+            order.visit_start_time = SLOT_START_HOUR.get(order.fm_time_slot, 8.0)
+            order.visit_duration_hours = profile.fm_visit_duration_hours or 2.0
+            order.skip_weekends = profile.fm_skip_weekends
     fm_task_count = fields.Integer(compute="_compute_fm_task_count")
     planned_visit_count = fields.Integer(compute="_compute_planned_visit_count")
 
