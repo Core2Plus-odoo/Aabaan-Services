@@ -20,7 +20,7 @@ app is a single cockpit that operates them.
 | Scheduling / recurring visits | `project.task` | `fm_fsm` — **one** generator, `fm.visit.schedule.mixin`, driven from the contract (the `sale.order`). Confirming the order fills the horizon; the daily cron is shipped off |
 | Calendar | native `calendar.event` on tasks | — |
 | SLA | (native SLA policies to be configured) | SLA targets kept on `fm.sla.rule` (in `fm_contract`) |
-| Contracts / AMC billing | **Sales** — the contract IS the `sale.order` — + **Subscriptions** (`sale.subscription`) | `fm_contract` adds FM fields to `sale.order`; `fm_subscription`. The old `fm.contract` model is frozen and being retired |
+| Contracts / AMC billing | **Sales** — the contract IS the `sale.order` — + **Subscriptions** (`sale.subscription`) | `fm_contract` adds FM fields to `sale.order`; `fm_subscription`. The old `fm.contract` model is gone |
 | Invoicing | native `account.move` (FTA tax invoice) | — |
 | Assets | **Maintenance** (`maintenance.equipment`) | `fm.asset` |
 | Compliance | Activities / Documents | `fm_compliance` regimes + certificates |
@@ -52,12 +52,17 @@ creating a new one.
    ACV/TCV, covered assets, inclusions/exclusions, `fm_lifecycle` (starts
    where `sale.order.state` stops), health, and the printed agreement wording
    (`fm.agreement.mixin`). Also `fm.sla.rule`, service items, penalties and
-   the Customers menu. The legacy `fm.contract` model (`_inherits sale.order`)
-   is **unreachable**: no views, no action, no menu, no dependant layers.
-   What is left of it is the model definition plus the `contract_id`
-   columns on `fm.sla.rule`, `fm.contract.penalty` and
-   `fm.contract.agreement.line`, and `project.task.fm_contract_id` — all
-   dropped together with a §5 pre-migration.
+   the Customers menu. The legacy `fm.contract` model is **gone** —
+   model, table, join tables, the `contract_id` links on `fm.sla.rule` /
+   `fm.contract.penalty` / `fm.contract.agreement.line`, and
+   `project.task.fm_contract_id` — dropped by
+   `fm_contract/migrations/19.0.3.6.0`. A contract is a `sale.order`, and
+   only a `sale.order`. Writing one is fast because the **quotation
+   template carries a contract profile**: `sale.order.template` gains the
+   FM defaults (service, type, term, billing, account manager, agreement
+   wording here; the visit cadence in `fm_fsm`), and they land on the
+   order through Odoo's own template mechanism. Customer → template →
+   confirm; covered assets are the only thing left to pick.
 4. `fm_fsm` — **the re-base core**. FM Field Service project, task stages,
    FM fields on `project.task` (`fm_contract_order_id` → the contract's
    `sale.order`; legacy `fm_contract_id` kept until `fm.contract` goes),
@@ -353,6 +358,46 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   `fm_documents/tests/test_contract_reports.py`, which renders both
   documents fully populated **and** empty, because a quotation is printed
   long before the contract is complete.
+- **A quotation template is applied by stored `readonly=False`
+  computes, not by an onchange — except its lines, which are.**
+  `sale_management` fills `note`, `validity_date`, `require_signature`
+  and the rest with `@api.depends('sale_order_template_id')` computes
+  that are `store=True, readonly=False`, so the value lands on an order
+  created by import or RPC and is still editable afterwards. The FM
+  contract profile follows that shape exactly
+  (`_compute_fm_from_template`, `_compute_fm_schedule_from_template`).
+  **The asymmetry is Odoo's:** the template's *order lines* are copied by
+  `_onchange_sale_order_template_id`, which only runs in the form — so an
+  order built by RPC gets the FM profile but no lines. Two further traps:
+  a compute must assign on **every** record it is given, including the
+  ones it has no template for, or the field comes back unset instead of
+  defaulted; and a compute may only assign fields it **declares**, which
+  is why `agreement_template_id` is redefined on `sale.order` rather than
+  written to from the mixin's definition.
+- **The native Quotation Template form has two `<notebook>`s and several
+  fields called `name`.** `//notebook` and `//field[@name='name']` both
+  silently attach to whichever comes first — use
+  `//notebook[@name='main_book']` and the named groups
+  (`//group[@name='sale_info']`). Same class of trap as the report
+  templates: the view loads, it is just in the wrong place.
+- **An `ondelete="cascade"` link only takes the rows that carry it —
+  which is not the same as "only legacy rows".** Retiring `fm.contract`
+  meant deleting its rows, and `fm.sla.rule`, `fm.contract.penalty` and
+  `fm.contract.agreement.line` each had `contract_id ... cascade` while
+  also holding the rows of *current* contracts. Verified against a real
+  Postgres rather than assumed: a row with `order_id` set and
+  `contract_id` NULL survives the contract's deletion, and a row with
+  **both** set does not — so the exposure is dual-linked rows, not every
+  live row. Narrow, but a silently deleted SLA target on a signed
+  contract is not something anything downstream reports. The migration
+  therefore drops each `contract_id` *column* before any contract row is
+  deleted, which takes the foreign key with it.
+  Its other lesson: **do not hand-list a model's join tables.** Two of
+  `fm.contract`'s many2many tables were auto-named by Odoo
+  (`fm_asset_fm_contract_rel`, `fm_contract_res_partner_rel`, from the
+  two table names sorted) and both hand-written guesses were wrong, which
+  `DROP TABLE IF EXISTS` would have swallowed silently. The migration
+  reads `pg_constraint` for whatever actually points at the table.
 - **Deleting a file is a build-down risk that nothing local catches.**
   A path left in a manifest's `data` after the file is gone, or a
   `from . import x` left in an `__init__.py` after `x.py` is gone, both

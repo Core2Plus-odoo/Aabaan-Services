@@ -50,6 +50,21 @@ TWICE_MONTHLY = "twice_monthly"
 # Time-slot tagging. The client's process document requires that "every job
 # carries exactly one time-slot tag" and shows the three slots on both the
 # dashboard ("Today by Time Slot") and the technician's job list.
+# Shared with sale.order.template, which offers the same cadences as a
+# contract profile. One list, so a profile can never promise a frequency
+# the generator does not implement.
+FREQUENCY_SELECTION = [
+    ("weekly", "Weekly"),
+    ("fortnightly", "Every 2 Weeks"),
+    ("twice_monthly", "Twice a Month"),
+    ("monthly", "Monthly"),
+    ("bi_monthly", "Every 2 Months"),
+    ("quarterly", "Quarterly"),
+    ("semi_annual", "Semi-Annual"),
+    ("annual", "Annual"),
+    ("custom", "Custom — enter interval"),
+]
+
 TIME_SLOTS = [
     ("morning", "Morning"),
     ("day", "Day"),
@@ -118,17 +133,7 @@ class FmVisitScheduleMixin(models.AbstractModel):
              "assets on activation and keep a rolling horizon populated.",
     )
     visit_frequency = fields.Selection(
-        [
-            ("weekly", "Weekly"),
-            ("fortnightly", "Every 2 Weeks"),
-            ("twice_monthly", "Twice a Month"),
-            ("monthly", "Monthly"),
-            ("bi_monthly", "Every 2 Months"),
-            ("quarterly", "Quarterly"),
-            ("semi_annual", "Semi-Annual"),
-            ("annual", "Annual"),
-            ("custom", "Custom — enter interval"),
-        ],
+        FREQUENCY_SELECTION,
         string="Visit Frequency",
         default="monthly",
     )

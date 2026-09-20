@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The visit-schedule half of the contract profile. Inherits
+         fm_contract's page rather than the native form, so the group it
+         hangs beside is guaranteed to be there. -->
+    <record id="view_sale_order_template_form_fm_schedule" model="ir.ui.view">
+        <field name="name">sale.order.template.form.fm.schedule</field>
+        <field name="model">sale.order.template</field>
+        <field name="inherit_id" ref="fm_contract.view_sale_order_template_form_fm"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='fm_profile_contract']" position="after">
+                <group string="Visit Schedule" name="fm_profile_schedule">
+                    <field name="fm_visit_frequency"/>
+                    <field name="fm_custom_interval_days"
+                           invisible="fm_visit_frequency != 'custom'"
+                           required="fm_visit_frequency == 'custom'"/>
+                    <field name="fm_visit_day_1"
+                           invisible="fm_visit_frequency != 'twice_monthly'"/>
+                    <field name="fm_visit_day_2"
+                           invisible="fm_visit_frequency != 'twice_monthly'"/>
+                    <field name="fm_time_slot"/>
+                    <field name="fm_visit_duration_hours" widget="float_time"/>
+                    <field name="fm_skip_weekends"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -53,9 +53,6 @@ class ProjectTask(models.Model):
     # created the task, and it is computed. A visit generated from an AMC
     # contract is not necessarily billed from a line on that order, so the
     # two answers can differ and only one of them is the contract.
-    fm_contract_id = fields.Many2one(
-        "fm.contract", string="AMC Contract (legacy)", index=True, tracking=True
-    )
     fm_severity = fields.Selection(
         SEVERITY, string="Severity", default="p3_medium", tracking=True, index=True
     )
@@ -81,17 +78,15 @@ class ProjectTask(models.Model):
     )
 
     def _fm_contract_order(self):
-        """The sale order behind this visit's contract, whichever link is set.
+        """The sale order behind this visit's contract.
 
-        A visit reaches its contract one of two ways: ``fm_contract_order_id``
-        for a contract written in Sales, or the legacy ``fm_contract_id``,
-        which wraps a sale order by delegation. Anything that wants the
-        contract's order lines, customer or currency should ask here rather
-        than pick one field and quietly return nothing for visits linked the
-        other way.
+        One link now that the legacy ``fm.contract`` is gone. Kept as a
+        method rather than inlined at the call sites: callers want "the
+        contract's order", and this is where a second answer would go if
+        one ever comes back.
         """
         self.ensure_one()
-        return self.fm_contract_order_id or self.fm_contract_id.sale_order_id
+        return self.fm_contract_order_id
 
     @api.onchange("fm_contract_order_id")
     def _onchange_fm_contract_order_id(self):
@@ -99,13 +94,6 @@ class ProjectTask(models.Model):
         for task in self:
             if task.fm_contract_order_id and task.fm_contract_order_id.partner_id:
                 task.partner_id = task.fm_contract_order_id.partner_id
-
-    @api.onchange("fm_contract_id")
-    def _onchange_fm_contract_id(self):
-        """Pull the customer from the legacy contract's sales document."""
-        for task in self:
-            if task.fm_contract_id and task.fm_contract_id.partner_id:
-                task.partner_id = task.fm_contract_id.partner_id
 
     fm_has_service_document = fields.Boolean(
         string="Service Document Attached",

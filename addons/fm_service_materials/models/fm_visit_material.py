@@ -32,9 +32,6 @@ class FmVisitMaterial(models.Model):
     order_id = fields.Many2one(
         related="task_id.fm_contract_order_id", store=True, string="Contract"
     )
-    contract_id = fields.Many2one(
-        related="task_id.fm_contract_id", store=True, string="Contract (legacy)"
-    )
     company_id = fields.Many2one(related="task_id.company_id", store=True)
     currency_id = fields.Many2one(related="material_id.currency_id", store=True)
     unit_cost = fields.Float(related="material_id.standard_price")

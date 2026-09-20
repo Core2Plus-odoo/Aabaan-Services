@@ -6,7 +6,9 @@
         <field name="model">project.task</field>
         <field name="inherit_id" ref="fm_fsm.view_fsm_task_form_fm"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='fm_contract_id']" position="after">
+            <!-- Anchored on fm_contract_order_id: the legacy fm_contract_id
+                 this used to follow went with the fm.contract model. -->
+            <xpath expr="//field[@name='fm_contract_order_id']" position="after">
                 <field name="branch_id"/>
             </xpath>
         </field>

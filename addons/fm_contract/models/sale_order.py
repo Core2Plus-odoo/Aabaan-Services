@@ -6,6 +6,23 @@ from odoo.exceptions import UserError
 
 from odoo.addons.fm_asset.models.fm_asset_category import SERVICE_LINES
 
+# Shared with sale.order.template, which carries the same choices as a
+# contract profile. One list, so a profile can never offer a contract type
+# or a billing cadence the order does not understand.
+CONTRACT_TYPES = [
+    ("amc_comprehensive", "AMC — Comprehensive"),
+    ("amc_non_comprehensive", "AMC — Non-Comprehensive"),
+    ("break_fix", "Break-Fix Only"),
+    ("project", "Project Contract"),
+]
+
+BILLING_FREQUENCIES = [
+    ("monthly", "Monthly"),
+    ("quarterly", "Quarterly"),
+    ("semi_annual", "Semi-Annual"),
+    ("annual", "Annual"),
+]
+
 
 class SaleOrder(models.Model):
     """A contract is a sale order.
@@ -46,6 +63,7 @@ class SaleOrder(models.Model):
         string="Facility Management Contract",
         copy=False,
         tracking=True,
+        compute="_compute_fm_from_template", store=True, readonly=False,
         help="Tick this to manage the order as an FM contract: covered "
              "assets, SLA rules, a renewal lifecycle and the printed service "
              "agreement. Unticked orders behave as ordinary quotations.",
@@ -61,20 +79,17 @@ class SaleOrder(models.Model):
              "customer's signed agreement is filed under.",
     )
     fm_contract_type = fields.Selection(
-        [
-            ("amc_comprehensive", "AMC — Comprehensive"),
-            ("amc_non_comprehensive", "AMC — Non-Comprehensive"),
-            ("break_fix", "Break-Fix Only"),
-            ("project", "Project Contract"),
-        ],
+        CONTRACT_TYPES,
         string="Contract Type",
         default="amc_comprehensive",
         tracking=True,
+        compute="_compute_fm_from_template", store=True, readonly=False,
     )
     fm_service_line = fields.Selection(
         SERVICE_LINES,
         string="Service",
         tracking=True,
+        compute="_compute_fm_from_template", store=True, readonly=False,
         help="What service this contract covers — drives which Agreement "
              "Wording Template is auto-selected (and, with fm_branch "
              "installed, combined with the contract's Branch/Emirate).",
@@ -110,8 +125,14 @@ class SaleOrder(models.Model):
     # test against a real database, not a guess. fm_command_centre's
     # FIELD_ALIASES already reads whichever pair exists, so that change costs
     # the dashboard nothing.
-    fm_start_date = fields.Date(string="Contract Start", tracking=True)
-    fm_end_date = fields.Date(string="Contract End", tracking=True)
+    fm_start_date = fields.Date(
+        string="Contract Start", tracking=True,
+        compute="_compute_fm_from_template", store=True, readonly=False,
+    )
+    fm_end_date = fields.Date(
+        string="Contract End", tracking=True,
+        compute="_compute_fm_end_date", store=True, readonly=False,
+    )
     fm_auto_renew = fields.Boolean(string="Auto-Renew", default=False)
     fm_renewal_term_months = fields.Integer(string="Renewal Term (months)", default=12)
     fm_days_to_renewal = fields.Integer(
@@ -130,14 +151,10 @@ class SaleOrder(models.Model):
         aggregator="sum", compute="_compute_fm_tcv", store=True,
     )
     fm_billing_frequency = fields.Selection(
-        [
-            ("monthly", "Monthly"),
-            ("quarterly", "Quarterly"),
-            ("semi_annual", "Semi-Annual"),
-            ("annual", "Annual"),
-        ],
+        BILLING_FREQUENCIES,
         string="Billing Frequency",
         default="monthly",
+        compute="_compute_fm_from_template", store=True, readonly=False,
     )
     fm_next_invoice_date = fields.Date(string="Next Invoice Date")
 
@@ -193,7 +210,16 @@ class SaleOrder(models.Model):
         tracking=True,
     )
     fm_account_manager_id = fields.Many2one(
-        "res.users", string="Account Manager", tracking=True
+        "res.users", string="Account Manager", tracking=True,
+        compute="_compute_fm_from_template", store=True, readonly=False,
+    )
+    # Redefined from fm.agreement.mixin so the contract profile can fill it:
+    # a compute may only assign the fields it declares, and the branch/asset
+    # onchanges that also set it still work because this stays editable.
+    agreement_template_id = fields.Many2one(
+        "fm.contract.agreement.template",
+        string="Agreement Wording Template",
+        compute="_compute_fm_from_template", store=True, readonly=False,
     )
     fm_customer_contact_ids = fields.Many2many(
         "res.partner", relation="fm_contract_order_contact_rel",
@@ -220,6 +246,83 @@ class SaleOrder(models.Model):
                 order.fm_tcv = order.fm_acv * years
             else:
                 order.fm_tcv = order.fm_acv
+
+    # ------------------------------------------------------------------
+    # Contract profiles: the quotation template fills the FM fields in
+    # ------------------------------------------------------------------
+    # Odoo applies a quotation template through stored, editable computes --
+    # _compute_note, _compute_validity_date and _compute_require_signature in
+    # sale_management all have this shape. Following it rather than an
+    # onchange means the profile also lands on an order created by import,
+    # RPC or a server action, and `readonly=False` keeps every filled value
+    # editable afterwards.
+    #
+    # Note the asymmetry, which is Odoo's and not ours: the template's order
+    # *lines* are copied by _onchange_sale_order_template_id, so they only
+    # appear when somebody picks the template in the form. The FM fields
+    # here fill either way.
+    #
+    # One compute for the whole profile rather than one per field: they are
+    # filled together from a single source, and eight near-identical methods
+    # would only be eight places for them to drift apart.
+    @api.depends("sale_order_template_id")
+    def _compute_fm_from_template(self):
+        for order in self:
+            profile = order.sale_order_template_id
+            # ``_origin`` rather than reading the field itself. While a
+            # compute runs its own fields are *protected*, and a protected
+            # read on an unsaved record returns False rather than what is
+            # there (fields.py, Field.__get__: ``if env.is_protected(...):
+            # value = convert_to_cache(False, ...)``). So ``order.x or
+            # default`` inside x's own compute silently discards whatever
+            # the user typed. ``_origin`` is the persisted record -- itself
+            # for a saved order, empty for a brand new one -- so this reads
+            # the real stored value without re-entering the compute.
+            saved = order._origin
+            if not profile or not profile.fm_is_contract_profile:
+                # Not a contract profile: keep what is already stored. A
+                # compute must still assign on every record, or the field
+                # comes back unset instead of defaulted.
+                order.is_fm_contract = saved.is_fm_contract
+                order.fm_service_line = saved.fm_service_line
+                order.fm_contract_type = saved.fm_contract_type or "amc_comprehensive"
+                order.fm_billing_frequency = saved.fm_billing_frequency or "monthly"
+                order.fm_start_date = saved.fm_start_date
+                order.fm_account_manager_id = saved.fm_account_manager_id
+                order.agreement_template_id = saved.agreement_template_id
+                continue
+            order.is_fm_contract = True
+            order.fm_service_line = profile.fm_service_line or saved.fm_service_line
+            order.fm_contract_type = profile.fm_contract_type or "amc_comprehensive"
+            order.fm_billing_frequency = profile.fm_billing_frequency or "monthly"
+            # Start today unless a date is already set. A contract written
+            # now almost always starts now, and an end date cannot be
+            # derived from a term without one.
+            order.fm_start_date = saved.fm_start_date or fields.Date.context_today(order)
+            order.fm_account_manager_id = (
+                profile.fm_account_manager_id
+                or saved.fm_account_manager_id
+                or order.env.user
+            )
+            order.agreement_template_id = (
+                profile.fm_agreement_template_id or saved.agreement_template_id
+            )
+
+    @api.depends("sale_order_template_id", "fm_start_date")
+    def _compute_fm_end_date(self):
+        """End date = start + the profile's term.
+
+        Separate from the profile compute because it also has to follow the
+        start date being changed by hand, which is the common edit: a
+        customer signs for the standard twelve months, starting in March.
+        """
+        for order in self:
+            profile = order.sale_order_template_id
+            term = profile.fm_term_months if profile.fm_is_contract_profile else 0
+            if term and order.fm_start_date:
+                order.fm_end_date = order.fm_start_date + relativedelta(months=term)
+            else:
+                order.fm_end_date = order.fm_end_date
 
     def _compute_fm_days_to_renewal(self):
         today = fields.Date.context_today(self)

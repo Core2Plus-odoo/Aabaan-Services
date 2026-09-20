@@ -12,14 +12,13 @@ class ProjectTask(models.Model):
         compute="_compute_branch_id", store=True, readonly=False,
     )
 
-    @api.depends("fm_contract_order_id", "fm_contract_id")
+    @api.depends("fm_contract_order_id")
     def _compute_branch_id(self):
         for task in self:
             # Default from the contract's branch; stays editable afterwards.
-            # Reads whichever contract link the visit has (see
-            # project.task._fm_contract_order): a visit generated from a
-            # contract written in Sales carries fm_contract_order_id, and
-            # branch_id lives on the order either way.
+            # Goes through project.task._fm_contract_order rather than
+            # reading the field directly, so this follows if the way a
+            # visit reaches its contract ever changes again.
             branch = task._fm_contract_order().branch_id
             if branch and not task.branch_id:
                 task.branch_id = branch
