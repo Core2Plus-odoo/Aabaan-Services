@@ -77,6 +77,19 @@ class SaleOrder(models.Model):
              "the service agreement; set it on the branch, not here.",
     )
 
+    def _fm_agreement_placeholder_values(self):
+        """{{LICENCE}} -- the licence the delivering branch works under.
+
+        Blank until somebody fills it in on the branch, and blank prints
+        a pencil mark on the agreement rather than nothing. That is the
+        intended behaviour, not an oversight: the two figures the Studio
+        layer carried have never been confirmed, so the document says out
+        loud that a fact is missing.
+        """
+        values = super()._fm_agreement_placeholder_values()
+        values["LICENCE"] = self.branch_id.licence_number or ""
+        return values
+
     @api.onchange("branch_id")
     def _onchange_branch_id_callout_allowance(self):
         """Offer the branch's standard allowance to a contract that has

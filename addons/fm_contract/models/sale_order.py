@@ -465,6 +465,60 @@ class SaleOrder(models.Model):
     # ------------------------------------------------------------------
     # Agreement wording — the rules live in fm.agreement.mixin
     # ------------------------------------------------------------------
+    def _fm_agreement_texts(self):
+        """Also scan the contract's own additional articles.
+
+        The mixin cannot: agreement_line_ids is a One2many whose inverse
+        differs per model, so it is declared here and not there.
+        """
+        return super()._fm_agreement_texts() + [
+            line.body for line in self.agreement_line_ids
+        ]
+
+    @api.model
+    def _fm_agreement_date(self, value):
+        """A date as an agreement should state it: 20 September 2026."""
+        return value.strftime("%d %B %Y") if value else ""
+
+    def _fm_agreement_placeholder_values(self):
+        """What a contract knows about itself.
+
+        The visit count comes from fm_fsm and the licence from fm_branch,
+        each by overriding this again on sale.order. Nothing is guarded
+        with ``in self._fields`` because every field named here is
+        declared in this module.
+        """
+        values = super()._fm_agreement_placeholder_values()
+        contact = self.fm_customer_contact_ids[:1] or self.partner_id
+        # A quotation with no customer yet is a real state -- the wording
+        # is often written before anyone is on it -- so nothing here may
+        # assume a partner exists. An empty recordset would raise inside
+        # _display_address, on a render rather than on a save.
+        site = self.partner_shipping_id or self.partner_id
+        values.update({
+            "CLIENT": self.partner_id.name,
+            "CONTACT": contact.name,
+            "SITE": (
+                site._display_address(without_company=True)
+                .replace("\n", ", ").strip(", ")
+                if site else ""
+            ),
+            # Spelled out rather than formatted to the reader's locale.
+            # "09/10/2026" is a different date in Dubai than it is in New
+            # York, and this one is going onto a signed agreement. The
+            # month in words cannot be read two ways.
+            "START": self._fm_agreement_date(self.fm_start_date),
+            "END": self._fm_agreement_date(self.fm_end_date),
+            "CALLOUTS": self.fm_callout_allowance or "",
+            "WARRANTY": (
+                _("%s year(s)", self.fm_warranty_years)
+                if self.fm_warranty_years else ""
+            ),
+            "SLA": dict(self._fields["fm_complaint_sla"].selection).get(
+                self.fm_complaint_sla, ""),
+        })
+        return values
+
     @api.onchange("fm_service_line")
     def _onchange_fm_service_line_agreement_template(self):
         """Primary trigger: as soon as a Service is picked (right after the
