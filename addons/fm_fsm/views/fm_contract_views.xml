@@ -38,6 +38,7 @@
                         </group>
                         <group string="Projection">
                             <field name="planned_visit_count"/>
+                            <field name="fm_time_slot"/>
                             <field name="visit_start_time" widget="float_time"/>
                             <field name="visit_duration_hours" widget="float_time"/>
                         </group>

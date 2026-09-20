@@ -2,6 +2,10 @@
 from odoo import api, fields, models
 
 from odoo.addons.fm_contract.models.fm_sla_rule import SEVERITY
+from odoo.addons.fm_fsm.models.fm_visit_schedule_mixin import (
+    TIME_SLOTS,
+    slot_for_hour,
+)
 
 
 class ProjectTask(models.Model):
@@ -54,6 +58,14 @@ class ProjectTask(models.Model):
     fm_severity = fields.Selection(
         SEVERITY, string="Severity", default="p3_medium", tracking=True, index=True
     )
+    fm_time_slot = fields.Selection(
+        TIME_SLOTS,
+        string="Time Slot",
+        compute="_compute_fm_time_slot",
+        store=True,
+        index=True,
+        help="Morning, Day or Night, derived from the planned start time.",
+    )
     fm_wo_type = fields.Selection(
         [
             ("reactive", "Reactive"),
@@ -93,3 +105,26 @@ class ProjectTask(models.Model):
         for task in self:
             if task.fm_contract_id and task.fm_contract_id.partner_id:
                 task.partner_id = task.fm_contract_id.partner_id
+
+    @api.depends("planned_date_begin")
+    def _compute_fm_time_slot(self):
+        """Tag every job with exactly one slot, read off its planned start.
+
+        Derived rather than stored independently so the tag cannot go stale:
+        a dispatcher who drags a job from the morning to the night slot on
+        the planning Gantt gets the tag moved with it, and a job created by
+        hand is tagged without anyone remembering to.
+
+        The hour is read straight off ``planned_date_begin``, which is the
+        same value the generator writes from the contract's start time. Note
+        that field is a UTC Datetime while the generator treats the contract
+        time as a wall clock, so both sides share one interpretation -- see
+        CLAUDE.md section 4; correcting that is a separate change, because it
+        would move every already-planned visit.
+        """
+        for task in self:
+            if task.planned_date_begin:
+                begin = task.planned_date_begin
+                task.fm_time_slot = slot_for_hour(begin.hour + begin.minute / 60.0)
+            else:
+                task.fm_time_slot = False

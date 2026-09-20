@@ -2,7 +2,7 @@
 import calendar
 from datetime import datetime, timedelta
 
-from odoo import _, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 # How many visits per asset per year for each cadence. Used for the planned
@@ -37,6 +37,41 @@ FREQUENCY_DAYS = {
     "weekly": 7,
     "fortnightly": 14,
 }
+
+# Time-slot tagging. The client's process document requires that "every job
+# carries exactly one time-slot tag" and shows the three slots on both the
+# dashboard ("Today by Time Slot") and the technician's job list.
+TIME_SLOTS = [
+    ("morning", "Morning"),
+    ("day", "Day"),
+    ("night", "Night"),
+]
+
+# Start time each slot schedules at. Taken from the technician screen in that
+# document, which shows Morning 08:00, Day 13:00, Night 21:00.
+SLOT_START_HOUR = {
+    "morning": 8.0,
+    "day": 13.0,
+    "night": 21.0,
+}
+
+# Where one slot ends and the next begins. The document names the slots and
+# their start times but never the boundaries, so these are ours: they are the
+# widest reading that keeps each published start time inside its own slot.
+# Recorded in CLAUDE.md section 4 with the rest of the unconfirmed behaviour.
+SLOT_UPPER_HOUR = [
+    (12.0, "morning"),
+    (18.0, "day"),
+]
+
+
+def slot_for_hour(hour):
+    """Which slot an hour of the day falls in."""
+    for upper, slot in SLOT_UPPER_HOUR:
+        if hour < upper:
+            return slot
+    return "night"
+
 
 # Rolling window the cron keeps populated ahead of today.
 ROLLING_HORIZON_DAYS = 120
@@ -111,15 +146,35 @@ class FmVisitScheduleMixin(models.AbstractModel):
              "Technician is chosen); 'Draft' holds them for dispatcher review "
              "before anyone is assigned.",
     )
+    fm_time_slot = fields.Selection(
+        TIME_SLOTS,
+        string="Visit Time Slot",
+        default="morning",
+        help="Slot generated visits are scheduled in. Choosing a slot fills in "
+             "the start time below; the time stays editable for a contract "
+             "that needs a precise hour.",
+    )
     visit_start_time = fields.Float(
         string="Default Visit Start Time",
-        default=9.0,
+        default=8.0,
         help="Time of day (24h) auto-scheduled visits are planned to start, e.g. 9.0 = 09:00.",
     )
     visit_duration_hours = fields.Float(
         string="Default Visit Duration (hours)",
         default=2.0,
     )
+
+    @api.onchange("fm_time_slot")
+    def _onchange_fm_time_slot(self):
+        """Picking a slot fills in its start time.
+
+        One source of truth for *when* a visit happens: the time. The slot is
+        the label, and on the visit itself it is derived back from the time,
+        so a dispatcher who reschedules a job cannot leave a stale tag behind.
+        """
+        for record in self:
+            if record.fm_time_slot:
+                record.visit_start_time = SLOT_START_HOUR[record.fm_time_slot]
 
     # ------------------------------------------------------------------
     # What each concrete model has to answer

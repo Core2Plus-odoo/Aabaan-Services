@@ -213,3 +213,57 @@ class TestVisitSchedule(TransactionCase):
         order = self._contract()
         visit = order._generate_schedule()[0]
         self.assertEqual(visit.partner_id, self.partner)
+
+    # ------------------------------------------------------------------
+    # Time slots
+    #
+    # "Every job carries exactly one time-slot tag" -- the client's process
+    # document, which also publishes the three start times on its technician
+    # screen: Morning 08:00, Day 13:00, Night 21:00.
+    # ------------------------------------------------------------------
+    def test_each_published_start_time_lands_in_its_own_slot(self):
+        from odoo.addons.fm_fsm.models.fm_visit_schedule_mixin import (
+            SLOT_START_HOUR, slot_for_hour,
+        )
+        for slot, hour in SLOT_START_HOUR.items():
+            self.assertEqual(
+                slot_for_hour(hour), slot,
+                "%.2f is the published start of the %s slot" % (hour, slot))
+
+    def test_slot_covers_the_whole_day(self):
+        """No hour may fall outside a slot -- every job carries one tag."""
+        from odoo.addons.fm_fsm.models.fm_visit_schedule_mixin import (
+            TIME_SLOTS, slot_for_hour,
+        )
+        valid = {key for key, _label in TIME_SLOTS}
+        for tenth in range(240):
+            hour = tenth / 10.0
+            self.assertIn(slot_for_hour(hour), valid)
+
+    def test_choosing_a_slot_fills_in_the_start_time(self):
+        order = self._contract()
+        order.fm_time_slot = "night"
+        order._onchange_fm_time_slot()
+        self.assertEqual(order.visit_start_time, 21.0)
+
+    def test_visit_is_tagged_from_its_planned_time(self):
+        """The tag is derived, so it cannot disagree with the schedule."""
+        order = self._contract(visit_frequency="monthly")
+        order.fm_time_slot = "night"
+        order._onchange_fm_time_slot()
+        order.action_confirm()
+        visits = order.fm_task_ids.filtered("planned_date_begin")
+        self.assertTrue(visits, "confirming the contract should plan visits")
+        for visit in visits:
+            self.assertEqual(visit.fm_time_slot, "night")
+
+    def test_rescheduling_a_visit_moves_its_tag(self):
+        """Drag a job to another slot and the tag follows -- no stale tags."""
+        order = self._contract(visit_frequency="monthly")
+        order.action_confirm()
+        visit = order.fm_task_ids.filtered("planned_date_begin")[:1]
+        self.assertTrue(visit)
+        visit.planned_date_begin = visit.planned_date_begin.replace(hour=21)
+        self.assertEqual(visit.fm_time_slot, "night")
+        visit.planned_date_begin = visit.planned_date_begin.replace(hour=8)
+        self.assertEqual(visit.fm_time_slot, "morning")

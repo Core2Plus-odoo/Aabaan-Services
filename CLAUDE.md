@@ -187,6 +187,20 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   to future visits when a contract is renewed, paused or cancelled. Short
   months clamp to the last day, which that document suggests but does not
   confirm.
+- **The time slot on a visit is derived, not stored twice.**
+  `project.task.fm_time_slot` (Morning / Day / Night) is a stored compute off
+  `planned_date_begin` — so a job dragged to another slot on the Gantt, or
+  created by hand, is always tagged correctly and no tag can go stale. The
+  contract picks a slot, which fills in `visit_start_time`; the *time* stays
+  the single source of truth and the slot is the label. Start times
+  (08:00 / 13:00 / 21:00) come from the client's technician screen; the
+  **boundaries between slots are ours** — under 12:00 morning, under 18:00
+  day, otherwise night — because that document names the slots and their
+  start times but never where one ends. **Also unconfirmed:**
+  `planned_date_begin` is a UTC Datetime while the generator writes
+  `visit_start_time` into it as a wall clock, so both sides currently share
+  that one interpretation. Correcting it is a separate change — it would
+  move every already-planned visit by the UTC offset.
 - **NEVER mix a plain Python class into a model's bases** —
   `class SaleOrder(SomePlainClass, models.Model)` — even though it looks like
   the tidy way to share a method across two models. A plain class carries an
