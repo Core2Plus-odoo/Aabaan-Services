@@ -102,6 +102,57 @@ class TestContractReports(TransactionCase):
         self.assertIn("Quarterly tank disinfection", html)
         self.assertIn("Quarterly Water Tank Cleaning", html)
 
+    # ------------------------------------------------------------------
+    # Placeholders reach the page
+    # ------------------------------------------------------------------
+    def test_placeholders_are_filled_in_on_the_printed_agreement(self):
+        """The whole point of the engine: wording written once with a
+        placeholder comes out of the printer with the contract's own
+        facts in it.
+
+        Rendered rather than unit-tested, because a wording field wired
+        to the page without the renderer looks identical in the form and
+        only shows up as a raw {{CLIENT}} on a customer's document.
+        """
+        order = self._contract(service_text="Prepared for {{CLIENT}}.")
+        html = self._render("fm_documents.action_report_fm_contract", order)
+        self.assertIn("Prepared for Royal Apartment Owners Association.", html)
+        self.assertNotIn("{{CLIENT}}", html)
+
+    def test_placeholders_are_filled_in_on_the_quotation(self):
+        order = self._contract(quotation_intro_text="For {{CLIENT}}, {{VISITS}} visits.")
+        html = self._render("fm_documents.action_report_fm_quotation", order)
+        self.assertIn("Royal Apartment Owners Association", html)
+        self.assertNotIn("{{CLIENT}}", html)
+        self.assertNotIn("{{VISITS}}", html)
+
+    def test_an_additional_article_is_filled_in_too(self):
+        """Article bodies are rendered inside a t-foreach, which is the
+        site most easily missed -- the loop variable is not the order."""
+        order = self._contract(agreement_line_ids=[(0, 0, {
+            "name": "Site", "body": "Work is carried out for {{CLIENT}}.",
+        })])
+        for xmlid in ("fm_documents.action_report_fm_contract",
+                      "fm_documents.action_report_fm_quotation"):
+            html = self._render(xmlid, order)
+            self.assertNotIn("{{CLIENT}}", html, xmlid)
+
+    def test_a_fact_the_contract_cannot_supply_prints_a_pencil_mark(self):
+        """Not a blank. A blank on a signature page is how a missing
+        licence reaches a customer; a pencil mark is visibly wrong where
+        somebody proofreading will catch it."""
+        order = self._contract(service_text="Licence: {{LICENCE}}")
+        html = self._render("fm_documents.action_report_fm_contract", order)
+        self.assertIn("\u270e", html)
+        self.assertNotIn("{{LICENCE}}", html)
+
+    def test_wording_with_no_placeholders_prints_unchanged(self):
+        """The renderer sits on every wording field now, so ordinary
+        prose must pass through it untouched."""
+        order = self._contract(service_text="Plain wording, no placeholders.")
+        html = self._render("fm_documents.action_report_fm_contract", order)
+        self.assertIn("Plain wording, no placeholders.", html)
+
     def test_both_reports_target_the_order(self):
         """Not fm.contract. The binding is cleared too: left pointing at
         fm.contract it would cascade-delete these actions when that model
