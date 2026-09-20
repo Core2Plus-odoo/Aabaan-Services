@@ -121,6 +121,16 @@ def _contract_vals(contract, order):
 
 
 def _repoint_children(env, contract, order):
+    """Fill the order side of each child's two links.
+
+    WARNING for whoever retires fm.contract next: all three of these carry
+    ``contract_id = Many2one("fm.contract", ondelete="cascade")``. Deleting
+    the fm.contract rows would therefore destroy these children *even
+    though* this migration has just re-pointed them at the order — the
+    order_id is set, but Postgres takes the row anyway. Clear contract_id
+    on the migrated children (or drop the constraint) before deleting
+    anything, or the SLA rules, penalties and agreement wording go with it.
+    """
     moved = 0
     for model in CHILD_MODELS:
         if model not in env:
