@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from dateutil.relativedelta import relativedelta
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
@@ -285,6 +287,93 @@ class SaleOrder(models.Model):
     # ------------------------------------------------------------------
     # Workflow
     # ------------------------------------------------------------------
+    # ------------------------------------------------------------------
+    # Recognising a contract that was written in Sales
+    # ------------------------------------------------------------------
+    def _fm_contract_signals(self):
+        """Why this order reads as an FM contract. Empty means it does not.
+
+        The signals are returned as readable phrases rather than a bare
+        boolean because they are posted to the order's chatter: a contract
+        that appeared in the FM app on its own has to be able to say what
+        made it one.
+        """
+        self.ensure_one()
+        signals = []
+        services = self.order_line.product_id.filtered("fm_is_contract_service")
+        if services:
+            signals.append(_(
+                "it sells %s",
+                ", ".join(services.mapped("display_name")),
+            ))
+        # sale_subscription is Enterprise and may not be installed; a
+        # recurring plan is the sales document already saying "this repeats".
+        if "plan_id" in self._fields and self.plan_id:
+            signals.append(_("it runs on the %s plan", self.plan_id.display_name))
+        if self.fm_service_line:
+            signals.append(_("an FM service line is set on it"))
+        if self.fm_start_date or self.fm_end_date:
+            signals.append(_("it carries a contract term"))
+        if self.fm_asset_ids:
+            signals.append(_("it covers %s asset(s)", len(self.fm_asset_ids)))
+        return signals
+
+    def _fm_fill_contract_term(self):
+        """Give a newly recognised contract the term it needs to schedule.
+
+        A contract ticked by hand gets its dates from the form, which makes
+        them required. One recognised on confirmation has no form to fill
+        them in, and a contract with no term generates no visits — so the
+        dates are derived, and what was derived is said out loud on the
+        chatter rather than left to be discovered.
+        """
+        self.ensure_one()
+        assumed = []
+        start = self.fm_start_date
+        if not start:
+            start = fields.Date.to_date(self.date_order) or fields.Date.context_today(self)
+            self.fm_start_date = start
+            assumed.append(_("start %s (the order date)", start))
+        if not self.fm_end_date:
+            months = self.fm_renewal_term_months or 12
+            end = start + relativedelta(months=months) - relativedelta(days=1)
+            self.fm_end_date = end
+            assumed.append(_("end %s (%s-month term)", end, months))
+        return assumed
+
+    def _fm_autodetect_contracts(self):
+        """Tick is_fm_contract on confirmation for orders that are contracts.
+
+        The FM app lists contracts as the sale orders carrying
+        ``is_fm_contract``. Leaving that tick to the person writing the
+        quotation means an AMC agreed in Sales is invisible to Operations
+        until somebody notices — the schedule is never generated and the
+        renewal never appears. So confirmation, which is the moment the
+        customer has agreed, is also the moment the order is recognised.
+
+        Only orders that show a positive signal are touched: an ordinary
+        quotation stays an ordinary quotation, and an order somebody
+        deliberately left unticked can be unticked again afterwards.
+        """
+        for order in self.filtered(lambda o: not o.is_fm_contract):
+            signals = order._fm_contract_signals()
+            if not signals:
+                continue
+            order.is_fm_contract = True
+            assumed = order._fm_fill_contract_term()
+            body = _(
+                "Recognised as a Facility Management contract on confirmation "
+                "because %s. It now appears under FM → Contracts.",
+                "; ".join(signals),
+            )
+            if assumed:
+                body += " " + _(
+                    "No contract term was set, so one was derived: %s. Correct "
+                    "it on the contract if the agreement says otherwise.",
+                    "; ".join(assumed),
+                )
+            order.message_post(body=body)
+
     def action_confirm(self):
         """Confirming the order is what makes the contract live.
 
@@ -292,7 +381,13 @@ class SaleOrder(models.Model):
         document is confirmed and the contract starts. Nobody has to
         remember a second button, and there is no window where the order is
         confirmed but the contract is not.
+
+        The recognition runs *before* ``super()`` so that everything hanging
+        off confirmation further down the chain — the contract number, the
+        lifecycle, and fm_fsm's visit generation — sees an order that is
+        already marked as a contract.
         """
+        self._fm_autodetect_contracts()
         res = super().action_confirm()
         contracts = self.filtered(lambda o: o.is_fm_contract and not o.fm_lifecycle)
         if contracts:

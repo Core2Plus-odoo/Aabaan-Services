@@ -187,3 +187,60 @@ class TestSaleOrderContract(TransactionCase):
         order.agreement_template_id = template_b
         order._onchange_agreement_template_id()
         self.assertNotIn("template A", order.schedule_text)
+
+    # ------------------------------------------------------------------
+    # An AMC written in Sales must reach the FM app
+    # ------------------------------------------------------------------
+    def test_a_contract_service_product_makes_the_order_a_contract(self):
+        """The business writes its AMCs in Sales. If the tick is left to
+        whoever raised the quotation, an agreed contract is invisible to
+        Operations — no schedule, no renewal, nothing in FM."""
+        amc = self.env["product.product"].create({
+            "name": "AMC — Pest Control",
+            "type": "service",
+            "list_price": 6000.0,
+            "fm_is_contract_service": True,
+        })
+        order = self.env["sale.order"].create({
+            "partner_id": self.partner.id,
+            "order_line": [(0, 0, {"product_id": amc.id, "product_uom_qty": 1})],
+        })
+        self.assertFalse(order.is_fm_contract)
+        order.action_confirm()
+        self.assertTrue(order.is_fm_contract)
+        self.assertTrue(order.fm_contract_number)
+        self.assertEqual(order.fm_lifecycle, "active")
+
+    def test_a_recognised_contract_gets_a_usable_term(self):
+        """A contract with no term generates no visits, so one is derived
+        and said out loud instead of left blank."""
+        amc = self.env["product.product"].create({
+            "name": "AMC — HVAC",
+            "type": "service",
+            "fm_is_contract_service": True,
+        })
+        order = self.env["sale.order"].create({
+            "partner_id": self.partner.id,
+            "order_line": [(0, 0, {"product_id": amc.id, "product_uom_qty": 1})],
+        })
+        order.action_confirm()
+        self.assertTrue(order.fm_start_date)
+        self.assertTrue(order.fm_end_date)
+        self.assertGreater(order.fm_end_date, order.fm_start_date)
+
+    def test_fm_fields_alone_make_the_order_a_contract(self):
+        """Someone who filled in the FM term and service line plainly meant
+        this to be a contract, whatever the products say."""
+        order = self.env["sale.order"].create(self._order_vals(
+            fm_start_date="2026-01-01", fm_end_date="2026-12-31",
+        ))
+        order.action_confirm()
+        self.assertTrue(order.is_fm_contract)
+
+    def test_an_ordinary_sale_is_not_recognised(self):
+        """The whole point of signals is that an order showing none of them
+        stays an ordinary sale."""
+        order = self.env["sale.order"].create(self._order_vals())
+        order.action_confirm()
+        self.assertFalse(order.is_fm_contract)
+        self.assertFalse(order.fm_contract_number)

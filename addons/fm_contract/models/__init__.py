@@ -5,5 +5,6 @@ from . import fm_contract_agreement_template
 from . import fm_sla_rule
 from . import fm_contract
 from . import fm_contract_penalty
+from . import product_template
 from . import sale_order
 from . import crm_lead
