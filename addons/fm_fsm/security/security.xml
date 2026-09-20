@@ -30,12 +30,18 @@
     <record id="rule_fm_visit_technician_own" model="ir.rule">
         <field name="name">FM visits: a technician sees only their own</field>
         <field name="model_id" ref="project.model_project_task"/>
-        <field name="domain_force">
+        <!-- Wrapped in parentheses, and that is load-bearing, not style.
+             domain_force is evaluated with compile(..., "eval"), which
+             cannot parse a bare expression spanning several lines: the
+             continuation lines read as an unexpected indent and the module
+             fails to load with "Invalid domain". The brackets make it one
+             implicit continuation. -->
+        <field name="domain_force">(
             ['|', ('fm_wo_type', '=', False), ('user_ids', 'in', [user.id])]
             if user.has_group('fm_branding.group_fm_technician')
             and not user.has_group('fm_branding.group_fm_dispatcher')
             else [(1, '=', 1)]
-        </field>
+        )</field>
         <field name="perm_read" eval="True"/>
         <field name="perm_write" eval="True"/>
         <field name="perm_create" eval="False"/>
