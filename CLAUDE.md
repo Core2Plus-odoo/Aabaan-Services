@@ -287,6 +287,18 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   entirely on `fm.contract`, a frozen model nothing creates, reached
   through an admin-only "Contracts (legacy)" menu — so every AMC written
   as a `sale.order` had no way to bill recurrently, silently.
+- **An `ir.rule` `domain_force` cannot span lines unless it is bracketed.**
+  Odoo evaluates it with `compile(expr, mode="eval")`, which rejects a bare
+  expression continued onto an indented second line:
+  `Invalid domain: unexpected indent`, and the module fails to load —
+  registry down, build red. Wrap a multi-line conditional in parentheses so
+  it is one implicit continuation (see
+  `fm_fsm/security/security.xml`). **Run `tools/check_ir_rule_domains.py`**,
+  which compiles every rule's domain straight out of the XML and evaluates
+  it with `has_group()` answering both True and False, so each arm must
+  yield a list. It exists because checking the expression as *retyped into
+  a test* passed while the file itself was broken — the guard reads the
+  file.
 - **A restrictive `ir.rule` must be GLOBAL, or it restricts nothing.**
   Odoo OR-s together the rules of every group a user belongs to and AND-s
   the global ones (`ir_rule._compute_domain`). A technician is also a
@@ -354,7 +366,8 @@ not prove the production upgrade — always check the production `update.log`.
   request. After a squash-merge the branch diverges — **re-base it onto
   `origin/main` and re-apply only the delta** before the next PR.
 - One change per PR; bump the touched module's `version` so Odoo upgrades it.
-- Validate before pushing: `python3 -m py_compile` and XML parse.
+- Validate before pushing: `python3 -m py_compile`, XML parse,
+  `tools/check_model_bases.py` and `tools/check_ir_rule_domains.py`.
 - Commit trailers: `Co-Authored-By:` + `Claude-Session:` (never put the model
   id in commits/PRs).
 
