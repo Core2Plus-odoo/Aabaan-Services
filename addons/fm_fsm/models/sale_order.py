@@ -42,6 +42,9 @@ class SaleOrder(models.Model):
     custom_interval_days = fields.Integer(
         compute="_compute_fm_schedule_from_template", store=True, readonly=False,
     )
+    fm_visit_weekday = fields.Selection(
+        compute="_compute_fm_schedule_from_template", store=True, readonly=False,
+    )
     visit_day_1 = fields.Integer(
         compute="_compute_fm_schedule_from_template", store=True, readonly=False,
     )
@@ -85,15 +88,21 @@ class SaleOrder(models.Model):
                 # A compute must assign on every record, or a new order
                 # comes back with these unset rather than defaulted.
                 order.visit_frequency = saved.visit_frequency or "monthly"
+                order.fm_visit_weekday = saved.fm_visit_weekday
                 order.custom_interval_days = saved.custom_interval_days
                 order.visit_day_1 = saved.visit_day_1 or 1
                 order.visit_day_2 = saved.visit_day_2 or 15
                 order.fm_time_slot = saved.fm_time_slot or "morning"
                 order.visit_start_time = saved.visit_start_time or 8.0
                 order.visit_duration_hours = saved.visit_duration_hours or 2.0
-                order.skip_weekends = saved.skip_weekends
+                # `or` cannot express a boolean whose default is True, and a
+                # brand-new record has no _origin to read -- so fall back to
+                # the field's own default rather than to False, which is
+                # what making this field computed silently did.
+                order.skip_weekends = saved.skip_weekends if saved else True
                 continue
             order.visit_frequency = profile.fm_visit_frequency or "monthly"
+            order.fm_visit_weekday = profile.fm_visit_weekday
             order.custom_interval_days = profile.fm_custom_interval_days
             order.visit_day_1 = profile.fm_visit_day_1 or 1
             order.visit_day_2 = profile.fm_visit_day_2 or 15

@@ -35,6 +35,8 @@
                             <field name="custom_interval_days"
                                    invisible="visit_frequency != 'custom'"
                                    required="visit_frequency == 'custom'"/>
+                            <field name="fm_visit_weekday"
+                                   invisible="visit_frequency not in ('weekly', 'fortnightly')"/>
                             <field name="visit_day_1"
                                    invisible="visit_frequency != 'twice_monthly'"
                                    required="visit_frequency == 'twice_monthly'"/>

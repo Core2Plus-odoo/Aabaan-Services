@@ -143,6 +143,21 @@ class TestContractProfile(TransactionCase):
         self.assertTrue(order.is_fm_contract)
         self.assertEqual(order.fm_service_line, "water_tank")
 
+    def test_skip_weekends_defaults_to_on_without_a_template(self):
+        """Making a field computed must not change its default.
+
+        skip_weekends is default=True on the mixin. The no-profile branch
+        reads _origin, which is empty on a new record -- so reading it
+        blindly turned the default into False and let visits land on
+        Fri/Sat.
+        """
+        order = self.env["sale.order"].create({"partner_id": self.partner.id})
+        self.assertTrue(order.skip_weekends)
+
+    def test_a_profile_can_turn_weekend_skipping_off(self):
+        order = self._order(self.profile)
+        self.assertFalse(order.skip_weekends, "the profile sets it False")
+
     def test_an_ordinary_template_makes_an_ordinary_quotation(self):
         """A quotation template that is not a contract profile must not
         drag an unrelated sale into the FM app."""
