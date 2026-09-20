@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Documents",
-    "version": "19.0.1.9.0",
+    "version": "19.0.2.0.0",
     "category": "Facility Management",
     "summary": "Branded PDF documents (work order job sheet, quotation, contract) — UAE-ready",
     "description": """
@@ -30,6 +30,7 @@ set the company TRN in its VAT field and the 5% tax for full compliance.
         "reports/fm_quotation_report.xml",
         "reports/fm_contract_report.xml",
         "reports/fm_certificate_report.xml",
+        "views/sale_order_views.xml",
     ],
     "installable": True,
     "application": False,

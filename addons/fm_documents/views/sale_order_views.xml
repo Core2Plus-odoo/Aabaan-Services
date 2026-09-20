@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Printing the contract, from the contract.
+
+         The Service Agreement and the Quotation are written on the sale
+         order now (the "Printed Agreement" tab fm_contract adds), so this
+         is where they have to be printable from. Both reports used to be
+         bound to the retired fm.contract model, which meant the wording a
+         user typed on an order had nowhere to come out.
+
+         Buttons rather than Print-menu bindings: a binding shows on every
+         sale order in the database, and "Quotation" next to Odoo's own
+         "Quotation / Order" is two entries with the same name on documents
+         that are not contracts at all. -->
+    <record id="view_order_form_fm_print" model="ir.ui.view">
+        <field name="name">sale.order.form.fm.print</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="fm_contract.view_order_form_fm_contract"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="%(fm_documents.action_report_fm_quotation)d"
+                        type="action" string="Print Quotation"
+                        class="btn-secondary"
+                        invisible="not is_fm_contract"/>
+                <button name="%(fm_documents.action_report_fm_contract)d"
+                        type="action" string="Print Service Agreement"
+                        class="btn-secondary"
+                        invisible="not is_fm_contract"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

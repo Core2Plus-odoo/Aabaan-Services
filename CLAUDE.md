@@ -62,7 +62,10 @@ creating a new one.
 5. `fm_compliance` — `fm.compliance.regime` / `fm.compliance.certificate`,
    watchdog cron; remediation creates a `project.task`.
 6. `fm_documents` — QWeb PDF layouts (Work Order job sheet, Contract,
-   Compliance Certificate), bilingual EN/AR, TRN, QR.
+   Compliance Certificate), bilingual EN/AR, TRN, QR. The **Quotation**
+   and the **Service Agreement** print from the `sale.order` — the two
+   buttons `fm_documents` adds to the FM contract header — because that
+   is where the wording is written now.
 7. `fm_branch` — `fm.branch` (emirate offices); `branch_id` on `fm.contract`
    and `project.task`; branch on `hr.employee` and PDFs.
 8. `fm_reports` — OWL "Reports Hub" catalog of native actions.
@@ -327,6 +330,26 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   that the naive version *looks* right and a test asserting "the
   technician sees their own job" passes against it — only a test for the
   job they must **not** see catches it.
+- **A report's `binding_model_id` survives being deleted from the XML.**
+  A module upgrade writes the fields it finds in the data file; it does
+  not reset the ones you removed. So re-pointing a report at another
+  model and merely dropping its `binding_model_id` line leaves the live
+  record still bound to the old model — the Print entry stays where it
+  was, and worse, `binding_model_id` is `ondelete="cascade"`, so dropping
+  that model later takes the **report action itself** with it. Clear it
+  explicitly: `<field name="binding_model_id" eval="False"/>`. This is
+  why the Service Agreement and Quotation reports carry that line (see
+  `fm_documents/reports/`) rather than just omitting the field.
+- **A QWeb template naming a field the model does not have loads fine and
+  raises on the first print.** Nothing in a build catches it — the arch is
+  stored as-is and only evaluated at render. When a report moves between
+  models (`fm.contract` → `sale.order`, which renamed seven fields:
+  `contract_number` → `fm_contract_number`, `start_date`/`end_date`,
+  `service_inclusions`/`service_exclusions`, `customer_contact_ids`,
+  `sla_rule_ids`), the only real check is rendering it. See
+  `fm_documents/tests/test_contract_reports.py`, which renders both
+  documents fully populated **and** empty, because a quotation is printed
+  long before the contract is complete.
 - **NEVER mix a plain Python class into a model's bases** —
   `class SaleOrder(SomePlainClass, models.Model)` — even though it looks like
   the tidy way to share a method across two models. A plain class carries an
