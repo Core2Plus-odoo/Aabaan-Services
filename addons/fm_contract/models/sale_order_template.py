@@ -3,7 +3,12 @@ from odoo import fields, models
 
 from odoo.addons.fm_asset.models.fm_asset_category import SERVICE_LINES
 
-from .sale_order import BILLING_FREQUENCIES, CONTRACT_TYPES
+from .sale_order import (
+    BILLING_FREQUENCIES,
+    COMPLAINT_SLA,
+    CONTRACT_TYPES,
+    PREMISES_TYPES,
+)
 
 
 class SaleOrderTemplate(models.Model):
@@ -58,4 +63,36 @@ class SaleOrderTemplate(models.Model):
         "fm.contract.agreement.template", string="Agreement Wording",
         help="Wording for the printed Quotation and Service Agreement. Left "
              "blank, it is still suggested from the service line and branch.",
+    )
+
+    # The contracted service terms. These are the answer to "what does an
+    # AMC of this kind promise?", and that is a per-service, per-product
+    # question -- so it is answered once on the template that sells it,
+    # rather than retyped on every contract or hardcoded into a rule that
+    # cannot tell a waterproofing job from a pest treatment.
+    fm_premises_type = fields.Selection(
+        PREMISES_TYPES, string="Premises Type",
+        help="Left blank, it is asked per contract -- which is usually "
+             "right, because it describes the customer's site and not the "
+             "service being sold.",
+    )
+    fm_callout_allowance = fields.Integer(
+        string="Free Call-Outs Included",
+        help="How many complaint call-outs this kind of contract includes "
+             "in its price. Zero means none are included.",
+    )
+    fm_complaint_sla = fields.Selection(
+        COMPLAINT_SLA, string="Complaint Response",
+    )
+    fm_followup_days = fields.Integer(
+        string="Follow-Up Within (days)", default=3,
+        help="Three days is the client's standing figure, which is why it "
+             "is the default here and not on the contract: a standing "
+             "figure belongs to the kind of agreement being sold, and "
+             "putting it on the contract itself would back-date a promise "
+             "onto every contract signed before anyone wrote it down.",
+    )
+    fm_warranty_years = fields.Integer(
+        string="Warranty (years)",
+        help="Zero means these contracts state no warranty.",
     )

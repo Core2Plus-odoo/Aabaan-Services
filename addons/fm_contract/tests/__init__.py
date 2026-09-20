@@ -1,3 +1,4 @@
 from . import test_sale_order_contract
 from . import test_lead_handover
 from . import test_sale_report_repair
+from . import test_service_terms
