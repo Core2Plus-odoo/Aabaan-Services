@@ -5,6 +5,11 @@ from odoo import api, fields, models
 class AccountMove(models.Model):
     """Branch on the invoice, so money can be reported per emirate.
 
+    Moved here from fm_exec_dashboard when that dashboard was retired. The
+    field is the branch module's own concern: the invoices already carry
+    the values, and a reporting screen coming or going must not take a
+    stored dimension with it.
+
     Revenue already knows its branch: a customer invoice comes from a sale
     order, and ``sale.order.branch_id`` has carried the branch since the
     contract was written. This field follows that link and stores it, which
@@ -34,8 +39,7 @@ class AccountMove(models.Model):
              "source sale order on a customer invoice; set it by hand on a "
              "vendor bill or journal entry so the cost lands in the right "
              "branch's numbers. Spend with no branch is reported as "
-             "unallocated on the CEO dashboard rather than spread across "
-             "branches.",
+             "unallocated rather than spread across branches.",
     )
 
     def _fm_derive_branch(self):

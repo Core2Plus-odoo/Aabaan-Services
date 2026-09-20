@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Branch",
-    "version": "19.0.2.2.0",
+    "version": "19.0.3.0.0",
     "category": "Facility Management",
     "summary": "Aabaan operating branches (emirate offices) on contracts, work orders and technicians",
     "description": """
@@ -21,6 +21,9 @@ template can be scoped to a branch, a service line, both, or neither.
     "depends": [
         "fm_fsm",
         "fm_documents",
+        # Branch on invoices and bills, adopted from the retired
+        # fm_exec_dashboard so per-emirate finance reporting survives it.
+        "account",
     ],
     "data": [
         "security/ir.model.access.csv",
@@ -31,6 +34,7 @@ template can be scoped to a branch, a service line, both, or neither.
         "views/fm_contract_wizard_views.xml",
         "views/project_task_views.xml",
         "views/hr_employee_views.xml",
+        "views/account_move_views.xml",
         "views/fm_documents_reports.xml",
         "views/menus.xml",
     ],

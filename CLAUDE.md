@@ -24,7 +24,7 @@ app is a single cockpit that operates them.
 | Invoicing | native `account.move` (FTA tax invoice) | — |
 | Assets | **Maintenance** (`maintenance.equipment`) | `fm.asset` |
 | Compliance | Activities / Documents | `fm_compliance` regimes + certificates |
-| Dashboards | native graph/pivot actions | `fm_dashboards` (JS-free); `fm_command_centre` is the executive one (OWL, seven tabs) |
+| Dashboards | native graph/pivot actions on the records themselves | **one** executive dashboard: `fm_command_centre`, its own app (OWL, seven tabs). The FM app carries no dashboards |
 
 **Standard covers it — configure, don't code** (see
 `docs/FM_LIFECYCLE_WORKFLOW.md`): checklists = **FSM Worksheet Templates**
@@ -65,19 +65,25 @@ creating a new one.
    Compliance Certificate), bilingual EN/AR, TRN, QR.
 7. `fm_branch` — `fm.branch` (emirate offices); `branch_id` on `fm.contract`
    and `project.task`; branch on `hr.employee` and PDFs.
-8. `fm_dashboards` — native Operations & Contracts graph/pivot dashboards.
-9. `fm_reports` — OWL "Reports Hub" catalog of native actions.
-9b. `fm_command_centre` — **the executive dashboard**: seven tabs (overview,
-    field ops, sales, finance, expenses, cash, AMC renewals), each loaded on
-    demand. Ported from the `aabaan` build rather than rewritten, and still
-    runs on both: it resolves each business fact through the `FIELD_ALIASES`
-    table (`fm_service_line` here, `x_service_line` there) and collapses any
-    section whose concept nothing answers. Deliberately does NOT depend on
-    `aabaan_visit_schedule` — that is the second visit generator.
-    **Supersedes `fm_ceo_dashboard` and `fm_exec_dashboard`**, which are still
-    installed and still menu'd; retiring them is pending confirmation that the
-    Command Centre reads correctly against production data.
-9c. `aabaan_website_theme` — **the public website**: booking-first homepage
+8. `fm_reports` — OWL "Reports Hub" catalog of native actions.
+8b. `fm_supervisor_dashboard` — the dispatcher's week board ("Maintenance
+    Calendar"). An operational screen, not an executive dashboard; it stays
+    in the FM app.
+9. `fm_command_centre` — **the executive dashboard, and its own app**:
+   seven tabs (overview, field ops, sales, finance, expenses, cash, AMC
+   renewals), each loaded on demand. `application=True`, root menu
+   `menu_command_centre_root`, gated by its own
+   `group_command_centre_viewer` — it covers the whole business, not just
+   FM, and is installable without the FM suite: `depends` is
+   `project, sale_management, account, crm`, and every platform-specific
+   field is resolved at runtime through `FIELD_ALIASES` (`fm_service_line`
+   here, `x_service_line` on the `aabaan` build) / `COMPLIANCE_SOURCES`,
+   with any section whose concept nothing answers collapsing itself.
+   Deliberately does NOT depend on `aabaan_visit_schedule` — that is the
+   second visit generator.
+   **Replaced `fm_ceo_dashboard`, `fm_exec_dashboard` and `fm_dashboards`**,
+   all three now retired to stubs (see §5).
+9b. `aabaan_website_theme` — **the public website**: booking-first homepage
     at `/`, `/services` + four service pages with rate cards, `/about`,
     `/faq`, `/booking` -> `crm.lead`, branded footer and mobile action bar,
     brand SCSS (`#17171a` / `#ef7d25`). Maintained in the `aabaan` repo and
@@ -99,6 +105,16 @@ pre-migration also **dropped the `odoo_master_data_config` table** and with
 it the stored source API keys) each ran their `19.0.9.0.0` pre-migration on
 the production upgrade, were uninstalled from Apps, and have been deleted
 from source per §5.
+
+**Retired stubs — awaiting uninstall.** `fm_ceo_dashboard`,
+`fm_exec_dashboard` and `fm_dashboards` — three dashboards under one app
+root, two of them named "CEO Dashboard", all superseded by the Command
+Centre. Each is now an empty `19.0.9.0.0` stub with a pre-migration (§5);
+uninstall them from Apps once the production upgrade has run, then delete
+the stubs from source. `fm_exec_dashboard`'s two *stored* fields were not
+dashboard code and moved to `fm_branch`, which owns them:
+`account.move.branch_id` and `fm.branch.monthly_revenue_target` — columns
+and data untouched.
 
 **Retired stubs — removed.** `fm_workorder`, `fm_ppm`, `fm_sla`,
 `fm_integrations` were empty placeholder modules that existed only so an
@@ -143,7 +159,9 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   `ir.actions.act_window.write` (see `fm_fsm/views/menus.xml`).
 - **OWL client-action dashboards are fragile on stale asset bundles**
   (`KeyNotFound in actions registry`). Prefer native graph/pivot `act_window`
-  actions (see `fm_dashboards`).
+  actions on the records themselves — the FM Work Orders action already
+  carries `pivot` and `graph` views, which is why a separate "Operations
+  Dashboard" action was pure duplication.
 - **Re-declaring a `<menuitem>` without a `parent` attribute RESETS
   `parent_id` to False** (`_tag_menuitem` starts from `{'parent_id': False}`)
   — the menu detaches and floats to the root. When re-sequencing another
@@ -233,6 +251,21 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   are "Accounts" and which are "Operations" — the ordering is enforced for
   everyone, but no role restriction is applied, because that is their org
   chart to define, not ours.
+- **The FM app lists contracts by `sale.order.is_fm_contract`, so nothing
+  may depend on a human remembering to tick it.** An AMC is written and
+  agreed in Sales; if the tick is left to whoever raised the quotation, a
+  confirmed contract is invisible to Operations — no visit schedule, no
+  renewal, nothing under FM → Contracts, and no error anywhere. So
+  `fm_contract`'s `action_confirm` recognises the order first
+  (`_fm_autodetect_contracts`): a product flagged
+  `product.template.fm_is_contract_service`, a subscription plan, an FM
+  service line, a contract term or covered assets each make it a contract,
+  and the reason plus any derived term is posted to the chatter — a
+  contract that appeared in the FM app on its own has to be able to say
+  what made it one. The recognition runs **before** `super()` so that
+  `fm_fsm`'s visit generation, which happens after its own `super()`
+  returns, sees an order already marked. An order showing none of those
+  signals stays an ordinary sale.
 - **NEVER mix a plain Python class into a model's bases** —
   `class SaleOrder(SomePlainClass, models.Model)` — even though it looks like
   the tidy way to share a method across two models. A plain class carries an
@@ -270,8 +303,10 @@ module directly. Instead:
 1. Merge to `main` → Odoo.sh builds & upgrades.
 2. If migrating legacy data: **FM → Configuration → Convert Legacy Work Orders**
    (once), then **Migrate Aabaan Data**.
-3. Verify **FM → Work Orders / Dashboards**.
-4. Uninstall the four retired stubs from Apps once verified.
+3. Verify **FM → Work Orders** and the **Command Centre** app.
+4. Uninstall the retired dashboard stubs (`fm_ceo_dashboard`,
+   `fm_exec_dashboard`, `fm_dashboards`) from Apps once their
+   pre-migrations have run, then delete the stubs from source.
 
 **Odoo.sh builds:** dev-branch builds do a **fresh install** (migrations do NOT
 run); **production does an upgrade** (migrations DO run). A green dev build does

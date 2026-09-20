@@ -36,6 +36,8 @@
                             <field name="code"/>
                             <field name="emirate"/>
                             <field name="manager_id"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="monthly_revenue_target"/>
                             <field name="active"/>
                         </group>
                         <group>
