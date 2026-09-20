@@ -411,6 +411,21 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   `ir.model.data._process_end` deletes a module's stale records on
   upgrade, newest id first, so inheriting child views go before their
   parents.
+- **A translatable column is `jsonb`, and raw SQL against it must say so.**
+  `ir_model_fields.field_description`, `ir_ui_view.name`, any `translate=True`
+  field: Odoo 19 stores them as `{"en_US": "..."}`, not text. `LIKE` straight
+  on one raises `operator does not exist: jsonb !~~ text`, and in a migration
+  that is a **failed registry load and a red production build**. Read with
+  `col ->> 'en_US'`, write with
+  `jsonb_set(col, '{en_US}', to_jsonb(%s::text))`.
+  The real lesson is about the *fixture*: the first version of
+  `fm_fsm/migrations/19.0.3.4.0` was tested against a throwaway Postgres
+  whose column was declared `varchar`, so the test passed and could never
+  have failed. **A migration fixture has to match production's column
+  types**, or it only proves the SQL parses. The corrected fixture also
+  covers a multi-language label (only `en_US` is rewritten; other
+  languages survive) and a row with no `en_US` key at all (skipped, not
+  a crash) — neither of which the text version could express.
 - **Behaviour can live on the database, where no git checkout shows it.**
   Three separate failures in one day came from this: the standard
   Quotation PDF dead across the whole database because the *other*
