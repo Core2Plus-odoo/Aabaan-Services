@@ -35,6 +35,12 @@
                             <field name="custom_interval_days"
                                    invisible="visit_frequency != 'custom'"
                                    required="visit_frequency == 'custom'"/>
+                            <field name="visit_day_1"
+                                   invisible="visit_frequency != 'twice_monthly'"
+                                   required="visit_frequency == 'twice_monthly'"/>
+                            <field name="visit_day_2"
+                                   invisible="visit_frequency != 'twice_monthly'"
+                                   required="visit_frequency == 'twice_monthly'"/>
                             <field name="skip_weekends"/>
                             <field name="preferred_technician_id"/>
                             <field name="auto_schedule_state"/>

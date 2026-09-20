@@ -208,12 +208,24 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   fortnightly stay day-based, because months do not preserve weekdays.
   Client requirement: *"A job created for 19-Sep-2026 on a monthly frequency
   must reflect on the 19th of every following month."*
+- **"Twice a month" is not fortnightly** — 24 visits a year on two fixed
+  dates, against 26 on a 14-day step that walks the dates backwards
+  through the month. A customer contracted for the 5th and 20th would be
+  visited on the 5th and 19th, then the 2nd and 16th. So `twice_monthly`
+  steps by calendar month like the monthly family and lands twice, on
+  `visit_day_1` / `visit_day_2`. Both days are plain inputs with a
+  suggested default, because the client's own table calls them *fixed*
+  dates — chosen per contract, not derived. A day the month does not have
+  falls on its last; when both clamp onto the same last day (the 30th and
+  31st in February) it is **one** visit, not a technician booked onto a
+  site twice. Two identical days are refused by a constraint rather than
+  the form: sold as 24 and delivered as 12 is not something anything
+  downstream would notice.
   **Still unconfirmed by the client** (their process document lists these as
-  open): the exact date spacing for an "8 times / year" plan, whether
-  "twice a month" means two fixed dates or a 14-day step, and what happens
-  to future visits when a contract is renewed, paused or cancelled. Short
-  months clamp to the last day, which that document suggests but does not
-  confirm.
+  open): the exact date spacing for an "8 times / year" plan, and what
+  happens to future visits when a contract is renewed, paused or cancelled.
+  Short months clamp to the last day, which that document suggests but does
+  not confirm.
 - **The time slot on a visit is derived, not stored twice.**
   `project.task.fm_time_slot` (Morning / Day / Night) is a stored compute off
   `planned_date_begin` — so a job dragged to another slot on the Gantt, or
