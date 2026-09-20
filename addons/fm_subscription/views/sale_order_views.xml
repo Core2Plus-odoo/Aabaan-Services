@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The recurrence, shown where the billing frequency it was derived
+         from already is. Read-only: the plan follows the frequency, and
+         two places to set the same thing is how they end up disagreeing. -->
+    <record id="view_order_form_fm_subscription" model="ir.ui.view">
+        <field name="name">sale.order.form.fm.subscription</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="fm_contract.view_order_form_fm_contract"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='fm_contract']//field[@name='fm_billing_frequency']"
+                   position="after">
+                <field name="plan_id" string="Subscription Plan" readonly="1"
+                       invisible="not plan_id"/>
+                <field name="subscription_state" string="Subscription Status"
+                       invisible="not plan_id"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

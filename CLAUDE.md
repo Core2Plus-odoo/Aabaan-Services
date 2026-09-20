@@ -93,7 +93,12 @@ creating a new one.
     page at `<url>-classic`, unpublished, so the two do not fight — but
     `fm_website` should be uninstalled from Apps and then deleted from
     source (see §5).
-10. `fm_subscription` — bills `fm.contract` via `sale.subscription`.
+10. `fm_subscription` — recurring AMC billing on the **`sale.order`**:
+    `product.template.fm_bills_as_subscription` opts a product in, and
+    confirming a contract that sells one puts the order on the
+    `sale.subscription.plan` matching its billing frequency. The
+    `fm.contract` layer (the legacy **Start Subscription** button) is
+    kept only until that model goes.
 11. `fm_aabaan_config` — **seed data**: branches, service categories, UAE
     compliance regimes, service products. Makes the platform Aabaan-ready.
 
@@ -266,6 +271,22 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   `fm_fsm`'s visit generation, which happens after its own `super()`
   returns, sees an order already marked. An order showing none of those
   signals stays an ordinary sale.
+- **A subscription plan must be on the order *before* `super().action_confirm()`.**
+  Odoo's own `_action_confirm` is what hands a recurring order to the
+  subscription engine, so a plan written afterwards leaves an ordinary
+  confirmed sale that happens to name a plan and bills nobody.
+  `fm_subscription` therefore sets it from the outermost layer of the
+  chain (it loads after `fm_contract` and `fm_fsm`, so it is first in the
+  `sale.order` MRO). Opt-in is per product,
+  `product.template.fm_bills_as_subscription`, which also switches Odoo's
+  own `recurring_invoice` on — a subscription order needs one recurring
+  product or confirmation is refused, and that belongs at product setup,
+  not in the middle of confirming a customer's order. It is only ever
+  switched *on*: a product can be recurring for reasons that have nothing
+  to do with FM. **Why this existed at all:** `fm_subscription` was
+  entirely on `fm.contract`, a frozen model nothing creates, reached
+  through an admin-only "Contracts (legacy)" menu — so every AMC written
+  as a `sale.order` had no way to bill recurrently, silently.
 - **NEVER mix a plain Python class into a model's bases** —
   `class SaleOrder(SomePlainClass, models.Model)` — even though it looks like
   the tidy way to share a method across two models. A plain class carries an
