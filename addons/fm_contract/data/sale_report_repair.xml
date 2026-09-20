@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Repair: point the standard "Quotation / Order" PDF back at Odoo's
+         own template.
+
+         This database carries a leftover write on sale.action_report_saleorder
+         made by `aabaan_quotation_report`, a module of the *other* Odoo.sh
+         project (core2plus-odoo-aabaan). It redirected the core action to its
+         own letterhead template:
+
+             report_name = aabaan_quotation_report.report_saleorder_aabaan
+
+         An Odoo.sh project only loads its own addons path, so that module —
+         and its template — do not exist here. The action, however, belongs to
+         `sale`, not to that module, so nothing ever restored it: uninstalling
+         or orphaning the module deletes the template and leaves the core
+         action pointing at the hole. Every sale order in the database then
+         fails to print with "Template not found:
+         'aabaan_quotation_report.report_saleorder_aabaan'" — and because
+         print, the Send-by-email attachment and the customer portal PDF all
+         route through this one action, a customer could not be sent a
+         quotation at all.
+
+         Values restored verbatim from odoo/addons/sale/report/ir_actions_report.xml
+         (19.0). paperformat_id is cleared rather than set: the core action
+         declares none and falls back to the company default; the one it was
+         given belongs to that other project too.
+
+         Deliberately NOT noupdate: this re-applies on every upgrade, so if the
+         database is ever re-seeded from an aabaan dump again it heals itself.
+
+         If a branded quotation PDF is wanted on this build one day, it is a new
+         report action of our own — not a second hijack of the core record.
+         The FM Service Agreement and FM Quotation (fm_documents) are exactly
+         that, and print from their own buttons on the FM contract. -->
+    <record id="sale.action_report_saleorder" model="ir.actions.report">
+        <field name="report_name">sale.report_saleorder</field>
+        <field name="report_file">sale.report_saleorder</field>
+        <field name="paperformat_id" eval="False"/>
+    </record>
+
+</odoo>
