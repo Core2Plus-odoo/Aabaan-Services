@@ -14,7 +14,10 @@
          actually a restriction.
 
          Scoped to FM visits: a task with no fm_wo_type is not a work order
-         and is none of this rule's business.
+         and is none of this rule's business. Note that fm_wo_type defaults
+         to "reactive", so in practice nearly every project.task carries one
+         and the rule reaches nearly all of them — which is right for this
+         deployment, where project.task is the FM visit.
 
          Anyone who dispatches or manages is exempt — group_fm_manager,
          group_fm_account_manager and group_fm_admin all imply

@@ -73,11 +73,20 @@ class TestTechnicianVisibility(TransactionCase):
         self.assertIn(self.mine, visible)
         self.assertIn(self.theirs, visible)
 
-    def test_a_task_that_is_not_an_fm_visit_is_untouched(self):
-        """The rule is about work orders. An ordinary project task carries
-        no fm_wo_type and is none of its business."""
+    def test_a_task_with_no_work_type_is_untouched(self):
+        """The rule keys on fm_wo_type, so a task without one falls outside it.
+
+        fm_wo_type is written explicitly here because it *defaults* to
+        "reactive" — leaving it out would produce a task the rule does
+        cover, and this test would then be asserting the opposite of what
+        it says. That default also means the clause is narrower in practice
+        than it looks: nearly every project.task in this database carries a
+        work type, so the rule reaches nearly all of them.
+        """
         plain = self.env["project.task"].create({
-            "name": "Not a visit", "user_ids": [(6, 0, self.other_tech.ids)],
+            "name": "Not a visit",
+            "fm_wo_type": False,
+            "user_ids": [(6, 0, self.other_tech.ids)],
         })
         found = self.env["project.task"].with_user(self.technician).search(
             [("id", "=", plain.id)])
