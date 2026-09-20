@@ -411,6 +411,26 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   `ir.model.data._process_end` deletes a module's stale records on
   upgrade, newest id first, so inheriting child views go before their
   parents.
+- **Behaviour can live on the database, where no git checkout shows it.**
+  Three separate failures in one day came from this: the standard
+  Quotation PDF dead across the whole database because the *other*
+  Odoo.sh project's module had redirected `sale.action_report_saleorder`
+  at a template this addons path does not have; `x_visit_frequency`
+  shadowing fm_fsm's `visit_frequency` on `sale.order` under the same
+  label, a manual field no module declares; and a rule blocking contract
+  confirmation ("N highlighted field(s) in the agreement terms still need
+  completing") whose text appears in **neither repository**, so it is an
+  automation or server action built on the database. Run
+  **`tools/db_customisations.py`** in an Odoo shell
+  (`odoo-bin shell -d <db> --no-http < tools/db_customisations.py`,
+  read-only) before assuming source explains behaviour: it lists manual
+  fields and the module labels they shadow, automation rules and server
+  actions nothing owns, **report actions whose template does not exist**
+  (the generic form of the Quotation bug), views no module owns, and Apps
+  rows with no source. `fm_fsm/migrations/19.0.3.4.0` relabels a manual
+  field on `sale.order` that shadows a module field rather than deleting
+  it — a manual field owns a real column with real data, and whether that
+  data is still wanted is the client's call, not a migration's.
 - **NEVER mix a plain Python class into a model's bases** —
   `class SaleOrder(SomePlainClass, models.Model)` — even though it looks like
   the tidy way to share a method across two models. A plain class carries an
