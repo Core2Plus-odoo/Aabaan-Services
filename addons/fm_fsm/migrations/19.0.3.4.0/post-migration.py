@@ -25,6 +25,19 @@ warning stops:
 
     Visit Frequency  ->  Visit Frequency (x_visit_frequency)
 
+**``field_description`` is jsonb, not text.** It is a translatable
+field, so Odoo 19 stores it as ``{"en_US": "Visit Frequency"}`` and
+every comparison has to go through ``->>`` and every write through
+``jsonb_set``. The first version of this file used ``LIKE`` straight on
+the column and took the production build down with
+``operator does not exist: jsonb !~~ text`` -- the local fixture had
+declared the column ``varchar``, so the test could never have caught
+it. Any migration touching a translatable column needs a jsonb fixture.
+
+Only the ``en_US`` entry is compared and rewritten: that is the label
+the warning is about and the one users see on this database. A manual
+field with no ``en_US`` key simply does not match and is left alone.
+
 Scoped to ``sale.order`` deliberately. The same upgrade logs a second
 collision, ``x_plan4_id`` vs ``department_id`` on
 ``account.analytic.line`` -- but that one is a manual field *Odoo
@@ -36,40 +49,51 @@ import logging
 _logger = logging.getLogger(__name__)
 
 MODEL = "sale.order"
+LANG = "en_US"
 
 
 def migrate(cr, version):
     if not version:
         return
 
-    # Manual fields on sale.order whose label matches a field some module
-    # declares. Compared on label, because that is what a user sees and
-    # what the collision is about.
+    # Manual fields on sale.order whose English label matches the English
+    # label of a field some module declares. Compared on the label, because
+    # that is what a user sees and what the collision is about.
     cr.execute("""
-        SELECT manual.id, manual.name, manual.field_description, module.name
+        SELECT manual.id,
+               manual.name,
+               manual.field_description ->> %(lang)s,
+               module.name
           FROM ir_model_fields manual
           JOIN ir_model_fields module
             ON module.model = manual.model
-           AND module.field_description = manual.field_description
            AND module.id <> manual.id
            AND module.state = 'base'
-         WHERE manual.model = %s
+           AND module.field_description ->> %(lang)s
+             = manual.field_description ->> %(lang)s
+         WHERE manual.model = %(model)s
            AND manual.state = 'manual'
-           AND manual.field_description NOT LIKE '%%(' || manual.name || ')'
-    """, (MODEL,))
+           AND manual.field_description ->> %(lang)s IS NOT NULL
+    """, {"lang": LANG, "model": MODEL})
     rows = cr.fetchall()
 
-    if not rows:
-        _logger.info("No manual field on %s shadows a module field's label.", MODEL)
-        return
-
+    relabelled = 0
     for field_id, technical_name, label, shadowed in rows:
-        new_label = "%s (%s)" % (label, technical_name)
-        cr.execute(
-            "UPDATE ir_model_fields SET field_description = %s WHERE id = %s",
-            (new_label, field_id),
-        )
+        suffix = "(%s)" % technical_name
+        if label.endswith(suffix):
+            continue  # already done on an earlier run
+        new_label = "%s %s" % (label, suffix)
+        cr.execute("""
+            UPDATE ir_model_fields
+               SET field_description = jsonb_set(
+                       field_description, %(path)s, to_jsonb(%(label)s::text))
+             WHERE id = %(id)s
+        """, {"path": "{%s}" % LANG, "label": new_label, "id": field_id})
+        relabelled += 1
         _logger.info(
             "%s: manual field %s shadowed %s under the label %r; relabelled to %r.",
             MODEL, technical_name, shadowed, label, new_label,
         )
+
+    if not relabelled:
+        _logger.info("No manual field on %s shadows a module field's label.", MODEL)
