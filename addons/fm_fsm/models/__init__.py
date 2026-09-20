@@ -3,5 +3,4 @@
 # import order, so defining it after them would miss it silently.
 from . import fm_visit_schedule_mixin
 from . import project_task
-from . import fm_contract
 from . import sale_order

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Subscription",
-    "version": "19.0.2.0.0",
+    "version": "19.0.2.1.0",
     "category": "Facility Management",
     "summary": "Bill FM contracts as recurring subscriptions (sale_subscription)",
     "description": """
@@ -22,7 +22,6 @@ contract's Billing Frequency.
     "data": [
         "views/product_template_views.xml",
         "views/sale_order_views.xml",
-        "views/fm_contract_views.xml",
     ],
     "installable": True,
     "application": False,
