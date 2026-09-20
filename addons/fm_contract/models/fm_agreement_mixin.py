@@ -1,5 +1,55 @@
 # -*- coding: utf-8 -*-
-from odoo import api, fields, models
+import re
+
+from odoo import _, api, fields, models
+
+# ----------------------------------------------------------------------
+# Agreement placeholders
+# ----------------------------------------------------------------------
+# Wording that is the same for every customer except for a handful of
+# facts -- the dates, the visit count, the licence -- is written once with
+# a placeholder where each fact goes, and the contract fills them in.
+#
+# This is the mechanism a set of Studio server actions on the database was
+# providing. Theirs rebuilt the stored text on every write, which is why it
+# also needed a "Lock terms (stop auto-rebuild)" flag: a rebuild cannot
+# tell a fact it should refresh from a sentence somebody typed.
+#
+# This one never rewrites the wording. The placeholder stays in the stored
+# text and is resolved when the text is used, so a fact that changes -- a
+# licence number filled in on the branch next week -- is simply right the
+# next time the document is produced, and an edit is never at risk.
+#
+# The names are the client's own, so wording already written against the
+# Studio engine keeps working.
+AGREEMENT_PLACEHOLDERS = {
+    "CLIENT": "the customer's name",
+    "SITE": "the site address",
+    "CONTACT": "the customer's contact",
+    "START": "the contract start date",
+    "END": "the contract end date",
+    "VISITS": "the number of visits a year",
+    "CALLOUTS": "the free call-outs included",
+    "WARRANTY": "the warranty period",
+    "SLA": "the complaint response promise",
+    "LICENCE": "the operating licence number",
+}
+
+# Deliberately tolerant of spacing ({{ START }} and {{START}} both work)
+# and deliberately NOT tolerant of lowercase: a placeholder has to be
+# distinguishable from prose at a glance by whoever is writing the
+# wording, and {{start}} in the middle of a sentence is not.
+PLACEHOLDER_RE = re.compile(r"\{\{\s*([A-Z_]+)\s*\}\}")
+
+# What stands in for a fact the contract cannot supply. The pencil is the
+# Studio layer's own marker, kept so the two produce the same-looking
+# document while both exist.
+#
+# It prints. That is the point: an agreement that is missing the licence
+# number says so on the page, where somebody reading it before it goes to
+# a customer will see it. Silently printing nothing is how a blank lands
+# on a signature page.
+UNRESOLVED_MARKER = "\u270e"
 
 # Generic starting wording — pre-filled into every new contract's editable
 # Printed Agreement fields (see the field defaults below), so there is always
@@ -153,6 +203,120 @@ class FmAgreementMixin(models.AbstractModel):
     # ``agreement_line_ids`` is deliberately NOT declared here: it is a
     # One2many whose inverse field differs per model, so each concrete model
     # declares its own. Everything below assumes the name exists.
+
+    # ------------------------------------------------------------------
+    # Placeholders
+    # ------------------------------------------------------------------
+    fm_agreement_unresolved_count = fields.Integer(
+        string="Unfilled Agreement Facts",
+        compute="_compute_fm_agreement_unresolved",
+        help="How many placeholders in this contract's wording have "
+             "nothing to resolve to. Each one prints as a pencil mark on "
+             "the document rather than silently as nothing.",
+    )
+    fm_agreement_unresolved_names = fields.Char(
+        string="Unfilled",
+        compute="_compute_fm_agreement_unresolved",
+        help="Which facts are missing, in the words of whoever has to go "
+             "and find them.",
+    )
+
+    def _fm_agreement_placeholder_values(self):
+        """{placeholder name: value} for this contract.
+
+        Empty here. Every value depends on a field some concrete model
+        declares, and this mixin cannot name them -- so each module
+        contributes what it can see by overriding this on ``sale.order``
+        (fm_contract the dates and terms, fm_fsm the visit count,
+        fm_branch the licence) rather than by extending this mixin.
+
+        That is not a stylistic choice. Extending an AbstractModel only
+        reaches the concrete models built *before* the extension is
+        registered, so a mixin override added by a later module would
+        never run on a sale.order composed in fm_contract -- silently,
+        with no error. A plain _inherit on the concrete model always
+        runs.
+
+        A name mapped to a falsy value counts as unresolved, which is why
+        the contributors can return their fields unguarded.
+        """
+        self.ensure_one()
+        return {}
+
+    def _fm_agreement_texts(self):
+        """Every piece of wording a placeholder could be written into."""
+        self.ensure_one()
+        return [
+            self.quotation_intro_text,
+            self.scope_method_text,
+            self.service_text,
+            self.schedule_text,
+            self.exclusions_text,
+            self.scope_notes,
+            self.treatment_notes,
+            self.payment_terms_note,
+        ]
+
+    def _fm_render_agreement_text(self, text):
+        """The wording with its placeholders filled in.
+
+        Never writes. The stored text keeps its placeholders, so the same
+        contract re-rendered after somebody fills in the branch licence is
+        simply correct, with nothing to rebuild and no edit overwritten.
+        """
+        if not text:
+            return text
+        values = self._fm_agreement_placeholder_values()
+
+        def resolve(match):
+            name = match.group(1)
+            value = values.get(name)
+            if value:
+                return str(value)
+            # An unknown name is shown as written rather than blanked: a
+            # typo in the wording should look like a typo, not like a
+            # fact nobody filled in.
+            description = AGREEMENT_PLACEHOLDERS.get(name)
+            if description is None:
+                return match.group(0)
+            return "%s %s" % (UNRESOLVED_MARKER, description)
+
+        return PLACEHOLDER_RE.sub(resolve, text)
+
+    def _fm_agreement_unresolved(self):
+        """The placeholder names this contract's wording uses and cannot
+        fill, in the order they are defined rather than the order they
+        happen to appear."""
+        self.ensure_one()
+        values = self._fm_agreement_placeholder_values()
+        used = set()
+        for text in self._fm_agreement_texts():
+            if text:
+                used.update(PLACEHOLDER_RE.findall(text))
+        return [
+            name for name in AGREEMENT_PLACEHOLDERS
+            if name in used and not values.get(name)
+        ]
+
+    @api.depends(
+        "quotation_intro_text", "scope_method_text", "service_text",
+        "schedule_text", "exclusions_text", "scope_notes",
+        "treatment_notes", "payment_terms_note",
+    )
+    def _compute_fm_agreement_unresolved(self):
+        """Not stored, so it cannot be filtered on -- and should not be.
+
+        Whether a fact is missing depends on fields spread across three
+        modules; storing it would mean naming every one of them in a
+        depends from a mixin that cannot see them, and a stored value that
+        silently stops updating is worse than one computed on sight.
+        """
+        for record in self:
+            missing = record._fm_agreement_unresolved()
+            record.fm_agreement_unresolved_count = len(missing)
+            record.fm_agreement_unresolved_names = ", ".join(
+                AGREEMENT_PLACEHOLDERS[name] for name in missing
+            ) or False
 
     def _find_agreement_template(self, service_line):
         """Hook for fm_branch to also match on branch/state; base

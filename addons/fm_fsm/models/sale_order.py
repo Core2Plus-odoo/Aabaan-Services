@@ -3,7 +3,11 @@ from datetime import timedelta
 
 from odoo import _, api, fields, models
 
-from .fm_visit_schedule_mixin import ROLLING_HORIZON_DAYS, SLOT_START_HOUR
+from .fm_visit_schedule_mixin import (
+    FREQUENCY_PER_YEAR,
+    ROLLING_HORIZON_DAYS,
+    SLOT_START_HOUR,
+)
 
 
 class SaleOrder(models.Model):
@@ -146,6 +150,22 @@ class SaleOrder(models.Model):
 
     def _fm_company(self):
         return self.company_id or self.env.company
+
+    def _fm_agreement_placeholder_values(self):
+        """{{VISITS}} -- how many visits a year this cadence delivers.
+
+        A plain override on sale.order rather than an extension of
+        fm.agreement.mixin: extending an AbstractModel only reaches the
+        concrete models built before the extension is registered, and
+        sale.order was composed back in fm_contract. The mixin version
+        would never run, and nothing would say so.
+        """
+        values = super()._fm_agreement_placeholder_values()
+        per_year = FREQUENCY_PER_YEAR.get(self.visit_frequency)
+        if not per_year and self.visit_frequency == "custom" and self.custom_interval_days > 0:
+            per_year = round(365 / self.custom_interval_days)
+        values["VISITS"] = per_year or ""
+        return values
 
     # ------------------------------------------------------------------
     # Confirming the order fills the calendar

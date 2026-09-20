@@ -113,6 +113,14 @@
 
                 <page string="Printed Agreement" name="fm_agreement"
                       invisible="not is_fm_contract">
+                    <div class="alert alert-warning" role="alert"
+                         invisible="fm_agreement_unresolved_count == 0">
+                        <field name="fm_agreement_unresolved_count" class="oe_inline"/>
+                        fact(s) in this wording have nothing to fill them:
+                        <field name="fm_agreement_unresolved_names" class="oe_inline"/>.
+                        They print as a pencil mark on the document.
+                    </div>
+
                     <p class="text-muted">
                         Wording used by the printed Quotation and Service Agreement.
                         Leave a field blank to fall back to a sensible default.
