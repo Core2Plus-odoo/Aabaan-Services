@@ -53,7 +53,11 @@ creating a new one.
    where `sale.order.state` stops), health, and the printed agreement wording
    (`fm.agreement.mixin`). Also `fm.sla.rule`, service items, penalties and
    the Customers menu. The legacy `fm.contract` model (`_inherits sale.order`)
-   is frozen — nothing creates it, dependants are being re-pointed off it.
+   is **unreachable**: no views, no action, no menu, no dependant layers.
+   What is left of it is the model definition plus the `contract_id`
+   columns on `fm.sla.rule`, `fm.contract.penalty` and
+   `fm.contract.agreement.line`, and `project.task.fm_contract_id` — all
+   dropped together with a §5 pre-migration.
 4. `fm_fsm` — **the re-base core**. FM Field Service project, task stages,
    FM fields on `project.task` (`fm_contract_order_id` → the contract's
    `sale.order`; legacy `fm_contract_id` kept until `fm.contract` goes),
@@ -99,9 +103,8 @@ creating a new one.
 10. `fm_subscription` — recurring AMC billing on the **`sale.order`**:
     `product.template.fm_bills_as_subscription` opts a product in, and
     confirming a contract that sells one puts the order on the
-    `sale.subscription.plan` matching its billing frequency. The
-    `fm.contract` layer (the legacy **Start Subscription** button) is
-    kept only until that model goes.
+    `sale.subscription.plan` matching its billing frequency. The legacy
+    `fm.contract` layer (its **Start Subscription** button) is gone.
 11. `fm_aabaan_config` — **seed data**: branches, service categories, UAE
     compliance regimes, service products. Makes the platform Aabaan-ready.
 
@@ -350,6 +353,19 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   `fm_documents/tests/test_contract_reports.py`, which renders both
   documents fully populated **and** empty, because a quotation is printed
   long before the contract is complete.
+- **Deleting a file is a build-down risk that nothing local catches.**
+  A path left in a manifest's `data` after the file is gone, or a
+  `from . import x` left in an `__init__.py` after `x.py` is gone, both
+  pass `py_compile` and an XML parse and both stop Odoo from loading the
+  module — a red production build. They bite hardest in the least
+  interesting change to review: pulling one model's files out of four
+  modules at once. **Run `tools/check_manifest_data.py`**, which resolves
+  every manifest `data` entry and every package-relative import against
+  disk, and also names XML under a module that no manifest loads.
+  Removing a record from a data file needs no migration, by contrast:
+  `ir.model.data._process_end` deletes a module's stale records on
+  upgrade, newest id first, so inheriting child views go before their
+  parents.
 - **NEVER mix a plain Python class into a model's bases** —
   `class SaleOrder(SomePlainClass, models.Model)` — even though it looks like
   the tidy way to share a method across two models. A plain class carries an
@@ -405,7 +421,8 @@ not prove the production upgrade — always check the production `update.log`.
   `origin/main` and re-apply only the delta** before the next PR.
 - One change per PR; bump the touched module's `version` so Odoo upgrades it.
 - Validate before pushing: `python3 -m py_compile`, XML parse,
-  `tools/check_model_bases.py` and `tools/check_ir_rule_domains.py`.
+  `tools/check_model_bases.py`, `tools/check_ir_rule_domains.py` and
+  `tools/check_manifest_data.py`.
 - Commit trailers: `Co-Authored-By:` + `Claude-Session:` (never put the model
   id in commits/PRs).
 

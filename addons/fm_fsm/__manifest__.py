@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Field Service",
-    "version": "19.0.3.0.0",
+    "version": "19.0.3.1.0",
     "category": "Facility Management",
     "summary": "Facility Management on Odoo Field Service — FSM project, stages and asset-linked tasks",
     "description": """
@@ -32,16 +32,13 @@ are handled by native Odoo (recurrence, SLA policies, native calendar on tasks).
         "fm_contract",
     ],
     "data": [
-        "security/ir.model.access.csv",
         "security/security.xml",
         "data/fsm_stages.xml",
         "data/fsm_project.xml",
         "data/cron.xml",
         "views/project_task_views.xml",
-        "views/fm_contract_views.xml",
         "views/sale_order_views.xml",
         "views/menus.xml",
-        "wizard/fm_contract_wizard_views.xml",
     ],
     "installable": True,
     "application": False,

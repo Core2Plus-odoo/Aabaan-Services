@@ -1,7 +1,22 @@
 # -*- coding: utf-8 -*-
 from odoo import _, models
 
-from .fm_contract import FREQUENCY_TO_PERIOD, PERIOD_LABEL
+# Contract billing frequency -> subscription plan recurrence (value, unit).
+# Lived in fm_contract.py until the legacy fm.contract layer was removed;
+# it is the order's billing frequency that is mapped now.
+FREQUENCY_TO_PERIOD = {
+    "monthly": (1, "month"),
+    "quarterly": (3, "month"),
+    "semi_annual": (6, "month"),
+    "annual": (1, "year"),
+}
+
+PERIOD_LABEL = {
+    "monthly": "Monthly",
+    "quarterly": "Quarterly",
+    "semi_annual": "Semi-Annual",
+    "annual": "Annual",
+}
 
 
 class SaleOrder(models.Model):
