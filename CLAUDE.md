@@ -66,8 +66,10 @@ creating a new one.
 4. `fm_fsm` — **the re-base core**. FM Field Service project, task stages,
    FM fields on `project.task` (`fm_contract_order_id` → the contract's
    `sale.order`; legacy `fm_contract_id` kept until `fm.contract` goes),
-   visit auto-scheduling in `fm.visit.schedule.mixin` — and
-   `menu_fm_config_root`. **It is not the only visit generator on the
+   visit auto-scheduling in `fm.visit.schedule.mixin`, the **guarded
+   execution flow** (Start / Complete / Cancel Visit, the field report, the
+   automatic follow-up and the overdue watchdog — consolidation **P1**,
+   see §8) — and `menu_fm_config_root`. **It is not the only visit generator on the
    production database**: a Studio server action, *Generate Visit
    Schedule*, creates `project.task` rows too, keyed on
    `sale_order_id` + `x_visit_type`. See §4 on database-only
@@ -547,6 +549,36 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   one creates a `res.partner.bank` against `company.partner_id`, and a
   template that wants to print them reads `company.bank_ids` — the two
   look unrelated and are the same rows.
+- **A view naming a field the model does not have fails to LOAD — that is a
+  red build, not a runtime error.** The opposite of the QWeb case above, and
+  the reason `project.task.fm_is_fsm` exists: the guarded-execution buttons
+  need "is this a Field Service visit?" in an `invisible` expression, and
+  `industry_fsm`'s own `is_fsm` is not referenced anywhere in this
+  repository, so nothing here proves it is on `project.task` rather than
+  only on `project.project`. A related field we declare costs one line and
+  cannot be wrong. **Never put a field you have not seen in this repo into a
+  view expression** — declare a related field instead.
+- **The execution guards resolve stages by xmlid, not by name.**
+  `project.task._fm_stage("fsm_stage_in_progress")`. The module this was
+  ported from matched stage names case-insensitively, because on that
+  database the FSM stages were something somebody had typed in. Here they
+  are records in `fm_fsm/data/fsm_stages.xml`, and a business renaming
+  "In Progress" in the UI must not quietly switch the guards off.
+- **Completing a visit with no service document lands it in Pending
+  Documents, not in an error.** Refusing is the easy implementation and the
+  wrong one: the work really is finished, and a visit left in In Progress
+  says a technician is still standing on the roof. This is also why
+  `action_fm_complete_visit` never trips the document gate in `write()` —
+  it picks the stage the evidence supports. A *manual* drag to Completed
+  still trips both guards, which is the point.
+- **`GUARD_BYPASS` in the context is what lets the buttons do their job.**
+  The interception in `write()` refuses exactly the transitions the buttons
+  make, so each button writes under
+  `with_context(**{GUARD_BYPASS: True})`. It bypasses the execution guard
+  only — the document gate is deliberately still enforced on those writes.
+  A write that sets the stage *and* the evidence in one call (an import, an
+  RPC client) is allowed without the bypass, because it is doing the right
+  thing.
 - **NEVER mix a plain Python class into a model's bases** —
   `class SaleOrder(SomePlainClass, models.Model)` — even though it looks like
   the tidy way to share a method across two models. A plain class carries an
@@ -624,7 +656,7 @@ the other**. So it is a port, not a deletion. Eight blocks, ~1,700 lines:
 
 | | Capability | From → into | State |
 |---|---|---|---|
-| P1 | Guard-railed visit execution: check-in/out, required field report, auto follow-up on infestation, stage-jump interception, daily SLA escalation. **This is Studio step 4.** | `aabaan_field_ops` → `fm_fsm` | to do |
+| P1 | Guard-railed visit execution: check-in/out, required field report, auto follow-up on infestation, stage-jump interception, daily SLA escalation. **This is Studio step 4.** | `aabaan_field_ops` → `fm_fsm` | **done** |
 | P2 | Branch × service analytic segregation enforced at posting, receivables recovery, payment voucher | `aabaan_finance_core` → new `fm_finance` | to do |
 | P3 | FTA tax invoice PDF + document audit trail | `aabaan_invoice_report` → `fm_documents` | **done** |
 | P4 | Multi-site clients (area on contact, site on visit and invoice) | `aabaan_client_sites` → `fm_contract`/`fm_fsm` | to do |

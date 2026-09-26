@@ -19,6 +19,67 @@
         </field>
     </record>
 
+    <!-- The guarded execution flow: three buttons and the field report they
+         write. The buttons are the easy path and the correct path; dragging
+         a card to In Progress, Completed or Cancelled is intercepted in
+         project.task.write() with a message naming the button to use.
+
+         Guarded on fm_is_fsm because this view inherits the ordinary project
+         task form: an office task must not sprout a Start Visit button.
+
+         The fields the button conditions read live on the Field Report tab
+         below — a field only has to be somewhere in the view, not before
+         its first use. -->
+    <record id="view_fsm_task_form_fm_execution" model="ir.ui.view">
+        <field name="name">project.task.form.fm.execution</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="fm_is_fsm" invisible="1"/>
+                <button name="action_fm_start_visit" type="object" class="btn-primary"
+                        string="Start Visit"
+                        invisible="not fm_is_fsm or fm_visit_started_at or fm_visit_completed_at"/>
+                <button name="action_fm_complete_visit" type="object" class="btn-primary"
+                        string="Complete Visit"
+                        invisible="not fm_is_fsm or not fm_visit_started_at or fm_visit_completed_at"/>
+                <button name="action_fm_cancel_visit" type="object"
+                        string="Cancel Visit"
+                        invisible="not fm_is_fsm or fm_visit_completed_at"/>
+            </xpath>
+            <xpath expr="//sheet//notebook" position="inside">
+                <page string="Field Report" name="fm_field_report" invisible="not fm_is_fsm">
+                    <group>
+                        <group string="On Site">
+                            <field name="fm_visit_started_at"/>
+                            <field name="fm_visit_completed_at"/>
+                            <field name="fm_visit_duration_actual" widget="float_time"/>
+                            <field name="fm_sla_escalated"/>
+                        </group>
+                        <group string="Follow-up">
+                            <field name="fm_infestation_found"/>
+                            <field name="fm_followup_task_id"/>
+                            <field name="fm_followup_origin_id"
+                                   invisible="not fm_followup_origin_id"/>
+                        </group>
+                    </group>
+                    <group string="Work Carried Out">
+                        <field name="fm_treatment_summary" nolabel="1" colspan="2"
+                               placeholder="Areas treated and work done — the municipality return is written from this."/>
+                    </group>
+                    <group string="Chemicals / Materials Used">
+                        <field name="fm_chemicals_used" nolabel="1" colspan="2"
+                               placeholder="Product and quantity, as the municipality return requires."/>
+                    </group>
+                    <group string="Cancellation" invisible="fm_visit_completed_at">
+                        <field name="fm_cancel_reason" nolabel="1" colspan="2"
+                               placeholder="Required before a visit can be cancelled."/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
     <!-- Visit calendar: auto-scheduled and reactive FM work orders by date.
          Coloured by status (stage), keyed on the visit date (date_deadline).
          Each event shows the customer/site as its title (see the visit name
@@ -49,6 +110,11 @@
         <field name="inherit_id" ref="project.view_task_search_form"/>
         <field name="arch" type="xml">
             <xpath expr="//search" position="inside">
+                <filter name="fm_not_started" string="Past Plan, Not Started"
+                        domain="[('fm_visit_started_at', '=', False),
+                                 ('stage_id.fold', '=', False)]"/>
+                <filter name="fm_escalated" string="Escalated"
+                        domain="[('fm_sla_escalated', '=', True)]"/>
                 <separator/>
                 <filter name="fm_group_customer" string="Customer"
                         context="{'group_by': 'partner_id'}"/>
