@@ -1,27 +1,40 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Documents",
-    "version": "19.0.2.2.0",
+    "version": "19.0.3.0.0",
     "category": "Facility Management",
-    "summary": "Branded PDF documents (work order job sheet, quotation, contract) — UAE-ready",
+    "summary": "Branded PDF documents — job sheet, quotation, contract, tax invoice",
     "description": """
-FM Platform — Document layouts (brief §9.5)
-===========================================
-Branded A4 PDF documents on Odoo's standard letterhead (which carries the
-company name, address, logo and TRN/VAT — so they follow UAE practice):
-- Work Order service report (job sheet) with checklist, parts, labor, totals
-  in AED and the customer sign-off + CSAT.
-- Quotation — pre-contract proposal (scope, treatment, terms, pricing + VAT).
-- Service Agreement — signable legal contract (numbered Articles, pricing,
-  signature blocks).
+FM Platform — Document layouts
+==============================
 
-Tax invoices use Odoo's standard FTA-compliant Tax Invoice (account.move):
-set the company TRN in its VAT field and the 5% tax for full compliance.
+Branded A4 PDFs on Odoo's standard letterhead, which already carries the
+company name, address, logo and TRN — so they follow UAE practice without a
+second letterhead of our own to keep in step.
+
+* Work Order service report (job sheet): checklist, parts, labour, totals in
+  AED, customer sign-off and CSAT.
+* Quotation: the pre-contract proposal — scope, treatment, terms, pricing
+  with the VAT breakdown.
+* Service Agreement: the signable contract — numbered Articles, pricing and
+  signature blocks.
+* Tax Invoice: every mandatory field of Federal Decree-Law No. 8 of 2017 and
+  Cabinet Decision 52, plus a per-tax breakdown, the total in words, the
+  reverse-charge notice where the fiscal position actually calls for it, and
+  the company's real bank details where it has them.
+
+The Tax Invoice is a report action of its own. Odoo's native invoice print is
+left untouched — a branded document is never an overwrite of a core record.
+
+Customer invoices also gain a Document Audit Trail tab, built only from events
+the system can prove: created and posted timestamps, a mail that really was
+sent, payments really reconciled, credit notes really issued.
 """,
     "author": "C2P Consultants FZC LLC",
     "website": "https://c2p.ae",
     "license": "OPL-1",
     "depends": [
+        "account",
         "fm_fsm",
         "fm_compliance",
     ],
@@ -30,7 +43,9 @@ set the company TRN in its VAT field and the 5% tax for full compliance.
         "reports/fm_quotation_report.xml",
         "reports/fm_contract_report.xml",
         "reports/fm_certificate_report.xml",
+        "reports/fm_tax_invoice_report.xml",
         "views/sale_order_views.xml",
+        "views/account_move_views.xml",
     ],
     "installable": True,
     "application": False,

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The FM Tax Invoice. A NEW report action: Odoo's own invoice print
+         action is left completely alone.
+
+         That is not a stylistic preference. On the build this document was
+         ported from, a module overwrote the core Quotation report record to
+         point at its own template; the template later went away and every
+         sale order in the database stopped printing, including the customer
+         portal PDF. A branded document is a report of our own, never an
+         overwrite of Odoo's.
+
+         Bound into the Print menu on account.move, because unlike the
+         Quotation there is no FM-only form to hang a button on and an
+         accountant printing an invoice is the whole point. Odoo cannot bind
+         a report to a subset of a model, so _fm_tax_invoice_guard() is what
+         stops a vendor bill printing under a "Tax Invoice" heading. -->
+    <record id="action_report_fm_tax_invoice" model="ir.actions.report">
+        <field name="name">Tax Invoice</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fm_documents.report_fm_tax_invoice</field>
+        <field name="report_file">fm_documents.report_fm_tax_invoice</field>
+        <field name="print_report_name">'Tax Invoice - %s' % (object.name or '')</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+
+    <!-- Every mandatory field of Federal Decree-Law No. 8 of 2017 and
+         Cabinet Decision 52: the words "Tax Invoice", supplier name /
+         address / TRN / trade licence, recipient name / address / TRN when
+         registered, a sequential number, the invoice date, the date of
+         supply where it differs, per-line description, quantity, unit
+         price, discount and VAT rate, the gross and VAT amounts, and the
+         total payable. -->
+    <template id="report_fm_tax_invoice_document">
+        <t t-set="_guard" t-value="o._fm_tax_invoice_guard()"/>
+        <t t-set="company" t-value="o.company_id.sudo()"/>
+        <t t-set="has_discount" t-value="any(l.discount for l in o.invoice_line_ids if not l.display_type)"/>
+        <t t-set="tax_lines" t-value="o._fm_tax_breakdown()"/>
+        <t t-set="contract" t-value="o._fm_source_contract()"/>
+        <t t-set="cols" t-value="7 if has_discount else 6"/>
+
+        <t t-call="web.external_layout">
+            <div class="page" style="font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:12px; line-height:1.5; color:#2b2b2b;">
+                <style>
+                    .header img, .o_company_logo { max-height: 90px !important; max-width: 260px !important; width: auto !important; height: auto !important; }
+                    table.fm-plain, table.fm-plain td { border: none !important; }
+                </style>
+
+                <div class="row mb-4">
+                    <div class="col-7">
+                        <h2 class="mb-0" style="color:#1C2B3A; font-size:24px; font-weight:700;"
+                            t-esc="o._fm_document_title()"/>
+                        <div style="font-size:13px; color:#777;" dir="rtl"
+                             t-esc="o._fm_document_title_ar()"/>
+                    </div>
+                    <div class="col-5">
+                        <table style="width:100%; border-collapse:collapse;">
+                            <tr>
+                                <td style="padding:3px 8px; border:1px solid #ddd; background:#f7f7f7; font-weight:bold;">Invoice No.</td>
+                                <td style="padding:3px 8px; border:1px solid #ddd; text-align:right; font-weight:bold;"><span t-field="o.name"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:3px 8px; border:1px solid #ddd; background:#f7f7f7; font-weight:bold;">Invoice Date</td>
+                                <td style="padding:3px 8px; border:1px solid #ddd; text-align:right;"><span t-field="o.invoice_date"/></td>
+                            </tr>
+                            <tr t-if="'delivery_date' in o._fields and o.delivery_date and o.delivery_date != o.invoice_date">
+                                <td style="padding:3px 8px; border:1px solid #ddd; background:#f7f7f7; font-weight:bold;">Date of Supply</td>
+                                <td style="padding:3px 8px; border:1px solid #ddd; text-align:right;"><span t-field="o.delivery_date"/></td>
+                            </tr>
+                            <tr t-if="o.invoice_date_due">
+                                <td style="padding:3px 8px; border:1px solid #ddd; background:#f7f7f7; font-weight:bold;">Payment Due</td>
+                                <td style="padding:3px 8px; border:1px solid #ddd; text-align:right;"><span t-field="o.invoice_date_due"/></td>
+                            </tr>
+                            <tr t-if="o.invoice_origin or o.ref">
+                                <td style="padding:3px 8px; border:1px solid #ddd; background:#f7f7f7; font-weight:bold;">LPO / Ref</td>
+                                <td style="padding:3px 8px; border:1px solid #ddd; text-align:right;" t-esc="o.invoice_origin or o.ref"/>
+                            </tr>
+                            <tr t-if="contract">
+                                <td style="padding:3px 8px; border:1px solid #ddd; background:#f7f7f7; font-weight:bold;">Contract</td>
+                                <td style="padding:3px 8px; border:1px solid #ddd; text-align:right;">
+                                    <span t-esc="contract.fm_contract_number or contract.name"/>
+                                </td>
+                            </tr>
+                            <!-- fm_branch owns branch_id and depends on this
+                                 module, so it is resolved at runtime: the
+                                 invoice must print with or without it. -->
+                            <tr t-if="'branch_id' in o._fields and o.branch_id">
+                                <td style="padding:3px 8px; border:1px solid #ddd; background:#f7f7f7; font-weight:bold;">Branch</td>
+                                <td style="padding:3px 8px; border:1px solid #ddd; text-align:right;"><span t-field="o.branch_id"/></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <div style="font-size:10px; color:#999; text-transform:uppercase; letter-spacing:1px;">From</div>
+                        <div style="font-weight:700; text-transform:uppercase;" t-field="company.name"/>
+                        <div style="font-size:11px; color:#666;" t-field="company.partner_id"
+                             t-options='{"widget": "contact", "fields": ["address"], "no_marker": true}'/>
+                        <div t-if="company.vat" style="font-size:11px; color:#666;">TRN: <span t-field="company.vat"/></div>
+                        <div t-if="company.company_registry" style="font-size:11px; color:#666;">Trade Licence: <span t-field="company.company_registry"/></div>
+                    </div>
+                    <div class="col-6">
+                        <div style="font-size:10px; color:#999; text-transform:uppercase; letter-spacing:1px;">Bill To</div>
+                        <div style="font-weight:700; text-transform:uppercase;" t-field="o.partner_id.name"/>
+                        <div style="font-size:11px; color:#666;" t-field="o.partner_id"
+                             t-options='{"widget": "contact", "fields": ["address"], "no_marker": true}'/>
+                        <div t-if="o.partner_id.vat" style="font-size:11px; color:#666;">TRN: <span t-field="o.partner_id.vat"/></div>
+                    </div>
+                </div>
+
+                <!-- Shown only when this invoice's own fiscal position is
+                     configured for it. Never asserted by default. -->
+                <p t-if="o._fm_reverse_charge()" style="font-size:11px; font-style:italic; color:#666;">
+                    This supply is subject to the reverse charge mechanism — the recipient is
+                    required to account for VAT on this invoice.
+                </p>
+
+                <table style="width:100%; border-collapse:collapse; font-size:11.5px; margin-top:8px;">
+                    <thead>
+                        <tr style="background:#EE7A22; color:#ffffff; font-weight:bold;">
+                            <td style="width:26px; padding:6px 4px; text-align:center;">#</td>
+                            <td style="padding:6px;">Description</td>
+                            <td style="width:44px; padding:6px; text-align:center;">Qty</td>
+                            <td style="width:80px; padding:6px; text-align:right;">Unit Price</td>
+                            <td t-if="has_discount" style="width:50px; padding:6px; text-align:center;">Disc.%</td>
+                            <td style="width:46px; padding:6px; text-align:center;">VAT%</td>
+                            <td style="width:92px; padding:6px; text-align:right;">Amount</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="o._fm_numbered_lines()" t-as="row">
+                            <t t-set="line" t-value="row['line']"/>
+                            <tr t-if="line.display_type == 'line_section'">
+                                <td t-att-colspan="cols" style="background:#f4f4f5; font-weight:bold; padding:5px 8px; border:1px solid #ddd;" t-esc="line.name"/>
+                            </tr>
+                            <tr t-elif="line.display_type == 'line_note'">
+                                <td t-att-colspan="cols" style="font-style:italic; color:#666; padding:4px 8px; border:1px solid #ddd;">
+                                    <span t-field="line.name"/>
+                                </td>
+                            </tr>
+                            <tr t-else="">
+                                <td style="text-align:center; padding:5px 4px; border:1px solid #ddd; vertical-align:top;" t-esc="row['no']"/>
+                                <td style="padding:5px 8px; border:1px solid #ddd; vertical-align:top;">
+                                    <span style="white-space:pre-line;" t-esc="o._fm_line_description(line)"/>
+                                </td>
+                                <td style="text-align:center; padding:5px 4px; border:1px solid #ddd; vertical-align:top;" t-esc="'%g' % line.quantity"/>
+                                <td style="text-align:right; padding:5px 8px; border:1px solid #ddd; vertical-align:top;"
+                                    t-out="line.price_unit" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                <td t-if="has_discount" style="text-align:center; padding:5px 4px; border:1px solid #ddd; vertical-align:top;" t-esc="'%g' % line.discount"/>
+                                <td style="text-align:center; padding:5px 4px; border:1px solid #ddd; vertical-align:top;"
+                                    t-esc="'%g' % (line.tax_ids[:1].amount if line.tax_ids else 0)"/>
+                                <td style="text-align:right; padding:5px 8px; border:1px solid #ddd; vertical-align:top;"
+                                    t-out="line.price_subtotal" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <table class="fm-plain" style="width:52%; margin-left:48%; border-collapse:collapse; font-size:11.5px; margin-top:10px; page-break-inside:avoid;">
+                    <tr>
+                        <td style="padding:3px 8px; text-align:left;">Subtotal (excl. VAT)</td>
+                        <td style="padding:3px 8px; text-align:right;"
+                            t-out="o.amount_untaxed" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                    </tr>
+                    <tr t-foreach="tax_lines" t-as="tl">
+                        <td style="padding:3px 8px; text-align:left;">
+                            <span t-esc="tl['name']"/> (<span t-esc="'%g' % tl['rate']"/>%)
+                        </td>
+                        <td style="padding:3px 8px; text-align:right;"
+                            t-out="tl['amount']" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                    </tr>
+                    <tr t-if="not tax_lines">
+                        <td style="padding:3px 8px; text-align:left;">VAT</td>
+                        <td style="padding:3px 8px; text-align:right;"
+                            t-out="o.amount_tax" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                    </tr>
+                    <tr style="font-weight:bold; font-size:13px;">
+                        <td style="padding:5px 8px; text-align:left; border-top:2px solid #EE7A22;">Total Payable</td>
+                        <td style="padding:5px 8px; text-align:right; border-top:2px solid #EE7A22; color:#EE7A22;"
+                            t-out="o.amount_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                    </tr>
+                    <tr t-if="'invoice_currency_rate' in o._fields and o.currency_id != company.currency_id">
+                        <td style="padding:3px 8px; text-align:left; font-size:10px; color:#666;">Exchange rate</td>
+                        <td style="padding:3px 8px; text-align:right; font-size:10px; color:#666;">
+                            1 <span t-esc="company.currency_id.name"/> =
+                            <span t-esc="'%.4f' % o.invoice_currency_rate"/> <span t-esc="o.currency_id.name"/>
+                        </td>
+                    </tr>
+                </table>
+
+                <div t-if="o._fm_amount_in_words()" style="font-weight:bold; font-style:italic; margin-top:10px; clear:both;">
+                    Total in words: <t t-esc="o._fm_amount_in_words()"/> Only.
+                </div>
+
+                <!-- Shown only when the company really has a bank account on
+                     file. Bank details a customer is asked to pay into are
+                     never invented to fill a gap in the layout. -->
+                <div t-if="company.bank_ids" style="margin-top:22px; page-break-inside:avoid;">
+                    <t t-set="bank" t-value="company.bank_ids[0]"/>
+                    <div style="font-size:10px; color:#999; text-transform:uppercase; letter-spacing:1px;">Payment Details</div>
+                    <table class="fm-plain" style="width:70%; border-collapse:collapse; font-size:11.5px;">
+                        <tr t-if="bank.bank_id">
+                            <td style="padding:2px 8px 2px 0; color:#666; width:34%;">Bank</td>
+                            <td style="padding:2px 0;"><span t-field="bank.bank_id.name"/></td>
+                        </tr>
+                        <tr t-if="bank.acc_holder_name or company.name">
+                            <td style="padding:2px 8px 2px 0; color:#666;">Account Name</td>
+                            <td style="padding:2px 0;"><span t-esc="bank.acc_holder_name or company.name"/></td>
+                        </tr>
+                        <tr t-if="bank.acc_number">
+                            <td style="padding:2px 8px 2px 0; color:#666;">Account / IBAN</td>
+                            <td style="padding:2px 0;"><span t-field="bank.acc_number"/></td>
+                        </tr>
+                        <tr t-if="bank.bank_id.bic">
+                            <td style="padding:2px 8px 2px 0; color:#666;">SWIFT / BIC</td>
+                            <td style="padding:2px 0;"><span t-field="bank.bank_id.bic"/></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="text-muted mt-4" style="font-size:11px; border-top:1px solid #ddd; padding-top:6px;">
+                    <t t-if="company.vat">TRN: <span t-field="company.vat"/> · </t>
+                    This is a tax invoice issued under Federal Decree-Law No. 8 of 2017.
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_fm_tax_invoice">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="o" t-value="o.with_context(lang=o.partner_id.lang or o.env.lang)"/>
+                <t t-call="fm_documents.report_fm_tax_invoice_document"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>
