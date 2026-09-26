@@ -21,7 +21,7 @@ app is a single cockpit that operates them.
 | Calendar | native `calendar.event` on tasks | — |
 | SLA | (native SLA policies to be configured) | SLA targets kept on `fm.sla.rule` (in `fm_contract`) |
 | Contracts / AMC billing | **Sales** — the contract IS the `sale.order` — + **Subscriptions** (`sale.subscription`) | `fm_contract` adds FM fields to `sale.order`; `fm_subscription`. The old `fm.contract` model is gone |
-| Invoicing | native `account.move` (FTA tax invoice) | — |
+| Invoicing | native `account.move` | `fm_documents` prints the **FM Tax Invoice** (a report action of its own — Odoo's native invoice print is untouched) and adds the Document Audit Trail |
 | Assets | **Maintenance** (`maintenance.equipment`) | `fm.asset` |
 | Compliance | Activities / Documents | `fm_compliance` regimes + certificates |
 | Dashboards | native graph/pivot actions on the records themselves | **one** executive dashboard: `fm_command_centre`, its own app (OWL, seven tabs). The FM app carries no dashboards |
@@ -75,10 +75,18 @@ creating a new one.
 5. `fm_compliance` — `fm.compliance.regime` / `fm.compliance.certificate`,
    watchdog cron; remediation creates a `project.task`.
 6. `fm_documents` — QWeb PDF layouts (Work Order job sheet, Contract,
-   Compliance Certificate), bilingual EN/AR, TRN, QR. The **Quotation**
-   and the **Service Agreement** print from the `sale.order` — the two
-   buttons `fm_documents` adds to the FM contract header — because that
-   is where the wording is written now.
+   Compliance Certificate, **Tax Invoice**), bilingual EN/AR, TRN, QR. The
+   **Quotation** and the **Service Agreement** print from the `sale.order` —
+   the two buttons `fm_documents` adds to the FM contract header — because
+   that is where the wording is written now. The **FM Tax Invoice** is a
+   report action of its own bound into the Print menu on `account.move`,
+   carrying every mandatory field of Federal Decree-Law No. 8 of 2017, the
+   per-tax breakdown, the total in words, the reverse-charge notice *only*
+   where the fiscal position calls for it, and the company's real bank
+   details *only* where it has them. Because the binding cannot be
+   restricted to customer documents, `_fm_tax_invoice_guard()` refuses to
+   render for a vendor bill. Ported from `aabaan_invoice_report` on the
+   retired build — consolidation plan **P3** (see §8).
 7. `fm_branch` — `fm.branch` (emirate offices); `branch_id` on `fm.contract`
    and `project.task`; branch on `hr.employee` and PDFs.
 8. `fm_reports` — OWL "Reports Hub" catalog of native actions.
@@ -524,6 +532,21 @@ is migrated by `fm_wo_migration` / `fm_aabaan_migration`.
   expecting weekend visits gets none, because no module reads that
   field. A duplicate is ignored; an inversion actively misleads. The
   label collision warning only catches the easy half of this problem.
+- **A manifest `description` is parsed as reStructuredText, and a malformed
+  one is an ERROR in every build log.** `fm_documents` carried
+  `<string>:7: (ERROR/3) Unexpected indentation` for months: a `-` bullet
+  list started on the line straight after a paragraph, with no blank line
+  between them. Harmless to the build, permanently in the log, and it
+  trains everyone to ignore the log. Blank line before every list, and
+  check it with `docutils`:
+  `publish_string(manifest["description"], writer_name="html")` raises or
+  reports on exactly what Odoo's Apps page will.
+- **`res.company.bank_ids` exists only through delegation.** `res.company`
+  has `_inherits = {"res.partner": "partner_id"}`, so `company.bank_ids`
+  reads the *partner's* bank accounts. A test that wants a company to have
+  one creates a `res.partner.bank` against `company.partner_id`, and a
+  template that wants to print them reads `company.bank_ids` — the two
+  look unrelated and are the same rows.
 - **NEVER mix a plain Python class into a model's bases** —
   `class SaleOrder(SomePlainClass, models.Model)` — even though it looks like
   the tidy way to share a method across two models. A plain class carries an
@@ -586,7 +609,55 @@ not prove the production upgrade — always check the production `update.log`.
 
 ---
 
-## 8. See also
+## 8. Platform consolidation — retiring the second build
+
+There are **two** Odoo.sh projects implementing this business. This one
+(`Aabaan-Services`, the `fm_*` suite) is the one Aabaan runs on — confirmed
+26 Sep 2026: it holds the live operating data. The other
+(`core2plus-odoo-aabaan`, repo `aabaan`, the `aabaan_*` suite) is being
+**retired**.
+
+It is not a stale first attempt. Built through August 2026 in 102 commits, it
+is a deliberate second-generation rewrite — its own manifests call this suite
+"the previous Aabaan-Services suite" — and **neither build is a superset of
+the other**. So it is a port, not a deletion. Eight blocks, ~1,700 lines:
+
+| | Capability | From → into | State |
+|---|---|---|---|
+| P1 | Guard-railed visit execution: check-in/out, required field report, auto follow-up on infestation, stage-jump interception, daily SLA escalation. **This is Studio step 4.** | `aabaan_field_ops` → `fm_fsm` | to do |
+| P2 | Branch × service analytic segregation enforced at posting, receivables recovery, payment voucher | `aabaan_finance_core` → new `fm_finance` | to do |
+| P3 | FTA tax invoice PDF + document audit trail | `aabaan_invoice_report` → `fm_documents` | **done** |
+| P4 | Multi-site clients (area on contact, site on visit and invoice) | `aabaan_client_sites` → `fm_contract`/`fm_fsm` | to do |
+| P5 | Refuse a quotation that would bill nothing | `aabaan_pricing_guard` → `fm_contract` | to do |
+| P6 | Emirate tagging, contact enrichment | `aabaan_data_enrichment` → `fm_aabaan_config` | to do |
+| P7 | HR, payroll, attendance, leave, fleet | `aabaan_hr_fleet` → `fm_aabaan_payroll` | to do |
+| P8 | Quotation template gallery | `aabaan_templates_library` → `fm_contract` | to do |
+
+**Not ported** — this suite already answers them: `aabaan_visit_schedule`,
+`aabaan_contract_cockpit`, `aabaan_ceo_dashboard` (the same seven tabs as
+`fm_command_centre`), `aabaan_branches`, `aabaan_letterhead`,
+`aabaan_quotation_report`, `aabaan_service_reports`, `aabaan_ux`.
+**Possible P9:** `aabaan_service_contracts` carries *per-site* SLA lines and a
+compliance document pack; we have SLA rules per contract only.
+
+**When porting, keep two rules.** Do not bring across a second copy of
+something this suite already has — a second letterhead, a second dashboard —
+because removing exactly that duplication is the point. And resolve anything
+outside the ported module's own dependencies at runtime (`in self._fields`):
+`fm_branch` depends on `fm_documents`, so `fm_documents` can never depend
+back on it.
+
+**Still blocking, and it can undo the decision:** does the `aabaan` database
+hold anything entered since 1 Aug 2026 that is not here? Neither instance is
+reachable from a dev environment, so somebody with Odoo.sh access has to
+answer. If it does, this is a data merge, not a retirement. Retirement itself
+is: full backup off Odoo.sh → every port live and tested → reconcile record
+counts both sides → read-only for one full billing cycle → only then
+decommission.
+
+---
+
+## 9. See also
 
 - `docs/UAE_FM_KNOWLEDGE.md` — UAE facility-management domain knowledge.
 - `docs/IMPLEMENTATION_BRIEF.md` — original platform brief.
