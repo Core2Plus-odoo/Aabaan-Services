@@ -34,4 +34,23 @@
         <field name="active" eval="False"/>
     </record>
 
+    <!-- The visit watchdog. ACTIVE, unlike the generator above, and the
+         difference is the point: this creates an activity for a person to
+         look at and writes no visits into anybody's calendar. An unattended
+         job that schedules work is a risk; an unattended job that says
+         "nobody has started this" is what a watchdog is for.
+
+         Once per visit — see project.task.fm_sla_escalated. A watchdog that
+         chases the same job every morning is one everybody learns to
+         filter out. -->
+    <record id="cron_fm_visit_escalations" model="ir.cron">
+        <field name="name">FM: Escalate visits past plan and not started</field>
+        <field name="model_id" ref="project.model_project_task"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_fm_visit_escalations()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+
 </odoo>
