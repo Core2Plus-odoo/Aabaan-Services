@@ -1,282 +1,1409 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo noupdate="1">
 
-    <!-- Water Tank Cleaning — transcribed from real Aaban quotes/contracts
-         (DR.SAMI BUILDING Contract 968/26; Medco Contracting Quote 495/26).
-         Editable in the UI afterwards. -->
-    <record id="agreement_template_water_tank" model="fm.contract.agreement.template">
-        <field name="name">Water Tank Cleaning — Standard</field>
+    <!-- Aaban's own contract documents ("Contract Template" folder), one
+         agreement template per document, printed in the client's own layout.
+         The wording is the document's own; {{CLIENT}}, {{START}} and the other
+         placeholders are the facts of each contract, filled in when printed. -->
+
+    <record id="agreement_template_water_tank_fujairah" model="fm.contract.agreement.template">
+        <field name="name">Water Tank Cleaning — Fujairah</field>
         <field name="service_line">water_tank</field>
-        <field name="quotation_intro_text">We are thankful for the interest and confidence shown towards our services. With reference to the subject inquiry, please find our competitive proposal for water tank cleaning and disinfection as follows.</field>
-        <field name="scope_method_text">Our process starts with the deep cleaning of the entire water tank: draining out the existing water, cleaning the interior tanks, disinfection, washing and flushing the tanks, refilling the tanks with fresh water, and laboratory testing.</field>
-        <field name="service_text">Aaban will provide Water Tank Cleaning and Disinfection at the site stated above, in accordance with the schedule detailed in this agreement. The tanks will be cleaned and disinfected as per Municipality standards and guidelines using environmentally friendly chemicals approved by the Municipality. Stains, sediment and mould are removed with brushes, and the tanks are thoroughly rinsed with fresh water and checked for pH neutrality before refilling.</field>
-        <field name="schedule_text">The customer agrees to fulfil all technical guidelines requested by Aaban to secure the best results. Tanks should be drained by the client prior to the scheduled arrival of the cleaning team, or the client should provide access with the tank at 5-10% of water level or empty.</field>
+        <field name="branch_id" ref="branch_fujairah"/>
+        <field name="replaces_standard_articles" eval="True"/>
+        <field name="client_layout" eval="True"/>
+        <field name="signature_party">Aaban Classic Building Cleaning Fujairah Branch 1</field>
+        <field name="table_columns">unit,rate,frequency,tax,grand_total</field>
+        <field name="italic_labels" eval="True"/>
     </record>
 
-    <record id="agreement_template_water_tank_line_safety" model="fm.contract.agreement.template.line">
-        <field name="template_id" ref="agreement_template_water_tank"/>
+    <record id="agreement_template_water_tank_fujairah_line_01" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_fujairah"/>
         <field name="sequence">10</field>
-        <field name="name">Safety</field>
-        <field name="body">Aaban carries out all work strictly in accordance with the highest safety standards. All technicians are trained in all aspects of safety, are well supervised to ensure operations run smoothly, and are equipped with the required PPE (goggles, gloves, safety shoes, safety belts) and instruments for this process.</field>
+        <field name="kind">parties</field>
+        <field name="name">First Party / Second Party</field>
+        <field name="body"><![CDATA[First Party
+Aaban Classic Building Cleaning Fujairah Branch 1
+License No: 1026622
+Address : : Shop #3, Block A, Plot C11A, Sakamkam, Fujairah - UAE
+Contact No: 055-5229706 & 80022226
+Second Party:
+{{CLIENT}}
+{{CLIENT_PHONE}}]]></field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><b>First Party</b></p><p style="margin:0;margin-top:0.42em;">Aaban Classic Building Cleaning Fujairah Branch 1</p><p style="margin:0;margin-top:0.33em;">License No: 1026622</p><p style="margin:0;margin-top:0.42em;">Address : : Shop #3, Block A, Plot C11A, Sakamkam, Fujairah - UAE</p><p style="margin:0;margin-top:0.33em;">Contact No: 055-5229706 &amp; 80022226</p><p style="margin:0;margin-top:0.42em;"><b>Second Party:</b></p><p style="margin:0;margin-top:0.33em;">{{CLIENT}}</p><p style="margin:0;margin-top:0.42em;">{{CLIENT_PHONE}}</p>]]></field>
     </record>
 
-    <record id="agreement_template_water_tank_line_tank_details" model="fm.contract.agreement.template.line">
-        <field name="template_id" ref="agreement_template_water_tank"/>
+    <record id="agreement_template_water_tank_fujairah_line_02" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_fujairah"/>
         <field name="sequence">20</field>
-        <field name="name">Tank Details</field>
-        <field name="body">[Fill in for this site: tank type(s), capacity in USG, and total number of tanks — e.g. "RCC underground tank (30,000 USG x 1); GRP panel tank (5,000 USG x 1); total 2 tanks, 35,000 USG."]</field>
+        <field name="kind">article</field>
+        <field name="name">Article 1- Duration of the contract :</field>
+        <field name="body"><![CDATA[This contract is valid from {{START}} to {{END}}]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 1- Duration of the contract :</b></u></p><p style="margin:0;margin-top:0.33em;">This contract is valid from <b>{{START}} to {{END}}</b></p></div>]]></field>
     </record>
 
-    <record id="agreement_template_water_tank_line_customer_resp" model="fm.contract.agreement.template.line">
-        <field name="template_id" ref="agreement_template_water_tank"/>
+    <record id="agreement_template_water_tank_fujairah_line_03" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_fujairah"/>
         <field name="sequence">30</field>
-        <field name="name">Customer Responsibility</field>
-        <field name="body">1. Tanks will be drained by the client prior to the scheduled arrival of the cleaning team, or the client will provide the tank at 5-10% of water level or empty.
-2. Client to provide 220V single-phase electricity supply and water supply (60 litre/min) near the working location.
-3. Work permit to be prepared in advance.
-4. Client to ensure proper access is available to all units.
-5. Client to arrange all passes and permits required for the vehicle and operator at the service location, or parking during service time.
-6. Safe storage for Aaban's equipment until completion of work.
-7. Waste disposal facility for removed debris.
-8. An authorised person/staff should be present for verification and the completion report upon completion of each area.
-9. Leftover water below suction level in the tanks will be drained by the operator into the client's drainage system.</field>
+        <field name="kind">article</field>
+        <field name="name">Article 2- Service :</field>
+        <field name="body"><![CDATA[AABAN agree to supply pest control services to the Second Party at {{CLIENT}} Ajman, UAE dated {{START}}
+AABAN will provide the services during the hours agreed the Second Party and in accordance schedule detailed below. The First Party will ensure that everybody providing the services has the necessary training and authorization to do so.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.42em;"><p style="margin:0;"><u><b>Article 2- Service :</b></u></p><p style="margin:0;margin-top:0.42em;">AABAN agree to supply pest control services to the Second Party at <b>{{CLIENT}} </b>Ajman<b>, UAE dated {{START}}</b></p><p style="margin:0;margin-top:0.42em;"><b>AABAN</b> will provide the services during the hours agreed the Second Party and in accordance schedule detailed below. The First Party will ensure that everybody providing the services has the necessary training and authorization to do so.</p></div>]]></field>
     </record>
 
-    <record id="agreement_template_water_tank_line_report" model="fm.contract.agreement.template.line">
-        <field name="template_id" ref="agreement_template_water_tank"/>
+    <record id="agreement_template_water_tank_fujairah_line_04" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_fujairah"/>
         <field name="sequence">40</field>
-        <field name="name">After Service Report</field>
-        <field name="body">Photographs will be taken before and after the work and included in the final report. The service report will be issued within 8-10 working days after completion of work.</field>
+        <field name="kind">article</field>
+        <field name="name">Article 3- The Scope of Work :</field>
+        <field name="body"><![CDATA[Areas to be covered :  Common Area, Lobbies, Corridors,  Staircase, Parking Lot, Storeroom, Garbage Room, Electrical Room, Pump Room, Telephone Room, Outside Area Related to Building except Commercial Shops, Rat Bait Stations included.
+TREATMENT TO BE TREATED :
+Crawling Insects: Cockroaches, Ants, etc., using chemical and non-chemical control measures.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:1.06em;"><p style="margin:0;"><u><b>Article 3- The Scope of Work :</b></u></p><p style="margin:0;margin-top:0.42em;">Areas to be covered :  Common Area, Lobbies, Corridors,  Staircase, Parking Lot, Storeroom, Garbage Room, Electrical Room, Pump Room, Telephone Room, Outside Area Related to Building except Commercial Shops, Rat Bait Stations included.</p><p style="margin:0;margin-top:2.25em;"><u><b>TREATMENT TO BE TREATED :</b></u></p><p style="margin:0;margin-top:0.33em;"><b>Crawling Insects: </b>Cockroaches, Ants, etc., using chemical and non-chemical control measures.</p></div>]]></field>
     </record>
 
-    <record id="agreement_template_water_tank_line_terms" model="fm.contract.agreement.template.line">
-        <field name="template_id" ref="agreement_template_water_tank"/>
+    <record id="agreement_template_water_tank_fujairah_line_05" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_fujairah"/>
         <field name="sequence">50</field>
-        <field name="name">Additional Contract Terms</field>
-        <field name="body">As per the relevant Municipality's guidelines, the rooftop tank should be cleaned only after cleaning the main supply tank. If the client requests cleaning of the rooftop tank only and the water sample subsequently tests positive, Aaban will not be responsible for re-cleaning or re-sampling.</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+        <field name="body"><![CDATA[(the priced lines of the contract)]]></field>
     </record>
 
-    <!-- Anti-Termite Treatment — transcribed from a real Aaban quote
-         (AL SIKKA BUILDING CONT Quote 129/25, pre-construction termite
-         control). Editable in the UI afterwards. -->
-    <record id="agreement_template_termite" model="fm.contract.agreement.template">
-        <field name="name">Anti-Termite Treatment — Standard</field>
-        <field name="service_line">termite</field>
-        <field name="scope_method_text">Operations are carried out as per the relevant Municipality's stated/approved procedures and terms and conditions for pre-construction termite control, typically across three stages: Stage 1 — PCC &amp; RCC; Stage 2 — vertical and horizontal treatment inside the tie beams; Stage 3 — vertical and horizontal treatment outside the tie beams.</field>
-        <field name="service_text">Aaban will provide anti-termite treatment at the site stated above, in accordance with the treatment type and materials/methods detailed in this agreement, using procedures approved by the relevant Municipality.</field>
+    <record id="agreement_template_water_tank_fujairah_line_06" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_fujairah"/>
+        <field name="sequence">60</field>
+        <field name="kind">article</field>
+        <field name="name">Article 4- Service Schedule :</field>
+        <field name="body"><![CDATA[The customer agrees to fulfill all technical guidelines asked by AABAN to secure the best results.
+Second party will secure its client rep. with AABAN technicians during the treatment.
+All the areas that will not be ready cleaned for the scheduled treatment will be avoided and will be treated with the next treatment.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:1.06em;"><p style="margin:0;"><u><b>Article 4- Service Schedule :</b></u></p><p style="margin:0;margin-top:0.42em;">The customer agrees to fulfill all technical guidelines asked by AABAN to secure the best results.</p><p style="margin:0;margin-top:0.33em;">Second party will secure its client rep. with AABAN technicians during the treatment.</p><p style="margin:0;margin-top:0.42em;">All the areas that will not be ready cleaned for the scheduled treatment will be avoided and will be treated with the next treatment.</p></div>]]></field>
     </record>
 
-    <record id="agreement_template_termite_line_treatment_type" model="fm.contract.agreement.template.line">
-        <field name="template_id" ref="agreement_template_termite"/>
+    <record id="agreement_template_water_tank_fujairah_line_07" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_fujairah"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Article 5- Unscheduled Services and Conditions of Supply :</field>
+        <field name="body"><![CDATA[Article 5- Unscheduled Services and Conditions of Supply :
+The first party will attend to unscheduled services at the request of the Second Party only twice during the whole contract period. If the requested service results from an area previous serviced, which is still under warranty, the First Party will provide the service at no charge to the Second Party. Any additional service will be served after quote approval from second party.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.34em;"><p style="margin:0;"><u><b>Article 5- Unscheduled Services and Conditions of Supply :</b></u></p><p style="margin:0;margin-top:0.42em;">The first party will attend to unscheduled services at the request of the Second Party only twice during the whole contract period. If the requested service results from an area previous serviced, which is still under warranty, the First Party will provide the service at no charge to the Second Party. Any additional service will be served after quote approval from second party.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_fujairah_line_08" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_fujairah"/>
+        <field name="sequence">80</field>
+        <field name="kind">article</field>
+        <field name="name">Article 6- Exclusions :</field>
+        <field name="body"><![CDATA[This contract excludes fumigation for stored products pests.
+This contract excludes termites and wood pest treatments. This contract excludes bird control and stray animals.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 6- Exclusions :</b></u></p><p style="margin:0;margin-top:0.42em;">This contract excludes fumigation for stored products pests.</p><p style="margin:0;margin-top:0.33em;">This contract excludes termites and wood pest treatments. This contract excludes bird control and stray animals.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_fujairah_line_09" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_fujairah"/>
+        <field name="sequence">90</field>
+        <field name="kind">article</field>
+        <field name="name">Article 7- Commencement of Services :</field>
+        <field name="body"><![CDATA[The First Party will commence the agreed within ten{10) days from the date the Second Party signs the contract and delivers it to the First Party.
+The Second Party agrees to provide the First Party access to the areas to be serviced during the hours agreed. The First Party will provide a service scheduled day, they will be invoiced for the service.
+The Second Party may incur additional costs if the First Party is required to provide an unscheduled service.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 7- Commencement of Services :</b></u></p><p style="margin:0;margin-top:0.42em;">The First Party will commence the agreed within ten{10) days from the date the Second Party signs the contract and delivers it to the First Party.</p><p style="margin:0;">The Second Party agrees to provide the First Party access to the areas to be serviced during the hours agreed. The First Party will provide a service scheduled day, they will be invoiced for the service.</p><p style="margin:0;margin-top:0.33em;">The Second Party may incur additional costs if the First Party is required to provide an unscheduled service.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_fujairah_line_10" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_fujairah"/>
+        <field name="sequence">100</field>
+        <field name="kind">article</field>
+        <field name="name">Article 8- Contract Termination :</field>
+        <field name="body"><![CDATA[At the end of the contract period, this contract will continue to be valid and renewed against the same conditions unless otherwise cancelled by either party giving one month notice.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 8- Contract Termination :</b></u></p><p style="margin:0;margin-top:0.42em;">At the end of the contract period, this contract will continue to be valid and renewed against the same conditions unless otherwise cancelled by either party giving one month notice.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_fujairah_line_11" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_fujairah"/>
+        <field name="sequence">110</field>
+        <field name="kind">article</field>
+        <field name="name">Article 9 - Payment Terms :</field>
+        <field name="body"><![CDATA[Article 9 - Payment Terms :
+{{PAYMENT_TERMS}}]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.34em;"><p style="margin:0;"><u><b>Article 9 - Payment Terms :</b></u></p><p style="margin:0;margin-top:0.42em;">{{PAYMENT_TERMS}}</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_ajman" model="fm.contract.agreement.template">
+        <field name="name">Water Tank Cleaning — Ajman</field>
+        <field name="service_line">water_tank</field>
+        <field name="branch_id" ref="branch_ajman"/>
+        <field name="replaces_standard_articles" eval="True"/>
+        <field name="client_layout" eval="True"/>
+        <field name="signature_party">Aaban Classic Building Cleaning LLC</field>
+        <field name="table_columns">unit,rate,frequency,tax,grand_total</field>
+        <field name="italic_labels" eval="False"/>
+    </record>
+
+    <record id="agreement_template_water_tank_ajman_line_01" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_ajman"/>
         <field name="sequence">10</field>
-        <field name="name">Treatment Type</field>
-        <field name="body">[Specify for this contract: e.g. "Spray (pre-construction)."]</field>
+        <field name="kind">parties</field>
+        <field name="name">First Party / Second Party</field>
+        <field name="body"><![CDATA[First Party:
+Aaban Classic Building Cleaning LLC
+License No: 103074
+Address: Shop -1, Jurf, Ajman; UAE
+Contact No: 0555229706 & 80022226
+Second Party:
+{{CLIENT_TITLE}}
+{{CLIENT}}
+{{CLIENT_ADDRESS_LINES}}]]></field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><b>First Party:</b></p><p style="margin:0;margin-top:0.42em;">Aaban Classic Building Cleaning LLC</p><p style="margin:0;margin-top:0.33em;">License No: 103074</p><p style="margin:0;margin-top:0.42em;">Address: Shop -1, Jurf, Ajman; UAE</p><p style="margin:0;margin-top:0.33em;">Contact No: 0555229706 &amp; 80022226</p><p style="margin:0;margin-top:0.42em;"><b>Second Party:</b></p><p style="margin:0;margin-top:0.42em;">{{CLIENT_TITLE}}</p><p style="margin:0;margin-top:0.42em;">{{CLIENT}}</p><p style="margin:0;margin-top:0.33em;">{{CLIENT_ADDRESS_LINES}}</p>]]></field>
     </record>
 
-    <record id="agreement_template_termite_line_materials" model="fm.contract.agreement.template.line">
-        <field name="template_id" ref="agreement_template_termite"/>
+    <record id="agreement_template_water_tank_ajman_line_02" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_ajman"/>
         <field name="sequence">20</field>
-        <field name="name">Materials and Methods</field>
-        <field name="body">1. All services will be provided as per the relevant Municipality's approved procedures.
-2. All equipment and control treatment methods will conform to the standards set by the Municipality.
-3. Aaban will inform the Second Party at least one day before treatment, by mutual agreement, and will arrange a representative for collaboration.
-4. On-site electricity and water availability will be arranged/confirmed by the Second Party.
-5. The Second Party will provide polythene sheeting of the required length and quality.
-6. The Second Party will provide Aaban with access to the areas to be serviced.</field>
+        <field name="kind">article</field>
+        <field name="name">Article 1- Tank Details :</field>
+        <field name="body"><![CDATA[Building]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.42em;"><p style="margin:0;"><u><b>Article 1- Tank Details :</b></u></p><p style="margin:0;margin-top:0.33em;">Building</p></div>]]></field>
     </record>
 
-    <record id="agreement_template_termite_line_warranty" model="fm.contract.agreement.template.line">
-        <field name="template_id" ref="agreement_template_termite"/>
+    <record id="agreement_template_water_tank_ajman_line_03" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_ajman"/>
         <field name="sequence">30</field>
-        <field name="name">Warranty Certificate</field>
-        <field name="body">Aaban will provide a ten (10) year warranty for the treated areas as per the scope of treatment and service area reports. The payment amount is charged at the rate given per square metre. During the warranty period, services for the treated area will be provided without additional cost. The warranty applies to the treated area only.</field>
+        <field name="kind">article</field>
+        <field name="name">Article 2- Duration of Contract :</field>
+        <field name="body"><![CDATA[This contract is valid from {{START}} to {{END}}]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.51em;"><p style="margin:0;"><u><b>Article 2- Duration of Contract :</b></u></p><p style="margin:0;margin-top:0.33em;">This contract is valid from {{START}} to {{END}}</p></div>]]></field>
     </record>
 
-    <!-- Deep Cleaning — transcribed from real Aaban quotes (Villa 52 Al
-         Barsha Quote 6/25; Montreal Management Consultants Quote 941/26 &
-         Contract 838/25). Generic/branch-blank — issued the same way
-         regardless of site or branch in every document seen. -->
-    <record id="agreement_template_cleaning_deep" model="fm.contract.agreement.template">
-        <field name="name">Deep Cleaning — Standard</field>
-        <field name="service_line">cleaning_deep</field>
-        <field name="quotation_intro_text">We are thankful for the interest and confidence shown towards our service for deep cleaning. With reference to the subject inquiry, please find our competitive proposal for the same as follows.</field>
-        <field name="scope_method_text">Deep cleaning covers, as applicable to the site: toilets (cabinets, drawers, sink and faucet descaling, shower head, walls, seat, exhaust fan, flooring, mirrors and glass doors); kitchen (sink and faucet descaling, walls, hood and countertop de-greasing, flooring); general areas (cabinets, light fixtures, AC grills, walls, corners, windows and frames, glass and wooden doors); flooring (ceramic, wooden and marble, machine-scrubbed, paint-mark removal where possible); ceiling (AC ventilation grills, corners, lights and spot lights); and external areas (balcony/parking floor, handrails and corners, where accessible).</field>
-        <field name="service_text">Aaban will provide Deep Cleaning services at the site stated above, in accordance with the scope and schedule detailed in this agreement, using scrubber machines and appropriate cleaning agents for each surface type.</field>
+    <record id="agreement_template_water_tank_ajman_line_04" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_ajman"/>
+        <field name="sequence">40</field>
+        <field name="kind">article</field>
+        <field name="name">Article 3- Service :</field>
+        <field name="body"><![CDATA[First Part agree to supply Water Tank Cleaning and Disinfection at {{CLIENT}} {{CLIENT_SITE}} UAE dated {{START}} ; AABAN will provide the services during the hours agreed the Second Party and in accordance schedule detailed below. The First Party will ensure that everybody providing the services has the necessary training and authorization to do so.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.42em;"><p style="margin:0;"><u><b>Article 3- Service :</b></u></p><p style="margin:0;margin-top:0.33em;">First Part agree to supply Water Tank Cleaning and Disinfection at {{CLIENT}} {{CLIENT_SITE}} UAE dated {{START}} ; AABAN will provide the services during the hours agreed the Second Party and in accordance schedule detailed below. The First Party will ensure that everybody providing the services has the necessary training and authorization to do so.</p></div>]]></field>
     </record>
 
-    <!-- Pest Control — Dubai. Dubai-issued Pest Control contracts follow a
-         materially different, Dubai Municipality-specific legal framework
-         (Local No. 11 of 2003) from the generic Ajman-issued wording —
-         different license number, different visit cadence rules, different
-         reporting obligations. Transcribed from real Aaban contracts issued
-         by the Dubai branch (ZOWMI GROCERY STORE Contract 791/26; DECOLINE
-         CONSTRUCTION Contract 955/26) and a Dubai-site quotation (CLEANCO
-         CLEANING SERVICES Quote 527/24). Scoped to the Dubai branch — see
-         fm_branch.py for how this combines with service_line matching. -->
+    <record id="agreement_template_water_tank_ajman_line_05" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_ajman"/>
+        <field name="sequence">50</field>
+        <field name="kind">article</field>
+        <field name="name">Article 4- The Scope of Work :</field>
+        <field name="body"><![CDATA[We will chemically clean and disinfect your tank to remove all of the bacteria, mold, algae, sludge and sediment and almost all of the staining inside the tank. The tanks will be cleaned and disinfected as per Municipality standards and guidelines using appropriate environmental friendly chemicals approved by Municipality. The water tanks will be cleaned and disinfected by spraying chemicals on the inner surface of the tanks. Stains, sediment and mold will be removed with the help of brushes. The tanks will then be thoroughly rinsed with fresh water and checked for pH neutral before allowing them for refilling. Draining out the Existing Water, Cleaning the interior Tanks, Disinfection, Washing and Flushing the Tanks, Refilling the Tanks with Fresh Water, Laboratory Testing]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:1.06em;"><p style="margin:0;"><u><b>Article 4- The Scope of Work :</b></u></p><p style="margin:0;margin-top:0.33em;">We will chemically clean and disinfect your tank to remove all of the bacteria, mold, algae, sludge and sediment and almost all of the staining inside the tank. The tanks will be cleaned and disinfected as per Municipality standards and guidelines using appropriate environmental friendly chemicals approved by Municipality. The water tanks will be cleaned and disinfected by spraying chemicals on the inner surface of the tanks. Stains, sediment and mold will be removed with the help of brushes. The tanks will then be thoroughly rinsed with fresh water and checked for pH neutral before allowing them for refilling. Draining out the Existing Water, Cleaning the interior Tanks, Disinfection, Washing and Flushing the Tanks, Refilling the Tanks with Fresh Water, Laboratory Testing</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_ajman_line_06" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_ajman"/>
+        <field name="sequence">60</field>
+        <field name="kind">article</field>
+        <field name="name">Article 5- Contract Termination :</field>
+        <field name="body"><![CDATA[Both parties can terminate the contract by giving the other party 30 days prior notice without the requirement of assigning any reason.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.33em;"><p style="margin:0;"><u><b>Article 5- Contract Termination :</b></u></p><p style="margin:0;margin-top:0.42em;">Both parties can terminate the contract by giving the other party 30 days prior notice without the requirement of assigning any reason.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_ajman_line_07" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_ajman"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Article 6- Safety :</field>
+        <field name="body"><![CDATA[Aaban carry out all workers strictly in accordance with the highest safety standards. All our technicians are trained in all aspects of Safety to ensure that accidents do not occurs and they are well supervised to ensure that operation must be smooth. All Our technicians have all the required PPEs such as goggles, gloves, safety shoes, safety belts and all instruments for this process.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.33em;"><p style="margin:0;"><u><b>Article 6- Safety :</b></u></p><p style="margin:0;margin-top:0.42em;">Aaban carry out all workers strictly in accordance with the highest safety standards. All our technicians are trained in all aspects of Safety to ensure that accidents do not occurs and they are well supervised to ensure that operation must be smooth. All Our technicians have all the required PPEs such as goggles, gloves, safety shoes, safety belts and all instruments for this process.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_ajman_line_08" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_ajman"/>
+        <field name="sequence">80</field>
+        <field name="kind">article</field>
+        <field name="name">Article 7- Customer Responsibility :</field>
+        <field name="body"><![CDATA[1. Tanks will be drained by client prior to scheduled arrival of Cleaning Terms or provide us schedule water tank 05 % to 10 % of water level or empty tank.
+2. Use of your 220 volts single-phase electricity supply & water supply 60 litter/min near working location.
+3. Work Permit to be Prepared in advance.
+4. Clients to ensure proper access is available to all Units.
+5. Clients to shall arrange all the passes and permits required, by our vehicle and operator in the service location or to park the vehicle during service time.
+6. Safe Storage for Our equipment until completion of Work
+7. Waste Disposal facility for debris removed.
+8. Authorized Person / Staff should be there to verification & completion Report upon completion of each area.
+9. Leftover Water below suction level in the Tanks will be Drained by the Operator in the Clients drainage system]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.33em;"><p style="margin:0;"><u><b>Article 7- Customer Responsibility :</b></u></p><p style="margin:0;"><span style="font-size:0.91em;">1.</span><span style="font-size:0.90em;"> </span>Tanks will be drained by client prior to scheduled arrival of Cleaning Terms or provide us schedule water tank 05 % to 10 % of water level or empty tank.</p><p style="margin:0;margin-top:0.33em;"><span style="font-size:0.91em;">2.</span><span style="font-size:0.90em;"> </span>Use of your 220 volts single-phase electricity supply &amp; water supply 60 litter/min near working location.</p><p style="margin:0;margin-top:0.33em;"><span style="font-size:0.91em;">3.</span><span style="font-size:0.90em;"> </span>Work Permit to be Prepared in advance.</p><p style="margin:0;margin-top:0.42em;"><span style="font-size:0.91em;">4.</span><span style="font-size:0.90em;"> </span>Clients to ensure proper access is available to all Units.</p><p style="margin:0;margin-top:0.33em;"><span style="font-size:0.91em;">5.</span><span style="font-size:0.90em;"> </span>Clients to shall arrange all the passes and permits required, by our vehicle and operator in the service location or to park the vehicle during service time.</p><p style="margin:0;margin-top:0.24em;"><span style="font-size:0.91em;">6.</span><span style="font-size:0.90em;"> </span>Safe Storage for Our equipment until completion of Work</p><p style="margin:0;margin-top:0.42em;"><span style="font-size:0.91em;">7.</span><span style="font-size:0.90em;"> </span>Waste Disposal facility for debris removed.</p><p style="margin:0;margin-top:0.33em;"><span style="font-size:0.91em;">8.</span><span style="font-size:0.90em;"> </span>Authorized Person / Staff should be there to verification &amp; completion Report upon completion of each area.</p><p style="margin:0;margin-top:0.42em;"><span style="font-size:0.91em;">9.</span><span style="font-size:0.90em;"> </span>Leftover Water below suction level in the Tanks will be Drained by the Operator in the Clients drainage system</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_ajman_line_09" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_ajman"/>
+        <field name="sequence">90</field>
+        <field name="kind">article</field>
+        <field name="name">Article 8- Commencement of Services :</field>
+        <field name="body"><![CDATA[•The First Party will commence the agreed within ten (10) days from the date the Second Party signs the contract and delivers it to the First Party.
+•The Second Party agrees to provide the First Party access to the areas to be serviced during the hours agreed.
+•The First Party will provide a service scheduled day, they will be invoiced for the service.
+•The Second Party may incur additional costs if the First Party is required to provide an unscheduled service.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.33em;"><p style="margin:0;"><u><b>Article 8- Commencement of Services :</b></u></p><p style="margin:0;margin-top:0.42em;">•The First Party will commence the agreed within ten (10) days from the date the Second Party signs the contract and delivers it to the First Party.</p><p style="margin:0;margin-top:0.33em;">•The Second Party agrees to provide the First Party access to the areas to be serviced during the hours agreed.</p><p style="margin:0;margin-top:0.42em;">•The First Party will provide a service scheduled day, they will be invoiced for the service.</p><p style="margin:0;margin-top:0.33em;">•The Second Party may incur additional costs if the First Party is required to provide an unscheduled service.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_ajman_line_10" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_ajman"/>
+        <field name="sequence">100</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+        <field name="body"><![CDATA[(the priced lines of the contract)]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_ajman_line_11" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_ajman"/>
+        <field name="sequence">110</field>
+        <field name="kind">article</field>
+        <field name="name">Article 9- After Service Report :</field>
+        <field name="body"><![CDATA[Pictures will be taken before and after the execution of Work and will be part of final report and Service Report will be issued within 8-10 working days after completion of work.]]></field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><u><b>Article 9- After Service Report :</b></u></p><p style="margin:0;margin-top:0.33em;">Pictures will be taken before and after the execution of Work and will be part of final report and Service Report will be issued within 8-10 working days after completion of work.</p>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_ajman_line_12" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_ajman"/>
+        <field name="sequence">120</field>
+        <field name="kind">article</field>
+        <field name="name">Article 10- Contract Terms and Conditions :</field>
+        <field name="body"><![CDATA[As per Ajman Municipality guidelines, the rooftop tank should be cleaned only after cleaning the main supply tank, if client prefers only to clean rooftop tank and take the sample, if sample gets positive First Party will not take any responsibility for re-cleaning or re-sampling.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.24em;"><p style="margin:0;"><u><b>Article 10- Contract Terms and Conditions :</b></u></p><p style="margin:0;margin-top:0.42em;">As per Ajman Municipality guidelines, the rooftop tank should be cleaned only after cleaning the main supply tank, if client prefers only to clean rooftop tank and take the sample, if sample gets positive First Party will not take any responsibility for re-cleaning or re-sampling.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_ajman_line_13" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_ajman"/>
+        <field name="sequence">130</field>
+        <field name="kind">article</field>
+        <field name="name">Article 11- Payment Terms :</field>
+        <field name="body"><![CDATA[{{PAYMENT_TERMS}}
+Best Regards]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.33em;"><p style="margin:0;"><u><b>Article 11- Payment Terms :</b></u></p><p style="margin:0;margin-top:0.33em;">{{PAYMENT_TERMS}}</p><p style="margin:0;margin-top:0.97em;"><i><span style="font-size:0.91em;">Best Regards</span></i></p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_dubai" model="fm.contract.agreement.template">
+        <field name="name">Water Tank Cleaning — Dubai</field>
+        <field name="service_line">water_tank</field>
+        <field name="branch_id" ref="branch_dubai"/>
+        <field name="replaces_standard_articles" eval="True"/>
+        <field name="client_layout" eval="True"/>
+        <field name="signature_party">Aaban Classic Building Cleaning</field>
+        <field name="table_columns">unit,rate,frequency,tax,grand_total</field>
+        <field name="italic_labels" eval="False"/>
+    </record>
+
+    <record id="agreement_template_water_tank_dubai_line_01" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_dubai"/>
+        <field name="sequence">10</field>
+        <field name="kind">parties</field>
+        <field name="name">First Party / Second Party</field>
+        <field name="body"><![CDATA[First Party
+Aaban Classic Building Cleaning
+License No: 989256
+Address: 126, Safiya Building Bin Saloom Hor AL Anz, Deira, Dubai.
+Contact No: 055-5229706 & 045855280
+Second Party:
+{{CLIENT}}
+{{CLIENT_ADDRESS_LINES}}]]></field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><b>First Party</b></p><p style="margin:0;margin-top:0.38em;">Aaban Classic Building Cleaning</p><p style="margin:0;margin-top:0.45em;">License No: 989256</p><p style="margin:0;margin-top:0.48em;">Address: 126, Safiya Building Bin Saloom Hor AL Anz, Deira, Dubai.</p><p style="margin:0;margin-top:0.47em;">Contact No: 055-5229706 &amp; 045855280</p><p style="margin:0;margin-top:2.33em;"><b>Second Party:</b></p><p style="margin:0;margin-top:0.38em;">{{CLIENT}}</p><p style="margin:0;margin-top:0.48em;">{{CLIENT_ADDRESS_LINES}}</p>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_dubai_line_02" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_dubai"/>
+        <field name="sequence">20</field>
+        <field name="kind">article</field>
+        <field name="name">Article 1- Tank Details :</field>
+        <field name="body"><![CDATA[Mentioned Below]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.35em;"><p style="margin:0;"><u><b>Article 1- Tank Details :</b></u></p><p style="margin:0;margin-top:0.38em;">Mentioned Below</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_dubai_line_03" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_dubai"/>
+        <field name="sequence">30</field>
+        <field name="kind">article</field>
+        <field name="name">Article 2- Duration of Contract :</field>
+        <field name="body"><![CDATA[This contract is valid from {{START}} to {{END}}]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.48em;"><p style="margin:0;"><u><b>Article 2- Duration of Contract :</b></u></p><p style="margin:0;margin-top:0.38em;">This contract is valid from {{START}} to {{END}}</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_dubai_line_04" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_dubai"/>
+        <field name="sequence">40</field>
+        <field name="kind">article</field>
+        <field name="name">Article 3- Service :</field>
+        <field name="body"><![CDATA[First Part agree to supply Water Tank Cleaning and Disinfection at {{CLIENT}} {{CLIENT_SITE}} UAE dated {{START}} ; AABAN will provide the services during the hours agreed the Second Party and in accordance schedule detailed below. The First Party will ensure that everybody providing the services has the necessary training and authorization to do so.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.47em;"><p style="margin:0;"><u><b>Article 3- Service :</b></u></p><p style="margin:0;margin-top:0.38em;">First Part agree to supply Water Tank Cleaning and Disinfection at {{CLIENT}} {{CLIENT_SITE}} UAE dated {{START}} ; AABAN will provide the services during the hours agreed the Second Party and in accordance schedule detailed below. The First Party will ensure that everybody providing the services has the necessary training and authorization to do so.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_dubai_line_05" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_dubai"/>
+        <field name="sequence">50</field>
+        <field name="kind">article</field>
+        <field name="name">Article 4- The Scope of Work :</field>
+        <field name="body"><![CDATA[We will chemically clean and disinfect your tank to remove all of the bacteria, mold, algae, sludge and sediment and almost all of the staining inside the tank. The tanks will be cleaned and disinfected as per Municipality standards and guidelines using appropriate environmental friendly chemicals approved by Municipality. The water tanks will be cleaned and disinfected by spraying chemicals on the inner surface of the tanks. Stains, sediment and mold will be removed with the help of brushes. The tanks will then be thoroughly rinsed with fresh water and checked for pH neutral before allowing them for refilling. Draining out the Existing Water, Cleaning the interior Tanks, Disinfection, Washing and Flushing the Tanks, Refilling the Tanks with Fresh Water, Laboratory Testing]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:1.13em;"><p style="margin:0;"><u><b>Article 4- The Scope of Work :</b></u></p><p style="margin:0;margin-top:0.38em;">We will chemically clean and disinfect your tank to remove all of the bacteria, mold, algae, sludge and sediment and almost all of the staining inside the tank. The tanks will be cleaned and disinfected as per Municipality standards and guidelines using appropriate environmental friendly chemicals approved by Municipality. The water tanks will be cleaned and disinfected by spraying chemicals on the inner surface of the tanks. Stains, sediment and mold will be removed with the help of brushes. The tanks will then be thoroughly rinsed with fresh water and checked for pH neutral before allowing them for refilling. Draining out the Existing Water, Cleaning the interior Tanks, Disinfection, Washing and Flushing the Tanks, Refilling the Tanks with Fresh Water, Laboratory Testing</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_dubai_line_06" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_dubai"/>
+        <field name="sequence">60</field>
+        <field name="kind">article</field>
+        <field name="name">Article 5- Contract Termination :</field>
+        <field name="body"><![CDATA[Both parties can terminate the contract by giving the other party 30 days prior notice without the requirement of assigning any reason.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.38em;"><p style="margin:0;"><u><b>Article 5- Contract Termination :</b></u></p><p style="margin:0;margin-top:0.45em;">Both parties can terminate the contract by giving the other party 30 days prior notice without the requirement of assigning any reason.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_dubai_line_07" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_dubai"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Article 6- Safety :</field>
+        <field name="body"><![CDATA[Aaban carry out all workers strictly in accordance with the highest safety standards. All our technicians are trained in all aspects of Safety to ensure that accidents do not occurs and they are well supervised to ensure that operation must be smooth. All Our technicians have all the required PPEs such as goggles, gloves, safety shoes, safety belts and all instruments for this process.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.38em;"><p style="margin:0;"><u><b>Article 6- Safety :</b></u></p><p style="margin:0;margin-top:0.48em;">Aaban carry out all workers strictly in accordance with the highest safety standards. All our technicians are trained in all aspects of Safety to ensure that accidents do not occurs and they are well supervised to ensure that operation must be smooth. All Our technicians have all the required PPEs such as goggles, gloves, safety shoes, safety belts and all instruments for this process.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_dubai_line_08" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_dubai"/>
+        <field name="sequence">80</field>
+        <field name="kind">article</field>
+        <field name="name">Article 7- Customer Responsibility :</field>
+        <field name="body"><![CDATA[1. Tanks will be drained by client prior to scheduled arrival of Cleaning Terms or provide us schedule water tank 05 % to 10 % of water level or empty tank.
+2. Use of your 220 volts single-phase electricity supply & water supply 60 litter/min near working location.
+3. Work Permit to be Prepared in advance.
+4. Clients to ensure proper access is available to all Units.
+5. Clients to shall arrange all the passes and permits required, by our vehicle and operator in the service location or to park the vehicle during service time.
+6. Safe Storage for Our equipment until completion of Work
+7. Waste Disposal facility for debris removed.
+8. Authorized Person / Staff should be there to verification & completion Report upon completion of each area.
+9. Leftover Water below suction level in the Tanks will be Drained by the Operator in the Clients drainage system]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.35em;"><p style="margin:0;"><u><b>Article 7- Customer Responsibility :</b></u></p><p style="margin:0;margin-top:0.50em;"><span style="font-size:0.91em;">1. </span>Tanks will be drained by client prior to scheduled arrival of Cleaning Terms or provide us schedule water tank 05 % to 10 % of water level or empty tank.</p><p style="margin:0;"><span style="font-size:0.91em;">2. </span>Use of your 220 volts single-phase electricity supply &amp; water supply 60 litter/min near working location.</p><p style="margin:0;margin-top:0.38em;"><span style="font-size:0.91em;">3. </span>Work Permit to be Prepared in advance.</p><p style="margin:0;margin-top:0.48em;"><span style="font-size:0.91em;">4. </span>Clients to ensure proper access is available to all Units.</p><p style="margin:0;margin-top:0.38em;"><span style="font-size:0.91em;">5. </span>Clients to shall arrange all the passes and permits required, by our vehicle and operator in the service location or to park the vehicle during service time.</p><p style="margin:0;margin-top:0.38em;"><span style="font-size:0.91em;">6. </span>Safe Storage for Our equipment until completion of Work</p><p style="margin:0;margin-top:0.45em;"><span style="font-size:0.91em;">7. </span>Waste Disposal facility for debris removed.</p><p style="margin:0;margin-top:0.38em;"><span style="font-size:0.91em;">8. </span>Authorized Person / Staff should be there to verification &amp; completion Report upon completion of each area.</p><p style="margin:0;margin-top:0.47em;"><span style="font-size:0.91em;">9. </span>Leftover Water below suction level in the Tanks will be Drained by the Operator in the Clients drainage system</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_dubai_line_09" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_dubai"/>
+        <field name="sequence">90</field>
+        <field name="kind">article</field>
+        <field name="name">Article 8- Commencement of Services :</field>
+        <field name="body"><![CDATA[•The First Party will commence the agreed within ten (10) days from the date the Second Party signs the contract and delivers it to the First Party.
+•The Second Party agrees to provide the First Party access to the areas to be serviced during the hours agreed.
+•The First Party will provide a service scheduled day, they will be invoiced for the service.
+•The Second Party may incur additional costs if the First Party is required to provide an unscheduled service.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.38em;"><p style="margin:0;"><u><b>Article 8- Commencement of Services :</b></u></p><p style="margin:0;margin-top:0.48em;">•The First Party will commence the agreed within ten (10) days from the date the Second Party signs the contract and delivers it to the First Party.</p><p style="margin:0;margin-top:0.38em;">•The Second Party agrees to provide the First Party access to the areas to be serviced during the hours agreed.</p><p style="margin:0;margin-top:0.47em;">•The First Party will provide a service scheduled day, they will be invoiced for the service.</p><p style="margin:0;margin-top:0.38em;">•The Second Party may incur additional costs if the First Party is required to provide an unscheduled service.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_dubai_line_10" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_dubai"/>
+        <field name="sequence">100</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+        <field name="body"><![CDATA[(the priced lines of the contract)]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_dubai_line_11" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_dubai"/>
+        <field name="sequence">110</field>
+        <field name="kind">article</field>
+        <field name="name">Article 9- After Service Report :</field>
+        <field name="body"><![CDATA[Pictures will be taken before and after the execution of Work and will be part of final report and Service Report will be issued within 8-10 working days after completion of work.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.95em;"><p style="margin:0;"><u><b>Article 9- After Service Report :</b></u></p><p style="margin:0;margin-top:0.48em;">Pictures will be taken before and after the execution of Work and will be part of final report and Service Report will be issued within 8-10 working days after completion of work.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_dubai_line_12" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_dubai"/>
+        <field name="sequence">120</field>
+        <field name="kind">article</field>
+        <field name="name">Article 10- Contract Terms and Conditions :</field>
+        <field name="body"><![CDATA[As per Dubai Municipality guidelines, the rooftop tank should be cleaned only after cleaning the main supply tank, if client prefers only to clean rooftop tank and take the sample, if sample gets positive First Party will not take any responsibility for re-cleaning or re-sampling.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.45em;"><p style="margin:0;"><u><b>Article 10- Contract Terms and Conditions :</b></u></p><p style="margin:0;margin-top:0.38em;">As per Dubai Municipality guidelines, the rooftop tank should be cleaned only after cleaning the main supply tank, if client prefers only to clean rooftop tank and take the sample, if sample gets positive First Party will not take any responsibility for re-cleaning or re-sampling.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_dubai_line_13" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_dubai"/>
+        <field name="sequence">130</field>
+        <field name="kind">article</field>
+        <field name="name">Article 11- Payment Terms :</field>
+        <field name="body"><![CDATA[The 2nd Party will pay the 1st party as follow.1st payment 50 % in advance or completion of 1st service and 2nd Payment 50 % after completion of 2nd Service. The Amount is not refundable. Total Amount is payable in advance cash or current dated cheque.
+Cheque made in favor to: Aaban Classic Building Cleaning
+Best Regards]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.38em;"><p style="margin:0;"><u><b>Article 11- Payment Terms :</b></u></p><p style="margin:0;margin-top:0.47em;">The 2nd Party will pay the 1st party as follow.1st payment 50 % in advance or completion of 1st service and 2nd Payment 50 % after completion of 2nd Service. The Amount is not refundable. Total Amount is payable in advance cash or current dated cheque.</p><p style="margin:0;margin-top:2.33em;">Cheque made in favor to: <b>Aaban Classic Building Cleaning</b></p><p style="margin:0;"><i>Best Regards</i></p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_sharjah" model="fm.contract.agreement.template">
+        <field name="name">Water Tank Cleaning — Sharjah</field>
+        <field name="service_line">water_tank</field>
+        <field name="branch_id" ref="branch_sharjah"/>
+        <field name="replaces_standard_articles" eval="True"/>
+        <field name="client_layout" eval="True"/>
+        <field name="signature_party">Aaban Classic Building Cleaning SHJ BR2</field>
+        <field name="table_columns">unit,rate,frequency,tax,grand_total</field>
+        <field name="italic_labels" eval="False"/>
+    </record>
+
+    <record id="agreement_template_water_tank_sharjah_line_01" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_sharjah"/>
+        <field name="sequence">10</field>
+        <field name="kind">parties</field>
+        <field name="name">First Party / Second Party</field>
+        <field name="body"><![CDATA[First Party
+Aaban Classic Building Cleaning SHJ BR2
+License No : 908692
+Address : Shop No 1 & 2 , Al Sharq Street , Butena, Sharjah.
+Contact No : 0555229706 & 80022226
+Second Party:
+{{CLIENT}}
+{{CLIENT_ADDRESS_LINES}}
+CONTACT PERSON:
+{{CONTACT}}
+{{CONTACT_PHONE}}]]></field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><b>First Party</b></p><p style="margin:0;margin-top:0.47em;">Aaban Classic Building Cleaning SHJ BR2</p><p style="margin:0;margin-top:0.38em;">License No : 908692</p><p style="margin:0;margin-top:0.48em;">Address : Shop No 1 &amp; 2 , Al Sharq Street , Butena, Sharjah.</p><p style="margin:0;margin-top:0.35em;">Contact No : 0555229706 &amp; 80022226</p><p style="margin:0;margin-top:2.35em;"><b>Second Party:</b></p><p style="margin:0;margin-top:0.48em;">{{CLIENT}}</p><p style="margin:0;margin-top:0.37em;">{{CLIENT_ADDRESS_LINES}}</p><p style="margin:0;margin-top:0.48em;">CONTACT PERSON:</p><p style="margin:0;">{{CONTACT}}</p><p style="margin:0;">{{CONTACT_PHONE}}</p>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_sharjah_line_02" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_sharjah"/>
+        <field name="sequence">20</field>
+        <field name="kind">article</field>
+        <field name="name">Article 1- Tank Details :</field>
+        <field name="body"><![CDATA[Mentioned Below]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.35em;"><p style="margin:0;"><u><b>Article 1- Tank Details :</b></u></p><p style="margin:0;margin-top:0.38em;">Mentioned Below</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_sharjah_line_03" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_sharjah"/>
+        <field name="sequence">30</field>
+        <field name="kind">article</field>
+        <field name="name">Article 2- Duration of Contract :</field>
+        <field name="body"><![CDATA[This contract is valid from {{START}} to {{END}}]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.48em;"><p style="margin:0;"><u><b>Article 2- Duration of Contract :</b></u></p><p style="margin:0;margin-top:0.38em;">This contract is valid from {{START}} to {{END}}</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_sharjah_line_04" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_sharjah"/>
+        <field name="sequence">40</field>
+        <field name="kind">article</field>
+        <field name="name">Article 3- Service :</field>
+        <field name="body"><![CDATA[First Part agree to supply Water Tank Cleaning and Disinfection at {{CLIENT}} {{CLIENT_SITE}} UAE dated {{START}} ; AABAN will provide the services during the hours agreed the Second Party and in accordance schedule detailed below. The First Party will ensure that everybody providing the services has the necessary training and authorization to do so.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.45em;"><p style="margin:0;"><u><b>Article 3- Service :</b></u></p><p style="margin:0;margin-top:0.38em;">First Part agree to supply Water Tank Cleaning and Disinfection at {{CLIENT}} {{CLIENT_SITE}} UAE dated {{START}} ; AABAN will provide the services during the hours agreed the Second Party and in accordance schedule detailed below. The First Party will ensure that everybody providing the services has the necessary training and authorization to do so.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_sharjah_line_05" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_sharjah"/>
+        <field name="sequence">50</field>
+        <field name="kind">article</field>
+        <field name="name">Article 4- The Scope of Work :</field>
+        <field name="body"><![CDATA[We will chemically clean and disinfect your tank to remove all of the bacteria, mold, algae, sludge and sediment and almost all of the staining inside the tank. The tanks will be cleaned and disinfected as per SHARJAH Municipality standards and guidelines using appropriate environmental friendly chemicals approved by SHARJAH Municipality. The water tanks will be cleaned and disinfected by spraying chemicals on the inner surface of the tanks. Stains, sediment and mold will be removed with the help of brushes. The tanks will then be thoroughly rinsed with fresh water and checked for pH neutral before allowing them for refilling. Draining out the Existing Water, Cleaning the interior Tanks, Disinfection, Washing and Flushing the Tanks, Refilling the Tanks with Fresh Water, Laboratory Testing]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:1.12em;"><p style="margin:0;"><u><b>Article 4- The Scope of Work :</b></u></p><p style="margin:0;margin-top:0.38em;">We will chemically clean and disinfect your tank to remove all of the bacteria, mold, algae, sludge and sediment and almost all of the staining inside the tank. The tanks will be cleaned and disinfected as per SHARJAH Municipality standards and guidelines using appropriate environmental friendly chemicals approved by SHARJAH Municipality. The water tanks will be cleaned and disinfected by spraying chemicals on the inner surface of the tanks. Stains, sediment and mold will be removed with the help of brushes. The tanks will then be thoroughly rinsed with fresh water and checked for pH neutral before allowing them for refilling. Draining out the Existing Water, Cleaning the interior Tanks, Disinfection, Washing and Flushing the Tanks, Refilling the Tanks with Fresh Water, Laboratory Testing</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_sharjah_line_06" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_sharjah"/>
+        <field name="sequence">60</field>
+        <field name="kind">article</field>
+        <field name="name">Article 5- Contract Termination :</field>
+        <field name="body"><![CDATA[Both parties can terminate the contract by giving the other party 30 days prior notice without the requirement of assigning any reason.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.32em;"><p style="margin:0;"><u><b>Article 5- Contract Termination :</b></u></p><p style="margin:0;margin-top:0.45em;">Both parties can terminate the contract by giving the other party 30 days prior notice without the requirement of assigning any reason.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_sharjah_line_07" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_sharjah"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Article 6- Safety :</field>
+        <field name="body"><![CDATA[Aaban carry out all workers strictly in accordance with the highest safety standards. All our technicians are trained in all aspects of Safety to ensure that accidents do not occurs and they are well supervised to ensure that operation must be smooth. All Our technicians have all the required PPEs such as goggles, gloves, safety shoes, safety belts and all instruments for this process.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.38em;"><p style="margin:0;"><u><b>Article 6- Safety :</b></u></p><p style="margin:0;margin-top:0.47em;">Aaban carry out all workers strictly in accordance with the highest safety standards. All our technicians are trained in all aspects of Safety to ensure that accidents do not occurs and they are well supervised to ensure that operation must be smooth. All Our technicians have all the required PPEs such as goggles, gloves, safety shoes, safety belts and all instruments for this process.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_sharjah_line_08" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_sharjah"/>
+        <field name="sequence">80</field>
+        <field name="kind">article</field>
+        <field name="name">Article 7- Customer Responsibility :</field>
+        <field name="body"><![CDATA[1. Tanks will be drained by client prior to scheduled arrival of Cleaning Terms or provide us schedule water tank 05 % to 10 % of water level or empty tank.
+2. Use of your 220 volts single-phase electricity supply & water supply 60 litter/min near working location.
+3. Work Permit to be Prepared in advance.
+4. Clients to ensure proper access is available to all Units.
+5. Clients to shall arrange all the passes and permits required, by our vehicle and operator in the service location or to park the vehicle during service time.
+6. Safe Storage for Our equipment until completion of Work
+7. Waste Disposal facility for debris removed.
+8. Authorized Person / Staff should be there to verification & completion Report upon completion of each area.
+9. Leftover Water below suction level in the Tanks will be Drained by the Operator in the Clients drainage system]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.37em;"><p style="margin:0;"><u><b>Article 7- Customer Responsibility :</b></u></p><p style="margin:0;"><span style="font-size:0.91em;">1. </span>Tanks will be drained by client prior to scheduled arrival of Cleaning Terms or provide us schedule water tank 05 % to 10 % of water level or empty tank.</p><p style="margin:0;margin-top:0.47em;"><span style="font-size:0.91em;">2. </span>Use of your 220 volts single-phase electricity supply &amp; water supply 60 litter/min near working location.</p><p style="margin:0;margin-top:0.38em;"><span style="font-size:0.91em;">3. </span>Work Permit to be Prepared in advance.</p><p style="margin:0;margin-top:0.48em;"><span style="font-size:0.91em;">4. </span>Clients to ensure proper access is available to all Units.</p><p style="margin:0;margin-top:0.38em;"><span style="font-size:0.91em;">5. </span>Clients to shall arrange all the passes and permits required, by our vehicle and operator in the service location or to park the vehicle during service time.</p><p style="margin:0;margin-top:0.35em;"><span style="font-size:0.91em;">6. </span>Safe Storage for Our equipment until completion of Work</p><p style="margin:0;margin-top:0.47em;"><span style="font-size:0.91em;">7. </span>Waste Disposal facility for debris removed.</p><p style="margin:0;margin-top:0.38em;"><span style="font-size:0.91em;">8. </span>Authorized Person / Staff should be there to verification &amp; completion Report upon completion of each area.</p><p style="margin:0;margin-top:0.48em;"><span style="font-size:0.91em;">9. </span>Leftover Water below suction level in the Tanks will be Drained by the Operator in the Clients drainage system</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_sharjah_line_09" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_sharjah"/>
+        <field name="sequence">90</field>
+        <field name="kind">article</field>
+        <field name="name">Article 8- Commencement of Services :</field>
+        <field name="body"><![CDATA[•The First Party will commence the agreed within ten (10) days from the date the Second Party signs the contract and delivers it to the First Party.
+•The Second Party agrees to provide the First Party access to the areas to be serviced during the hours agreed.
+•The First Party will provide a service scheduled day, they will be invoiced for the service.
+•The Second Party may incur additional costs if the First Party is required to provide an unscheduled service.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.38em;"><p style="margin:0;"><u><b>Article 8- Commencement of Services :</b></u></p><p style="margin:0;margin-top:0.47em;">•The First Party will commence the agreed within ten (10) days from the date the Second Party signs the contract and delivers it to the First Party.</p><p style="margin:0;margin-top:0.38em;">•The Second Party agrees to provide the First Party access to the areas to be serviced during the hours agreed.</p><p style="margin:0;margin-top:0.45em;">•The First Party will provide a service scheduled day, they will be invoiced for the service.</p><p style="margin:0;margin-top:0.37em;">•The Second Party may incur additional costs if the First Party is required to provide an unscheduled service.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_sharjah_line_10" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_sharjah"/>
+        <field name="sequence">100</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+        <field name="body"><![CDATA[(the priced lines of the contract)]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_sharjah_line_11" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_sharjah"/>
+        <field name="sequence">110</field>
+        <field name="kind">article</field>
+        <field name="name">Article 9- After Service Report :</field>
+        <field name="body"><![CDATA[Pictures will be taken before and after the execution of Work and will be part of final report and Service Report will be issued within 8-10 working days after completion of work.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:1.02em;"><p style="margin:0;"><u><b>Article 9- After Service Report :</b></u></p><p style="margin:0;margin-top:0.40em;">Pictures will be taken before and after the execution of Work and will be part of final report and Service Report will be issued within 8-10 working days after completion of work.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_sharjah_line_12" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_sharjah"/>
+        <field name="sequence">120</field>
+        <field name="kind">article</field>
+        <field name="name">Article 10- Contract Terms and Conditions :</field>
+        <field name="body"><![CDATA[As per SHARJAH Municipality guidelines, the rooftop tank should be cleaned only after cleaning the main supply tank, if client prefers only to clean rooftop tank and take the sample, if sample gets positive First Party will not take any responsibility for re-cleaning or re-sampling.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.38em;"><p style="margin:0;"><u><b>Article 10- Contract Terms and Conditions :</b></u></p><p style="margin:0;margin-top:0.47em;">As per SHARJAH Municipality guidelines, the rooftop tank should be cleaned only after cleaning the main supply tank, if client prefers only to clean rooftop tank and take the sample, if sample gets positive First Party will not take any responsibility for re-cleaning or re-sampling.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_water_tank_sharjah_line_13" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_water_tank_sharjah"/>
+        <field name="sequence">130</field>
+        <field name="kind">article</field>
+        <field name="name">Article 11- Payment Terms :</field>
+        <field name="body"><![CDATA[{{PAYMENT_TERMS}}
+Best Regards]]></field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><u><b>Article 11- Payment Terms :</b></u></p><p style="margin:0;margin-top:0.38em;"><b>{{PAYMENT_TERMS}}</b></p><p style="margin:0;margin-top:0.95em;"><i>Best Regards</i></p>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_dubai" model="fm.contract.agreement.template">
+        <field name="name">Anti-Termite — Dubai</field>
+        <field name="service_line">termite</field>
+        <field name="branch_id" ref="branch_dubai"/>
+        <field name="replaces_standard_articles" eval="True"/>
+        <field name="client_layout" eval="True"/>
+        <field name="signature_party">Aaban Classic Building Cleaning</field>
+        <field name="table_columns">unit,rate,frequency,grand_total</field>
+        <field name="italic_labels" eval="True"/>
+    </record>
+
+    <record id="agreement_template_termite_dubai_line_01" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_dubai"/>
+        <field name="sequence">10</field>
+        <field name="kind">parties</field>
+        <field name="name">First Party / Second Party</field>
+        <field name="body"><![CDATA[First Party
+Aaban Classic Building Cleaning
+License No: 989256
+Address: 126 Safiya Building Bin Saloom Hor AL Anz, Deira, Dubai.
+Contact No: 055-5229706 & 06-5446800
+The Second Party have agreed for Termite Control Agreement for on following terms and conditions:]]></field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><b>First Party</b></p><p style="margin:0;margin-top:0.42em;">Aaban Classic Building Cleaning</p><p style="margin:0;margin-top:0.33em;">License No: 989256</p><p style="margin:0;margin-top:0.51em;">Address: 126 Safiya Building Bin Saloom Hor AL Anz, Deira, Dubai.</p><p style="margin:0;margin-top:0.33em;">Contact No: 055-5229706 &amp; 06-5446800</p><p style="margin:0;margin-top:2.34em;"><b>The Second Party have agreed for Termite Control Agreement for on following terms and conditions:</b></p>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_dubai_line_02" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_dubai"/>
+        <field name="sequence">20</field>
+        <field name="kind">article</field>
+        <field name="name">Article 1 - The Scope of Work :</field>
+        <field name="body"><![CDATA[1. Operations will be carried out as per Dubai Municipality stated / approved procedures and terms and conditions for Pre-Construction Termite control strategies.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 1 - The Scope of Work :</b></u></p><p style="margin:0;margin-top:0.51em;">1. Operations will be carried out as per Dubai Municipality stated / approved procedures and terms and conditions for Pre-Construction Termite control strategies.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_dubai_line_03" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_dubai"/>
+        <field name="sequence">30</field>
+        <field name="kind">article</field>
+        <field name="name">Article 2 - Treatment Type for All Three Stages :</field>
+        <field name="body"><![CDATA[a. Injection (Pre-construction)
+b. Spray (Pre-construction).
+c. Pre – Construction = linear]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.42em;"><p style="margin:0;"><u><b>Article 2 - Treatment Type for All Three Stages :</b></u></p><p style="margin:0;margin-top:0.33em;">a. Injection (Pre-construction)</p><p style="margin:0;margin-top:0.42em;">b. Spray (Pre-construction).</p><p style="margin:0;margin-top:0.33em;">c. Pre – Construction = linear</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_dubai_line_04" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_dubai"/>
+        <field name="sequence">40</field>
+        <field name="kind">article</field>
+        <field name="name">Article 3 - Terms of Payment :</field>
+        <field name="body"><![CDATA[1.  Payment will be charged in one Installment.
+2.  All the payment will be charged at the time of sign on agreement.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:1.06em;"><p style="margin:0;"><u><b>Article 3 - Terms of Payment :</b></u></p><p style="margin:0;margin-top:0.33em;">1.  Payment will be charged in one Installment.</p><p style="margin:0;margin-top:0.42em;">2.  All the payment will be charged at the time of sign on agreement.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_dubai_line_05" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_dubai"/>
+        <field name="sequence">50</field>
+        <field name="kind">article</field>
+        <field name="name">Article 4 - Materials &amp; Methods :</field>
+        <field name="body"><![CDATA[Article 4 - Materials & Methods :
+1.  All services will be provided as per Dubai Municipality approved procedures.
+2.  All equipment’s, terms of control treatments will be according to the standards set by the Municipality.
+3.  At least one day before first party will inform to the second for treatment with mutual understanding and first part will also arrange a representative for collaboration.
+4.  Onsite Electricity and Water availability will be arranged / confirmed by the second party.
+5.  Second part will provide polythene sheet as per required length and quality.
+6.  The Second Party will provide access to the First Party to the areas to be serviced.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.42em;"><p style="margin:0;"><u><b>Article 4 - Materials &amp; Methods :</b></u></p><p style="margin:0;margin-top:0.42em;">1.  All services will be provided as per Dubai Municipality approved procedures.</p><p style="margin:0;margin-top:0.42em;">2.  All equipment’s, terms of control treatments will be according to the standards set by the Municipality.</p><p style="margin:0;margin-top:0.51em;">3.  At least one day before first party will inform to the second for treatment with mutual understanding and first part will also arrange a representative for collaboration.</p><p style="margin:0;margin-top:0.42em;">4.  Onsite Electricity and Water availability will be arranged / confirmed by the second party.</p><p style="margin:0;margin-top:0.33em;">5.  Second part will provide polythene sheet as per required length and quality.</p><p style="margin:0;margin-top:0.42em;">6.  The Second Party will provide access to the First Party to the areas to be serviced.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_dubai_line_06" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_dubai"/>
+        <field name="sequence">60</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+        <field name="body"><![CDATA[(the priced lines of the contract)]]></field>
+    </record>
+
+    <record id="agreement_template_termite_dubai_line_07" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_dubai"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Article 5- Warranty Certificate:</field>
+        <field name="body"><![CDATA[1.  Aaban Company will provide WARRANTY for the treated areas as per scope of treatment & service area reports.
+2.  During warranty period services will be served without any cost.
+3.  Warranty will be given for the treated area / place only.
+Best Regards]]></field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><u><b>Article 5- Warranty Certificate:</b></u></p><p style="margin:0;margin-top:0.33em;"><b>1.  </b>Aaban Company will provide <b>WARRANTY</b> for the treated areas as per scope of treatment &amp; service area reports.</p><p style="margin:0;margin-top:0.42em;"><b>2.  </b>During warranty period services will be served without any cost.</p><p style="margin:0;margin-top:0.33em;"><b>3.  </b>Warranty will be given for the treated area / place only.</p><p style="margin:0;margin-top:0.88em;"><span style="font-size:0.91em;">Best Regards</span></p>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_ajman" model="fm.contract.agreement.template">
+        <field name="name">Anti-Termite — Ajman</field>
+        <field name="service_line">termite</field>
+        <field name="branch_id" ref="branch_ajman"/>
+        <field name="replaces_standard_articles" eval="True"/>
+        <field name="client_layout" eval="True"/>
+        <field name="signature_party">Aaban Classic Building Cleaning LLC</field>
+        <field name="table_columns">unit,rate,grand_total</field>
+        <field name="italic_labels" eval="False"/>
+    </record>
+
+    <record id="agreement_template_termite_ajman_line_01" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_ajman"/>
+        <field name="sequence">10</field>
+        <field name="kind">parties</field>
+        <field name="name">First Party / Second Party</field>
+        <field name="body"><![CDATA[The First Party Aaban Building Cleaning LLC and The Second Party have agreed for Termite Control Agreement for on following terms and conditions:]]></field>
+        <field name="body_html"><![CDATA[<p style="margin:0;">The First Party <b>Aaban Building Cleaning LLC </b>and The Second Party have agreed for Termite Control Agreement for on following terms and conditions:</p>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_ajman_line_02" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_ajman"/>
+        <field name="sequence">20</field>
+        <field name="kind">article</field>
+        <field name="name">Article 1 - The Scope of Work :</field>
+        <field name="body"><![CDATA[1. Operations will be carried out as per Ajman Municipality stated / approved procedures and terms and conditions for Pre-Construction Termite control strategies.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.24em;"><p style="margin:0;"><u><b>Article 1 - The Scope of Work :</b></u></p><p style="margin:0;margin-top:0.61em;">1. Operations will be carried out as per Ajman Municipality stated / approved procedures and terms and conditions for Pre-Construction Termite control strategies.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_ajman_line_03" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_ajman"/>
+        <field name="sequence">30</field>
+        <field name="kind">article</field>
+        <field name="name">Article 2 - Treatment Type for All Three Stages :</field>
+        <field name="body"><![CDATA[a. Injection (Pre-construction)
+b. Spray (Pre-construction).
+c. Pre – Construction = linear]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.33em;"><p style="margin:0;"><u><b>Article 2 - Treatment Type for All Three Stages :</b></u></p><p style="margin:0;margin-top:0.33em;">a. Injection (Pre-construction)</p><p style="margin:0;margin-top:0.42em;">b. Spray (Pre-construction).</p><p style="margin:0;margin-top:0.33em;">c. Pre – Construction = linear</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_ajman_line_04" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_ajman"/>
+        <field name="sequence">40</field>
+        <field name="kind">article</field>
+        <field name="name">Article 3 - Terms of Payment :</field>
+        <field name="body"><![CDATA[1. Payment will be charged in one Installment.
+2. All the payment will be charged at the time of sign on agreement.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:1.06em;"><p style="margin:0;"><u><b>Article 3 - Terms of Payment :</b></u></p><p style="margin:0;margin-top:0.33em;">1. Payment will be charged in one Installment.</p><p style="margin:0;margin-top:0.42em;">2. All the payment will be charged at the time of sign on agreement.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_ajman_line_05" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_ajman"/>
+        <field name="sequence">50</field>
+        <field name="kind">article</field>
+        <field name="name">Article 4 - Materials &amp; Methods :</field>
+        <field name="body"><![CDATA[1. All services will be provided as per Ajman Municipality approved procedures.
+2. All equipment’s, terms of control treatments will be according to the standards set by the Municipality.
+3. At least one day before first party will inform to the second for treatment with mutual understanding and first part will also arrange a representative for collaboration.
+4. Onsite Electricity and Water availability will be arranged / confirmed by the second party.
+5. Second part will provide polythene sheet as per required length and quality.
+6. The Second Party will provide access to the First Party to the areas to be serviced.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.33em;"><p style="margin:0;"><u><b>Article 4 - Materials &amp; Methods :</b></u></p><p style="margin:0;margin-top:0.42em;">1. All services will be provided as per Ajman Municipality approved procedures.</p><p style="margin:0;margin-top:0.42em;">2. All equipment’s, terms of control treatments will be according to the standards set by the Municipality.</p><p style="margin:0;margin-top:0.60em;">3. At least one day before first party will inform to the second for treatment with mutual understanding and first part will also arrange a representative for collaboration.</p><p style="margin:0;margin-top:0.33em;">4. Onsite Electricity and Water availability will be arranged / confirmed by the second party.</p><p style="margin:0;margin-top:0.33em;">5. Second part will provide polythene sheet as per required length and quality.</p><p style="margin:0;margin-top:0.42em;">6. The Second Party will provide access to the First Party to the areas to be serviced.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_ajman_line_06" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_ajman"/>
+        <field name="sequence">60</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+        <field name="body"><![CDATA[(the priced lines of the contract)]]></field>
+    </record>
+
+    <record id="agreement_template_termite_ajman_line_07" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_ajman"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Article 5 - Warranty Certificate:</field>
+        <field name="body"><![CDATA[1. Aaban Company will provide TEN YEARS WARRANTY for the treated areas as per scope of treatment & service area reports.
+2. During warranty period services will be served without any cost.
+3. Warranty will be given for the treated area / place only.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:1.06em;"><p style="margin:0;"><b>Article 5 - Warranty Certificate:</b></p><p style="margin:0;margin-top:0.33em;"><b>1. </b>Aaban Company will provide <b>TEN YEARS WARRANTY </b>for the treated areas as per scope of treatment &amp; service area reports.</p><p style="margin:0;margin-top:0.42em;"><b>2. </b>During warranty period services will be served without any cost.</p><p style="margin:0;margin-top:0.33em;"><b>3. </b>Warranty will be given for the treated area / place only.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_sharjah" model="fm.contract.agreement.template">
+        <field name="name">Anti-Termite — Sharjah</field>
+        <field name="service_line">termite</field>
+        <field name="branch_id" ref="branch_sharjah"/>
+        <field name="replaces_standard_articles" eval="True"/>
+        <field name="client_layout" eval="True"/>
+        <field name="signature_party">Aaban Classic Building Cleaning SHJ - BR2</field>
+        <field name="table_columns">unit,rate,grand_total</field>
+        <field name="italic_labels" eval="True"/>
+    </record>
+
+    <record id="agreement_template_termite_sharjah_line_01" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_sharjah"/>
+        <field name="sequence">10</field>
+        <field name="kind">parties</field>
+        <field name="name">First Party / Second Party</field>
+        <field name="body"><![CDATA[The First Party Aaban Building Cleaning SHJ - BR-02 and The Second Party have agreed for Termite Control Agreement for on following terms and conditions:]]></field>
+        <field name="body_html"><![CDATA[<p style="margin:0;">The First Party <b>Aaban Building Cleaning SHJ - BR-02</b> and The Second Party have agreed for Termite Control Agreement for on following terms and conditions:</p>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_sharjah_line_02" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_sharjah"/>
+        <field name="sequence">20</field>
+        <field name="kind">article</field>
+        <field name="name">Article 1 - The Scope of Work :</field>
+        <field name="body"><![CDATA[1. Operations will be carried out as per Sharjah Municipality stated / approved procedures and terms and conditions for Pre-Construction Termite control strategies.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.33em;"><p style="margin:0;"><u><b>Article 1 - The Scope of Work :</b></u></p><p style="margin:0;margin-top:0.51em;">1. Operations will be carried out as per Sharjah Municipality stated / approved procedures and terms and conditions for Pre-Construction Termite control strategies.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_sharjah_line_03" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_sharjah"/>
+        <field name="sequence">30</field>
+        <field name="kind">article</field>
+        <field name="name">Article 2 - Treatment Type for All Three Stages :</field>
+        <field name="body"><![CDATA[a. Injection (Pre-construction)
+b. Spray (Pre-construction).
+c. Pre – Construction = linear]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.42em;"><p style="margin:0;"><u><b>Article 2 - Treatment Type for All Three Stages :</b></u></p><p style="margin:0;margin-top:0.33em;">a. Injection (Pre-construction)</p><p style="margin:0;margin-top:0.42em;">b. Spray (Pre-construction).</p><p style="margin:0;margin-top:0.33em;">c. Pre – Construction = linear</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_sharjah_line_04" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_sharjah"/>
+        <field name="sequence">40</field>
+        <field name="kind">article</field>
+        <field name="name">Article 3 - Terms of Payment :</field>
+        <field name="body"><![CDATA[1.  Payment will be charged in one Installment.
+2.  All the payment will be charged at the time of sign on agreement.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:1.06em;"><p style="margin:0;"><u><b>Article 3 - Terms of Payment :</b></u></p><p style="margin:0;margin-top:0.33em;">1.  Payment will be charged in one Installment.</p><p style="margin:0;margin-top:0.42em;">2.  All the payment will be charged at the time of sign on agreement.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_sharjah_line_05" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_sharjah"/>
+        <field name="sequence">50</field>
+        <field name="kind">article</field>
+        <field name="name">Article 4 - Materials &amp; Methods :</field>
+        <field name="body"><![CDATA[Article 4 - Materials & Methods :
+1.  All services will be provided as per Sharjah Municipality approved procedures.
+2.  All equipment’s, terms of control treatments will be according to the standards set by the Municipality.
+3.  At least one day before first party will inform to the second for treatment with mutual understanding and first part will also arrange a representative for collaboration.
+4.  Onsite Electricity and Water availability will be arranged / confirmed by the second party.
+5.  Second part will provide polythene sheet as per required length and quality.
+6.  The Second Party will provide access to the First Party to the areas to be serviced.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.33em;"><p style="margin:0;"><u><b>Article 4 - Materials &amp; Methods :</b></u></p><p style="margin:0;margin-top:0.42em;">1.  All services will be provided as per Sharjah Municipality approved procedures.</p><p style="margin:0;margin-top:0.42em;">2.  All equipment’s, terms of control treatments will be according to the standards set by the Municipality.</p><p style="margin:0;margin-top:0.51em;">3.  At least one day before first party will inform to the second for treatment with mutual understanding and first part will also arrange a representative for collaboration.</p><p style="margin:0;margin-top:0.42em;">4.  Onsite Electricity and Water availability will be arranged / confirmed by the second party.</p><p style="margin:0;margin-top:0.33em;">5.  Second part will provide polythene sheet as per required length and quality.</p><p style="margin:0;margin-top:0.42em;">6.  The Second Party will provide access to the First Party to the areas to be serviced.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_sharjah_line_06" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_sharjah"/>
+        <field name="sequence">60</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+        <field name="body"><![CDATA[(the priced lines of the contract)]]></field>
+    </record>
+
+    <record id="agreement_template_termite_sharjah_line_07" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_sharjah"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Article 5- Warranty Certificate:</field>
+        <field name="body"><![CDATA[1.  Aaban Company will provide SEVEN YEARS WARRANTY for the treated areas as per scope of treatment & service area reports.
+2.  During warranty period services will be served without any cost.
+3.  Warranty will be given for the treated area / place only.
+Best Regards]]></field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><u><b>Article 5- Warranty Certificate:</b></u></p><p style="margin:0;margin-top:0.42em;"><b>1.  </b>Aaban Company will provide <b>SEVEN YEARS WARRANTY</b> for the treated areas as per scope of treatment &amp; service area reports.</p><p style="margin:0;margin-top:0.33em;"><b>2.  </b>During warranty period services will be served without any cost.</p><p style="margin:0;margin-top:0.42em;"><b>3.  </b>Warranty will be given for the treated area / place only.</p><p style="margin:0;margin-top:0.88em;"><span style="font-size:0.91em;">Best Regards</span></p>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_fujairah" model="fm.contract.agreement.template">
+        <field name="name">Anti-Termite — Fujairah</field>
+        <field name="service_line">termite</field>
+        <field name="branch_id" ref="branch_fujairah"/>
+        <field name="replaces_standard_articles" eval="True"/>
+        <field name="client_layout" eval="True"/>
+        <field name="signature_party">Aaban Classic Building Cleaning Fujairah Branch 1</field>
+        <field name="table_columns">unit,rate,grand_total</field>
+        <field name="italic_labels" eval="False"/>
+    </record>
+
+    <record id="agreement_template_termite_fujairah_line_01" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_fujairah"/>
+        <field name="sequence">10</field>
+        <field name="kind">parties</field>
+        <field name="name">First Party / Second Party</field>
+        <field name="body"><![CDATA[The First Party Aaban Classic Building Cleaning Fujairah Branch 1 and The Second Party have agreed for Termite Control Agreement for on following terms and conditions:]]></field>
+        <field name="body_html"><![CDATA[<p style="margin:0;">The First Party <b>Aaban Classic Building Cleaning Fujairah Branch 1 </b>and The Second Party have agreed for Termite Control Agreement for on following terms and conditions:</p>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_fujairah_line_02" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_fujairah"/>
+        <field name="sequence">20</field>
+        <field name="kind">article</field>
+        <field name="name">Article 1 - The Scope of Work :</field>
+        <field name="body"><![CDATA[1. Operations will be carried out as per Fujairah Municipality stated / approved procedures and terms and conditions for Pre-Construction Termite control strategies.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.33em;"><p style="margin:0;"><u><b>Article 1 - The Scope of Work :</b></u></p><p style="margin:0;margin-top:0.51em;">1. Operations will be carried out as per Fujairah Municipality stated / approved procedures and terms and conditions for Pre-Construction Termite control strategies.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_fujairah_line_03" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_fujairah"/>
+        <field name="sequence">30</field>
+        <field name="kind">article</field>
+        <field name="name">Article 2 - Treatment Type for All Three Stages :</field>
+        <field name="body"><![CDATA[a. Injection (Pre-construction)
+b. Spray (Pre-construction).
+c. Pre – Construction = linear]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.24em;"><p style="margin:0;"><u><b>Article 2 - Treatment Type for All Three Stages :</b></u></p><p style="margin:0;margin-top:0.42em;">a. Injection (Pre-construction)</p><p style="margin:0;margin-top:0.33em;">b. Spray (Pre-construction).</p><p style="margin:0;margin-top:0.42em;">c. Pre – Construction = linear</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_fujairah_line_04" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_fujairah"/>
+        <field name="sequence">40</field>
+        <field name="kind">article</field>
+        <field name="name">Article 3 - Terms of Payment ;</field>
+        <field name="body"><![CDATA[1. Payment will be charged in one Installment.
+2. All the payment will be charged at the time of sign on agreement.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.97em;"><p style="margin:0;"><u><b>Article 3 - Terms of Payment ;</b></u></p><p style="margin:0;margin-top:0.42em;">1. Payment will be charged in one Installment.</p><p style="margin:0;margin-top:0.33em;">2. All the payment will be charged at the time of sign on agreement.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_fujairah_line_05" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_fujairah"/>
+        <field name="sequence">50</field>
+        <field name="kind">article</field>
+        <field name="name">Article 4 - Materials &amp; Methods :</field>
+        <field name="body"><![CDATA[1. All services will be provided as per Fujairah Municipality approved procedures.
+2. All equipment’s, terms of control treatments will be according to the standards set by the Municipality.
+3. At least one day before first party will inform to the second for treatment with mutual understanding and first part will also arrange a representative for collaboration.
+4. Onsite Electricity and Water availability will be arranged / confirmed by the second party.
+5. Second part will provide polythene sheet as per required length and quality.
+6. The Second Party will provide access to the First Party to the areas to be serviced.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.42em;"><p style="margin:0;"><u><b>Article 4 - Materials &amp; Methods :</b></u></p><p style="margin:0;margin-top:0.33em;">1. All services will be provided as per Fujairah Municipality approved procedures.</p><p style="margin:0;margin-top:0.51em;">2. All equipment’s, terms of control treatments will be according to the standards set by the Municipality.</p><p style="margin:0;margin-top:0.51em;">3. At least one day before first party will inform to the second for treatment with mutual understanding and first part will also arrange a representative for collaboration.</p><p style="margin:0;margin-top:0.24em;">4. Onsite Electricity and Water availability will be arranged / confirmed by the second party.</p><p style="margin:0;margin-top:0.42em;">5. Second part will provide polythene sheet as per required length and quality.</p><p style="margin:0;margin-top:0.33em;">6. The Second Party will provide access to the First Party to the areas to be serviced.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_termite_fujairah_line_06" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_fujairah"/>
+        <field name="sequence">60</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+        <field name="body"><![CDATA[(the priced lines of the contract)]]></field>
+    </record>
+
+    <record id="agreement_template_termite_fujairah_line_07" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_termite_fujairah"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Article 5 - Warranty Certificate :</field>
+        <field name="body"><![CDATA[1. Aaban Company will provide TEN YEARS WARRANTY for the treated areas as per scope of treatment & service area reports.
+2. During warranty period services will be served without any cost.
+3. Warranty will be given for the treated area / place only.]]></field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><u><b>Article 5 - Warranty Certificate :</b></u></p><p style="margin:0;margin-top:0.33em;"><b>1. </b>Aaban Company will provide <b>TEN YEARS WARRANTY </b>for the treated areas as per scope of treatment &amp; service area reports.</p><p style="margin:0;margin-top:0.42em;"><b>2. </b>During warranty period services will be served without any cost.</p><p style="margin:0;margin-top:0.33em;"><b>3. </b>Warranty will be given for the treated area / place only.</p>]]></field>
+    </record>
+
+    <record id="agreement_template_pest_ajman" model="fm.contract.agreement.template">
+        <field name="name">Pest Control — Ajman</field>
+        <field name="service_line">pest</field>
+        <field name="branch_id" ref="branch_ajman"/>
+        <field name="replaces_standard_articles" eval="True"/>
+        <field name="client_layout" eval="True"/>
+        <field name="signature_party">Aaban Classic Building Cleaning LLC</field>
+        <field name="table_columns">unit,rate,frequency,tax,grand_total</field>
+        <field name="italic_labels" eval="True"/>
+    </record>
+
+    <record id="agreement_template_pest_ajman_line_01" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_ajman"/>
+        <field name="sequence">10</field>
+        <field name="kind">parties</field>
+        <field name="name">First Party / Second Party</field>
+        <field name="body"><![CDATA[First Party
+Aaban Classic Building Cleaning LLC
+License No: 103074
+Shop No 1, Jurf, Ajman, UAE
+Contact No: 055-5229706 & 80022226
+Second Party:
+{{CLIENT}}
+{{CLIENT_PHONE}}]]></field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><b>First Party</b></p><p style="margin:0;margin-top:0.42em;">Aaban Classic Building Cleaning LLC</p><p style="margin:0;margin-top:0.33em;"><b>License No: 103074</b></p><p style="margin:0;margin-top:0.42em;"><b>Shop No 1, Jurf, Ajman, UAE</b></p><p style="margin:0;margin-top:0.33em;"><b>Contact No: 055-5229706 &amp; 80022226</b></p><p style="margin:0;margin-top:0.51em;"><b>Second Party:</b></p><p style="margin:0;margin-top:0.33em;">{{CLIENT}}</p><p style="margin:0;margin-top:0.42em;">{{CLIENT_PHONE}}</p>]]></field>
+    </record>
+
+    <record id="agreement_template_pest_ajman_line_02" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_ajman"/>
+        <field name="sequence">20</field>
+        <field name="kind">article</field>
+        <field name="name">Article 1- Duration of the Contract :</field>
+        <field name="body"><![CDATA[This contract is valid from {{START}} to {{END}}]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 1- Duration of the Contract :</b></u></p><p style="margin:0;margin-top:0.33em;">This contract is valid from <b>{{START}} to {{END}}</b></p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_pest_ajman_line_03" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_ajman"/>
+        <field name="sequence">30</field>
+        <field name="kind">article</field>
+        <field name="name">Article 2- Service :</field>
+        <field name="body"><![CDATA[AABAN agree to supply pest control services to the Second Party at {{CLIENT}} Ajman, UAE dated {{START}}
+AABAN will provide the services during the hours agreed the Second Party and in accordance schedule detailed below. The First Party will ensure that everybody providing the services has the necessary training and authorization to do so.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.42em;"><p style="margin:0;"><u><b>Article 2- Service :</b></u></p><p style="margin:0;margin-top:0.42em;">AABAN agree to supply pest control services to the Second Party at <b>{{CLIENT}} </b>Ajman<b>, UAE dated {{START}}</b></p><p style="margin:0;margin-top:0.42em;"><b>AABAN</b> will provide the services during the hours agreed the Second Party and in accordance schedule detailed below. The First Party will ensure that everybody providing the services has the necessary training and authorization to do so.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_pest_ajman_line_04" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_ajman"/>
+        <field name="sequence">40</field>
+        <field name="kind">article</field>
+        <field name="name">Article 3- The Scope of Work</field>
+        <field name="body"><![CDATA[Areas to be covered : Common Area, Lobbies, Corridors,  Staircase, Parking Lot, Storeroom, Garbage Room, Electrical Room, Pump Room, Telephone Room, Outside Area Related to Building except Commercial Shops, Rat Bait Stations included.
+TREATMENT TO BE TREATED:
+Crawling Insects: Cockroaches, Ants, etc., using chemical and non-chemical control measures.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:1.06em;"><p style="margin:0;"><u><b>Article 3- The Scope of Work</b></u></p><p style="margin:0;margin-top:0.42em;">Areas to be covered : Common Area, Lobbies, Corridors,  Staircase, Parking Lot, Storeroom, Garbage Room, Electrical Room, Pump Room, Telephone Room, Outside Area Related to Building except Commercial Shops, Rat Bait Stations included.</p><p style="margin:0;margin-top:2.25em;"><b>TREATMENT TO BE TREATED:</b></p><p style="margin:0;margin-top:0.33em;"><b>Crawling Insects: </b>Cockroaches, Ants, etc., using chemical and non-chemical control measures.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_pest_ajman_line_05" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_ajman"/>
+        <field name="sequence">50</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+        <field name="body"><![CDATA[(the priced lines of the contract)]]></field>
+    </record>
+
+    <record id="agreement_template_pest_ajman_line_06" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_ajman"/>
+        <field name="sequence">60</field>
+        <field name="kind">article</field>
+        <field name="name">Article 4- Service Schedule :</field>
+        <field name="body"><![CDATA[The customer agrees to fulfill all technical guidelines asked by AABAN to secure the best results.
+Second party will secure its client rep. with AABAN technicians during the treatment.
+All the areas that will not be ready cleaned for the scheduled treatment will be avoided and will be treated with the next treatment.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:1.06em;"><p style="margin:0;"><u><b>Article 4- Service Schedule :</b></u></p><p style="margin:0;margin-top:0.42em;">The customer agrees to fulfill all technical guidelines asked by AABAN to secure the best results.</p><p style="margin:0;margin-top:0.33em;">Second party will secure its client rep. with AABAN technicians during the treatment.</p><p style="margin:0;margin-top:0.42em;">All the areas that will not be ready cleaned for the scheduled treatment will be avoided and will be treated with the next treatment.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_pest_ajman_line_07" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_ajman"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Article 5- Unscheduled Services and Conditions of Supply :</field>
+        <field name="body"><![CDATA[Article 5- Unscheduled Services and Conditions of Supply :
+The first party will attend to unscheduled services at the request of the Second Party only twice during the whole contract period. If the requested service results from an area previous serviced, which is still under warranty, the First Party will provide the service at no charge to the Second Party. Any additional service will be served after quote approval from second party.]]></field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><u><b>Article 5- Unscheduled Services and Conditions of Supply :</b></u></p><p style="margin:0;margin-top:0.42em;">The first party will attend to unscheduled services at the request of the Second Party only twice during the whole contract period. If the requested service results from an area previous serviced, which is still under warranty, the First Party will provide the service at no charge to the Second Party. Any additional service will be served after quote approval from second party.</p>]]></field>
+    </record>
+
+    <record id="agreement_template_pest_ajman_line_08" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_ajman"/>
+        <field name="sequence">80</field>
+        <field name="kind">article</field>
+        <field name="name">Article 6- Exclusions :</field>
+        <field name="body"><![CDATA[This contract excludes fumigation for stored products pests.
+This contract excludes termites and wood pest treatments. This contract excludes bird control and stray animals.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 6- Exclusions :</b></u></p><p style="margin:0;margin-top:0.42em;">This contract excludes fumigation for stored products pests.</p><p style="margin:0;margin-top:0.33em;">This contract excludes termites and wood pest treatments. This contract excludes bird control and stray animals.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_pest_ajman_line_09" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_ajman"/>
+        <field name="sequence">90</field>
+        <field name="kind">article</field>
+        <field name="name">Article 7- Commencement of Services :</field>
+        <field name="body"><![CDATA[The First Party will commence the agreed within ten{10) days from the date the Second Party signs the contract and delivers it to the First Party.
+The Second Party agrees to provide the First Party access to the areas to be serviced during the hours agreed. The First Party will provide a service scheduled day, they will be invoiced for the service.
+The Second Party may incur additional costs if the First Party is required to provide an unscheduled service.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 7- Commencement of Services :</b></u></p><p style="margin:0;margin-top:0.42em;">The First Party will commence the agreed within ten{10) days from the date the Second Party signs the contract and delivers it to the First Party.</p><p style="margin:0;">The Second Party agrees to provide the First Party access to the areas to be serviced during the hours agreed. The First Party will provide a service scheduled day, they will be invoiced for the service.</p><p style="margin:0;margin-top:0.33em;">The Second Party may incur additional costs if the First Party is required to provide an unscheduled service.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_pest_ajman_line_10" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_ajman"/>
+        <field name="sequence">100</field>
+        <field name="kind">article</field>
+        <field name="name">Article 8- Contract Termination :</field>
+        <field name="body"><![CDATA[At the end of the contract period, this contract will continue to be valid and renewed against the same conditions unless otherwise cancelled by either party giving one month notice.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 8- Contract Termination :</b></u></p><p style="margin:0;margin-top:0.42em;">At the end of the contract period, this contract will continue to be valid and renewed against the same conditions unless otherwise cancelled by either party giving one month notice.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_pest_ajman_line_11" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_ajman"/>
+        <field name="sequence">110</field>
+        <field name="kind">article</field>
+        <field name="name">Article 9 - Payment Terms :</field>
+        <field name="body"><![CDATA[Article 9 - Payment Terms :
+{{PAYMENT_TERMS}}]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.34em;"><p style="margin:0;"><u><b>Article 9 - Payment Terms :</b></u></p><p style="margin:0;margin-top:0.51em;">{{PAYMENT_TERMS}}</p></div>]]></field>
+    </record>
+
     <record id="agreement_template_pest_dubai" model="fm.contract.agreement.template">
         <field name="name">Pest Control — Dubai</field>
         <field name="service_line">pest</field>
         <field name="branch_id" ref="branch_dubai"/>
-        <field name="quotation_intro_text">With reference to the above-mentioned subject and subsequent inspection, we are pleased to provide our best quote for pest control services. The pesticides used are strictly approved by the Ministry of Climate Change and Environment.</field>
-        <field name="service_text">Public Health Pest Control Agreement — Aaban Classic Building Cleaning &amp; Pest Control Services (Dubai branch) is authorised by the Public Health Pest Control Section, Dubai Municipality, to carry out pest control operations at the Second Party's site under this agreement, as per the specifications and requirements below.</field>
-        <field name="schedule_text">Instructions and Terms and Conditions are as per Municipality Local Order No. 11 of 2003. The Second Party is responsible for keeping its establishment, premises or construction site free from public health pests and for not providing a favourable environment for their breeding, for the safety of the Dubai Emirate community.</field>
+        <field name="replaces_standard_articles" eval="True"/>
+        <field name="client_layout" eval="True"/>
+        <field name="signature_party">Aaban Classic Building Cleaning</field>
+        <field name="table_columns">unit,rate,frequency,tax,grand_total</field>
+        <field name="italic_labels" eval="True"/>
     </record>
 
-    <record id="agreement_template_pest_dubai_line_compliance" model="fm.contract.agreement.template.line">
+    <record id="agreement_template_pest_dubai_line_01" model="fm.contract.agreement.template.line">
         <field name="template_id" ref="agreement_template_pest_dubai"/>
         <field name="sequence">10</field>
-        <field name="name">Dubai Municipality Compliance</field>
-        <field name="body">All pest control operations are carried out as per the Dubai Sustainable Public Health Pest Control Model approved by the Public Health Pest Control Section, Dubai Municipality, which is considered an integral part of this agreement. A specific report is prepared after each operation, and a monthly report, both per Dubai Municipality's standard report formats, specifying: areas visited; date of visit; pests found and infestation level; treatments carried out; follow-up visit dates (if any); pesticides used; and instructions/recommendations.</field>
+        <field name="kind">parties</field>
+        <field name="name">First Party / Second Party</field>
+        <field name="body"><![CDATA[1. PUBLIC HEALTH PEST CONTROL AGREEMENT
+{{START}} to {{END}}
+First Party
+Aaban Classic Building Cleaning
+License No: 989256
+Address: 126, Safiya Building Bin Saloom Hor AL Anz, Deira, Dubai.
+Contact No: 055-5229706 & 045855280
+Second Party:
+{{CLIENT}}
+{{CLIENT_PHONE}}]]></field>
+        <field name="body_html"><![CDATA[<p style="margin:0;margin-left:28px;">1. <u><b>PUBLIC HEALTH PEST CONTROL AGREEMENT</b></u></p><p style="margin:0;margin-top:0.42em;"><b>{{START}} to {{END}}</b></p><p style="margin:0;margin-top:0.33em;"><b>First Party</b></p><p style="margin:0;margin-top:0.42em;"><b>Aaban Classic Building Cleaning</b></p><p style="margin:0;margin-top:0.33em;"><b>License No: 989256</b></p><p style="margin:0;margin-top:0.51em;"><b>Address: 126, Safiya Building Bin Saloom Hor AL Anz</b>, <b>Deira, Dubai.</b></p><p style="margin:0;margin-top:0.33em;"><b>Contact No: 055-5229706 &amp; 045855280</b></p><p style="margin:0;margin-top:0.42em;"><b>Second Party:</b></p><p style="margin:0;margin-top:0.33em;">{{CLIENT}}</p><p style="margin:0;margin-top:0.42em;">{{CLIENT_PHONE}}</p>]]></field>
     </record>
 
-    <record id="agreement_template_pest_dubai_line_visits" model="fm.contract.agreement.template.line">
+    <record id="agreement_template_pest_dubai_line_02" model="fm.contract.agreement.template.line">
         <field name="template_id" ref="agreement_template_pest_dubai"/>
         <field name="sequence">20</field>
-        <field name="name">Visit Frequency and Reporting</field>
-        <field name="body">Routine visits: two visits per month for food and beverage (F&amp;B) establishments; one visit per month for non-food establishments, premises and buildings.
-Follow-up visits: where infestation is reported during a routine visit, a follow-up visit is conducted every three days until the infestation disappears, with a report prepared per the standard format.
-Complaint/call-out visits: on a complaint from the Second Party, Aaban will visit the site the same day and carry out pest control operations as per the Public Health Pest Control Section Dubai Municipality standards.</field>
+        <field name="kind">article</field>
+        <field name="name">Instructions / Terms and Conditions as per Municipality Local No. 11 (2003):</field>
+        <field name="body"><![CDATA[1. The second party is responsible to keep its establishments, premises or construction sites free from the public health pests and not to
+provide favorable environment for their breeding and spreading concerning the public and safety in Community of Dubai Emirate.
+2. The first party hereby authorized by the Public Health Pest Control Section Dubai Municipality to exercise pest control operations at the
+second party sites as per the below specifications and requirements.
+a. The areas covered under this contract are as ( MENTIONED BELOW )
+b. The scope of job will include all public health pest disease vectors ( MENTIONED BELOW ) and other pests as per the establishment activities.
+c. All pest control operations will be carried out as per Dubai Sustainable Public Health Pest Control Model approved by Public Health Pest Control Section Dubai Municipality (attachment 1), which consider as integral part of this agreement.
+d. At the end of each pest control operation a specific report must to be prepared as per Public Health Pest Control Section Dubai Municipality report format standards (attachment 2), which will consider as integral part of this agreement.
+e. Monthly report to be prepared as per Public Health Pest Control Section Dubai Municipality Report format standards (attachment 3), which consider as integral part of this agreement. The report should specify the followings.
+i. The areas visited
+ii Date of the visits
+iii Pests found & infestation level
+iv The treatments carried out
+v Follow up visits date in case of infestation
+vi The pesticides used
+vii Instructions & recommendations.
+3. The type and frequency of the visits:
+COVERED AREA:
+Common Area, Lobbies, Corridors, Staircase, Parking Lot, Storeroom, Garbage Room, Electrical Room, Pump Room, Telephone Room, Outside Area Related to Buildings except Commercial Shops, Rat Bait Stations included.
+TREATMENT TO BE TREATED:
+Crawling Insects, Cockroaches, ants, etc.;
+using chemical and non-chemical control measures.
+a. Routine visits:
+The first party (Contractor) must visit the second party Establishments, premises or building as follows to evaluate the pest's infestation level and conduct the
+necessary control methods:
+1. Two visits per month for food and beverage (F&B) Establishments.
+2. Service will be provide every month per visit for nonfood Establishments, premises and buildings.
+3. Service report to be edited as per the report formats (attachment 2).
+b. Follow up visits
+i. In case of infestation reported during the routine visits, the contractor must conduct follow up visits every three days and do the necessary actions till the
+infestation disappear.
+ii. A follow up visit report to be prepared as per the report formats (attachment 2).
+b. Complain or Call out visits:
+i. In case of complains or calls from the second party regarding the presence of pests, the first party must visit the complaint sites in the same day and conduct the pest
+control operations as per the Public Health.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><b>Instructions / Terms and Conditions as per Municipality Local No. 11 (2003):</b></p><p style="margin:0;margin-top:0.97em;margin-left:28px;">1. The second party is responsible to keep its establishments, premises or construction sites free from the public health pests and not to</p><p style="margin:0;margin-left:40px;">provide favorable environment for their breeding and spreading concerning the public and safety in Community of Dubai Emirate.</p><p style="margin:0;margin-left:28px;">2. The first party hereby authorized by the Public Health Pest Control Section Dubai Municipality to exercise pest control operations at the</p><p style="margin:0;margin-left:40px;">second party sites as per the below specifications and requirements.</p><p style="margin:0;margin-top:0.33em;">a. The areas covered under this contract are as ( MENTIONED BELOW )</p><p style="margin:0;margin-top:0.42em;">b. The scope of job will include all public health pest disease vectors ( MENTIONED BELOW ) and other pests as per the establishment activities.</p><p style="margin:0;margin-top:0.33em;">c. All pest control operations will be carried out as per Dubai Sustainable Public Health Pest Control Model approved by Public Health Pest Control Section Dubai Municipality (attachment 1), which consider as integral part of this agreement.</p><p style="margin:0;margin-top:0.33em;">d. At the end of each pest control operation a specific report must to be prepared as per Public Health Pest Control Section Dubai Municipality report format standards (attachment 2), which will consider as integral part of this agreement.</p><p style="margin:0;margin-top:0.33em;">e. Monthly report to be prepared as per Public Health Pest Control Section Dubai Municipality Report format standards (attachment 3), which consider as integral part of this agreement. The report should specify the followings.</p><p style="margin:0;margin-top:0.33em;">i. The areas visited</p><p style="margin:0;margin-top:0.42em;">ii Date of the visits</p><p style="margin:0;margin-top:0.33em;">iii Pests found &amp; infestation level</p><p style="margin:0;margin-top:0.42em;">iv The treatments carried out</p><p style="margin:0;margin-top:0.33em;">v Follow up visits date in case of infestation</p><p style="margin:0;margin-top:0.42em;">vi The pesticides used</p><p style="margin:0;margin-top:0.33em;">vii Instructions &amp; recommendations.</p><p style="margin:0;margin-top:1.06em;"><b>3. The type and frequency of the visits:</b></p><p style="margin:0;"><u><b>COVERED AREA:</b></u></p><p style="margin:0;margin-top:0.33em;">Common Area, Lobbies, Corridors, Staircase, Parking Lot, Storeroom, Garbage Room, Electrical Room, Pump Room, Telephone Room, Outside Area Related to Buildings except Commercial Shops, Rat Bait Stations included.</p><p style="margin:0;margin-top:2.25em;"><u><b>TREATMENT TO BE TREATED:</b></u></p><p style="margin:0;margin-top:0.33em;">Crawling Insects, Cockroaches, ants, etc.;</p><p style="margin:0;">using chemical and non-chemical control measures.</p><p style="margin:0;margin-top:2.25em;"><b>a. Routine visits:</b></p><p style="margin:0;margin-top:0.33em;">The first party (Contractor) must visit the second party Establishments, premises or building as follows to evaluate the pest's infestation level and conduct the</p><p style="margin:0;margin-top:0.33em;">necessary control methods:</p><p style="margin:0;margin-top:2.25em;">1. Two visits per month for food and beverage (F&amp;B) Establishments.</p><p style="margin:0;margin-top:0.42em;">2. Service will be provide every month per visit for nonfood Establishments, premises and buildings.</p><p style="margin:0;margin-top:0.33em;">3. Service report to be edited as per the report formats (attachment 2).</p><p style="margin:0;margin-top:0.42em;"><b>b. Follow up visits</b></p><p style="margin:0;margin-top:0.33em;">i. In case of infestation reported during the routine visits, the contractor must conduct follow up visits every three days and do the necessary actions till the</p><p style="margin:0;margin-top:0.33em;">infestation disappear.</p><p style="margin:0;margin-top:0.42em;">ii. A follow up visit report to be prepared as per the report formats (attachment 2).</p><p style="margin:0;margin-top:0.33em;"><b>b.</b> <b>Complain or Call out visits:</b></p><p style="margin:0;margin-top:0.42em;">i. In case of complains or calls from the second party regarding the presence of pests, the first party must visit the complaint sites in the same day and conduct the pest</p><p style="margin:0;margin-top:0.42em;">control operations as per the Public Health.</p></div>]]></field>
     </record>
 
-    <record id="agreement_template_pest_dubai_line_pesticides" model="fm.contract.agreement.template.line">
+    <record id="agreement_template_pest_dubai_line_03" model="fm.contract.agreement.template.line">
         <field name="template_id" ref="agreement_template_pest_dubai"/>
         <field name="sequence">30</field>
-        <field name="name">Pesticides and Records</field>
-        <field name="body">Pesticides used must be registered with the Ministry of Climate Change and Environment and used per the manufacturer's recommendations. Aaban maintains a complete pest control file, accessible to the Second Party within 15 minutes of request, containing: in-charge contact details; a copy of this agreement; the list of pesticides used with registration certificates and MSDS; all visit and monthly reports; trap location maps; and a copy of the latest ministerial decree on banned/restricted pesticides. Fumigation or termite control operations require prior approval from the Public Health Pest Control Section, Dubai Municipality.</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+        <field name="body"><![CDATA[(the priced lines of the contract)]]></field>
     </record>
 
-    <record id="agreement_template_pest_dubai_line_second_party" model="fm.contract.agreement.template.line">
+    <record id="agreement_template_pest_dubai_line_04" model="fm.contract.agreement.template.line">
         <field name="template_id" ref="agreement_template_pest_dubai"/>
         <field name="sequence">40</field>
-        <field name="name">Second Party Commitments</field>
-        <field name="body">The Second Party agrees to: pay Aaban the agreed amount per the agreed payment terms; prepare the necessary working permits and approvals; and take corrective action on instructions and recommendations raised by Aaban. Legal action may be taken if the Second Party's premises remain infested due to its own non-compliance (e.g. uncleared litter, trash or kitchen debris).</field>
+        <field name="kind">article</field>
+        <field name="name">Terms (continued)</field>
+        <field name="body"><![CDATA[ii Pest Control Section Dubai Municipality standards.
+iii Follow up visits to be carried out every three days and do the necessary actions till the infestation disappear.
+iv In each complain visits and its follow up visits a report to be as per the report to be as per the report formats (attachment 2).
+4. The pesticides used must be registered in the Ministry of Climatic Change and Environment and to be used according to the manufactures recommendations and instructions.
+5. Prepare Complete Pest Control file including the followings, the file to be kept with second party and must be accessible and available at 15 minutes when requested:
+a. In charge name & contact numbers
+b. Copy of this agreement
+c. List of pesticides used and their registration certificates and MSDS
+d. All types of visits reports and monthly reports
+e. Maps for the location of cockroach traps, rodent traps and light traps used in the Establishment, the premised or the buildings
+f. A copy of last ministerial decree concerning banned and restricted pesticides
+6. The companies approved for fumigation and termite control must not conduct any fumigation or termites control operations without prior approval from Public Health Pest Control Section Dubai Municipality.
+7. The party shall inform the Public Health Pest Control section in writing if the control operations are terminated as a result of the non-compliance of the Second Party with the
+terms of the contract.
+8. The second party commitments:
+a. Pay to the first party the agreed amount as per agreed mode of payments
+b. Prepare the necessary working permits and approval.
+c. Do the corrective actions for the instructions and recommendations raised by the first party.
+9. Legal action will be taken (if required) against the second party it is Establishment , premises or buildings is infested by pests and he failed to commitments for
+cleaning (Litter, Trash, Kitchen Debris etc in / outside).
+10. The contract will be terminated in the following cases :
+a. The two parties agreed to terminate it at any time.
+b. No approved pest control supervisor with in the Company.
+c. Temporary or final closure of the company due to violations.
+d. Cancellation of the pest control activities or the company license.
+In case of termination of the contract the two parties must inform the must inform the Public Health Pest Control Section Dubai Municipality by written notification.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.97em;"><p style="margin:0;">ii Pest Control Section Dubai Municipality standards.</p><p style="margin:0;margin-top:0.42em;">iii Follow up visits to be carried out every three days and do the necessary actions till the infestation disappear.</p><p style="margin:0;margin-top:0.33em;">iv In each complain visits and its follow up visits a report to be as per the report to be as per the report formats (attachment 2).</p><p style="margin:0;margin-top:0.42em;">4. The pesticides used must be registered in the Ministry of Climatic Change and Environment and to be used according to the manufactures recommendations and instructions.</p><p style="margin:0;margin-top:0.42em;">5. Prepare Complete Pest Control file including the followings, the file to be kept with second party and must be accessible and available at 15 minutes when requested:</p><p style="margin:0;margin-top:0.42em;">a. In charge name &amp; contact numbers</p><p style="margin:0;margin-top:0.33em;">b. Copy of this agreement</p><p style="margin:0;">c. List of pesticides used and their registration certificates and MSDS</p><p style="margin:0;margin-top:0.33em;">d. All types of visits reports and monthly reports</p><p style="margin:0;margin-top:0.42em;">e. Maps for the location of cockroach traps, rodent traps and light traps used in the Establishment, the premised or the buildings</p><p style="margin:0;margin-top:0.33em;">f. A copy of last ministerial decree concerning banned and restricted pesticides</p><p style="margin:0;margin-top:0.42em;">6. The companies approved for fumigation and termite control must not conduct any fumigation or termites control operations without prior approval from Public Health Pest Control Section Dubai Municipality.</p><p style="margin:0;margin-top:0.42em;">7. The party shall inform the Public Health Pest Control section in writing if the control operations are terminated as a result of the non-compliance of the Second Party with the</p><p style="margin:0;margin-top:0.42em;">terms of the contract.</p><p style="margin:0;margin-top:0.33em;">8. The second party commitments:</p><p style="margin:0;margin-top:0.42em;">a. Pay to the first party the agreed amount as per agreed mode of payments</p><p style="margin:0;margin-top:0.33em;">b. Prepare the necessary working permits and approval.</p><p style="margin:0;margin-top:0.42em;">c. Do the corrective actions for the instructions and recommendations raised by the first party.</p><p style="margin:0;margin-top:0.33em;">9. Legal action will be taken (if required) against the second party it is Establishment , premises or buildings is infested by pests and he failed to commitments for</p><p style="margin:0;margin-top:0.33em;">cleaning (Litter, Trash, Kitchen Debris etc in / outside).</p><p style="margin:0;margin-top:0.42em;">10. The contract will be terminated in the following cases :</p><p style="margin:0;margin-top:0.33em;">a. The two parties agreed to terminate it at any time.</p><p style="margin:0;margin-top:0.42em;">b. No approved pest control supervisor with in the Company.</p><p style="margin:0;margin-top:0.33em;">c. Temporary or final closure of the company due to violations.</p><p style="margin:0;margin-top:0.42em;">d. Cancellation of the pest control activities or the company license.</p><p style="margin:0;margin-top:0.33em;">In case of termination of the contract the two parties must inform the must inform the Public Health Pest Control Section Dubai Municipality by written notification.</p></div>]]></field>
     </record>
 
-    <record id="agreement_template_pest_dubai_line_termination" model="fm.contract.agreement.template.line">
+    <record id="agreement_template_pest_dubai_line_05" model="fm.contract.agreement.template.line">
         <field name="template_id" ref="agreement_template_pest_dubai"/>
         <field name="sequence">50</field>
-        <field name="name">Termination (Dubai Municipality Notification)</field>
-        <field name="body">This contract may be terminated where: both parties agree to terminate at any time; there is no approved pest control supervisor within the company; the company is temporarily or permanently closed due to violations; or the pest control activity licence is cancelled. Either party must notify the Public Health Pest Control Section, Dubai Municipality in writing of any termination.</field>
+        <field name="kind">article</field>
+        <field name="name">Payment Terms :</field>
+        <field name="body"><![CDATA[{{PAYMENT_TERMS}}]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.33em;"><p style="margin:0;"><u><b>Payment Terms :</b></u></p><p style="margin:0;margin-top:0.42em;">{{PAYMENT_TERMS}}</p></div>]]></field>
     </record>
 
-
-    <!-- ================================================================
-         Full-document upgrade (2026-07): each template's lines are the
-         complete printed agreement (auto-numbered), faithful to the real
-         Aaban documents. New records only — existing ones are noupdate=1
-         and stay as-is on installed DBs (reorder/edit them in the UI).
-         ================================================================ -->
-
-    <!-- Water Tank: complete the article set (DR.SAMI 968/26 / ELIFE
-         1054/26 / AZAZ 1066/26 all share this structure). -->
-    <record id="agreement_template_water_tank_line_service" model="fm.contract.agreement.template.line">
-        <field name="template_id" ref="agreement_template_water_tank"/>
-        <field name="sequence">21</field>
-        <field name="name">Service</field>
-        <field name="body">The First Party agrees to supply Water Tank Cleaning and Disinfection at the site stated above. Aaban will provide the services during the hours agreed with the Second Party and in accordance with the schedule detailed in this agreement. The First Party will ensure that everybody providing the services has the necessary training and authorization to do so.</field>
-    </record>
-    <record id="agreement_template_water_tank_line_scope" model="fm.contract.agreement.template.line">
-        <field name="template_id" ref="agreement_template_water_tank"/>
-        <field name="sequence">22</field>
-        <field name="name">The Scope of Work</field>
-        <field name="body">We will chemically clean and disinfect your tank to remove all of the bacteria, mould, algae, sludge and sediment and almost all of the staining inside the tank. The tanks will be cleaned and disinfected as per Municipality standards and guidelines using appropriate environmentally friendly chemicals approved by the Municipality. The water tanks will be cleaned and disinfected by spraying chemicals on the inner surface of the tanks. Stains, sediment and mould will be removed with the help of brushes. The tanks will then be thoroughly rinsed with fresh water and checked for pH neutrality before allowing them to be refilled. Draining out the existing water, cleaning the interior tanks, disinfection, washing and flushing the tanks, refilling the tanks with fresh water, laboratory testing.</field>
-    </record>
-    <record id="agreement_template_water_tank_line_termination" model="fm.contract.agreement.template.line">
-        <field name="template_id" ref="agreement_template_water_tank"/>
-        <field name="sequence">23</field>
-        <field name="name">Contract Termination</field>
-        <field name="body">Both parties can terminate the contract by giving the other party 30 days' prior notice, without the requirement of assigning any reason.</field>
-    </record>
-    <record id="agreement_template_water_tank_line_commencement" model="fm.contract.agreement.template.line">
-        <field name="template_id" ref="agreement_template_water_tank"/>
-        <field name="sequence">35</field>
-        <field name="name">Commencement of Services</field>
-        <field name="body">The First Party will commence the agreed services within ten (10) days from the date the Second Party signs the contract and delivers it to the First Party. The Second Party agrees to provide the First Party access to the areas to be serviced during the hours agreed. The Second Party may incur additional costs if the First Party is required to provide an unscheduled service.</field>
-    </record>
-
-    <!-- Anti-Termite: add the opening Scope article (AL SIKKA 129/25 /
-         AL AJMANI 1083/26). -->
-    <record id="agreement_template_termite_line_scope" model="fm.contract.agreement.template.line">
-        <field name="template_id" ref="agreement_template_termite"/>
-        <field name="sequence">5</field>
-        <field name="name">The Scope of Work</field>
-        <field name="body">Operations will be carried out as per the relevant Municipality's stated/approved procedures and terms and conditions for pre-construction termite control strategies:
-Stage 1: PCC and RCC.
-Stage 2: Vertical and horizontal treatment inside the tie beams.
-Stage 3: Vertical and horizontal treatment outside the tie beams.</field>
-    </record>
-
-    <!-- Deep Cleaning: the letter-style agreement's single body article
-         (Villa 52 Al Barsha 6/25; Montreal 838/25 & 941/26). -->
-    <record id="agreement_template_cleaning_deep_line_scope" model="fm.contract.agreement.template.line">
-        <field name="template_id" ref="agreement_template_cleaning_deep"/>
-        <field name="sequence">10</field>
-        <field name="name">Scope of Work</field>
-        <field name="body">Deep cleaning covers, as applicable to the site:
-Toilet cleaning — cabinets and drawers, sink and faucet descaling, shower head descaling, walls, seat, exhaust fan, shower area, deep cleaning of flooring, mirrors and glass doors.
-Kitchen — sink and faucet descaling, walls, de-greasing of hood and countertop, deep cleaning of flooring.
-General — bedroom cabinets (emptied by client), light fixtures, AC grills, walls, corners, internal windows, window frames and sills, glass and wooden doors.
-Flooring — ceramic, wooden and marble flooring using scrubber machines; removal of paint marks where possible.
-Ceiling — AC ventilation grills, ceiling corners, ceiling lights and spot lights (where accessible and in place).
-External — balcony/parking floor, handrails and corners (where accessible).</field>
-    </record>
-
-    <!-- NEW: Pest Control — Standard (the Ajman-issued wording every
-         non-Dubai pest contract uses; Royal Apartment 1006/26 Articles 2-8,
-         AAM Properties Quote 276/26). The Dubai branch keeps its own
-         Local-Order-11 template. -->
-    <record id="agreement_template_pest_standard" model="fm.contract.agreement.template">
-        <field name="name">Pest Control — Standard</field>
+    <record id="agreement_template_pest_fujairah" model="fm.contract.agreement.template">
+        <field name="name">Pest Control — Fujairah</field>
         <field name="service_line">pest</field>
-        <field name="quotation_intro_text">With reference to the above-mentioned subject and subsequent inspection, we are pleased to provide our best quote for pest control services. Please be informed that the pesticides used for pest control are strictly approved by the pest control section of the relevant Municipality and the Ministry of Climate Change and Environment.</field>
-        <field name="scope_method_text">Trained operators will keenly inspect each area of the premises prior to any pest control activity to assess the level of pest infestation, then carry out pest control against cockroaches, ants and other crawling insects. Safe control will be carried out using chemicals strictly approved by the pest control section of the relevant Municipality and the Ministry of Climate Change and Environment.</field>
+        <field name="branch_id" ref="branch_fujairah"/>
+        <field name="replaces_standard_articles" eval="True"/>
+        <field name="client_layout" eval="True"/>
+        <field name="signature_party">Aaban Classic Building Cleaning Fujairah Branch 1</field>
+        <field name="table_columns">unit,rate,frequency,tax,grand_total</field>
+        <field name="italic_labels" eval="True"/>
     </record>
-    <record id="agreement_template_pest_standard_line_service" model="fm.contract.agreement.template.line">
-        <field name="template_id" ref="agreement_template_pest_standard"/>
+
+    <record id="agreement_template_pest_fujairah_line_01" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_fujairah"/>
         <field name="sequence">10</field>
-        <field name="name">Service</field>
-        <field name="body">The First Party agrees to supply pest control services to the Second Party at the site stated above. Aaban will provide the services during the hours agreed with the Second Party and in accordance with the schedule detailed in this agreement. The First Party will ensure that everybody providing the services has the necessary training and authorization to do so.</field>
+        <field name="kind">parties</field>
+        <field name="name">First Party / Second Party</field>
+        <field name="body"><![CDATA[PUBLIC HEALTH PEST CONTROL AGREEMENT
+{{START}} to {{END}}
+First Party :
+Aaban Classic Building Cleaning Fujairah Branch 1
+License No: 1026622
+Address : Shop #3, Block A, Plot C11A, Sakamkam, Fujairah - UAE
+Contact No: 055-5229706 & 80022226
+Second Party :
+{{CLIENT}}
+{{CLIENT_PHONE}}]]></field>
+        <field name="body_html"><![CDATA[<ul style="margin:0;margin-left:22px;padding-left:18px;"><li><u><b>PUBLIC HEALTH PEST CONTROL AGREEMENT</b></u></li></ul><p style="margin:0;margin-top:1.06em;"><b>{{START}} to {{END}}</b></p><p style="margin:0;margin-top:0.33em;"><u><b>First Party :</b></u></p><p style="margin:0;margin-top:0.42em;"><b>Aaban Classic Building Cleaning Fujairah Branch 1</b></p><p style="margin:0;margin-top:0.33em;"><b>License No: 1026622</b></p><p style="margin:0;margin-top:0.51em;"><b>Address : Shop #3, Block A, Plot C11A, Sakamkam, Fujairah - UAE</b></p><p style="margin:0;margin-top:0.33em;"><b>Contact No: 055-5229706 &amp; 80022226</b></p><p style="margin:0;margin-top:0.42em;"><u><b>Second Party :</b></u></p><p style="margin:0;margin-top:0.33em;"><b>{{CLIENT}}</b></p><p style="margin:0;margin-top:0.42em;"><b>{{CLIENT_PHONE}}</b></p>]]></field>
     </record>
-    <record id="agreement_template_pest_standard_line_schedule" model="fm.contract.agreement.template.line">
-        <field name="template_id" ref="agreement_template_pest_standard"/>
+
+    <record id="agreement_template_pest_fujairah_line_02" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_fujairah"/>
         <field name="sequence">20</field>
-        <field name="name">Service Schedule</field>
-        <field name="body">The customer agrees to fulfil all technical guidelines requested by Aaban to secure the best results. The Second Party will make its representative available with Aaban's technicians during the treatment. All areas that are not made ready/cleaned for the scheduled treatment will be avoided and treated on the next treatment.</field>
+        <field name="kind">article</field>
+        <field name="name">Instructions/Terms and Conditions as per Municipality Local No. 11 (2003):</field>
+        <field name="body"><![CDATA[1. The second party is responsible for keeping its establishments, premises, or construction sites free from the public health pests and not providing a favorable environment for their breeding and spreading concerning the public and safety in the Community of Fujairah Emirate.
+2. The first party is hereby authorized by the Public Health Pest Control Section of the Fujairah Municipality to exercise pest control operations at the second party sites as per the below specifications and requirements.
+A. The areas covered under this contract are as (MENTIONED BELOW)
+B. The scope of the job will include all public health pest disease vectors (MENTIONED BELOW) and other pests as per the establishment activities.
+C. All pest control operations will be carried out as per the Fujairah Sustainable Public Health Pest Control Model approved by the Public Health Pest Control Section of the Fujairah Municipality (attachment 1), which is considered an integral part of this agreement.
+D. At the end of each pest control operation, a specific report must be prepared as per the Public Health Pest Control Section Fujairah Municipality report format standards (attachment 2), which will be considered an integral part of this agreement.
+E. A monthly report to be prepared as per the Public Health Pest Control Section Fujairah Municipality Report format standards (attachment 3), which is considered an integral part of this agreement. The report should specify the following.
+I. The areas visited
+ii Date of the visits
+iii. Pests found & infestation level
+iv. The treatments carried out
+v Follow up visits date in case of infestation
+vi. The pesticides used vii. Instructions & recommendations.
+3. The type and frequency of the visits:
+COVERED AREA:
+Common Area, Lobbies, Corridors, Staircase, Parking Lot, Storeroom, Garbage Room, Electrical Room, Pump Room, Telephone Room, Outside Area Related to buildings except commercial shops, rat bait stations are included.
+TREATMENT TO BE TREATED:
+Crawling Insects, Cockroaches, ants, etc.;
+using chemical and non-chemical control measures.
+a. Routine visits:
+The first party (contractor) must visit the second party's establishments, premises, or building as follows to evaluate the pest's infestation level and conduct the necessary control methods:
+1. Two visits per month for food and beverage (F&B) establishments.
+2. Service will be provided every month per visit for nonfood establishments, premises, and buildings.
+3. Service report to be edited as per the report formats (attachment 2).
+b. Follow-up visits:
+i. In case of infestation reported during the routine visits, the contractor must conduct follow-up visits every three days and take the necessary actions till the infestation disappears.
+ii. A follow-up visit report to be prepared as per the report formats (attachment 2).
+b. Complain or call out visits:
+i. In case of complaints or calls from the second party regarding the presence of pests, the first party must visit the complaint sites on the same day and conduct the pest control operations as per the public health.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.33em;"><p style="margin:0;"><b>Instructions/Terms and Conditions as per Municipality Local No. 11 (2003):</b></p><p style="margin:0;margin-top:0.42em;">1. The second party is responsible for keeping its establishments, premises, or construction sites free from the public health pests and not providing a favorable environment for their breeding and spreading concerning the public and safety in the Community of Fujairah Emirate.</p><p style="margin:0;margin-top:0.42em;">2. The first party is hereby authorized by the Public Health Pest Control Section of the Fujairah Municipality to exercise pest control operations at the second party sites as per the below specifications and requirements.</p><p style="margin:0;margin-top:0.42em;">A. The areas covered under this contract are as (MENTIONED BELOW)</p><p style="margin:0;margin-top:0.33em;">B. The scope of the job will include all public health pest disease vectors (MENTIONED BELOW) and other pests as per the establishment activities.</p><p style="margin:0;margin-top:0.33em;">C. All pest control operations will be carried out as per the Fujairah Sustainable Public Health Pest Control Model approved by the Public Health Pest Control Section of the Fujairah Municipality (attachment 1), which is considered an integral part of this agreement.</p><p style="margin:0;margin-top:0.33em;">D. At the end of each pest control operation, a specific report must be prepared as per the Public Health Pest Control Section Fujairah Municipality report format standards (attachment 2), which will be considered an integral part of this agreement.</p><p style="margin:0;margin-top:0.33em;">E. A monthly report to be prepared as per the Public Health Pest Control Section Fujairah Municipality Report format standards (attachment 3), which is considered an integral part of this agreement. The report should specify the following.</p><p style="margin:0;margin-top:0.33em;">I. The areas visited</p><p style="margin:0;margin-top:0.42em;">ii Date of the visits</p><p style="margin:0;margin-top:0.33em;">iii. Pests found &amp; infestation level</p><p style="margin:0;margin-top:0.42em;">iv. The treatments carried out</p><p style="margin:0;margin-top:0.33em;">v Follow up visits date in case of infestation</p><p style="margin:0;margin-top:0.42em;">vi. The pesticides used vii. Instructions &amp; recommendations.</p><p style="margin:0;margin-top:0.97em;">3. <b>The type and frequency of the visits:</b></p><p style="margin:0;margin-top:2.43em;"><b>COVERED AREA:</b></p><p style="margin:0;">Common Area, Lobbies, Corridors, Staircase, Parking Lot, Storeroom, Garbage Room, Electrical Room, Pump Room, Telephone Room, Outside Area Related to buildings except commercial shops, rat bait stations are included.</p><p style="margin:0;margin-top:0.42em;"><b>TREATMENT TO BE TREATED:</b></p><p style="margin:0;margin-top:0.33em;">Crawling Insects, Cockroaches, ants, etc.;</p><p style="margin:0;">using chemical and non-chemical control measures.</p><p style="margin:0;margin-top:0.33em;">a. <b>Routine visits:</b></p><p style="margin:0;margin-top:0.42em;">The first party (contractor) must visit the second party's establishments, premises, or building as follows to evaluate the pest's infestation level and conduct the necessary control methods:</p><p style="margin:0;margin-top:2.25em;">1. Two visits per month for food and beverage (F&amp;B) establishments.</p><p style="margin:0;margin-top:0.42em;">2. Service will be provided every month per visit for nonfood establishments, premises, and buildings.</p><p style="margin:0;margin-top:0.33em;">3. Service report to be edited as per the report formats (attachment 2).</p><p style="margin:0;margin-top:0.42em;">b. <b>Follow-up visits:</b></p><p style="margin:0;margin-top:0.33em;">i. In case of infestation reported during the routine visits, the contractor must conduct follow-up visits every three days and take the necessary actions till the infestation disappears.</p><p style="margin:0;margin-top:0.33em;">ii. A follow-up visit report to be prepared as per the report formats (attachment 2).</p><p style="margin:0;margin-top:0.42em;">b. <b>Complain or call out visits:</b></p><p style="margin:0;margin-top:0.33em;">i. In case of complaints or calls from the second party regarding the presence of pests, the first party must visit the complaint sites on the same day and conduct the pest control operations as per the public health.</p></div>]]></field>
     </record>
-    <record id="agreement_template_pest_standard_line_unscheduled" model="fm.contract.agreement.template.line">
-        <field name="template_id" ref="agreement_template_pest_standard"/>
+
+    <record id="agreement_template_pest_fujairah_line_03" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_fujairah"/>
         <field name="sequence">30</field>
-        <field name="name">Unscheduled Services and Conditions of Supply</field>
-        <field name="body">The First Party will attend to unscheduled services at the request of the Second Party only twice during the whole contract period. If the requested service results from an area previously serviced which is still under warranty, the First Party will provide the service at no charge to the Second Party. Any additional service will be served after quote approval from the Second Party.</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+        <field name="body"><![CDATA[(the priced lines of the contract)]]></field>
     </record>
-    <record id="agreement_template_pest_standard_line_exclusions" model="fm.contract.agreement.template.line">
-        <field name="template_id" ref="agreement_template_pest_standard"/>
+
+    <record id="agreement_template_pest_fujairah_line_04" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_fujairah"/>
         <field name="sequence">40</field>
-        <field name="name">Exclusions</field>
-        <field name="body">This contract excludes fumigation for stored-product pests. This contract excludes termite and wood-pest treatments. This contract excludes bird control and stray animals.</field>
+        <field name="kind">article</field>
+        <field name="name">Terms (continued)</field>
+        <field name="body"><![CDATA[ii. Pest Control Section Fujairah Municipality standards.
+iii. Follow-up visits to be carried out every three days, and do the necessary actions till the infestation disappears.
+iv. In each complaint visit and its follow-up visits, a report is to be made as per the report formats (attachment 2).
+4. The pesticides used must be registered in the Ministry of Climatic Change and Environment and be used according to the manufacturer's recommendations and instructions.
+5. Prepare a complete pest control file including the following. The file is to be kept with the second party and must be accessible and available in 15 minutes when requested:
+a. In charge name & contact numbers
+b. Copy of this agreement
+c. List of pesticides used and their registration certificates and MSDS
+d. All types of visits reports and monthly reports
+e. Maps for the location of cockroach traps, rodent traps and light traps used in the Establishment, the premised or the buildings
+f. A copy of last ministerial decree concerning banned and restricted pesticides
+6. The companies approved for fumigation and termite control must not conduct any fumigation or termite control operations without prior approval from the Public Health Pest Control Section of the Fujairah Municipality.
+7. The party shall inform the Public Health Pest Control section in writing if the control operations are terminated as a result of the non-compliance of the second party with the terms of the contract.
+8. The second party commitments:
+a. Pay to the first party the agreed amount as per agreed mode of payment.
+b. Prepare the necessary working permits and approval.
+c. Do the corrective actions for the instructions and recommendations raised by the first party.
+9. Legal action will be taken (if required) against the second party if the establishment, premises, or buildings are infested by pests and he failed to commit to cleaning (litter, trash, kitchen debris, etc. in/outside).
+10. The contract will be terminated in the following cases:
+a. The two parties agreed to terminate it at any time.
+b. No approved pest control supervisor within the company.
+c. Temporary or final closure of the company due to violations.
+d. Cancellation of the pest control activities or the company license. In case of termination of the contract, the two parties must inform the Public Health Pest Control Section of Fujairah Municipality by written notification.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.97em;"><p style="margin:0;">ii. Pest Control Section Fujairah Municipality standards.</p><p style="margin:0;margin-top:0.42em;">iii. Follow-up visits to be carried out every three days, and do the necessary actions till the infestation disappears.</p><p style="margin:0;margin-top:0.33em;">iv. In each complaint visit and its follow-up visits, a report is to be made as per the report formats (attachment 2).</p><p style="margin:0;margin-top:0.42em;">4. The pesticides used must be registered in the Ministry of Climatic Change and Environment and be used according to the manufacturer's recommendations and instructions.</p><p style="margin:0;margin-top:0.42em;">5. Prepare a complete pest control file including the following. The file is to be kept with the second party and must be accessible and available in 15 minutes when requested:</p><p style="margin:0;margin-top:0.42em;">a. In charge name &amp; contact numbers</p><p style="margin:0;margin-top:0.33em;">b. Copy of this agreement</p><p style="margin:0;margin-top:0.42em;">c. List of pesticides used and their registration certificates and MSDS</p><p style="margin:0;margin-top:0.33em;">d. All types of visits reports and monthly reports</p><p style="margin:0;margin-top:0.42em;">e. Maps for the location of cockroach traps, rodent traps and light traps used in the Establishment, the premised or the buildings</p><p style="margin:0;margin-top:0.33em;">f. A copy of last ministerial decree concerning banned and restricted pesticides</p><p style="margin:0;margin-top:0.42em;">6. The companies approved for fumigation and termite control must not conduct any fumigation or termite control operations without prior approval from the Public Health Pest Control Section of the Fujairah Municipality.</p><p style="margin:0;">7. The party shall inform the Public Health Pest Control section in writing if the control operations are terminated as a result of the non-compliance of the second party with the terms of the contract.</p><p style="margin:0;margin-top:0.42em;">8. <b>The second party commitments:</b></p><p style="margin:0;margin-top:0.33em;">a. Pay to the first party the agreed amount as per agreed mode of payment.</p><p style="margin:0;margin-top:0.42em;">b. Prepare the necessary working permits and approval.</p><p style="margin:0;margin-top:0.33em;">c. <b>Do the corrective actions for the instructions and recommendations raised by the first party.</b></p><p style="margin:0;margin-top:0.42em;">9. Legal action will be taken (if required) against the second party if the establishment, premises, or buildings are infested by pests and he failed to commit to cleaning (litter, trash, kitchen debris, etc. in/outside).</p><p style="margin:0;margin-top:0.42em;">10. <b>The contract will be terminated in the following cases:</b></p><p style="margin:0;margin-top:0.33em;">a. The two parties agreed to terminate it at any time.</p><p style="margin:0;margin-top:0.42em;">b. No approved pest control supervisor within the company.</p><p style="margin:0;margin-top:0.33em;">c. Temporary or final closure of the company due to violations.</p><p style="margin:0;margin-top:0.42em;">d. Cancellation of the pest control activities or the company license. In case of termination of the contract, the two parties must inform the Public Health Pest Control Section of Fujairah Municipality by written notification.</p></div>]]></field>
     </record>
-    <record id="agreement_template_pest_standard_line_commencement" model="fm.contract.agreement.template.line">
-        <field name="template_id" ref="agreement_template_pest_standard"/>
+
+    <record id="agreement_template_pest_fujairah_line_05" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_fujairah"/>
         <field name="sequence">50</field>
-        <field name="name">Commencement of Services</field>
-        <field name="body">The First Party will commence the agreed services within ten (10) days from the date the Second Party signs the contract and delivers it to the First Party. The Second Party agrees to provide the First Party access to the areas to be serviced during the hours agreed. The Second Party may incur additional costs if the First Party is required to provide an unscheduled service.</field>
+        <field name="kind">article</field>
+        <field name="name">Payment Terms :</field>
+        <field name="body"><![CDATA[{{PAYMENT_TERMS}}]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.42em;"><p style="margin:0;"><u><b>Payment Terms :</b></u></p><p style="margin:0;margin-top:0.33em;">{{PAYMENT_TERMS}}</p></div>]]></field>
     </record>
-    <record id="agreement_template_pest_standard_line_termination" model="fm.contract.agreement.template.line">
-        <field name="template_id" ref="agreement_template_pest_standard"/>
+
+    <record id="agreement_template_pest_sharjah" model="fm.contract.agreement.template">
+        <field name="name">Pest Control — Sharjah</field>
+        <field name="service_line">pest</field>
+        <field name="branch_id" ref="branch_sharjah"/>
+        <field name="replaces_standard_articles" eval="True"/>
+        <field name="client_layout" eval="True"/>
+        <field name="signature_party">Aaban Classic Building Cleaning SHJ - BR-02</field>
+        <field name="table_columns">unit,rate,frequency,tax,grand_total</field>
+        <field name="italic_labels" eval="True"/>
+    </record>
+
+    <record id="agreement_template_pest_sharjah_line_01" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_sharjah"/>
+        <field name="sequence">10</field>
+        <field name="kind">parties</field>
+        <field name="name">First Party / Second Party</field>
+        <field name="body"><![CDATA[First Party
+Aaban Classic Building Cleaning SHJ BR-02
+License No: 908692
+Shop No 1 & 2, Al Sharq, Al Butina, Sharjah.
+Contact No: 055-5229706
+Second Party:
+{{CLIENT}}
+{{CLIENT_PHONE}}]]></field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><b>First Party</b></p><p style="margin:0;margin-top:0.42em;">Aaban Classic Building Cleaning SHJ BR-02</p><p style="margin:0;margin-top:0.33em;"><b>License No: 908692</b></p><p style="margin:0;margin-top:0.42em;"><b>Shop No 1 &amp; 2, Al Sharq, Al Butina, Sharjah.</b></p><p style="margin:0;margin-top:0.33em;">Contact No: 055-5229706</p><p style="margin:0;margin-top:0.42em;"><b>Second Party:</b></p><p style="margin:0;margin-top:0.33em;">{{CLIENT}}</p><p style="margin:0;margin-top:0.42em;">{{CLIENT_PHONE}}</p>]]></field>
+    </record>
+
+    <record id="agreement_template_pest_sharjah_line_02" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_sharjah"/>
+        <field name="sequence">20</field>
+        <field name="kind">article</field>
+        <field name="name">Article 1 - Duration of the contract :</field>
+        <field name="body"><![CDATA[This contract is valid from {{START}} to {{END}}]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 1 - Duration of the contract :</b></u></p><p style="margin:0;margin-top:0.33em;">This contract is valid from <b>{{START}} to {{END}}</b></p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_pest_sharjah_line_03" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_sharjah"/>
+        <field name="sequence">30</field>
+        <field name="kind">article</field>
+        <field name="name">Article 2 - Service :</field>
+        <field name="body"><![CDATA[AABAN agree to supply pest control services to the Second Party at {{CLIENT}} Sharjah, UAE dated {{START}}
+AABAN will provide the services during the hours agreed the Second Party and in accordance schedule detailed below. The First Party will ensure that everybody providing the services has the necessary training and authorization to do so.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.42em;"><p style="margin:0;"><u><b>Article 2 - Service :</b></u></p><p style="margin:0;margin-top:0.42em;">AABAN agree to supply pest control services to the Second Party at <b>{{CLIENT}} Sharjah, UAE dated {{START}}</b></p><p style="margin:0;margin-top:0.42em;"><b>AABAN</b> will provide the services during the hours agreed the Second Party and in accordance schedule detailed below. The First Party will ensure that everybody providing the services has the necessary training and authorization to do so.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_pest_sharjah_line_04" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_sharjah"/>
+        <field name="sequence">40</field>
+        <field name="kind">article</field>
+        <field name="name">Article 3 - The Scope of Work ( Areas to be covered ) :</field>
+        <field name="body"><![CDATA[Article 3 - The Scope of Work ( Areas to be covered ) :
+Common Area, Lobbies, Corridors,  Staircase, Parking Lot, Storeroom, Garbage Room, Electrical Room, Pump Room, Telephone Room, Outside Area Related to Building except Commercial Shops, Rat Bait Stations included.
+TREATMENT TO BE TREATED :
+Crawling Insects: Cockroaches, Ants, etc., using chemical and non-chemical control measures.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:1.06em;"><p style="margin:0;"><u><b>Article 3 - The Scope of Work ( Areas to be covered ) :</b></u></p><p style="margin:0;margin-top:0.33em;">Common Area, Lobbies, Corridors,  Staircase, Parking Lot, Storeroom, Garbage Room, Electrical Room, Pump Room, Telephone Room, Outside Area Related to Building except Commercial Shops, Rat Bait Stations included.</p><p style="margin:0;margin-top:2.25em;"><u><b>TREATMENT TO BE TREATED :</b></u></p><p style="margin:0;margin-top:0.33em;"><b>Crawling Insects: </b>Cockroaches, Ants, etc., using chemical and non-chemical control measures.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_pest_sharjah_line_05" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_sharjah"/>
+        <field name="sequence">50</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+        <field name="body"><![CDATA[(the priced lines of the contract)]]></field>
+    </record>
+
+    <record id="agreement_template_pest_sharjah_line_06" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_sharjah"/>
         <field name="sequence">60</field>
-        <field name="name">Contract Termination</field>
-        <field name="body">At the end of the contract period, this contract will continue to be valid and renewed against the same conditions unless otherwise cancelled by either party giving one month's notice.</field>
+        <field name="kind">article</field>
+        <field name="name">Article 4 - Service Schedule :</field>
+        <field name="body"><![CDATA[The customer agrees to fulfill all technical guidelines asked by AABAN to secure the best results.
+Second party will secure its client rep. with AABAN technicians during the treatment.
+All the areas that will not be ready cleaned for the scheduled treatment will be avoided and will be treated with the next treatment.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:1.06em;"><p style="margin:0;"><u><b>Article 4 - Service Schedule :</b></u></p><p style="margin:0;margin-top:0.42em;">The customer agrees to fulfill all technical guidelines asked by AABAN to secure the best results.</p><p style="margin:0;margin-top:0.33em;">Second party will secure its client rep. with AABAN technicians during the treatment.</p><p style="margin:0;margin-top:0.42em;">All the areas that will not be ready cleaned for the scheduled treatment will be avoided and will be treated with the next treatment.</p></div>]]></field>
     </record>
 
+    <record id="agreement_template_pest_sharjah_line_07" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_sharjah"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Article 5 - Unscheduled Services and Conditions of Supply :</field>
+        <field name="body"><![CDATA[Article 5 - Unscheduled Services and Conditions of Supply :
+The first party will attend to unscheduled services at the request of the Second Party only twice during the whole contract period. If the requested service results from an area previous serviced, which is still under warranty, the First Party will provide the service at no charge to the Second Party. Any additional service will be served after quote approval from second party.]]></field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><u><b>Article 5 - Unscheduled Services and Conditions of Supply :</b></u></p><p style="margin:0;margin-top:0.42em;">The first party will attend to unscheduled services at the request of the Second Party only twice during the whole contract period. If the requested service results from an area previous serviced, which is still under warranty, the First Party will provide the service at no charge to the Second Party. Any additional service will be served after quote approval from second party.</p>]]></field>
+    </record>
 
-    <!-- Dubai PC: the Local Order 11 preamble as the opening article (it
-         previously sat in a skeleton slot field, which standalone mode does
-         not print). -->
-    <record id="agreement_template_pest_dubai_line_preamble" model="fm.contract.agreement.template.line">
-        <field name="template_id" ref="agreement_template_pest_dubai"/>
-        <field name="sequence">5</field>
-        <field name="name">Terms as per Municipality Local Order No. 11 (2003)</field>
-        <field name="body">The Second Party is responsible for keeping its establishment, premises or construction site free from public health pests and for not providing a favourable environment for their breeding and spreading, for the safety of the Dubai Emirate community. The First Party is hereby authorised by the Public Health Pest Control Section, Dubai Municipality, to exercise pest control operations at the Second Party's sites as per the specifications and requirements in this agreement.</field>
+    <record id="agreement_template_pest_sharjah_line_08" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_sharjah"/>
+        <field name="sequence">80</field>
+        <field name="kind">article</field>
+        <field name="name">Article 6 - Exclusions :</field>
+        <field name="body"><![CDATA[This contract excludes fumigation for stored products pests.
+This contract excludes termites and wood pest treatments. This contract excludes bird control and stray animals.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 6 - Exclusions :</b></u></p><p style="margin:0;margin-top:0.42em;">This contract excludes fumigation for stored products pests.</p><p style="margin:0;margin-top:0.33em;">This contract excludes termites and wood pest treatments. This contract excludes bird control and stray animals.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_pest_sharjah_line_09" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_sharjah"/>
+        <field name="sequence">90</field>
+        <field name="kind">article</field>
+        <field name="name">Article 7 - Commencement of Services :</field>
+        <field name="body"><![CDATA[The First Party will commence the agreed within ten{10) days from the date the Second Party signs the contract and delivers it to the First Party.
+The Second Party agrees to provide the First Party access to the areas to be serviced during the hours agreed. The First Party will provide a service scheduled day, they will be invoiced for the service.
+The Second Party may incur additional costs if the First Party is required to provide an unscheduled service.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 7 - Commencement of Services :</b></u></p><p style="margin:0;margin-top:0.42em;">The First Party will commence the agreed within ten{10) days from the date the Second Party signs the contract and delivers it to the First Party.</p><p style="margin:0;">The Second Party agrees to provide the First Party access to the areas to be serviced during the hours agreed. The First Party will provide a service scheduled day, they will be invoiced for the service.</p><p style="margin:0;margin-top:0.33em;">The Second Party may incur additional costs if the First Party is required to provide an unscheduled service.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_pest_sharjah_line_10" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_sharjah"/>
+        <field name="sequence">100</field>
+        <field name="kind">article</field>
+        <field name="name">Article 8 - Contract Termination :</field>
+        <field name="body"><![CDATA[At the end of the contract period, this contract will continue to be valid and renewed against the same conditions unless otherwise cancelled by either party giving one month notice.]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 8 - Contract Termination :</b></u></p><p style="margin:0;margin-top:0.42em;">At the end of the contract period, this contract will continue to be valid and renewed against the same conditions unless otherwise cancelled by either party giving one month notice.</p></div>]]></field>
+    </record>
+
+    <record id="agreement_template_pest_sharjah_line_11" model="fm.contract.agreement.template.line">
+        <field name="template_id" ref="agreement_template_pest_sharjah"/>
+        <field name="sequence">110</field>
+        <field name="kind">article</field>
+        <field name="name">Article 9 - Payment Terms :</field>
+        <field name="body"><![CDATA[Article 9 - Payment Terms :
+{{PAYMENT_TERMS}}]]></field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.34em;"><p style="margin:0;"><u><b>Article 9 - Payment Terms :</b></u></p><p style="margin:0;margin-top:0.51em;"><u><b>{{PAYMENT_TERMS}}</b></u></p></div>]]></field>
     </record>
 
 </odoo>

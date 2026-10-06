@@ -34,6 +34,8 @@
     <template id="report_fm_quotation_document">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
+                <t t-if="o.fm_quote_client_layout"><t t-call="fm_documents.report_fm_client_quotation_page"/></t>
+                <t t-else="">
                 <t t-call="web.external_layout">
                     <div class="page" style="font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:12.5px; line-height:1.55; color:#2b2b2b;">
                         <style>
@@ -185,6 +187,7 @@
                             quotation is not a tax invoice.
                         </div>
                     </div>
+                </t>
                 </t>
             </t>
         </t>

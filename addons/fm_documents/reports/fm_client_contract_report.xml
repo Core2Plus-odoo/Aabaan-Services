@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Aaban's own contract document, printed the way the client writes it.
+
+         Used by the Service Agreement report (report_fm_contract_document)
+         for an order whose agreement template is a Client Document Layout:
+         the order's agreement lines ARE the document, in order, each printed
+         with its own heading; the priced lines print where a Price Table line
+         sits; the signature block closes it. The letterhead is the company's
+         (report_qweb_pdf_watermark), so this page draws none of its own. -->
+    <template id="report_fm_client_contract_page">
+        <t t-call="web.external_layout">
+            <t t-set="customer" t-value="o.partner_id.commercial_partner_id"/>
+            <t t-set="contact" t-value="o._fm_client_contact()"/>
+            <t t-set="cols" t-value="o._fm_client_columns()"/>
+            <div class="page" style="font-family:Roboto,Arial,Helvetica,sans-serif;font-size:10pt;line-height:1.5;color:#000;">
+
+                <!-- Customer and contact person (left), document box (right).
+                     A grid, not a table: the report stylesheet borders tables. -->
+                <div class="row" style="margin-bottom:12px;">
+                    <div class="col-7" style="line-height:1.3;">
+                        <div style="font-size:11.5pt;font-weight:bold;"><t t-if="o.fm_client_title"><t t-out="o.fm_client_title"/> </t><t t-out="customer.name"/></div>
+                        <div t-if="customer.phone" t-out="customer.phone"/>
+                        <div t-if="customer.vat">TRN: <t t-out="customer.vat"/></div>
+                        <t t-if="contact">
+                            <div style="margin-top:12px;"><b t-att-style="'font-style:italic;' if o.agreement_italic_labels else None">Contact Person</b></div>
+                            <div t-out="contact.name"/>
+                            <div t-if="contact.function" t-out="contact.function"/>
+                            <div t-if="contact.email" t-out="contact.email"/>
+                            <div t-if="contact.phone" t-out="contact.phone"/>
+                        </t>
+                    </div>
+                    <div class="col-5">
+                        <div style="text-align:right;font-size:15pt;font-weight:bold;margin-bottom:6px;">Contract</div>
+                        <table style="width:100%;border-collapse:collapse;border:1px solid #e3e3e3;font-weight:bold;">
+                            <tr style="background:#fde0d0;">
+                                <td style="padding:6px 8px;color:#f47b20;border:none;">Ref#</td>
+                                <td style="padding:6px 8px;color:#f47b20;text-align:right;border:none;" t-out="o._fm_client_reference()"/>
+                            </tr>
+                            <tr>
+                                <td style="padding:6px 8px;border:none;border-top:1px solid #e3e3e3;">Date</td>
+                                <td style="padding:6px 8px;text-align:right;border:none;border-top:1px solid #e3e3e3;" t-out="o._fm_client_date(o.date_order)"/>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div t-if="o.subject" style="margin-bottom:10px;">
+                    <b>Subject : </b><i t-out="o.subject"/>
+                </div>
+
+                <!-- The document body: the agreement lines, in order -->
+                <t t-foreach="o.agreement_line_ids" t-as="aline">
+                    <t t-if="aline.kind == 'price_table'">
+                        <t t-call="fm_documents.report_fm_client_contract_table"/>
+                    </t>
+                    <!-- The formatted body carries the heading as the document
+                         writes it, and the space above it; a line typed in later
+                         without one prints its heading and plain body. -->
+                    <div t-elif="aline.body_html" t-out="o._fm_render_agreement_html(aline.body_html)"/>
+                    <div t-else="" style="margin-top:10px;">
+                        <div t-if="aline.kind == 'article'" style="font-weight:bold;text-decoration:underline;"
+                             t-out="aline.name"/>
+                        <div style="white-space:pre-wrap;" t-out="o._fm_render_agreement_text(aline.body)"/>
+                    </div>
+                </t>
+
+                <!-- Signature block -->
+                <div class="row" style="margin-top:40px;page-break-inside:avoid;">
+                    <div class="col-6">
+                        <div style="font-weight:bold;" t-out="customer.name"/>
+                        <div style="margin-top:56px;">_________________________</div>
+                        <div style="font-weight:bold;">Signature</div>
+                        <t t-if="contact">
+                            <div style="font-weight:bold;margin-top:12px;" t-out="contact.name"/>
+                            <div t-if="contact.function" t-out="contact.function"/>
+                            <div t-if="contact.phone" t-out="contact.phone"/>
+                        </t>
+                    </div>
+                    <div class="col-6">
+                        <div style="font-weight:bold;" t-out="o.agreement_signature_party or o.company_id.name"/>
+                        <div style="margin-top:56px;">_________________________</div>
+                        <div style="font-weight:bold;">Signature</div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- The priced lines, as the client's contract prints them:
+         Description / Unit / Rate / Frequency / Tax / Grand Total (the template
+         names which), then the total in figures and in words. -->
+    <template id="report_fm_client_contract_table">
+        <t t-set="priced" t-value="o.order_line.filtered(lambda l: not l.display_type)"/>
+        <table style="width:100%;border-collapse:collapse;margin-top:12px;border:1px solid #e3e3e3;">
+            <thead>
+                <tr style="background:#f47b20;color:#fff;font-weight:bold;">
+                    <th style="padding:10px 6px;width:5%;border:1px solid #f9b88c;"/>
+                    <th style="padding:10px 6px;text-align:center;border:1px solid #f9b88c;">Description</th>
+                    <th t-if="'unit' in cols" style="padding:10px 6px;text-align:center;border:1px solid #f9b88c;">Unit</th>
+                    <th t-if="'rate' in cols" style="padding:10px 6px;text-align:center;border:1px solid #f9b88c;">Rate</th>
+                    <th t-if="'frequency' in cols" style="padding:10px 6px;text-align:center;border:1px solid #f9b88c;">Frequency</th>
+                    <th t-if="'tax' in cols" style="padding:10px 6px;text-align:center;border:1px solid #f9b88c;">Tax</th>
+                    <th t-if="'subtotal' in cols" style="padding:10px 6px;text-align:center;border:1px solid #f9b88c;">Subtotal</th>
+                    <th t-if="'grand_total' in cols" style="padding:10px 6px;text-align:center;border:1px solid #f9b88c;">Grand Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr t-foreach="priced" t-as="line" t-att-style="'page-break-inside:avoid;' + ('background:#fdeee6;' if line_index % 2 else '')">
+                    <t t-set="desc" t-value="(line.name or '').split('\n')"/>
+                    <td style="padding:8px 6px;vertical-align:top;border:1px solid #e3e3e3;" t-out="line_index + 1"/>
+                    <td style="padding:8px 6px;vertical-align:top;border:1px solid #e3e3e3;">
+                        <b t-out="o._fm_client_line_title(desc[0])"/>
+                        <div t-if="line.fm_print_details" class="fm_line_details" t-out="line.fm_print_details"/>
+                        <t t-else=""><t t-foreach="desc[1:]" t-as="dl"><div t-out="dl"/></t></t>
+                    </td>
+                    <td t-if="'unit' in cols" style="padding:8px 6px;vertical-align:top;text-align:center;border:1px solid #e3e3e3;"
+                        t-out="'%g' % (line.fm_print_unit or line.product_uom_qty)"/>
+                    <td t-if="'rate' in cols" style="padding:8px 6px;vertical-align:top;text-align:center;border:1px solid #e3e3e3;"
+                        t-out="o._fm_client_money(line.price_unit)"/>
+                    <td t-if="'frequency' in cols" style="padding:8px 6px;vertical-align:top;text-align:center;border:1px solid #e3e3e3;"
+                        t-out="line.fm_print_frequency or ''"/>
+                    <td t-if="'tax' in cols" style="padding:8px 6px;vertical-align:top;text-align:center;border:1px solid #e3e3e3;"
+                        t-out="o._fm_client_money(line.price_tax)"/>
+                    <td t-if="'subtotal' in cols" style="padding:8px 6px;vertical-align:top;text-align:right;border:1px solid #e3e3e3;"
+                        t-out="o._fm_client_money(line.price_subtotal)"/>
+                    <td t-if="'grand_total' in cols" style="padding:8px 6px;vertical-align:top;text-align:right;border:1px solid #e3e3e3;"
+                        t-out="o._fm_client_money(line.price_total)"/>
+                </tr>
+            </tbody>
+        </table>
+        <div t-att-style="'margin-top:12px;font-weight:bold;' + ('font-style:italic;' if o.agreement_italic_labels else '')">
+            Total Amount <t t-out="o.currency_id.name"/> <t t-out="o._fm_client_money(o.amount_total)"/>
+            (<t t-out="o._fm_client_amount_in_words()"/>)
+        </div>
+    </template>
+
+</odoo>

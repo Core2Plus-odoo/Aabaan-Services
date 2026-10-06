@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- A Print button on the quotation template: the document it produces. -->
+    <record id="view_sale_order_template_form_print" model="ir.ui.view">
+        <field name="name">sale.order.template.form.print</field>
+        <field name="model">sale.order.template</field>
+        <field name="inherit_id" ref="sale_management.sale_order_template_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="%(fm_documents.action_report_fm_quotation_template)d" type="action"
+                            string="Print" class="btn-primary"
+                            invisible="not fm_quote_client_layout"/>
+                </header>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <field name="fm_quote_client_layout" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

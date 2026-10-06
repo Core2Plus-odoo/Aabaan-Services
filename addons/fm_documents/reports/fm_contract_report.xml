@@ -33,6 +33,12 @@
     <template id="report_fm_contract_document">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
+                <!-- Aaban's own contract document when the agreement template is a
+                     Client Document Layout; this generic agreement otherwise. -->
+                <t t-if="o.agreement_client_layout">
+                    <t t-call="fm_documents.report_fm_client_contract_page"/>
+                </t>
+                <t t-else="">
                 <t t-call="web.external_layout">
                     <div class="page" style="font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:12.5px; line-height:1.55; color:#2b2b2b;">
                         <style>
@@ -426,6 +432,7 @@
                             TRN: <span t-field="o.company_id.vat"/> · All amounts in AED unless stated.
                         </div>
                     </div>
+                </t>
                 </t>
             </t>
         </t>

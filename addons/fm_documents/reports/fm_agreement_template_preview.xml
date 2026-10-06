@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Print of an agreement template itself: the document it produces, with
+         the facts every contract fills in shown as markers naming them. -->
+    <record id="action_report_fm_agreement_template" model="ir.actions.report">
+        <field name="name">Agreement Template</field>
+        <field name="model">fm.contract.agreement.template</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fm_documents.report_fm_agreement_template_preview</field>
+        <field name="report_file">fm_documents.report_fm_agreement_template_preview</field>
+        <field name="print_report_name">'Agreement Template - %s' % object.name</field>
+        <field name="binding_model_id" ref="fm_contract.model_fm_contract_agreement_template"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+
+    <template id="report_fm_agreement_template_preview">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="tmpl">
+                <t t-call="web.external_layout">
+                    <t t-set="cols" t-value="tmpl._fm_preview_columns()"/>
+                    <div class="page" style="font-family:Roboto,Arial,Helvetica,sans-serif;font-size:10pt;line-height:1.5;color:#000;">
+
+                        <div class="row" style="margin-bottom:12px;">
+                            <div class="col-7" style="line-height:1.6;">
+                                <div style="font-size:11.5pt;font-weight:bold;" t-out="tmpl._fm_preview_html('{{CLIENT}}')"/>
+                                <div t-out="tmpl._fm_preview_html('{{CLIENT_PHONE}}')"/>
+                                <div style="margin-top:12px;"><b><i>Contact Person</i></b></div>
+                                <div t-out="tmpl._fm_preview_html('{{CONTACT}}')"/>
+                            </div>
+                            <div class="col-5">
+                                <div style="text-align:right;font-size:15pt;font-weight:bold;margin-bottom:6px;">Contract</div>
+                                <table style="width:100%;border-collapse:collapse;border:1px solid #e3e3e3;font-weight:bold;">
+                                    <tr style="background:#fde0d0;">
+                                        <td style="padding:6px 8px;color:#f47b20;border:none;">Ref#</td>
+                                        <td style="padding:6px 8px;text-align:right;border:none;" t-out="tmpl._fm_preview_html('{{REF}}')"/>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:6px 8px;border:none;border-top:1px solid #e3e3e3;">Date</td>
+                                        <td style="padding:6px 8px;text-align:right;border:none;border-top:1px solid #e3e3e3;" t-out="tmpl._fm_preview_html('{{DATE}}')"/>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom:10px;">
+                            <b>Subject : </b><span t-out="tmpl._fm_preview_html('{{SUBJECT}}')"/>
+                        </div>
+
+                        <t t-foreach="tmpl.line_ids" t-as="aline">
+                            <t t-if="aline.kind == 'price_table'">
+                                <table style="width:100%;border-collapse:collapse;margin-top:12px;border:1px solid #e3e3e3;">
+                                    <tr style="background:#f47b20;color:#fff;font-weight:bold;">
+                                        <td style="padding:10px 6px;width:5%;border:1px solid #f9b88c;"/>
+                                        <td style="padding:10px 6px;text-align:center;border:1px solid #f9b88c;">Description</td>
+                                        <td t-if="'unit' in cols" style="padding:10px 6px;text-align:center;border:1px solid #f9b88c;">Unit</td>
+                                        <td t-if="'rate' in cols" style="padding:10px 6px;text-align:center;border:1px solid #f9b88c;">Rate</td>
+                                        <td t-if="'frequency' in cols" style="padding:10px 6px;text-align:center;border:1px solid #f9b88c;">Frequency</td>
+                                        <td t-if="'tax' in cols" style="padding:10px 6px;text-align:center;border:1px solid #f9b88c;">Tax</td>
+                                        <td t-if="'subtotal' in cols" style="padding:10px 6px;text-align:center;border:1px solid #f9b88c;">Subtotal</td>
+                                        <td t-if="'grand_total' in cols" style="padding:10px 6px;text-align:center;border:1px solid #f9b88c;">Grand Total</td>
+                                    </tr>
+                                    <tr>
+                                        <td t-att-colspan="2 + len(cols)" style="padding:14px 8px;text-align:center;color:#8A3708;border:1px solid #e3e3e3;">
+                                            ✎ The contract's priced lines print here
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div style="margin-top:12px;font-weight:bold;font-style:italic;">
+                                    Total Amount AED <span t-out="tmpl._fm_preview_html('{{TOTAL}}')"/>
+                                    (<span t-out="tmpl._fm_preview_html('{{TOTAL_IN_WORDS}}')"/>)
+                                </div>
+                            </t>
+                            <div t-elif="aline.body_html" t-out="tmpl._fm_preview_html(aline.body_html)"/>
+                            <div t-else="" style="margin-top:10px;">
+                                <div t-if="aline.kind == 'article'" style="font-weight:bold;text-decoration:underline;" t-out="aline.name"/>
+                                <div style="white-space:pre-wrap;" t-out="tmpl._fm_preview_html(aline.body)"/>
+                            </div>
+                        </t>
+
+                        <div class="row" style="margin-top:40px;page-break-inside:avoid;">
+                            <div class="col-6">
+                                <div style="font-weight:bold;" t-out="tmpl._fm_preview_html('{{CLIENT}}')"/>
+                                <div style="margin-top:56px;">_________________________</div>
+                                <div style="font-weight:bold;">Signature</div>
+                                <div style="margin-top:12px;" t-out="tmpl._fm_preview_html('{{CONTACT}}')"/>
+                            </div>
+                            <div class="col-6">
+                                <div style="font-weight:bold;" t-out="tmpl.signature_party or tmpl.env.company.name"/>
+                                <div style="margin-top:56px;">_________________________</div>
+                                <div style="font-weight:bold;">Signature</div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

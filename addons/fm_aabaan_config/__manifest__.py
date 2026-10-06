@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Aabaan Configuration",
-    "version": "19.0.1.4.0",
+    "version": "19.0.1.7.0",
     "category": "Facility Management",
     "summary": "Aabaan-ready seed data: branches, service catalogue, asset categories and UAE compliance regimes",
     "description": """
@@ -32,6 +32,7 @@ No custom models — everything targets the native/thin FM models.
         "data/fm_compliance_regime_data.xml",
         "data/product_data.xml",
         "data/fm_contract_agreement_template_data.xml",
+        "data/fm_quotation_template_data.xml",
     ],
     "installable": True,
     "application": False,

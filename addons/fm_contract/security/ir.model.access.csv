@@ -17,3 +17,5 @@ access_fm_contract_agreement_template_line_admin,fm.contract.agreement.template.
 access_fm_contract_agreement_line_user,fm.contract.agreement.line user,model_fm_contract_agreement_line,fm_branding.group_fm_user,1,0,0,0
 access_fm_contract_agreement_line_am,fm.contract.agreement.line account manager,model_fm_contract_agreement_line,fm_branding.group_fm_account_manager,1,1,1,1
 access_fm_contract_agreement_line_admin,fm.contract.agreement.line admin,model_fm_contract_agreement_line,fm_branding.group_fm_admin,1,1,1,1
+access_fm_quotation_wording_line_user,fm.quotation.wording.line user,model_fm_quotation_wording_line,base.group_user,1,0,0,0
+access_fm_quotation_wording_line_salesman,fm.quotation.wording.line salesman,model_fm_quotation_wording_line,sales_team.group_sale_salesman,1,1,1,1

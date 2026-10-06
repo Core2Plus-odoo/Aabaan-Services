@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "FM Documents",
-    "version": "19.0.3.0.0",
+    "version": "19.0.3.4.0",
     "category": "Facility Management",
     "summary": "Branded PDF documents — job sheet, quotation, contract, tax invoice",
     "description": """
@@ -40,12 +40,18 @@ sent, payments really reconciled, credit notes really issued.
     ],
     "data": [
         "reports/project_task_report.xml",
+        "reports/fm_client_quotation_report.xml",
         "reports/fm_quotation_report.xml",
+        "reports/fm_quotation_template_preview.xml",
+        "reports/fm_client_contract_report.xml",
         "reports/fm_contract_report.xml",
+        "reports/fm_agreement_template_preview.xml",
         "reports/fm_certificate_report.xml",
         "reports/fm_tax_invoice_report.xml",
         "views/sale_order_views.xml",
         "views/account_move_views.xml",
+        "views/fm_contract_agreement_template_views.xml",
+        "views/sale_order_template_views.xml",
     ],
     "installable": True,
     "application": False,

@@ -1,7 +1,21 @@
 # -*- coding: utf-8 -*-
+import re
+
+from markupsafe import Markup, escape
+
 from odoo import fields, models
 
 from odoo.addons.fm_asset.models.fm_asset_category import SERVICE_LINES
+
+
+# What a line of an agreement is on a Client Document Layout:
+# an article (heading + body), the parties' block (no heading printed),
+# or the place the priced lines are printed.
+LINE_KINDS = [
+    ("article", "Article"),
+    ("parties", "Parties Block"),
+    ("price_table", "Price Table"),
+]
 
 
 class FmContractAgreementTemplate(models.Model):
@@ -63,6 +77,34 @@ class FmContractAgreementTemplate(models.Model):
         help="Used for Article 6 / the Quotation when the contract itself has "
         "no Exclusions listed.",
     )
+    # Aaban's own contract documents, printed the way the client writes them:
+    # the template's lines ARE the document body, in order, each printed
+    # with its own heading ("Article 1- Duration of the contract :") rather
+    # than renumbered, the parties' block and the priced table where the
+    # client's document has them, and the signature block at the end.
+    client_layout = fields.Boolean(
+        string="Client Document Layout",
+        help="Print the Service Agreement exactly in this template's own "
+        "layout: its lines in order with their own headings, the price "
+        "table where a Price Table line sits, and the signature block.",
+    )
+    signature_party = fields.Char(
+        string="Signs as (First Party)",
+        help="Aaban's name above its signature line, e.g. "
+        "\"Aaban Classic Building Cleaning Fujairah Branch 1\".",
+    )
+    table_columns = fields.Char(
+        string="Price Table Columns",
+        default="unit,rate,frequency,tax,grand_total",
+        help="After Description, comma-separated: unit, rate, frequency, "
+        "tax, subtotal, grand_total.",
+    )
+    italic_labels = fields.Boolean(
+        string="Italic Labels", default=True,
+        help="Print 'Contact Person' and the 'Total Amount' line in italics, "
+        "as the client's older documents do; off for the newer ones.",
+    )
+
     line_ids = fields.One2many(
         "fm.contract.agreement.template.line", "template_id",
         string="Additional Terms",
@@ -72,6 +114,25 @@ class FmContractAgreementTemplate(models.Model):
         "headed sections; copied onto a contract when this template is "
         "selected.",
     )
+
+
+    # ------------------------------------------------------------------
+    # Print preview of the template itself
+    # ------------------------------------------------------------------
+    def _fm_preview_html(self, value):
+        """The formatted wording with each placeholder shown as a marker
+        naming it, since a template has no contract to fill it from."""
+        if not value:
+            return Markup("")
+        chip = ('<span style="background:#FFF2C2;border:1px dashed #D2551E;color:#8A3708;'
+                'font-weight:bold;padding:1px 6px;border-radius:3px;">\u270e %s</span>')
+        return Markup(re.sub(r"\{\{\s*([A-Z_]+)\s*\}\}",
+                             lambda m: chip % escape(m.group(1)), str(value)))
+
+    def _fm_preview_columns(self):
+        self.ensure_one()
+        cols = [c.strip() for c in (self.table_columns or "").split(",")]
+        return [c for c in cols if c in ("unit", "rate", "frequency", "tax", "subtotal", "grand_total")]
 
 
 class FmContractAgreementTemplateLine(models.Model):
@@ -88,5 +149,11 @@ class FmContractAgreementTemplateLine(models.Model):
         "fm.contract.agreement.template", required=True, ondelete="cascade", index=True
     )
     sequence = fields.Integer(default=10)
+    kind = fields.Selection(LINE_KINDS, default="article", required=True)
     name = fields.Char(string="Heading", required=True, translate=True)
     body = fields.Text(string="Body", required=True, translate=True)
+    body_html = fields.Html(
+        string="Body (formatted)", translate=True,
+        help="The body with its bold and underline, as the client writes it. "
+        "Printed instead of Body on a Client Document Layout template.",
+    )

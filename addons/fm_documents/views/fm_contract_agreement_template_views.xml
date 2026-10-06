@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- A Print button on the agreement template: the document it produces. -->
+    <record id="view_fm_contract_agreement_template_form_print" model="ir.ui.view">
+        <field name="name">fm.contract.agreement.template.form.print</field>
+        <field name="model">fm.contract.agreement.template</field>
+        <field name="inherit_id" ref="fm_contract.view_fm_contract_agreement_template_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="%(fm_documents.action_report_fm_agreement_template)d" type="action"
+                            string="Print" class="btn-primary"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -346,7 +346,8 @@ class FmAgreementMixin(models.AbstractModel):
         self.schedule_text = (t and t.schedule_text) or _default_schedule_text(self)
         self.exclusions_text = (t and t.exclusions_default_text) or DEFAULT_EXCLUSIONS_TEXT
         new_lines = [
-            (0, 0, {"sequence": line.sequence, "name": line.name, "body": line.body})
+            (0, 0, {"sequence": line.sequence, "kind": line.kind, "name": line.name,
+                    "body": line.body, "body_html": line.body_html})
             for line in t.line_ids
         ] if t else []
         self.agreement_line_ids = [(5, 0, 0)] + new_lines

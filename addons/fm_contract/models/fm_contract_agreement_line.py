@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from odoo import fields, models
 
+from .fm_contract_agreement_template import LINE_KINDS
+
 
 class FmContractAgreementLine(models.Model):
     """One custom article on a contract's printed agreement — the contract's
@@ -21,5 +23,7 @@ class FmContractAgreementLine(models.Model):
         "sale.order", string="Contract", ondelete="cascade", index=True
     )
     sequence = fields.Integer(default=10)
+    kind = fields.Selection(LINE_KINDS, default="article", required=True)
     name = fields.Char(string="Heading", required=True)
     body = fields.Text(string="Body", required=True)
+    body_html = fields.Html(string="Body (formatted)")

@@ -135,10 +135,16 @@
                         Selecting a template copies its wording into the fields below —
                         edit them freely, your changes only affect this contract.
                     </p>
-                    <group>
+                    <!-- Client Document Layout: the agreement lines ARE the printed
+                         document, so only what that document prints is shown. -->
+                    <group invisible="not agreement_client_layout">
+                        <field name="fm_client_title" placeholder="e.g. MS"/>
+                        <field name="payment_terms_note" placeholder="e.g. 2 times Payment"/>
+                    </group>
+                    <group invisible="agreement_client_layout">
                         <group string="Scope &amp; Treatment">
-                            <field name="scope_notes" nolabel="1" placeholder="Areas/site covered..."/>
-                            <field name="treatment_notes" nolabel="1" placeholder="Treatment methods (optional)..."/>
+                            <field name="scope_notes" nolabel="1" colspan="2" placeholder="Areas/site covered..."/>
+                            <field name="treatment_notes" nolabel="1" colspan="2" placeholder="Treatment methods (optional)..."/>
                         </group>
                         <group string="Commercial Terms">
                             <field name="payment_terms_note" placeholder="e.g. 50% at signing, 50% after 6 months"/>
@@ -147,34 +153,41 @@
                             <field name="complaint_response_hours"/>
                         </group>
                     </group>
-                    <separator string="Editable Agreement Wording (from template, or write your own)"/>
-                    <group col="1">
-                        <group string="Quotation Intro">
-                            <field name="quotation_intro_text" nolabel="1" placeholder="Quotation greeting/intro paragraph..."/>
-                        </group>
-                        <group string="Quotation — Scope of Work Methodology">
-                            <field name="scope_method_text" nolabel="1" placeholder="Quotation Scope of Work methodology..."/>
-                        </group>
-                        <group string="Service Agreement — Article 2 (Service)">
-                            <field name="service_text" nolabel="1" placeholder="Service Agreement Article 2 (Service)..."/>
-                        </group>
-                        <group string="Service Agreement — Article 4 (Service Schedule)">
-                            <field name="schedule_text" nolabel="1" placeholder="Service Agreement Article 4 (Service Schedule)..."/>
-                        </group>
-                        <group string="Default Exclusions">
-                            <field name="exclusions_text" nolabel="1" placeholder="Default exclusions wording..."/>
-                        </group>
-                    </group>
-                    <group string="Additional Terms (editable)">
-                        <field name="agreement_line_ids" nolabel="1">
-                            <list editable="bottom">
-                                <field name="sequence" widget="handle"/>
-                                <field name="name" placeholder="e.g. Tank Details"/>
-                                <field name="body" placeholder="Body text..."/>
-                            </list>
-                        </field>
-                    </group>
+                    <div invisible="agreement_client_layout">
+                        <separator string="Editable Agreement Wording (from template, or write your own)"/>
+                        <separator string="Quotation Intro"/>
+                        <field name="quotation_intro_text" class="w-100" placeholder="Quotation greeting/intro paragraph..."/>
+                        <separator string="Quotation — Scope of Work Methodology"/>
+                        <field name="scope_method_text" class="w-100" placeholder="Quotation Scope of Work methodology..."/>
+                        <separator string="Service Agreement — Article 2 (Service)"/>
+                        <field name="service_text" class="w-100" placeholder="Service Agreement Article 2 (Service)..."/>
+                        <separator string="Service Agreement — Article 4 (Service Schedule)"/>
+                        <field name="schedule_text" class="w-100" placeholder="Service Agreement Article 4 (Service Schedule)..."/>
+                        <separator string="Default Exclusions"/>
+                        <field name="exclusions_text" class="w-100" placeholder="Default exclusions wording..."/>
+                    </div>
+                    <separator string="Agreement Wording (printed in this order)" invisible="not agreement_client_layout"/>
+                    <separator string="Additional Terms (editable)" invisible="agreement_client_layout"/>
+                    <field name="agreement_line_ids" class="w-100">
+                        <list>
+                            <field name="sequence" widget="handle"/>
+                            <field name="kind"/>
+                            <field name="name" placeholder="e.g. Tank Details"/>
+                            <field name="body" placeholder="Body text..." optional="show"/>
+                        </list>
+                        <form string="Agreement Wording">
+                            <group>
+                                <field name="kind"/>
+                                <field name="name"/>
+                            </group>
+                            <separator string="Body (formatted — this is what prints)"/>
+                            <field name="body_html" class="w-100" options="{'collaborative': false}"/>
+                            <separator string="Body (plain text)"/>
+                            <field name="body" class="w-100"/>
+                        </form>
+                    </field>
                     <field name="agreement_standalone" invisible="1"/>
+                    <field name="agreement_client_layout" invisible="1"/>
                 </page>
             </xpath>
         </field>
@@ -273,6 +286,25 @@
         <field name="view_mode">form</field>
         <field name="view_id" ref="sale.view_order_form"/>
         <field name="act_window_id" ref="action_fm_contract_order"/>
+    </record>
+
+
+    <!-- The client contract prints a line as Unit x Rate x Frequency: these
+         two columns are what it prints in Unit and Frequency. -->
+    <record id="view_order_form_fm_client_line_columns" model="ir.ui.view">
+        <field name="name">sale.order.form.fm.client.line.columns</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']/list/field[@name='price_unit']" position="before">
+                <field name="fm_print_unit" optional="show"/>
+                <field name="fm_print_frequency" optional="show"/>
+                <field name="fm_print_details" optional="hide" widget="html"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/form//field[@name='name']" position="after">
+                <field name="fm_print_details" widget="html"/>
+            </xpath>
+        </field>
     </record>
 
 </odoo>

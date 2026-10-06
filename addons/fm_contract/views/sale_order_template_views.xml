@@ -64,7 +64,39 @@
                         they are picked per contract.
                     </p>
                 </page>
+                <page string="Quotation Wording" name="fm_quote_wording">
+                    <group>
+                        <group>
+                            <field name="fm_quote_client_layout"/>
+                            <field name="fm_quote_columns" invisible="not fm_quote_client_layout"/>
+                        </group>
+                        <group invisible="not fm_quote_client_layout">
+                            <field name="fm_quote_per_year"/>
+                            <field name="fm_quote_company_block"/>
+                        </group>
+                    </group>
+                    <p class="text-muted" invisible="not fm_quote_client_layout">
+                        Printed in this order. Placeholders such as {{CLIENT}},
+                        {{TOTAL}}, {{TOTAL_WORDS}} and {{CONTACT_SALUTATION}} are
+                        filled in from the quotation when it is printed.
+                    </p>
+                    <field name="fm_quote_line_ids" class="w-100">
+                        <list>
+                            <field name="sequence" widget="handle"/>
+                            <field name="kind"/>
+                            <field name="name"/>
+                        </list>
+                        <form string="Quotation Wording">
+                            <group>
+                                <field name="kind"/>
+                                <field name="name"/>
+                            </group>
+                            <field name="body_html" class="w-100" options="{'collaborative': false}"/>
+                        </form>
+                    </field>
+                </page>
             </xpath>
+
 
         </field>
     </record>

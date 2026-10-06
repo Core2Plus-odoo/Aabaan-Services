@@ -36,9 +36,17 @@
                         <h1><field name="name" placeholder="e.g. Pest Control — Standard"/></h1>
                     </div>
                     <group>
-                        <field name="service_line"/>
-                        <field name="replaces_standard_articles"/>
-                        <field name="active"/>
+                        <group>
+                            <field name="service_line"/>
+                            <field name="replaces_standard_articles"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="client_layout"/>
+                            <field name="signature_party" invisible="not client_layout"/>
+                            <field name="table_columns" invisible="not client_layout"/>
+                            <field name="italic_labels" invisible="not client_layout"/>
+                        </group>
                     </group>
                     <group string="Quotation wording">
                         <field name="quotation_intro_text" nolabel="1"
@@ -65,11 +73,22 @@
                                 own headed sections on the Service Agreement, in this order.
                             </p>
                             <field name="line_ids">
-                                <list editable="bottom">
+                                <list>
                                     <field name="sequence" widget="handle"/>
+                                    <field name="kind"/>
                                     <field name="name" placeholder="e.g. Tank Details"/>
                                     <field name="body" placeholder="Body text..."/>
                                 </list>
+                                <form string="Additional Term">
+                                    <group>
+                                        <field name="kind"/>
+                                        <field name="name"/>
+                                    </group>
+                                    <separator string="Body (formatted)"/>
+                                    <field name="body_html" nolabel="1" options="{'collaborative': false}"/>
+                                    <separator string="Body (plain text)"/>
+                                    <field name="body" nolabel="1"/>
+                                </form>
                             </field>
                         </page>
                     </notebook>

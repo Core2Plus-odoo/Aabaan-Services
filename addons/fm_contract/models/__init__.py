@@ -9,3 +9,5 @@ from . import product_template
 from . import sale_order
 from . import sale_order_template
 from . import crm_lead
+from . import sale_order_client_document
+from . import fm_quotation_wording

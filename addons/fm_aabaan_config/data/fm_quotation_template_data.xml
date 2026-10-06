@@ -1,0 +1,1057 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Aaban's own quotations ("Quotation Template" folder), one quotation
+         template per document, printed in the client's own layout. Each also
+         names the agreement wording of the same service and emirate, so the
+         contract that follows prints that one. -->
+
+    <record id="quotation_template_water_tank_ajman" model="sale.order.template">
+        <field name="name">Water Tank Cleaning — Ajman</field>
+        <field name="fm_is_contract_profile" eval="True"/>
+        <field name="fm_service_line">water_tank</field>
+        <field name="fm_agreement_template_id" ref="agreement_template_water_tank_ajman"/>
+        <field name="fm_quote_client_layout" eval="True"/>
+        <field name="fm_quote_columns">unit,frequency,subtotal</field>
+        <field name="fm_quote_per_year" eval="True"/>
+        <field name="fm_quote_company_block" eval="False"/>
+    </record>
+
+    <record id="quotation_template_water_tank_ajman_line_01" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_ajman"/>
+        <field name="sequence">10</field>
+        <field name="kind">parties</field>
+        <field name="name">Introduction</field>
+        <field name="body_html"><![CDATA[<p style="margin:0;">First Party : Aaban Classic Building Cleaning LLC</p><p style="margin:0;margin-top:0.33em;">License No : 103074</p><p style="margin:0;margin-top:0.42em;">Address: Shop -1, Jurf, Ajman UAE</p><p style="margin:0;margin-top:0.33em;">Contact No : 0555229706 &amp; 80022226</p><p style="margin:0;margin-top:0.42em;">Sub: Quotation of Cleaning &amp; Disinfecting of Water Tanks;</p><p style="margin:0;margin-top:2.25em;">Dear Client,</p>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_ajman_line_02" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_ajman"/>
+        <field name="sequence">20</field>
+        <field name="kind">article</field>
+        <field name="name">Dear Sir/Madam, We are thankful for the interest and…</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;">Dear Sir/Madam, We are thankful for the interest and confidence shown towards our services, with reference to the subject inquiry, please do find our competitive proposal for the same as follows;</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_ajman_line_03" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_ajman"/>
+        <field name="sequence">30</field>
+        <field name="kind">article</field>
+        <field name="name">WATER TANK CLEANING AND DISINFECTION SCOPE OF WORK</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:1.06em;"><p style="margin:0;"><u><b>WATER TANK CLEANING AND DISINFECTION SCOPE OF WORK</b></u></p><p style="margin:0;margin-top:0.33em;">Aaban carry out all workers strictly in accordance with the highest safety standards. All our technicians are trained in all aspects of Safety to Ensure that accidents do not occurs and they are well supervised to ensure that operation must be smooth. All Our technicians have all the required PPEs such as 3M Respiratory mask, goggles, gloves, safety shoes, safety belts and all instruments for this process.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_ajman_line_04" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_ajman"/>
+        <field name="sequence">40</field>
+        <field name="kind">article</field>
+        <field name="name">Scope of Work</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><b>Scope of Work</b></p><p style="margin:0;margin-top:0.42em;">Our process starts with the deep Cleaning of the entire Water Tank., Draining out the Existing Water, Cleaning the interior Tanks, Disinfection, Washing and Flushing the Tanks, Refilling the Tanks with Fresh Water and Lab Testing for Tanks.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_ajman_line_05" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_ajman"/>
+        <field name="sequence">50</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+    </record>
+
+    <record id="quotation_template_water_tank_ajman_line_06" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_ajman"/>
+        <field name="sequence">60</field>
+        <field name="kind">article</field>
+        <field name="name">Terms &amp; Conditions:-</field>
+        <field name="body_html"><![CDATA[<p style="margin:0;">Terms &amp; Conditions:-</p><p style="margin:0;margin-top:0.33em;">Customers Responsibilities</p><p style="margin:0;margin-top:2.25em;">1.Tanks will be drained by client prior to scheduled arrival of Cleaning Terms or provide us schedule water tank 05 % to 10 % of water level or empty tank.</p><p style="margin:0;margin-top:0.33em;">2.Use of your 220 volts single-phase electricity supply &amp; water supply 60 litter/min near working location.</p><p style="margin:0;margin-top:0.42em;">3.Work Permit to be Prepared in advance.</p><p style="margin:0;margin-top:0.33em;">4.Clients to ensure proper access for all available Units.</p><p style="margin:0;margin-top:0.42em;">5.Clients to shall arrange all the passes and permits required, by our vehicle and operator in the service location or to park the vehicle during service time.</p><p style="margin:0;margin-top:0.42em;">6.Safe Storage for Our Equipment’s until completion of Work</p><p style="margin:0;margin-top:0.33em;">7.Waste Disposal facility for debris removed.</p><p style="margin:0;margin-top:0.42em;">8.Authorized Person / Staff should be there to verification &amp; completion Report upon completion of each area.</p><p style="margin:0;margin-top:0.33em;">9.The Operator will drain leftover Water below suction level in the Tanks in the Client’s drainage system.</p>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_ajman_line_07" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_ajman"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Contract Terms and Conditions:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:4.17em;"><p style="margin:0;">Contract Terms and Conditions:</p><p style="margin:0;margin-top:2.34em;">As per Ajman Municipality guidelines, the rooftop tank should be cleaned only after cleaning the main supply tank, if client prefers only to clean rooftop tank and take the sample, if sample gets positive Aaban will not take any responsibility for re-cleaning or re-sampling.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_ajman_line_08" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_ajman"/>
+        <field name="sequence">80</field>
+        <field name="kind">article</field>
+        <field name="name">Payment Terms :</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:4.17em;"><p style="margin:0;"><b>Payment Terms :</b></p><p style="margin:0;margin-top:0.42em;">Payments 50 % in advance and 50 % after 6 months for contract, if one time 50% in advance and 50 % after completion of work, payable by cash, cheque or Bank Transfer. Cheque made in favor to Aaban Classic Building Cleaning LLC.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_dubai" model="sale.order.template">
+        <field name="name">Water Tank Cleaning — Dubai</field>
+        <field name="fm_is_contract_profile" eval="True"/>
+        <field name="fm_service_line">water_tank</field>
+        <field name="fm_agreement_template_id" ref="agreement_template_water_tank_dubai"/>
+        <field name="fm_quote_client_layout" eval="True"/>
+        <field name="fm_quote_columns">unit,subtotal</field>
+        <field name="fm_quote_per_year" eval="False"/>
+        <field name="fm_quote_company_block" eval="False"/>
+    </record>
+
+    <record id="quotation_template_water_tank_dubai_line_01" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_dubai"/>
+        <field name="sequence">10</field>
+        <field name="kind">parties</field>
+        <field name="name">Introduction</field>
+        <field name="body_html"><![CDATA[<p style="margin:0;">First Party ; Aaban Classic Building Cleaning</p><p style="margin:0;margin-top:0.33em;">License No : 989256</p><p style="margin:0;margin-top:0.42em;">Address : 126, Safiya Building Bin Saloom Hor AL Anz, Deira, Dubai.</p><p style="margin:0;margin-top:0.33em;">Contact No : 0555229706 &amp; 045855280</p><p style="margin:0;margin-top:0.42em;">Sub: Quotation of Cleaning &amp; Disinfecting of Water Tanks</p><p style="margin:0;margin-top:2.25em;">Dear Client;</p>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_dubai_line_02" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_dubai"/>
+        <field name="sequence">20</field>
+        <field name="kind">article</field>
+        <field name="name">Dear Sir/Madam, We are thankful for the interest and…</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.33em;"><p style="margin:0;">Dear Sir/Madam, We are thankful for the interest and confidence shown towards our services, with reference to the subject inquiry, please do find our competitive proposal for the same as follows :</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_dubai_line_03" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_dubai"/>
+        <field name="sequence">30</field>
+        <field name="kind">article</field>
+        <field name="name">WATER TANK CLEANING AND DISINFECTION SCOPE OF WORK</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.97em;"><p style="margin:0;"><u><b>WATER TANK CLEANING AND DISINFECTION SCOPE OF WORK</b></u></p><p style="margin:0;margin-top:0.42em;">Aaban carry out all workers strictly in accordance with the highest safety standards. All our technicians are trained in all aspects of Safety to Ensure that accidents do not occurs and they are well supervised to ensure that operation must be smooth. All Our technicians have all the required PPEs such as 3M Respiratory mask, goggles, gloves, safety shoes, safety belts and all instruments for this process.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_dubai_line_04" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_dubai"/>
+        <field name="sequence">40</field>
+        <field name="kind">article</field>
+        <field name="name">Scope of Work</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><b>Scope of Work</b></p><p style="margin:0;margin-top:0.33em;">Our process starts with the deep Cleaning of the entire Water Tank., Draining out the Existing Water, Cleaning the interior Tanks, Disinfection, Washing and Flushing the Tanks, Refilling the Tanks with Fresh Water and Lab Testing for Tanks.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_dubai_line_05" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_dubai"/>
+        <field name="sequence">50</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+    </record>
+
+    <record id="quotation_template_water_tank_dubai_line_06" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_dubai"/>
+        <field name="sequence">60</field>
+        <field name="kind">article</field>
+        <field name="name">Terms &amp; Conditions:-</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.97em;"><p style="margin:0;">Terms &amp; Conditions:-</p><p style="margin:0;margin-top:0.33em;">Customers Responsibilities</p><p style="margin:0;">1.Tanks will be drained by client prior to scheduled arrival of Cleaning Terms or provide us schedule water tank 05 % to 10 % of water level or empty tank.</p><p style="margin:0;margin-top:0.42em;">2.Use of your 220 volts single-phase electricity supply &amp; water supply 60 litter/min near working location.</p><p style="margin:0;margin-top:0.33em;">3.Work Permit to be Prepared in advance.</p><p style="margin:0;margin-top:0.42em;">4.Clients to ensure proper access for all available Units.</p><p style="margin:0;margin-top:0.33em;">5.Clients to shall arrange all the passes and permits required, by our vehicle and operator in the service location or to park the vehicle during service time.</p><p style="margin:0;margin-top:0.33em;">6.Safe Storage for Our Equipment’s until completion of Work</p><p style="margin:0;margin-top:0.42em;">7.Waste Disposal facility for debris removed.</p><p style="margin:0;margin-top:0.33em;">8.Authorized Person / Staff should be there to verification &amp; completion Report upon completion of each area.</p><p style="margin:0;margin-top:0.42em;">9.The Operator will drain leftover Water below suction level in the Tanks in the Client’s drainage system.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_dubai_line_07" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_dubai"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Contract Terms and Conditions:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;">Contract Terms and Conditions:</p><p style="margin:0;margin-top:0.42em;">As per Dubai Municipality guidelines, the rooftop tank should be cleaned only after cleaning the main supply tank, if client prefers only to clean rooftop tank and take the sample, if sample gets positive Aaban will not take any responsibility for re-cleaning or re-sampling.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_dubai_line_08" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_dubai"/>
+        <field name="sequence">80</field>
+        <field name="kind">article</field>
+        <field name="name">Payment Terms :</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Payment Terms :</b></u></p><p style="margin:0;margin-top:0.42em;">Payments 50 % in advance and 50 % after 6 months for contract, if one time 50% in advance and 50 % after completion of work, payable by cash, cheque or Bank Transfer.</p><p style="margin:0;margin-top:0.33em;">Cheque made in favor to: <b>Aaban Classic Building Cleaning</b></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_dubai_line_09" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_dubai"/>
+        <field name="sequence">90</field>
+        <field name="kind">article</field>
+        <field name="name">Best Regards,</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:4.17em;"><p style="margin:0;text-align:center;">Best Regards,</p><p style="margin:0;margin-top:2.25em;text-align:center;">Aaban Classic Building Cleaning</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_fujairah" model="sale.order.template">
+        <field name="name">Water Tank Cleaning — Fujairah</field>
+        <field name="fm_is_contract_profile" eval="True"/>
+        <field name="fm_service_line">water_tank</field>
+        <field name="fm_agreement_template_id" ref="agreement_template_water_tank_fujairah"/>
+        <field name="fm_quote_client_layout" eval="True"/>
+        <field name="fm_quote_columns">unit,subtotal</field>
+        <field name="fm_quote_per_year" eval="False"/>
+        <field name="fm_quote_company_block" eval="False"/>
+    </record>
+
+    <record id="quotation_template_water_tank_fujairah_line_01" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_fujairah"/>
+        <field name="sequence">10</field>
+        <field name="kind">parties</field>
+        <field name="name">Introduction</field>
+        <field name="body_html"><![CDATA[<p style="margin:0;">First Party ; Aaban Classic Building Cleaning Fujairah Branch 1</p><p style="margin:0;margin-top:0.33em;">License No : 1026622</p><p style="margin:0;margin-top:0.42em;">Address : Shop #3, Block A, Plot C11A, Sakamkam, Fujairah - UAE</p><p style="margin:0;margin-top:0.33em;">Contact No : 0555229706 &amp; 80022226</p><p style="margin:0;margin-top:0.42em;">Sub: Quotation of Cleaning &amp; Disinfecting of Water Tanks</p><p style="margin:0;margin-top:2.25em;">Dear Client;</p>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_fujairah_line_02" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_fujairah"/>
+        <field name="sequence">20</field>
+        <field name="kind">article</field>
+        <field name="name">Dear Sir/Madam, We are thankful for the interest and…</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.33em;"><p style="margin:0;">Dear Sir/Madam, We are thankful for the interest and confidence shown towards our services, with reference to the subject inquiry, please do find our competitive proposal for the same as follows :</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_fujairah_line_03" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_fujairah"/>
+        <field name="sequence">30</field>
+        <field name="kind">article</field>
+        <field name="name">WATER TANK CLEANING AND DISINFECTION SCOPE OF WORK</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.97em;"><p style="margin:0;"><u><b>WATER TANK CLEANING AND DISINFECTION SCOPE OF WORK</b></u></p><p style="margin:0;margin-top:0.42em;">Aaban carry out all workers strictly in accordance with the highest safety standards. All our technicians are trained in all aspects of Safety to Ensure that accidents do not occurs and they are well supervised to ensure that operation must be smooth. All Our technicians have all the required PPEs such as 3M Respiratory mask, goggles, gloves, safety shoes, safety belts and all instruments for this process.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_fujairah_line_04" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_fujairah"/>
+        <field name="sequence">40</field>
+        <field name="kind">article</field>
+        <field name="name">Scope of Work</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><b>Scope of Work</b></p><p style="margin:0;margin-top:0.33em;">Our process starts with the deep Cleaning of the entire Water Tank., Draining out the Existing Water, Cleaning the interior Tanks, Disinfection, Washing and Flushing the Tanks, Refilling the Tanks with Fresh Water and Lab Testing for Tanks.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_fujairah_line_05" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_fujairah"/>
+        <field name="sequence">50</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+    </record>
+
+    <record id="quotation_template_water_tank_fujairah_line_06" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_fujairah"/>
+        <field name="sequence">60</field>
+        <field name="kind">article</field>
+        <field name="name">Terms &amp; Conditions:-</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.97em;"><p style="margin:0;">Terms &amp; Conditions:-</p><p style="margin:0;margin-top:0.33em;">Customers Responsibilities</p><p style="margin:0;">1.Tanks will be drained by client prior to scheduled arrival of Cleaning Terms or provide us schedule water tank 05 % to 10 % of water level or empty tank.</p><p style="margin:0;margin-top:0.42em;">2.Use of your 220 volts single-phase electricity supply &amp; water supply 60 litter/min near working location.</p><p style="margin:0;margin-top:0.33em;">3.Work Permit to be Prepared in advance.</p><p style="margin:0;margin-top:0.42em;">4.Clients to ensure proper access for all available Units.</p><p style="margin:0;margin-top:0.33em;">5.Clients to shall arrange all the passes and permits required, by our vehicle and operator in the service location or to park the vehicle during service time.</p><p style="margin:0;margin-top:0.33em;">6.Safe Storage for Our Equipment’s until completion of Work</p><p style="margin:0;margin-top:0.42em;">7.Waste Disposal facility for debris removed.</p><p style="margin:0;margin-top:0.33em;">8.Authorized Person / Staff should be there to verification &amp; completion Report upon completion of each area.</p><p style="margin:0;margin-top:0.42em;">9.The Operator will drain leftover Water below suction level in the Tanks in the Client’s drainage system.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_fujairah_line_07" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_fujairah"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Contract Terms and Conditions:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;">Contract Terms and Conditions:</p><p style="margin:0;margin-top:0.42em;">As per Fujairah Municipality guidelines, the rooftop tank should be cleaned only after cleaning the main supply tank, if client prefers only to clean rooftop tank and take the sample, if sample gets positive Aaban will not take any responsibility for re-cleaning or re-sampling.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_fujairah_line_08" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_fujairah"/>
+        <field name="sequence">80</field>
+        <field name="kind">article</field>
+        <field name="name">Payment Terms :</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Payment Terms :</b></u></p><p style="margin:0;margin-top:0.42em;">Payments 50 % in advance and 50 % after 6 months for contract, if one time 50% in advance and 50 % after completion of work, payable by cash, cheque or Bank Transfer.</p><p style="margin:0;margin-top:0.33em;">Cheque made in favor to: <b>Aaban Classic Building Cleaning LLC</b></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_fujairah_line_09" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_fujairah"/>
+        <field name="sequence">90</field>
+        <field name="kind">article</field>
+        <field name="name">Best Regards,</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:4.17em;"><p style="margin:0;text-align:center;">Best Regards,</p><p style="margin:0;margin-top:2.25em;text-align:center;">Aaban Classic Building Cleaning Fujairah Branch 1</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_sharjah" model="sale.order.template">
+        <field name="name">Water Tank Cleaning — Sharjah</field>
+        <field name="fm_is_contract_profile" eval="True"/>
+        <field name="fm_service_line">water_tank</field>
+        <field name="fm_agreement_template_id" ref="agreement_template_water_tank_sharjah"/>
+        <field name="fm_quote_client_layout" eval="True"/>
+        <field name="fm_quote_columns">unit,frequency,subtotal</field>
+        <field name="fm_quote_per_year" eval="True"/>
+        <field name="fm_quote_company_block" eval="False"/>
+    </record>
+
+    <record id="quotation_template_water_tank_sharjah_line_01" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_sharjah"/>
+        <field name="sequence">10</field>
+        <field name="kind">parties</field>
+        <field name="name">Introduction</field>
+        <field name="body_html"><![CDATA[<p style="margin:0;">First Party ; Aaban Classic Building Cleaning SHJ - BR-02</p><p style="margin:0;margin-top:0.42em;">License No : 908692</p><p style="margin:0;margin-top:0.51em;">Address : Shop no 1 &amp; 2, Al Sharq Street, Butina, Sharjah.</p><p style="margin:0;margin-top:0.42em;">Contact no : 0555229706 &amp; 80022226</p><p style="margin:0;margin-top:2.43em;">Sub: Quotation of Cleaning &amp; Disinfecting of Water Tanks</p><p style="margin:0;margin-top:2.25em;">Dear Client,</p>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_sharjah_line_02" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_sharjah"/>
+        <field name="sequence">20</field>
+        <field name="kind">article</field>
+        <field name="name">Dear Sir/Madam, We are thankful for the interest and…</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.42em;"><p style="margin:0;">Dear Sir/Madam, We are thankful for the interest and confidence shown towards our services, with reference to the subject inquiry, please do find our competitive proposal for the same as follows :</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_sharjah_line_03" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_sharjah"/>
+        <field name="sequence">30</field>
+        <field name="kind">article</field>
+        <field name="name">WATER TANK CLEANING AND DISINFECTION SCOPE OF WORK</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:1.06em;"><p style="margin:0;"><u><b>WATER TANK CLEANING AND DISINFECTION SCOPE OF WORK</b></u></p><p style="margin:0;margin-top:0.33em;">Aaban carry out all workers strictly in accordance with the highest safety standards. All our technicians are trained in all aspects of Safety to Ensure that accidents do not occurs and they are well supervised to ensure that operation must be smooth. All Our technicians have all the required PPEs such as 3M Respiratory mask, goggles, gloves, safety shoes, safety belts and all instruments for this process.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_sharjah_line_04" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_sharjah"/>
+        <field name="sequence">40</field>
+        <field name="kind">article</field>
+        <field name="name">Scope of Work</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><b>Scope of Work</b></p><p style="margin:0;margin-top:0.42em;">Our process starts with the deep Cleaning of the entire Water Tank., Draining out the Existing Water, Cleaning the interior Tanks, Disinfection, Washing and Flushing the Tanks, Refilling the Tanks with Fresh Water and Lab Testing for Tanks.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_sharjah_line_05" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_sharjah"/>
+        <field name="sequence">50</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+    </record>
+
+    <record id="quotation_template_water_tank_sharjah_line_06" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_sharjah"/>
+        <field name="sequence">60</field>
+        <field name="kind">article</field>
+        <field name="name">Terms &amp; Conditions:-</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.97em;"><p style="margin:0;">Terms &amp; Conditions:-</p><p style="margin:0;margin-top:0.42em;">Customers Responsibilities</p><p style="margin:0;margin-top:0.33em;">1.Tanks will be drained by client prior to scheduled arrival of Cleaning Terms or provide us schedule water tank 05 % to 10 % of water level or empty tank.</p><p style="margin:0;margin-top:0.33em;">2.Use of your 220 volts single-phase electricity supply &amp; water supply 60 litter/min near working location.</p><p style="margin:0;margin-top:0.42em;">3.Work Permit to be Prepared in advance.</p><p style="margin:0;margin-top:0.33em;">4.Clients to ensure proper access for all available Units.</p><p style="margin:0;margin-top:0.42em;">5.Clients to shall arrange all the passes and permits required, by our vehicle and operator in the service location or to park the vehicle during service time.</p><p style="margin:0;margin-top:0.42em;">6.Safe Storage for Our Equipment’s until completion of Work</p><p style="margin:0;margin-top:0.33em;">7.Waste Disposal facility for debris removed.</p><p style="margin:0;margin-top:0.42em;">8.Authorized Person / Staff should be there to verification &amp; completion Report upon completion of each area.</p><p style="margin:0;margin-top:0.33em;">9.The Operator will drain leftover Water below suction level in the Tanks in the Client’s drainage system.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_sharjah_line_07" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_sharjah"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Contract Terms and Conditions:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;">Contract Terms and Conditions:</p><p style="margin:0;margin-top:0.51em;">As per Sharjah Municipality guidelines, the rooftop tank should be cleaned only after cleaning the main supply tank, if client prefers only to clean rooftop tank and take the sample, if sample gets positive Aaban will not take any responsibility for re-cleaning or re-sampling.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_sharjah_line_08" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_sharjah"/>
+        <field name="sequence">80</field>
+        <field name="kind">article</field>
+        <field name="name">Payment Terms :</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.42em;"><p style="margin:0;"><u><b>Payment Terms :</b></u></p><p style="margin:0;margin-top:0.42em;">Payments 50 % in advance and 50 % after 6 months for contract, if one time 50% in advance and 50 % after completion of work, payable by cash, cheque or Bank Transfer. Cheque made in favor to Aaban Classic Building Cleaning LLC</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_water_tank_sharjah_line_09" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_water_tank_sharjah"/>
+        <field name="sequence">90</field>
+        <field name="kind">article</field>
+        <field name="name">Best Regards,</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:4.08em;"><p style="margin:0;text-align:center;">Best Regards,</p><p style="margin:0;margin-top:2.25em;text-align:center;">Aaban Classic Building Cleaning SHJ - BR-02</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_ajman" model="sale.order.template">
+        <field name="name">Anti-Termite — Ajman</field>
+        <field name="fm_is_contract_profile" eval="True"/>
+        <field name="fm_service_line">termite</field>
+        <field name="fm_agreement_template_id" ref="agreement_template_termite_ajman"/>
+        <field name="fm_quote_client_layout" eval="True"/>
+        <field name="fm_quote_columns">unit,summary</field>
+        <field name="fm_quote_per_year" eval="False"/>
+        <field name="fm_quote_company_block" eval="True"/>
+    </record>
+
+    <record id="quotation_template_termite_ajman_line_01" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_ajman"/>
+        <field name="sequence">10</field>
+        <field name="kind">article</field>
+        <field name="name">TERMITE CONTROL AGREEMENT FOR</field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><u><b>TERMITE CONTROL AGREEMENT FOR</b></u></p><p style="margin:0;margin-top:0.33em;"><u><b><span style="color:#e69138;">FIRST PARTY</span></b></u></p><p style="margin:0;margin-top:0.42em;"><b>AABAN CLASSIC BUILDING CLEANING LLC</b></p><p style="margin:0;margin-top:0.33em;"><b>LICENSE NO # 103074 ( 055-5229706 80022226 )</b></p><p style="margin:0;margin-top:0.42em;"><b>(Address: Shop -1, Jurf, Ajman) UAE</b></p>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_ajman_line_02" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_ajman"/>
+        <field name="sequence">20</field>
+        <field name="kind">article</field>
+        <field name="name">SECOND PARTY</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b><span style="color:#e69138;">SECOND PARTY</span></b></u></p><p style="margin:0;margin-top:0.33em;"><b>{{CLIENT}}</b></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_ajman_line_03" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_ajman"/>
+        <field name="sequence">30</field>
+        <field name="kind">article</field>
+        <field name="name">The First Party and The Second Party have agreed for…</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.51em;"><p style="margin:0;">The First Party and The Second Party have agreed for Termite Control Agreement on following terms and conditions:</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_ajman_line_04" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_ajman"/>
+        <field name="sequence">40</field>
+        <field name="kind">article</field>
+        <field name="name">Article - 1: The Scope of Work:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:1.06em;"><p style="margin:0;"><u><b>Article - 1: The Scope of Work:</b></u></p><p style="margin:0;margin-top:0.42em;">1. Operations will be carried out as per Ajman Municipality stated / approved procedures and terms and conditions for Pre-Construction Termite control strategies.</p><p style="margin:0;margin-top:0.79em;"><span style="font-size:1.20em;">Stage 1: PCC &amp; RCC.</span></p><p style="margin:0;margin-top:0.60em;"><span style="font-size:1.20em;">Stage 2: Vertical and Horizontal inside the tie beams</span></p><p style="margin:0;margin-top:0.70em;"><span style="font-size:1.20em;">Stage 3: Vertical and Horizontal outside the tie beams</span></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_ajman_line_05" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_ajman"/>
+        <field name="sequence">50</field>
+        <field name="kind">article</field>
+        <field name="name">Article 2 - Treatment Type:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 2 - Treatment Type:</b></u></p><p style="margin:0;margin-top:0.33em;">b.     <b>Spray</b> (Pre-construction).</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_ajman_line_06" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_ajman"/>
+        <field name="sequence">60</field>
+        <field name="kind">article</field>
+        <field name="name">Article 3- Terms of Payment :</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 3- Terms of Payment :</b></u></p><p style="margin:0;margin-top:0.42em;">1. Payment will be charged as treatment is completed with 5% VAT.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_ajman_line_07" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_ajman"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Article 4- Materials &amp; Methods :</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 4- Materials &amp; Methods :</b></u></p><p style="margin:0;margin-top:0.33em;">1. All services will be provided as per Ajman Municipality-approved procedures.</p><p style="margin:0;margin-top:0.42em;">2. All equipment and terms of control treatments will be according to the standards set by the Municipality.</p><p style="margin:0;margin-top:0.33em;">3. At least one day before first party will inform to the second for treatment with mutual understanding and first part will also arrange a representative for collaboration.</p><p style="margin:0;margin-top:0.33em;">4. Onsite Electricity and Water availability will be arranged / confirmed by the second party.</p><p style="margin:0;margin-top:0.42em;">5. The second part will provide a polythene sheet as per the required length and quality.</p><p style="margin:0;">6.  The Second Party will provide access to the First Party to the areas to be serviced.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_ajman_line_08" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_ajman"/>
+        <field name="sequence">80</field>
+        <field name="kind">article</field>
+        <field name="name">Article 5- Warranty Certificate :</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 5- Warranty Certificate :</b></u></p><p style="margin:0;margin-top:0.33em;"><b>1.   </b>Aaban Company will provide a <b>TEN-YEAR WARRANTY</b> for the treated areas as per scope of treatment &amp; service area reports.</p><p style="margin:0;margin-top:0.42em;"><b>2.  </b>Payment amount will be charged at the rate given per square meter.</p><p style="margin:0;margin-top:0.33em;"><b>3.  </b>During warranty period services will be served without any cost.</p><p style="margin:0;margin-top:0.42em;"><b>4.   </b>Warranty will be given for the treated area / place only.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_ajman_line_09" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_ajman"/>
+        <field name="sequence">90</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+    </record>
+
+    <record id="quotation_template_termite_dubai" model="sale.order.template">
+        <field name="name">Anti-Termite — Dubai</field>
+        <field name="fm_is_contract_profile" eval="True"/>
+        <field name="fm_service_line">termite</field>
+        <field name="fm_agreement_template_id" ref="agreement_template_termite_dubai"/>
+        <field name="fm_quote_client_layout" eval="True"/>
+        <field name="fm_quote_columns">unit,summary</field>
+        <field name="fm_quote_per_year" eval="False"/>
+        <field name="fm_quote_company_block" eval="True"/>
+    </record>
+
+    <record id="quotation_template_termite_dubai_line_01" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_dubai"/>
+        <field name="sequence">10</field>
+        <field name="kind">article</field>
+        <field name="name">First Party:</field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><u><b><span style="color:#e69138;">First Party:</span></b></u></p><p style="margin:0;margin-top:0.33em;"><b>Aaban Classic Building Cleaning</b></p><p style="margin:0;margin-top:0.42em;"><b>License No: 989256</b></p><p style="margin:0;margin-top:0.33em;"><b>Address: Office No. 126, Bin Suloom Building, Hor AL ANZ, Dubai, UAE</b></p><p style="margin:0;margin-top:0.42em;"><b>Contact No: 055-5229706 &amp; 045855280</b></p>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_dubai_line_02" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_dubai"/>
+        <field name="sequence">20</field>
+        <field name="kind">article</field>
+        <field name="name">Second Party:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.33em;"><p style="margin:0;"><u><b><span style="color:#e69138;">Second Party:</span></b></u></p><p style="margin:0;margin-top:0.42em;"><b>{{CLIENT}}</b></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_dubai_line_03" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_dubai"/>
+        <field name="sequence">30</field>
+        <field name="kind">article</field>
+        <field name="name">Article</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.89em;"><p style="margin:0;"><u><b>Article</b></u></p><p style="margin:0;margin-top:0.33em;"><u><b>1: The Scope of Work:</b></u></p><p style="margin:0;margin-top:0.42em;">1. Operations will be carried out as per Dubai Municipality's stated / approved procedures and terms and conditions for Pre-Construction Termite control strategies.</p><p style="margin:0;margin-top:0.42em;">Stage 1 : PCC &amp; RCC</p><p style="margin:0;margin-top:0.33em;">Stage 2: Vertical and Horizontal inside the tie beams</p><p style="margin:0;margin-top:0.42em;">Stage 3: Vertical and Horizontal outside the tie beams</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_dubai_line_04" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_dubai"/>
+        <field name="sequence">40</field>
+        <field name="kind">article</field>
+        <field name="name">Article 2 - Treatment Type :</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 2 - Treatment Type :</b></u></p><p style="margin:0;margin-top:0.33em;">b. <b>Spray</b> (Pre-construction).</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_dubai_line_05" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_dubai"/>
+        <field name="sequence">50</field>
+        <field name="kind">article</field>
+        <field name="name">Article 3 - Terms of Payment :</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 3 - Terms of Payment :</b></u></p><p style="margin:0;margin-top:0.42em;">1. Payment will be charged as treatment completed with 5 % VAT.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_dubai_line_06" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_dubai"/>
+        <field name="sequence">60</field>
+        <field name="kind">article</field>
+        <field name="name">Article 4 - Materials &amp; Methods :</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 4 - Materials &amp; Methods :</b></u></p><p style="margin:0;margin-top:0.33em;">1. All services will be provided as per Dubai Municipality-approved procedures.</p><p style="margin:0;margin-top:0.42em;">2. All equipment and terms of control treatments will be according to the standards set by the municipality.</p><p style="margin:0;margin-top:0.33em;">3. At least one day before first party, the second will be informed for treatment with mutual understanding and first part will also arrange a representative for collaboration.</p><p style="margin:0;margin-top:0.33em;">4. Onsite electricity and water availability will be arranged / confirmed by the second party.</p><p style="margin:0;margin-top:0.42em;">5. The second part will provide a polythene sheet as per the required length and quality.</p><p style="margin:0;margin-top:0.33em;">6. The Second Party will provide access to the First Party to the areas to be serviced.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_dubai_line_07" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_dubai"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Article 5 - Warranty Certificate :</field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><u><b>Article 5 - Warranty Certificate :</b></u></p><p style="margin:0;margin-top:0.42em;"><b>1. </b>Aaban Company will provide a <b>TEN-YEAR WARRANTY</b> for the treated areas as per scope of treatment &amp; service area reports.</p><p style="margin:0;margin-top:0.33em;"><b>2. </b>The payment amount will be charged at the rate given per square meter.</p><p style="margin:0;margin-top:0.42em;"><b>3. </b>During the warranty period services will be served without any cost.</p><p style="margin:0;margin-top:0.33em;"><b>4. </b>Warranty will be given for the treated area / place only.</p>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_dubai_line_08" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_dubai"/>
+        <field name="sequence">80</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+    </record>
+
+    <record id="quotation_template_termite_fujairah" model="sale.order.template">
+        <field name="name">Anti-Termite — Fujairah</field>
+        <field name="fm_is_contract_profile" eval="True"/>
+        <field name="fm_service_line">termite</field>
+        <field name="fm_agreement_template_id" ref="agreement_template_termite_fujairah"/>
+        <field name="fm_quote_client_layout" eval="True"/>
+        <field name="fm_quote_columns">unit,summary</field>
+        <field name="fm_quote_per_year" eval="False"/>
+        <field name="fm_quote_company_block" eval="True"/>
+    </record>
+
+    <record id="quotation_template_termite_fujairah_line_01" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_fujairah"/>
+        <field name="sequence">10</field>
+        <field name="kind">article</field>
+        <field name="name">First Party:</field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><u><b><span style="color:#e69138;">First Party:</span></b></u></p><p style="margin:0;margin-top:0.33em;"><b>Aaban Classic Building Cleaning Fujairah Branch 1</b></p><p style="margin:0;margin-top:0.42em;"><b>License No: 1026622</b></p><p style="margin:0;margin-top:0.33em;"><b>Address: Shop #3, Block A, Plot C11A, Skamkam, Fujairah - UAE</b></p><p style="margin:0;margin-top:0.42em;"><b>Contact No: 055-5229706 &amp; 80022226</b></p>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_fujairah_line_02" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_fujairah"/>
+        <field name="sequence">20</field>
+        <field name="kind">article</field>
+        <field name="name">Second Party:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.33em;"><p style="margin:0;"><u><b><span style="color:#e69138;">Second Party:</span></b></u></p><p style="margin:0;margin-top:0.42em;"><b>{{CLIENT}}</b></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_fujairah_line_03" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_fujairah"/>
+        <field name="sequence">30</field>
+        <field name="kind">article</field>
+        <field name="name">Article</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.89em;"><p style="margin:0;"><u><b>Article</b></u></p><p style="margin:0;margin-top:0.33em;"><u><b>1: The Scope of Work:</b></u></p><p style="margin:0;margin-top:0.42em;">1. Operations will be carried out as per Fujairah Municipality's stated / approved procedures and terms and conditions for Pre-Construction Termite control strategies.</p><p style="margin:0;margin-top:0.42em;">Stage 1 : PCC &amp; RCC</p><p style="margin:0;margin-top:0.33em;">Stage 2: Vertical and Horizontal inside the tie beams</p><p style="margin:0;margin-top:0.42em;">Stage 3: Vertical and Horizontal outside the tie beams</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_fujairah_line_04" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_fujairah"/>
+        <field name="sequence">40</field>
+        <field name="kind">article</field>
+        <field name="name">Article 2 - Treatment Type :</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 2 - Treatment Type :</b></u></p><p style="margin:0;margin-top:0.33em;">b. <b>Spray</b> (Pre-construction).</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_fujairah_line_05" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_fujairah"/>
+        <field name="sequence">50</field>
+        <field name="kind">article</field>
+        <field name="name">Article 3 - Terms of Payment :</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 3 - Terms of Payment :</b></u></p><p style="margin:0;margin-top:0.42em;">1. Payment will be charged as treatment completed with 5 % VAT.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_fujairah_line_06" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_fujairah"/>
+        <field name="sequence">60</field>
+        <field name="kind">article</field>
+        <field name="name">Article 4 - Materials &amp; Methods :</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 4 - Materials &amp; Methods :</b></u></p><p style="margin:0;margin-top:0.33em;">1. All services will be provided as per Fujairah Municipality-approved procedures.</p><p style="margin:0;margin-top:0.42em;">2. All equipment and terms of control treatments will be according to the standards set by the municipality.</p><p style="margin:0;margin-top:0.33em;">3. At least one day before first party, the second will be informed for treatment with mutual understanding and first part will also arrange a representative for collaboration.</p><p style="margin:0;margin-top:0.33em;">4. Onsite electricity and water availability will be arranged / confirmed by the second party.</p><p style="margin:0;margin-top:0.42em;">5. The second part will provide a polythene sheet as per the required length and quality.</p><p style="margin:0;margin-top:0.33em;">6. The Second Party will provide access to the First Party to the areas to be serviced.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_fujairah_line_07" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_fujairah"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Article 5 - Warranty Certificate :</field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><u><b>Article 5 - Warranty Certificate :</b></u></p><p style="margin:0;margin-top:0.42em;"><b>1. </b>Aaban Company will provide a <b>TEN-YEAR WARRANTY</b> for the treated areas as per scope of treatment &amp; service area reports.</p><p style="margin:0;margin-top:0.33em;"><b>2. </b>The payment amount will be charged at the rate given per square meter.</p><p style="margin:0;margin-top:0.42em;"><b>3. </b>During the warranty period services will be served without any cost.</p><p style="margin:0;margin-top:0.33em;"><b>4. </b>Warranty will be given for the treated area / place only.</p>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_fujairah_line_08" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_fujairah"/>
+        <field name="sequence">80</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+    </record>
+
+    <record id="quotation_template_termite_sharjah" model="sale.order.template">
+        <field name="name">Anti-Termite — Sharjah</field>
+        <field name="fm_is_contract_profile" eval="True"/>
+        <field name="fm_service_line">termite</field>
+        <field name="fm_agreement_template_id" ref="agreement_template_termite_sharjah"/>
+        <field name="fm_quote_client_layout" eval="True"/>
+        <field name="fm_quote_columns">unit,summary</field>
+        <field name="fm_quote_per_year" eval="False"/>
+        <field name="fm_quote_company_block" eval="True"/>
+    </record>
+
+    <record id="quotation_template_termite_sharjah_line_01" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_sharjah"/>
+        <field name="sequence">10</field>
+        <field name="kind">article</field>
+        <field name="name">First Party:</field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><u><b><span style="color:#e69138;">First Party:</span></b></u></p><p style="margin:0;margin-top:0.33em;"><b>AABAN CLASSIC BUILDING CLEANING - SHJ. BR 2</b></p><p style="margin:0;margin-top:0.42em;"><b>LICENSE NO # 908692</b></p><p style="margin:0;margin-top:0.33em;"><b>CONTACT NO # 0555229706</b></p><p style="margin:0;margin-top:0.42em;"><b>ADDRESS # AL-SHARQ STREET, SHOP NO # 1-2, BUTEENA, SHRJAH, U.A.E.</b></p>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_sharjah_line_02" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_sharjah"/>
+        <field name="sequence">20</field>
+        <field name="kind">article</field>
+        <field name="name">Second Party:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.42em;"><p style="margin:0;"><u><b><span style="color:#e69138;">Second Party:</span></b></u></p><p style="margin:0;margin-top:0.42em;"><b>{{CLIENT}}</b></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_sharjah_line_03" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_sharjah"/>
+        <field name="sequence">30</field>
+        <field name="kind">article</field>
+        <field name="name">Article - 1: The Scope of Work:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.98em;"><p style="margin:0;"><u><b>Article - 1: The Scope of Work:</b></u></p><p style="margin:0;margin-top:0.33em;">1. Operations will be carried out as per Sharjah Municipality's stated / approved procedures and terms and conditions for Pre-Construction Termite control strategies.</p><p style="margin:0;margin-top:0.33em;">Stage 1 : PCC &amp; RCC</p><p style="margin:0;margin-top:0.42em;">Stage 2: Vertical and Horizontal inside the tie beams</p><p style="margin:0;margin-top:0.33em;">Stage 3: Vertical and Horizontal outside the tie beams</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_sharjah_line_04" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_sharjah"/>
+        <field name="sequence">40</field>
+        <field name="kind">article</field>
+        <field name="name">Article 2 -Treatment Type :</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 2 -Treatment Type :</b></u></p><p style="margin:0;margin-top:0.42em;">b. <b>Spray</b> (Pre-construction).</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_sharjah_line_05" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_sharjah"/>
+        <field name="sequence">50</field>
+        <field name="kind">article</field>
+        <field name="name">Article 3 - Terms of Payment :</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 3 - Terms of Payment :</b></u></p><p style="margin:0;margin-top:0.33em;">1. Payment will be charged as treatment completed with 5 % VAT.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_sharjah_line_06" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_sharjah"/>
+        <field name="sequence">60</field>
+        <field name="kind">article</field>
+        <field name="name">Article 4 - Materials &amp; Methods :</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Article 4 - Materials &amp; Methods :</b></u></p><p style="margin:0;margin-top:0.42em;">1. All services will be provided as per Sharjah Municipality-approved procedures.</p><p style="margin:0;margin-top:0.33em;">2. All equipment and terms of control treatments will be according to the standards set by the municipality.</p><p style="margin:0;margin-top:0.42em;">3. At least one day before first party, the second will be informed for treatment with mutual understanding and first part will also arrange a representative for collaboration.</p><p style="margin:0;margin-top:0.42em;">4. Onsite electricity and water availability will be arranged / confirmed by the second party.</p><p style="margin:0;margin-top:0.33em;">5. The second part will provide a polythene sheet as per the required length and quality.</p><p style="margin:0;margin-top:0.42em;">6. The Second Party will provide access to the First Party to the areas to be serviced.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_sharjah_line_07" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_sharjah"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Article 5 - Warranty Certificate :</field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><u><b>Article 5 - Warranty Certificate :</b></u></p><p style="margin:0;margin-top:0.33em;"><b>1. </b>Aaban Company will provide a <b>TEN-YEAR WARRANTY</b> for the treated areas as per scope of treatment &amp; service area reports.</p><p style="margin:0;margin-top:0.42em;"><b>2. </b>The payment amount will be charged at the rate given per square meter.</p><p style="margin:0;margin-top:0.33em;"><b>3. </b>During the warranty period services will be served without any cost.</p><p style="margin:0;margin-top:0.42em;"><b>4. </b>Warranty will be given for the treated area / place only.</p>]]></field>
+    </record>
+
+    <record id="quotation_template_termite_sharjah_line_08" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_termite_sharjah"/>
+        <field name="sequence">80</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+    </record>
+
+    <record id="quotation_template_pest_ajman" model="sale.order.template">
+        <field name="name">Pest Control — Ajman</field>
+        <field name="fm_is_contract_profile" eval="True"/>
+        <field name="fm_service_line">pest</field>
+        <field name="fm_agreement_template_id" ref="agreement_template_pest_ajman"/>
+        <field name="fm_quote_client_layout" eval="True"/>
+        <field name="fm_quote_columns">unit,frequency,summary</field>
+        <field name="fm_quote_per_year" eval="True"/>
+        <field name="fm_quote_company_block" eval="True"/>
+    </record>
+
+    <record id="quotation_template_pest_ajman_line_01" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_ajman"/>
+        <field name="sequence">10</field>
+        <field name="kind">article</field>
+        <field name="name">Dear Client:</field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><b>Dear Client:</b></p><p style="margin:0;margin-top:0.42em;">With reference to the above-mentioned subject and subsequent inspection, we are pleased you to provide you our best quote for pest control service at<b> AABAN CLASSIC BUILDING CLEANING L.L.C, LICENSE NO # 103074, Shop -1, Jurf, Ajman; UAE</b></p><p style="margin:0;margin-top:2.25em;">Please be informed that the pesticides that will be using for pest control strictly approved by the pest control section of the <b>Ajman Municipality &amp;</b> <b>Ministry of Climate Change and Environment.</b></p>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_ajman_line_02" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_ajman"/>
+        <field name="sequence">20</field>
+        <field name="kind">article</field>
+        <field name="name">TOTAL AMT: 1,050.00</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><b>TOTAL AMT: {{TOTAL}}</b></p><p style="margin:0;margin-top:0.33em;"><b>WORDS: {{TOTAL_WORDS}}</b></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_ajman_line_03" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_ajman"/>
+        <field name="sequence">30</field>
+        <field name="kind">article</field>
+        <field name="name">Trained operators will keenly inspect the premises each…</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:1.06em;"><p style="margin:0;">Trained operators will keenly inspect the premises each area prior to any pest control activity to assess the level of pest infestation, then carry out pest control against Rodents, all crawling &amp; flying insects such as cockroaches. flies and another insects Except termites, safe control will be carried out using chemicals which are strictly approved by the pest control section of Ajman Municipality &amp; Ministry of Climate Change and Environment.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_ajman_line_04" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_ajman"/>
+        <field name="sequence">40</field>
+        <field name="kind">article</field>
+        <field name="name">01. Covered Area:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>01. Covered Area:</b></u></p><p style="margin:0;margin-top:0.42em;">Common Area, Lobbies, Corridors,  Staircase, Parking Lots,  Store Room, Technical Rooms, Electrical Rooms, Outside Area, Garbage Rooms, Chutes and Outside Area Related to Building except Commercial Shops.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_ajman_line_05" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_ajman"/>
+        <field name="sequence">50</field>
+        <field name="kind">article</field>
+        <field name="name">02. Visits:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>02. Visits:</b></u></p><p style="margin:0;margin-top:0.42em;"><b>Routine visits</b>:</p><p style="margin:0;margin-top:0.33em;">12 visits in 1 year (Every month)-pest control services, including a comprehensive pest control service and submit a full service report.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_ajman_line_06" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_ajman"/>
+        <field name="sequence">60</field>
+        <field name="kind">article</field>
+        <field name="name">Follow up visits:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.42em;"><p style="margin:0;"><b>Follow up visits:</b></p><p style="margin:0;margin-top:0.33em;">In case of infestation reported during the routine visits, Aaban must conduct follow up visits and do the Necessary actions until the infestation disappear.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_ajman_line_07" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_ajman"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Complain visits:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.33em;"><p style="margin:0;"><b>Complain visits:</b></p><p style="margin:0;margin-top:0.42em;">In case of complains or calls from the second party regarding the presence of pests, Aaban must visit the Complain sites within 24 hours and conduct the pest control operations.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_ajman_line_08" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_ajman"/>
+        <field name="sequence">80</field>
+        <field name="kind">article</field>
+        <field name="name">03. The pesticides use</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>03. The pesticides use</b></u></p><ul style="margin:0;margin-left:22px;padding-left:18px;"><li>The pesticides use registered in the Ministry of Climatic Change and Environment and will use according to the manufacturer's recommendations and instructions:</li></ul><ul style="margin:0;margin-left:22px;padding-left:18px;"><li>Use specialized insecticides for rodents, flying and crawling insects internally or externally.</li></ul><ul style="margin:0;margin-left:22px;padding-left:18px;"><li>According to the instructions on the package labels on the method of using spray applications - fogging-baits... etc.</li></ul><ul style="margin:0;margin-left:22px;padding-left:18px;"><li>Rodent bait stations which will be armed with second generation anti-coagulant rodenticides will be installed in strategic spots of the building where rats usually pass by harbors. Bait stations will then be checked by our team on monthly basis to assess the bait consumption and rodent activity in the building.</li></ul><ul style="margin:0;margin-left:22px;padding-left:18px;"><li>Rodenticide baits will be then replenished to ensure high palatability. Rodenticide consumption report will be tendered along with service reports on client's office with written statement on the current status of rodent infestation.</li></ul></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_ajman_line_09" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_ajman"/>
+        <field name="sequence">90</field>
+        <field name="kind">article</field>
+        <field name="name">We confirm our compliance with the required quantities…</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:4.08em;"><p style="margin:0;"><b>We confirm our compliance with the required quantities of operating requirements</b></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_ajman_line_10" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_ajman"/>
+        <field name="sequence">100</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+    </record>
+
+    <record id="quotation_template_pest_ajman_line_11" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_ajman"/>
+        <field name="sequence">110</field>
+        <field name="kind">article</field>
+        <field name="name">PAYMENT TERMS:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.97em;"><p style="margin:0;"><u><b>PAYMENT TERMS:</b></u></p><p style="margin:0;margin-top:0.42em;">One Time Payment.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_ajman_line_12" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_ajman"/>
+        <field name="sequence">120</field>
+        <field name="kind">article</field>
+        <field name="name">BEST REGARDS</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.34em;"><p style="margin:0;"><u><b>BEST REGARDS</b></u></p><p style="margin:0;margin-top:2.52em;"><u><b><span style="font-size:1.20em;">AABAN CLASSIC BUILDING CLEANING L.L.C</span></b></u></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_dubai" model="sale.order.template">
+        <field name="name">Pest Control — Dubai</field>
+        <field name="fm_is_contract_profile" eval="True"/>
+        <field name="fm_service_line">pest</field>
+        <field name="fm_agreement_template_id" ref="agreement_template_pest_dubai"/>
+        <field name="fm_quote_client_layout" eval="True"/>
+        <field name="fm_quote_columns">unit,frequency,summary</field>
+        <field name="fm_quote_per_year" eval="True"/>
+        <field name="fm_quote_company_block" eval="True"/>
+    </record>
+
+    <record id="quotation_template_pest_dubai_line_01" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_dubai"/>
+        <field name="sequence">10</field>
+        <field name="kind">article</field>
+        <field name="name">Dear MANAGEMENT,</field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><b>Dear {{CONTACT_SALUTATION}},</b></p><p style="margin:0;margin-top:2.25em;">With reference to the above-mentioned subject and subsequent inspection, we are pleased you to provide you our best quote for pest control service at ( <b>AABAN CLASSIC BUILDING CLEANING </b>) <b>– </b>(<b>LICENSE NO # 989256</b>) <b>-</b> (<b>OFFICE NO 126, SAFIYA BUILDING, BIN SALOOM, HOR-AL-ANZ, DEIRA, DUBAI, UAE</b>) for one year.</p><p style="margin:0;margin-top:0.42em;">(<b>CONTACT NO # 055-5229706 &amp; 045855280 )</b></p><p style="margin:0;margin-top:0.33em;">Please be informed that the pesticides that will be using for pest control strictly approved by the pest control section of the <b>Dubai Municipality &amp;</b> <b>Ministry of Climate Change and Environment.</b></p>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_dubai_line_02" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_dubai"/>
+        <field name="sequence">20</field>
+        <field name="kind">article</field>
+        <field name="name">Scope of Work:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.89em;"><p style="margin:0;"><u><b>Scope of Work:</b></u></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_dubai_line_03" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_dubai"/>
+        <field name="sequence">30</field>
+        <field name="kind">article</field>
+        <field name="name">Trained operators will keenly inspect the premises each…</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.33em;"><p style="margin:0;">Trained operators will keenly inspect the premises each area prior to any pest control activity to assess the level of pest infestation, then carry out pest control against cockroaches, and ants, safe control will be carried out using chemicals which are strictly approved by the pest control section of<b> Ministry of Climate Change and Environment.</b></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_dubai_line_04" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_dubai"/>
+        <field name="sequence">40</field>
+        <field name="kind">article</field>
+        <field name="name">Covered Area: Common Area, Lobbies, Corridors, Staircase…</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.42em;"><p style="margin:0;"><b>Covered Area:</b> Common Area, Lobbies, Corridors, Staircase ,Parking Lot, Storeroom, Garbage Room, Electrical Room, Pump Room, Telephone Room, Outside Area Related to Building except Commercial Shops, Rat Bait Stations included.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_dubai_line_05" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_dubai"/>
+        <field name="sequence">50</field>
+        <field name="kind">article</field>
+        <field name="name">Treatment to be Treated:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Treatment to be Treated:</b></u></p><p style="margin:0;margin-top:0.42em;">Crawling Insects,<b> </b>Cockroaches, ants ,etc.; using chemical and non-chemical control measures.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_dubai_line_06" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_dubai"/>
+        <field name="sequence">60</field>
+        <field name="kind">article</field>
+        <field name="name">Follow up visits:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Follow up visits:</b></u></p><p style="margin:0;margin-top:0.33em;">In case of infestation reported during the routine visits, AABAN CLASSIC BUILDING CLEANING must conduct follow up visits and do the Necessary actions till the infestation disappear.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_dubai_line_07" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_dubai"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Complain visits:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Complain visits:</b></u></p><p style="margin:0;margin-top:0.33em;">In case of complains or calls from the second party regarding the presence of pests, Aaban Classic building cleaning and pest control must visit the Complain sites within 24 hours and conduct the pest control operations.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_dubai_line_08" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_dubai"/>
+        <field name="sequence">80</field>
+        <field name="kind">article</field>
+        <field name="name">The Pesticides Use</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>The Pesticides Use</b></u></p><p style="margin:0;margin-top:0.33em;">The pesticides use registered in the Ministry of</p><p style="margin:0;margin-top:0.42em;">Climatic Change and Environment and will use according to the manufacturer’s recommendations and instructions.</p><p style="margin:0;">Use specialized insecticides for rodents, flying and crawling insects internally or externally, according to the instructions on the package labels on the method of using spray applications - fogging - baits...etc. Rodenticide baits will be then replenished to ensure high palatability. Rodenticide consumption report will be tendered along with service reports on client’s office with written statement on the current status of rodent infestation.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_dubai_line_09" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_dubai"/>
+        <field name="sequence">90</field>
+        <field name="kind">article</field>
+        <field name="name">We confirm our compliance with the required quantities…</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:4.08em;"><p style="margin:0;"><b>We confirm our compliance with the required quantities of operating requirements</b></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_dubai_line_10" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_dubai"/>
+        <field name="sequence">100</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+    </record>
+
+    <record id="quotation_template_pest_dubai_line_11" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_dubai"/>
+        <field name="sequence">110</field>
+        <field name="kind">article</field>
+        <field name="name">PAYMENT TERMS:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.80em;"><p style="margin:0;"><u><b>PAYMENT TERMS:</b></u></p><p style="margin:0;margin-top:0.42em;">One Time Payment</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_dubai_line_12" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_dubai"/>
+        <field name="sequence">120</field>
+        <field name="kind">article</field>
+        <field name="name">BEST REGARDS,</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><b>BEST REGARDS,</b></p><p style="margin:0;margin-top:2.71em;"><u><b><span style="font-size:1.20em;">AABAN CLASSIC BUILDING CLEANING</span></b></u></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_fujairah" model="sale.order.template">
+        <field name="name">Pest Control — Fujairah</field>
+        <field name="fm_is_contract_profile" eval="True"/>
+        <field name="fm_service_line">pest</field>
+        <field name="fm_agreement_template_id" ref="agreement_template_pest_fujairah"/>
+        <field name="fm_quote_client_layout" eval="True"/>
+        <field name="fm_quote_columns">unit,frequency,summary</field>
+        <field name="fm_quote_per_year" eval="True"/>
+        <field name="fm_quote_company_block" eval="True"/>
+    </record>
+
+    <record id="quotation_template_pest_fujairah_line_01" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_fujairah"/>
+        <field name="sequence">10</field>
+        <field name="kind">article</field>
+        <field name="name">Dear MANAGEMENT,</field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><b>Dear {{CONTACT_SALUTATION}},</b></p><p style="margin:0;margin-top:0.42em;">With reference to the above-mentioned subject and subsequent inspection, we are pleased to provide you our best quote for pest control service at</p><p style="margin:0;"><b>AABAN CLASSIC BUILDING CLEANING FUJAIRAH BRANCH 1.</b></p><p style="margin:0;margin-top:1.52em;"><b>LICENSE NO # 1026622</b></p><p style="margin:0;margin-top:1.52em;"><b>SHOP NO # 03, BLOCK-A, PLOT # C11A, SAKAMKAM, FUJAIRAH, U.A.E for one year.</b></p><p style="margin:0;margin-top:0.42em;"><b>(CONTACT NO # 055-5229706 &amp; 80022226 )</b></p><p style="margin:0;margin-top:0.33em;">Please be informed that the pesticides that will be used for pest control are strictly approved by the pest control section of the<b> FUJAIRAH</b> <b>Municipality &amp; Ministry of Climate Change and Environment</b></p>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_fujairah_line_02" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_fujairah"/>
+        <field name="sequence">20</field>
+        <field name="kind">article</field>
+        <field name="name">Scope of Work:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.89em;"><p style="margin:0;"><b>Scope of Work:</b></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_fujairah_line_03" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_fujairah"/>
+        <field name="sequence">30</field>
+        <field name="kind">article</field>
+        <field name="name">Trained operators will keenly inspect the premises in…</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.33em;"><p style="margin:0;">Trained operators will keenly inspect the premises in each area prior to any pest control activity to assess the level of pest infestation, then carry out pest control against cockroaches and ants. Safe control will be carried out using chemicals that are strictly approved by the pest control section of <b>FUJAIRAH Municipality &amp; Ministry of Climate Change and Environment.</b></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_fujairah_line_04" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_fujairah"/>
+        <field name="sequence">40</field>
+        <field name="kind">article</field>
+        <field name="name">Covered Area:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:1.52em;"><p style="margin:0;"><b>Covered Area:</b></p><p style="margin:0;margin-top:1.52em;">Common Area, Lobbies, Corridors, Staircase, Parking Lot, Storeroom, Garbage Room, Electrical Room, Pump Room, Telephone Room, Outside Area Related to buildings except commercial shops, rat bait stations are not included</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_fujairah_line_05" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_fujairah"/>
+        <field name="sequence">50</field>
+        <field name="kind">article</field>
+        <field name="name">TREATMENT TO BE TREATED:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.33em;"><p style="margin:0;"><b>TREATMENT TO BE TREATED:</b></p><p style="margin:0;margin-top:0.42em;"><b>Crawling Insects: Cockroaches, Ants, etc.; using chemical and non-chemical control measures.</b></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_fujairah_line_06" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_fujairah"/>
+        <field name="sequence">60</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+    </record>
+
+    <record id="quotation_template_pest_fujairah_line_07" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_fujairah"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Follow-up visits:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.88em;"><p style="margin:0;"><b>Follow-up visits:</b></p><p style="margin:0;margin-top:0.42em;">In case of infestation reported during the routine visits, Aaban Building Cleaning and Pest Control must conduct follow-up visits and take the necessary actions till the infestation disappears.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_fujairah_line_08" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_fujairah"/>
+        <field name="sequence">80</field>
+        <field name="kind">article</field>
+        <field name="name">Complaint visits:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.42em;"><p style="margin:0;"><b>Complaint visits:</b></p><p style="margin:0;margin-top:0.33em;">In case of complaints or calls from the second party regarding the presence of pests, Aaban Building Cleaning and Pest Control must visit the complaint sites within 48 hours and conduct the pest control operations.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_fujairah_line_09" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_fujairah"/>
+        <field name="sequence">90</field>
+        <field name="kind">article</field>
+        <field name="name">The pesticides Use :</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>The pesticides Use :</b></u></p><p style="margin:0;margin-top:0.42em;">Registered in the Ministry of Climatic Change and Environment and will use according to the manufacturer’s recommendations and instructions.</p><p style="margin:0;margin-top:0.42em;">Use specialized insecticides for rodents and flying and crawling insects internally or externally, according to the instructions on the package labels for the method of using spray applications, fogging, baits, etc. Rodenticide baits will then be replenished to ensure high palatability. The rodenticide consumption report will be tendered along with service reports on the client’s office with a written statement on the current status of rodent infestation.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_fujairah_line_10" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_fujairah"/>
+        <field name="sequence">100</field>
+        <field name="kind">article</field>
+        <field name="name">We confirm our compliance with the required quantities…</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.42em;"><p style="margin:0;"><b>We confirm our compliance with the required quantities of operating requirements.</b></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_fujairah_line_11" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_fujairah"/>
+        <field name="sequence">110</field>
+        <field name="kind">article</field>
+        <field name="name">PAYMENT TERMS:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:0.33em;"><p style="margin:0;"><b>PAYMENT TERMS:</b></p><p style="margin:0;margin-top:0.42em;">One Time Payment</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_fujairah_line_12" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_fujairah"/>
+        <field name="sequence">120</field>
+        <field name="kind">article</field>
+        <field name="name">BEST REGARDS,</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><b>BEST REGARDS,</b></p><p style="margin:0;margin-top:2.25em;"><b>AABAN CLASSIC BUILDING CLEANING FUJAIRAH BRANCH 1</b></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_sharjah" model="sale.order.template">
+        <field name="name">Pest Control — Sharjah</field>
+        <field name="fm_is_contract_profile" eval="True"/>
+        <field name="fm_service_line">pest</field>
+        <field name="fm_agreement_template_id" ref="agreement_template_pest_sharjah"/>
+        <field name="fm_quote_client_layout" eval="True"/>
+        <field name="fm_quote_columns">unit,frequency,summary</field>
+        <field name="fm_quote_per_year" eval="True"/>
+        <field name="fm_quote_company_block" eval="True"/>
+    </record>
+
+    <record id="quotation_template_pest_sharjah_line_01" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_sharjah"/>
+        <field name="sequence">10</field>
+        <field name="kind">article</field>
+        <field name="name">Dear MANAGEMENT,</field>
+        <field name="body_html"><![CDATA[<p style="margin:0;"><b>Dear {{CONTACT_SALUTATION}},</b></p><p style="margin:0;margin-top:2.25em;">With reference to the above-mentioned subject and subsequent inspection, we are pleased you to provide you our best quote for pest control service at <b>AABAN CLASSIC BUILDING CLEANING - SHJ. BR 2  ( License No : 908692 ) , Shop no 1 &amp; 2, Al Sharq Street, Butina, Sharjah- </b>for one year.</p><p style="margin:0;margin-top:0.33em;">Please be informed that the pesticides that will be using for pest control strictly approved by the pest control section of the <b>Ministry of Climate</b> <b>Change and Environment.</b></p>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_sharjah_line_02" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_sharjah"/>
+        <field name="sequence">20</field>
+        <field name="kind">article</field>
+        <field name="name">Scope of Work:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.89em;"><p style="margin:0;"><u><b>Scope of Work:</b></u></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_sharjah_line_03" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_sharjah"/>
+        <field name="sequence">30</field>
+        <field name="kind">article</field>
+        <field name="name">Trained operators will keenly inspect the premises each…</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;">Trained operators will keenly inspect the premises each area prior to any pest control activity to assess the level of pest infestation, then carry out pest control against cockroaches, and ants, safe control will be carried out using chemicals which are strictly approved by the pest control section of<b> Ministry of Climate Change and Environment.</b></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_sharjah_line_04" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_sharjah"/>
+        <field name="sequence">40</field>
+        <field name="kind">article</field>
+        <field name="name">Covered Area: Common Area, Lobbies, Corridors, Staircase…</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><b>Covered Area:</b> Common Area, Lobbies, Corridors, Staircase ,Parking Lot, Storeroom, Garbage Room, Electrical Room, Pump Room, Telephone Room, Outside Area Related to Building except Commercial Shops, Rat Bait Stations included.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_sharjah_line_05" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_sharjah"/>
+        <field name="sequence">50</field>
+        <field name="kind">article</field>
+        <field name="name">Treatment to be Treated:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Treatment to be Treated:</b></u></p><p style="margin:0;margin-top:0.42em;">Crawling Insects,<b> </b>Cockroaches, ants ,etc.; using chemical and non-chemical control measures.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_sharjah_line_06" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_sharjah"/>
+        <field name="sequence">60</field>
+        <field name="kind">article</field>
+        <field name="name">Follow up visits:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Follow up visits:</b></u></p><p style="margin:0;margin-top:0.33em;">In case of infestation reported during the routine visits, AABAN CLASSIC BUILDING CLEANING must conduct follow up visits and do the Necessary actions till the infestation disappear.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_sharjah_line_07" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_sharjah"/>
+        <field name="sequence">70</field>
+        <field name="kind">article</field>
+        <field name="name">Complain visits:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>Complain visits:</b></u></p><p style="margin:0;margin-top:0.33em;">In case of complains or calls from the second party regarding the presence of pests, Aaban Classic building cleaning and pest control must visit the Complain sites within 24 hours and conduct the pest control operations.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_sharjah_line_08" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_sharjah"/>
+        <field name="sequence">80</field>
+        <field name="kind">article</field>
+        <field name="name">The Pesticides Use</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><u><b>The Pesticides Use</b></u></p><p style="margin:0;">The pesticides use registered in the Ministry of</p><p style="margin:0;margin-top:0.33em;">Climatic Change and Environment and will use according to the manufacturer’s recommendations and instructions.</p><p style="margin:0;margin-top:0.42em;">Use specialized insecticides for rodents, flying and crawling insects internally or externally, according to the instructions on the package labels on the method of using spray applications - fogging - baits...etc. Rodenticide baits will be then replenished to ensure high palatability. Rodenticide consumption report will be tendered along with service reports on client’s office with written statement on the current status of rodent infestation.</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_sharjah_line_09" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_sharjah"/>
+        <field name="sequence">90</field>
+        <field name="kind">article</field>
+        <field name="name">We confirm our compliance with the required quantities…</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:4.08em;"><p style="margin:0;"><b>We confirm our compliance with the required quantities of operating requirements</b></p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_sharjah_line_10" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_sharjah"/>
+        <field name="sequence">100</field>
+        <field name="kind">price_table</field>
+        <field name="name">Price Table</field>
+    </record>
+
+    <record id="quotation_template_pest_sharjah_line_11" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_sharjah"/>
+        <field name="sequence">110</field>
+        <field name="kind">article</field>
+        <field name="name">PAYMENT TERMS:</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.80em;"><p style="margin:0;"><u><b>PAYMENT TERMS:</b></u></p><p style="margin:0;margin-top:0.42em;">One Time Payment</p></div>]]></field>
+    </record>
+
+    <record id="quotation_template_pest_sharjah_line_12" model="fm.quotation.wording.line">
+        <field name="template_id" ref="quotation_template_pest_sharjah"/>
+        <field name="sequence">120</field>
+        <field name="kind">article</field>
+        <field name="name">BEST REGARDS,</field>
+        <field name="body_html"><![CDATA[<div style="margin-top:2.25em;"><p style="margin:0;"><b>BEST REGARDS,</b></p><p style="margin:0;margin-top:2.71em;"><u><b><span style="font-size:1.20em;">AABAN CLASSIC BUILDING CLEANING - SHJ. BR 2</span></b></u></p></div>]]></field>
+    </record>
+
+</odoo>
