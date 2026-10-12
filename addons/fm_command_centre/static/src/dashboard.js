@@ -16,6 +16,7 @@ export class FmCommandCentre extends Component {
             loading: false,
             tab: "executive",
             period: "this_month",
+            branch: false,
             // Shell kept from the last successful load so the tab bar and
             // period selector stay on screen while the next tab loads —
             // switching tabs shouldn't blank the whole page.
@@ -31,11 +32,13 @@ export class FmCommandCentre extends Component {
             const data = await this.orm.call("fm.command.centre", "get_data", [
                 this.state.tab,
                 this.state.period,
+                this.state.branch,
             ]);
             this.state.data = data;
             this.state.shell = {
                 tabs: data.tabs,
                 periods: data.periods,
+                branches: data.branches || [],
                 company: data.company,
                 as_of: data.as_of,
                 range: data.range,
@@ -57,6 +60,13 @@ export class FmCommandCentre extends Component {
     selectPeriod(period) {
         if (this.state.period === period) return;
         this.state.period = period;
+        this.load();
+    }
+
+    selectBranch(ev) {
+        const branch = parseInt(ev.target.value, 10) || false;
+        if (this.state.branch === branch) return;
+        this.state.branch = branch;
         this.load();
     }
 
@@ -140,11 +150,14 @@ export class FmCommandCentre extends Component {
 
     open(item) {
         if (!item || !item.model) return;
+        // The figure was counted for the chosen branch; the list it opens
+        // has to be the same records.
+        const scope = ((this.state.data && this.state.data.branch_domains) || {})[item.model];
         this.action.doAction({
             type: "ir.actions.act_window",
             name: item.label || "Details",
             res_model: item.model,
-            domain: item.domain || [],
+            domain: [...(item.domain || []), ...(scope || [])],
             views: [
                 [false, "list"],
                 [false, "form"],

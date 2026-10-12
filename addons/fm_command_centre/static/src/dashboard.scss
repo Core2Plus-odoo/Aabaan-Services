@@ -96,7 +96,7 @@
         padding: 14px 24px 48px;
     }
 
-    button { border: 0; background: none; text-align: left; font: inherit; color: inherit; }
+    button { border: 0; background: none; text-align: left; font: inherit; color: #141412; }
     button:focus-visible { outline: 2px solid var(--ab-accent); outline-offset: 2px; }
 
     /* ── period selector ──────────────────────────────────────── */
@@ -118,6 +118,29 @@
             cursor: pointer;
             &:hover { border-color: var(--ab-accent); }
             &.on { background: var(--ab-ink); color: #f4f2ee; border-color: var(--ab-ink); font-weight: 600; }
+        }
+        .pbranch {
+            // Same pill as the period buttons. The backend styles a bare
+            // <select> full width and faded, so every one of these is set.
+            flex: 0 0 auto;
+            width: auto !important;
+            max-width: 200px;
+            height: auto;
+            border: 1px solid var(--ab-ring);
+            background-color: #fcfcfb;
+            color: var(--ab-ink) !important;
+            opacity: 1;
+            border-radius: 999px;
+            padding: 3px 12px;
+            font-size: 12px;
+            line-height: 1.5;
+            margin-left: 4px;
+            cursor: pointer;
+            &:hover, &:focus { border-color: var(--ab-accent); outline: none; box-shadow: none; }
+            &.on { background-color: var(--ab-ink); color: #f4f2ee !important; border-color: var(--ab-ink); font-weight: 600; }
+            color-scheme: light;
+            option { color: #17171a; background-color: #fff; font-weight: 400; }
+            option:checked { color: #fff; background-color: #17171a; }
         }
         .pr { margin-left: auto; font-size: 11.5px; color: #8a877f; font-variant-numeric: tabular-nums; }
     }
@@ -228,7 +251,7 @@
             box-shadow: 0 1px 2px rgba(23, 23, 26, 0.08);
             min-width: 0;
             &.wide { grid-column: 1 / -1; }
-            h2 { font-size: 13.5px; font-weight: 700; margin: 0 0 10px; }
+            h2 { font-size: 13.5px; font-weight: 700; margin: 0 0 10px; color: #141412; }
             .empty { border: 1px dashed #c6c4bb; border-radius: 8px; padding: 14px; font-size: 12.5px; color: #53514b; }
         }
 
@@ -242,7 +265,7 @@
             padding: 2px 0;
             min-width: 0;
             &:hover .fill { filter: brightness(1.09); }
-            .lbl { font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+            .lbl { font-size: 12.5px; color: #2b2a26; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
             .track { height: 14px; border-radius: 0 4px 4px 0; background: rgba(42, 120, 214, 0.12); overflow: hidden; }
             .fill {
                 display: block; height: 100%; border-radius: 0 4px 4px 0;

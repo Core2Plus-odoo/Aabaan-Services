@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'FM Command Centre',
-    'version': '19.0.2.0.0',
+    'version': '19.0.2.1.3',
     'category': 'Reporting',
     'summary': 'Seven-tab live executive dashboard: overview, field ops, sales, finance, expenses, cash, AMC renewals',
     'description': """

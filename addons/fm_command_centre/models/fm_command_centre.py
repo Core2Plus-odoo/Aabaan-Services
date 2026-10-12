@@ -56,6 +56,29 @@ FIELD_ALIASES = {
     ('account.move', 'service_line'): ('aabaan_services',),
 }
 
+# The branch filter: where each model keeps its branch, as a path from the
+# model. A model not listed here is not split by branch (CRM leads carry
+# none; a bank account belongs to the company), and the screen says so.
+BRANCH_PATHS = {
+    'sale.order': 'branch_id',
+    'project.task': 'branch_id',
+    'account.move': 'branch_id',
+    'account.move.line': 'move_id.branch_id',
+    'account.payment': 'invoice_ids.branch_id',
+    'res.partner': 'sale_order_ids.branch_id',
+}
+
+# What a branch filter cannot split, said on the tab it affects.
+BRANCH_NOTES = {
+    'executive': ['Sales pipeline is company-wide: CRM leads carry no branch.'],
+    'sales': ['Pipeline, win rate, lead sources and lost reasons are company-wide: '
+              'CRM leads carry no branch.'],
+    'expenses': ['Only spend booked to this branch counts; spend with no branch '
+                 'is left out. Cost by emirate still shows every emirate.'],
+    'cash': ['Bank and cash accounts belong to the company, not to a branch: '
+             'this tab always shows every branch.'],
+}
+
 # Compliance documents, as (model, expiry date field). First one present wins.
 COMPLIANCE_SOURCES = (
     ('fm.compliance.certificate', 'expiry_date'),
@@ -199,6 +222,33 @@ class FmCommandCentre(models.AbstractModel):
         return False
 
     @api.model
+    def _branch_fragment(self, model, branch_id):
+        """The domain that keeps ``model`` to one branch, or None when this
+        build gives the model no branch to filter on."""
+        path = BRANCH_PATHS.get(model)
+        if not path or model not in self.env or 'fm.branch' not in self.env:
+            return None
+        Model = self.env[model]
+        first, _dot, rest = path.partition('.')
+        if first not in Model._fields:
+            return None
+        if rest:
+            comodel = self.env[Model._fields[first].comodel_name]
+            if rest.split('.')[0] not in comodel._fields:
+                return None
+        return [(path, '=', branch_id)]
+
+    @api.model
+    def _branches(self):
+        if 'fm.branch' not in self.env:
+            return []
+        # "Aabaan Services — Ajman" reads as "Ajman" in a pill beside the
+        # period buttons; the company is already in the header.
+        return [{'id': b.id, 'name': b.name.split(' — ')[-1]}
+                for b in self.env['fm.branch'].search(
+                    [('company_id', 'in', self.env.companies.ids)])]
+
+    @api.model
     def _compliance_source(self):
         """(model, expiry field) for compliance documents on this build, or
         (False, False) when neither platform's model is installed."""
@@ -326,11 +376,14 @@ class FmCommandCentre(models.AbstractModel):
     # ------------------------------------------------------------------
 
     @api.model
-    def get_data(self, tab='executive', period='this_month'):
+    def get_data(self, tab='executive', period='this_month', branch_id=False):
         if tab not in dict(TABS):
             tab = 'executive'
         if period not in dict(PERIODS):
             period = 'this_month'
+        branches = self._branches()
+        if branch_id not in [b['id'] for b in branches]:
+            branch_id = False
         start, end, prev_start, prev_end = self._period_bounds(period)
         company = self.env.company
         data = {
@@ -345,9 +398,25 @@ class FmCommandCentre(models.AbstractModel):
             'periods': [{'key': key, 'label': label} for key, label in PERIODS],
             'range': '%s → %s' % (start.strftime('%d %b %Y'),
                                   (end - timedelta(days=1)).strftime('%d %b %Y')),
+            'branches': branches,
+            'branch_id': branch_id,
+            # Drill-down opens the records behind a figure; with a branch
+            # chosen, the client adds these so the list matches the number.
+            'branch_domains': {
+                model: self._branch_fragment(model, branch_id)
+                for model in BRANCH_PATHS
+                if branch_id and self._branch_fragment(model, branch_id)},
         }
-        handler = getattr(self, '_tab_%s' % tab)
+        provider = self
+        if branch_id and tab != 'cash':
+            provider = self.with_context(fm_cc_branch_id=branch_id)
+        handler = getattr(provider, '_tab_%s' % tab)
         data.update(handler(start, end, prev_start, prev_end))
+        data.setdefault('notes', [])
+        if branch_id and tab in BRANCH_NOTES:
+            data['notes'] = BRANCH_NOTES[tab] + list(data.get('notes') or [])
+        if tab == 'cash':
+            data['branch_domains'] = {}
         return data
 
     # ------------------------------------------------------------------
@@ -387,7 +456,10 @@ class FmCommandCentre(models.AbstractModel):
             'sub_label': 'overdue', 'sub_domain': overdue_domain,
         })
         tiles.append(self._metric(
-            'Customers', 'res.partner', [('customer_rank', '>', 0)]))
+            'Customers', 'res.partner',
+            [('customer_rank', '>', 0)] + (self._branch_fragment(
+                'res.partner', self.env.context.get('fm_cc_branch_id')) or []
+                if self.env.context.get('fm_cc_branch_id') else [])))
 
         # period block, each figure beside the same-length previous window
         def period_pair(label, model, domain_fn, aggregates):

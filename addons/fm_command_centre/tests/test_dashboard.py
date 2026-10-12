@@ -287,3 +287,29 @@ class TestCommandCentreFieldAliases(TransactionCase):
         self.assertEqual(
             self.Dash._group_amounts('sale.order', [], 'no_such_field'), [])
         self.assertEqual(self.Dash._group_amounts('sale.order', [], False), [])
+
+
+@tagged('post_install', '-at_install')
+class TestCommandCentreBranch(TransactionCase):
+    """The branch filter keeps every scoped figure to one branch."""
+
+    def test_branch_filter_scopes_the_book(self):
+        if 'fm.branch' not in self.env or 'branch_id' not in self.env['sale.order']._fields:
+            self.skipTest('fm_branch is not installed on this build')
+        CC = self.env['fm.command.centre']
+        branch = self.env['fm.branch'].create({'name': 'CC Test Branch'})
+        data = CC.get_data('executive', 'this_month', branch.id)
+        self.assertEqual(data['branch_id'], branch.id)
+        book = data['tiles'][0]
+        self.assertEqual(book['count'], 0, "a new branch has no contracts")
+        self.assertEqual(data['branch_domains']['sale.order'],
+                         [('branch_id', '=', branch.id)])
+        unknown = CC.get_data('executive', 'this_month', -1)
+        self.assertFalse(unknown['branch_id'], "an unknown branch falls back to all")
+
+    def test_cash_tab_is_never_split(self):
+        if 'fm.branch' not in self.env:
+            self.skipTest('fm_branch is not installed on this build')
+        branch = self.env['fm.branch'].create({'name': 'CC Test Branch'})
+        data = self.env['fm.command.centre'].get_data('cash', 'this_month', branch.id)
+        self.assertEqual(data['branch_domains'], {})

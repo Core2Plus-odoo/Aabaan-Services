@@ -19,17 +19,24 @@
         background: linear-gradient(135deg, #ee7a22, #1c2b3a); color: #fff; font-weight: 800; box-shadow: 0 3px 8px rgba(28,43,58,.25); }
     .o_fm_cal_title { font-size: 20px; font-weight: 760; line-height: 1.1; color: var(--c-brand); }
     .o_fm_cal_sub { color: var(--c-muted); font-size: 12px; margin-top: 1px; }
-    .o_fm_cal_head_r { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+    .o_fm_cal_head_r { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; }
     .o_fm_cal_nav { display: flex; align-items: center; gap: 6px; }
     .o_fm_cal_month { font-weight: 750; font-size: 15px; min-width: 150px; text-align: center; }
-    .o_fm_cal_filters { display: flex; gap: 6px; flex-wrap: wrap; }
+    .o_fm_cal_filters { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
     .o_fm_cal_ico, .o_fm_cal_today, .o_fm_cal_sel {
         border: 1px solid var(--c-border); background: var(--c-card); color: var(--c-text);
         border-radius: 9px; padding: 6px 10px; cursor: pointer; font-size: 12.5px; transition: all .12s; }
     .o_fm_cal_ico { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; padding: 0; }
     .o_fm_cal_ico:hover, .o_fm_cal_today:hover { border-color: var(--c-brand); color: var(--c-brand); }
     .o_fm_cal_today { font-weight: 600; }
-    .o_fm_cal_sel { max-width: 180px; }
+    .o_fm_cal_xls { color: #1d6f42; }
+    .o_fm_cal_xls:hover { border-color: #1d6f42; color: #1d6f42; }
+    .o_fm_cal_sel { width: auto !important; flex: 0 0 auto; max-width: 170px; height: 32px; padding: 0 26px 0 10px; }
+    /* The open list is drawn by the browser/OS; without explicit colours a
+       dark desktop theme paints it dark grey with our dark text on top. */
+    .o_fm_cal_sel { color-scheme: light; }
+    .o_fm_cal_sel option { color: var(--c-text); background-color: var(--c-card); font-weight: 400; }
+    .o_fm_cal_sel option:checked { color: #fff; background-color: #2f6fed; }
     .o_fm_cal_loading { padding: 48px; color: var(--c-muted); }
 
     /* KPI strip */
@@ -41,28 +48,33 @@
     .o_red { color: #e23d3d; } .o_amber { color: #e08a1e; } .o_green { color: #1f9d57; }
 
     /* Layout: calendar + side legend */
-    .o_fm_cal_wrap { display: grid; grid-template-columns: 1fr 190px; gap: 14px; align-items: start; }
+    .o_fm_cal_wrap { display: grid; grid-template-columns: minmax(0, 1fr) 190px; gap: 14px; align-items: start; }
 
     /* Calendar grid */
-    .o_fm_cal_grid { display: grid; grid-template-columns: repeat(7, 1fr); background: var(--c-card);
+    .o_fm_cal_grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); background: var(--c-card);
         border: 1px solid var(--c-border); border-radius: 14px; overflow: hidden; box-shadow: var(--c-shadow); }
     .o_fm_cal_dow { background: var(--c-head); color: #fff; font-weight: 650; text-align: center; padding: 9px 0; font-size: 12px; letter-spacing: .03em; }
-    .o_fm_cal_cell { min-height: 116px; border-right: 1px solid var(--c-line); border-top: 1px solid var(--c-line);
+    .o_fm_cal_cell { min-width: 0; min-height: 116px; border-right: 1px solid var(--c-line); border-top: 1px solid var(--c-line);
         padding: 5px 6px 7px; display: flex; flex-direction: column; }
     .o_fm_cal_cell:nth-child(7n+1) { border-left: 0; }
-    .o_fm_cal_cell.o_out { background: #fafbfd; }
+    .o_fm_cal_cell.o_out { background: #f1f3f8; }
     .o_fm_cal_cell.o_out .o_fm_cal_num { color: #c4cad6; }
     .o_fm_cal_cell.o_wknd { background: #f7f8fc; }
     .o_fm_cal_cell.o_today { background: color-mix(in srgb, var(--c-head) 8%, #fff); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--c-head) 45%, #fff); }
     .o_fm_cal_num { font-size: 12.5px; font-weight: 650; color: var(--c-muted); margin-bottom: 4px; }
     .o_fm_cal_cell.o_today .o_fm_cal_num { color: var(--c-head); }
+    .o_fm_cal_num { display: flex; align-items: center; justify-content: space-between; border-radius: 5px; padding: 0 3px; }
+    .o_fm_cal_num.o_click { cursor: pointer; }
+    .o_fm_cal_num.o_click:hover { background: color-mix(in srgb, var(--c-head) 8%, #fff); color: var(--c-head); }
+    .o_fm_cal_cnt { font-size: 10.5px; font-weight: 600; color: var(--c-muted); opacity: 0; transition: opacity .12s; }
+    .o_fm_cal_num.o_click:hover .o_fm_cal_cnt { opacity: 1; }
     .o_fm_cal_evts { display: flex; flex-direction: column; gap: 3px; overflow: hidden; }
 
-    .o_fm_cal_evt { display: flex; align-items: center; gap: 6px; cursor: pointer; border-radius: 6px; padding: 1px 3px; transition: background .1s; }
+    .o_fm_cal_evt { min-width: 0; display: flex; align-items: center; gap: 6px; cursor: pointer; border-radius: 6px; padding: 1px 3px; transition: background .1s; }
     .o_fm_cal_evt:hover { background: color-mix(in srgb, var(--c-head) 8%, #fff); }
     .o_fm_cal_tag { color: #fff; font-size: 9.5px; font-weight: 750; letter-spacing: .03em; text-transform: uppercase;
         padding: 2px 6px; border-radius: 5px; white-space: nowrap; flex: 0 0 auto; line-height: 1.25; }
-    .o_fm_cal_txt { font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .o_fm_cal_txt { min-width: 0; font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .o_fm_cal_more { font-size: 11px; font-weight: 650; color: var(--c-head); cursor: pointer; padding: 1px 3px; }
     .o_fm_cal_more:hover { text-decoration: underline; }
     .o_fm_cal_mo { max-width: 130px; } .o_fm_cal_yr { max-width: 90px; }
@@ -72,6 +84,10 @@
     .o_fm_cal_side_h { font-size: 11.5px; letter-spacing: .04em; text-transform: uppercase; color: var(--c-muted); font-weight: 750; margin-bottom: 12px; }
     .o_fm_cal_leg { display: flex; align-items: center; gap: 9px; margin: 8px 0; font-size: 12.5px; }
     .o_fm_cal_leg_l { flex: 1; }
+    .o_fm_cal_kpi.o_click, .o_fm_cal_leg.o_click { cursor: pointer; transition: border-color .15s, box-shadow .15s, background .15s; }
+    .o_fm_cal_kpi.o_click:hover { border-color: #2f6fed; box-shadow: 0 2px 8px rgba(47, 111, 237, .15); }
+    .o_fm_cal_leg { padding: 3px 6px; margin-left: -6px; margin-right: -6px; border-radius: 6px; }
+    .o_fm_cal_leg.o_click:hover { background: rgba(47, 111, 237, .08); }
     .o_fm_cal_leg_c { font-weight: 750; font-variant-numeric: tabular-nums; color: var(--c-muted); }
     .o_fm_cal_sw { width: 26px; height: 15px; border-radius: 4px; flex: 0 0 auto; }
     .o_fm_cal_side_note { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--c-line); color: var(--c-muted); font-size: 11.5px; line-height: 1.5; }
@@ -101,5 +117,6 @@
         --c-text: #e6e9ef; --c-muted: #98a1b2; --c-brand: #f3a25a; --c-head: #24344a;
         .o_fm_cal_cell.o_out { background: #20242c; }
         .o_fm_cal_cell.o_wknd { background: #21252e; }
+        .o_fm_cal_sel { color-scheme: dark; }
     }
 }

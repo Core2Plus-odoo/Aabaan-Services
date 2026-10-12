@@ -142,6 +142,14 @@
                         t-attf-class="pb {{ state.period === p.key ? 'on' : '' }}"
                         t-on-click="() => this.selectPeriod(p.key)"
                         t-out="p.label"/>
+                <select t-if="state.shell.branches.length"
+                        t-attf-class="pbranch {{ state.branch ? 'on' : '' }}"
+                        t-on-change="selectBranch">
+                    <option value="" t-att-selected="!state.branch">All branches</option>
+                    <option t-foreach="state.shell.branches" t-as="b" t-key="b.id"
+                            t-att-value="b.id" t-att-selected="state.branch === b.id"
+                            t-out="b.name"/>
+                </select>
                 <span class="pr" t-if="state.data" t-out="state.data.range"/>
             </div>
 
