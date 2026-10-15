@@ -33,8 +33,8 @@ from odoo import _, models
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
-    def _generate_schedule(self, horizon_end=None):
-        created = super()._generate_schedule(horizon_end=horizon_end)
+    def _generate_schedule(self, horizon_end=None, **kwargs):
+        created = super()._generate_schedule(horizon_end=horizon_end, **kwargs)
         if created:
             created._fm_autoload_materials()
         return created

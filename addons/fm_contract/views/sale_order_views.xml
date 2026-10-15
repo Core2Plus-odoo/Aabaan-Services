@@ -15,7 +15,32 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
 
+            <!-- Quotations and Contracts menus (context fm_flow) speak the
+                 client's words: a quotation is Approved, not Confirmed, and
+                 approving it is what makes the contract. -->
+            <xpath expr="//header/button[@id='action_confirm']" position="attributes">
+                <attribute name="invisible" add="context.get('fm_flow')" separator=" or "/>
+            </xpath>
+            <xpath expr="//header/button[@name='action_confirm'][not(@id)]" position="attributes">
+                <attribute name="invisible" add="context.get('fm_flow')" separator=" or "/>
+            </xpath>
+            <xpath expr="//header/field[@name='state']" position="attributes">
+                <attribute name="invisible">context.get('fm_flow')</attribute>
+            </xpath>
+            <xpath expr="//header/field[@name='state']" position="after">
+                <field name="fm_quote_status" widget="statusbar"
+                       statusbar_visible="draft,sent,approved"
+                       invisible="not context.get('fm_flow') or is_fm_contract and fm_lifecycle"/>
+                <field name="fm_lifecycle" widget="statusbar"
+                       statusbar_visible="draft,active"
+                       invisible="not context.get('fm_flow') or not is_fm_contract or not fm_lifecycle"/>
+            </xpath>
+
             <xpath expr="//header" position="inside">
+                <button name="action_fm_approve" type="object" string="Approve"
+                        class="btn-primary" data-hotkey="q"
+                        confirm="Has the customer approved this quotation? It becomes a Draft contract and moves to Contracts."
+                        invisible="state not in ('draft', 'sent')"/>
                 <button name="action_fm_set_renewal" type="object"
                         string="Move to Renewal"
                         invisible="fm_lifecycle != 'active'"/>
@@ -43,7 +68,15 @@
                                    required="is_fm_contract"
                                    placeholder="What service is this for?"/>
                             <field name="fm_contract_type" required="is_fm_contract"/>
+                            <!-- Job Type, Duration and each line's frequency are
+                                 set in the Create Job wizard and shown here. -->
+                            <field name="fm_job_type" readonly="1"/>
                             <field name="fm_start_date" required="is_fm_contract"/>
+                            <label for="fm_duration"/>
+                            <div class="o_row">
+                                <field name="fm_duration" class="oe_inline" style="max-width: 5rem;" readonly="1"/>
+                                <field name="fm_duration_unit" class="oe_inline" readonly="1"/>
+                            </div>
                             <field name="fm_end_date" required="is_fm_contract"/>
                             <field name="fm_days_to_renewal"/>
                             <field name="fm_auto_renew"/>
@@ -210,10 +243,13 @@
                        decoration-success="fm_health_band == 'healthy'"
                        decoration-warning="fm_health_band == 'watch'"
                        decoration-danger="fm_health_band in ('at_risk', 'critical')"/>
-                <field name="fm_lifecycle" widget="badge"
+                <field name="fm_lifecycle" widget="badge" string="Status"
+                       decoration-info="fm_lifecycle == 'draft'"
                        decoration-success="fm_lifecycle == 'active'"
+                       decoration-warning="fm_lifecycle == 'renewal_pipeline'"
                        decoration-muted="fm_lifecycle in ('expired', 'terminated')"/>
-                <field name="state" widget="badge"/>
+                <field name="amount_total" sum="Total" optional="show"/>
+                <field name="invoice_status" optional="hide"/>
                 <field name="currency_id" column_invisible="1"/>
             </list>
         </field>
@@ -230,12 +266,12 @@
                 <field name="fm_service_line"/>
                 <field name="fm_account_manager_id"/>
                 <separator/>
-                <filter name="active_contracts" string="Active"
+                <filter name="draft_contracts" string="Draft (no jobs yet)"
+                        domain="[('fm_lifecycle', '=', 'draft')]"/>
+                <filter name="active_contracts" string="Approved"
                         domain="[('fm_lifecycle', '=', 'active')]"/>
                 <filter name="renewal" string="In Renewal"
                         domain="[('fm_lifecycle', '=', 'renewal_pipeline')]"/>
-                <filter name="not_yet_confirmed" string="Not Yet Confirmed"
-                        domain="[('state', 'in', ('draft', 'sent'))]"/>
                 <filter name="my_contracts" string="My Contracts"
                         domain="[('fm_account_manager_id', '=', uid)]"/>
                 <separator/>
@@ -255,19 +291,102 @@
         </field>
     </record>
 
+    <!-- Quotations: everything not yet approved by the customer. Approving
+         one (the Approve button) confirms it and moves it to Contracts. -->
+    <record id="view_order_list_fm_quotation" model="ir.ui.view">
+        <field name="name">sale.order.list.fm.quotation</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <list string="Quotations" decoration-muted="state == 'cancel'">
+                <field name="name" string="Quotation"/>
+                <field name="date_order" string="Date" widget="date"/>
+                <field name="partner_id"/>
+                <field name="sale_order_template_id" optional="show"/>
+                <field name="fm_service_line" optional="show"/>
+                <field name="user_id" optional="show" widget="many2one_avatar_user"/>
+                <field name="validity_date" optional="hide"/>
+                <field name="amount_total" sum="Total"/>
+                <field name="fm_quote_status" widget="badge" string="Status"
+                       decoration-info="fm_quote_status == 'draft'"
+                       decoration-warning="fm_quote_status == 'sent'"
+                       decoration-success="fm_quote_status == 'approved'"
+                       decoration-muted="fm_quote_status == 'cancel'"/>
+                <field name="state" column_invisible="1"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_order_search_fm_quotation" model="ir.ui.view">
+        <field name="name">sale.order.search.fm.quotation</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <search string="Quotations">
+                <field name="name" string="Quotation"/>
+                <field name="partner_id"/>
+                <field name="sale_order_template_id"/>
+                <field name="fm_service_line"/>
+                <field name="user_id"/>
+                <separator/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="sent" string="Sent" domain="[('state', '=', 'sent')]"/>
+                <filter name="cancel" string="Cancelled" domain="[('state', '=', 'cancel')]"/>
+                <separator/>
+                <filter name="my_quotations" string="My Quotations" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter name="group_status" string="Status" context="{'group_by': 'fm_quote_status'}"/>
+                <filter name="group_service" string="Service" context="{'group_by': 'fm_service_line'}"/>
+                <filter name="group_customer" string="Customer" context="{'group_by': 'partner_id'}"/>
+                <filter name="group_user" string="Salesperson" context="{'group_by': 'user_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_fm_quotation" model="ir.actions.act_window">
+        <field name="name">Quotations</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_order_search_fm_quotation"/>
+        <field name="domain">[('state', 'in', ('draft', 'sent', 'cancel'))]</field>
+        <field name="context">{'fm_flow': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a quotation</p>
+            <p>
+                Pick the customer and a quotation template, then send it.
+                When the customer approves it, press <b>Approve</b>: it moves
+                to <b>Contracts</b> as a Draft contract.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_fm_quotation_list" model="ir.actions.act_window.view">
+        <field name="sequence" eval="10"/>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_order_list_fm_quotation"/>
+        <field name="act_window_id" ref="action_fm_quotation"/>
+    </record>
+
+    <record id="action_fm_quotation_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="20"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="sale.view_order_form"/>
+        <field name="act_window_id" ref="action_fm_quotation"/>
+    </record>
+
     <record id="action_fm_contract_order" model="ir.actions.act_window">
         <field name="name">Contracts</field>
         <field name="res_model">sale.order</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="view_order_search_fm_contract"/>
-        <field name="domain">[('is_fm_contract', '=', True)]</field>
-        <field name="context">{'default_is_fm_contract': True}</field>
+        <field name="domain">[('is_fm_contract', '=', True), ('state', 'in', ('sale', 'done'))]</field>
+        <field name="context">{'default_is_fm_contract': True, 'fm_flow': True}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Write the first contract</p>
+            <p class="o_view_nocontent_smiling_face">No contracts yet</p>
             <p>
-                A contract is a sale order. Add the customer and the priced
-                service lines, fill in the <b>FM Contract</b> tab, then confirm
-                the order: confirming it is what makes the contract active.
+                A contract starts as a quotation. When the customer approves
+                it, press <b>Approve</b> on the quotation and it arrives here
+                as a Draft contract. Fill in the contract details, then press
+                <b>Create Job</b> to put its visits on the calendar.
             </p>
         </field>
     </record>
@@ -297,12 +416,29 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='order_line']/list/field[@name='price_unit']" position="before">
+                <field name="fm_frequency_every" string="Every" optional="hide" readonly="1"
+                       column_invisible="parent.fm_job_type != 'recurring' or not parent.fm_lifecycle"/>
+                <field name="fm_frequency_count" string="Frequency" optional="show" readonly="1"
+                       column_invisible="parent.fm_job_type != 'recurring' or not parent.fm_lifecycle"
+                       invisible="display_type"/>
+                <field name="fm_frequency_unit" string="Per" optional="show" readonly="1"
+                       column_invisible="parent.fm_job_type != 'recurring' or not parent.fm_lifecycle"
+                       invisible="display_type"/>
                 <field name="fm_print_unit" optional="show"/>
                 <field name="fm_print_frequency" optional="show"/>
                 <field name="fm_print_details" optional="hide" widget="html"/>
             </xpath>
             <xpath expr="//field[@name='order_line']/form//field[@name='name']" position="after">
                 <field name="fm_print_details" widget="html"/>
+                <group invisible="parent.fm_job_type != 'recurring' or not parent.fm_lifecycle">
+                    <label for="fm_frequency_count"/>
+                    <div class="o_row">
+                        <field name="fm_frequency_every" nolabel="1" readonly="1"/><span invisible="not fm_frequency_every">Every</span>
+                        <field name="fm_frequency_count" class="oe_inline" style="max-width: 5rem;" readonly="1"/>
+                        <span invisible="fm_frequency_every">per</span>
+                        <field name="fm_frequency_unit" class="oe_inline" readonly="1"/>
+                    </div>
+                </group>
             </xpath>
         </field>
     </record>

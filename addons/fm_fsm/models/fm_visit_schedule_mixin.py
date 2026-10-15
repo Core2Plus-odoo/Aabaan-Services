@@ -459,11 +459,15 @@ class FmVisitScheduleMixin(models.AbstractModel):
     # ------------------------------------------------------------------
     # Generation
     # ------------------------------------------------------------------
-    def _generate_schedule(self, horizon_end=None):
+    def _generate_schedule(self, horizon_end=None, without_assets=False):
         """Create planned (PPM) FSM tasks for every covered asset at the
         contract's frequency, from the contract start up to ``horizon_end``
         (default: the contract end). Idempotent — never double-books an asset
         on a day that already has a scheduled visit.
+
+        ``without_assets``: a contract with no covered asset still gets one
+        visit per date, for the site itself. Only "Create Job" asks for it;
+        the automatic paths keep requiring an asset, as they always have.
         """
         Task = self.env["project.task"]
         project = self._fsm_project()
@@ -480,6 +484,10 @@ class FmVisitScheduleMixin(models.AbstractModel):
         created = Task
         for contract in self:
             assets = contract._fm_covered_assets()
+            if not assets and without_assets:
+                # An empty asset record: id False, so the idempotency check
+                # and fm_asset_id both read "no asset".
+                assets = [self.env["fm.asset"]]
             start, term_end = contract._fm_term()
             if not (assets and contract.visit_frequency and start and term_end):
                 continue
@@ -507,12 +515,13 @@ class FmVisitScheduleMixin(models.AbstractModel):
                         # Title = customer/site so the calendar reads by client;
                         # asset & contract are in the description and FM fields.
                         visit_name = contract.partner_id.display_name or asset.display_name
-                        if asset.service_line:
+                        service_line = asset.service_line or (
+                            not asset and "fm_service_line" in contract._fields
+                            and contract.fm_service_line)
+                        if service_line:
                             visit_name = "%s — %s" % (
                                 visit_name,
-                                service_line_labels.get(
-                                    asset.service_line, asset.service_line
-                                ),
+                                service_line_labels.get(service_line, service_line),
                             )
                         # Planned date = the visit date itself, at the contract's
                         # default visit start time/duration, so the task appears
@@ -545,7 +554,8 @@ class FmVisitScheduleMixin(models.AbstractModel):
                             "allocated_hours": duration,
                             "description": _(
                                 "Planned visit for %(asset)s under contract %(ref)s"
-                            ) % {"asset": asset.display_name, "ref": contract_ref},
+                            ) % {"asset": asset.display_name or contract.partner_id.display_name,
+                                 "ref": contract_ref},
                         }
                         vals.update(link_vals)
                         if tech_user:

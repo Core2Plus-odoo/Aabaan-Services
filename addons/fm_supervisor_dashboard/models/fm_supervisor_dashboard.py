@@ -70,9 +70,10 @@ class FmSupervisorDashboard(models.AbstractModel):
         tasks = Task.search(dom)
 
         def closed(t):
-            # Field Service's "Mark as done" closes the visit through its
-            # state, not by moving it to a folded stage.
-            return t.state in ("1_done", "1_canceled") or t.stage_id.fold
+            # Completed (green) means the job reached its last stage —
+            # Signed Off / Certificate Issued, the folded ones. "Mark as
+            # done" only takes a job to Completed, which is not the end.
+            return t.state == "1_canceled" or t.stage_id.fold
 
         def status_of(t):
             name = (t.stage_id.name or "").lower()
@@ -87,6 +88,16 @@ class FmSupervisorDashboard(models.AbstractModel):
                 return "in_progress"
             return "planned"
 
+        def title_of(t):
+            # The job's own name ("Customer — Carpet Cleaning (2/4)"), led by
+            # the customer when the name does not already carry it, as
+            # Odoo's one-task-per-line names do ("S00738 - [CODE] Service").
+            customer = t.partner_id.display_name
+            name = t.name or ""
+            if customer and customer.lower() not in name.lower():
+                return "%s — %s" % (customer, name) if name else customer
+            return name or customer or ""
+
         by_day = {}
         for t in tasks:
             if not t.date_deadline:
@@ -98,7 +109,7 @@ class FmSupervisorDashboard(models.AbstractModel):
                 "status": st,
                 "status_label": dict((k, l) for k, l, _c in STATUSES).get(st, st),
                 "color": STATUS_COLOR.get(st, "#2f6fed"),
-                "title": t.partner_id.display_name or t.name,
+                "title": title_of(t),
                 "sub": t.fm_asset_id.display_name if t.fm_asset_id else (
                     ", ".join(t.user_ids.mapped("name")) or ""),
                 "tech": ", ".join(t.user_ids.mapped("name")) or "Unassigned",

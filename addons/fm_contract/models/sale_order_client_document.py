@@ -11,6 +11,7 @@ except ImportError:  # pragma: no cover - num2words ships with Odoo
     num2words = None
 
 from .fm_agreement_mixin import PLACEHOLDER_RE
+from .sale_order import DURATION_UNITS
 
 # Price-table columns a Client Document Layout template may ask for.
 CLIENT_TABLE_COLUMNS = ("unit", "rate", "frequency", "tax", "subtotal", "grand_total")
@@ -168,6 +169,20 @@ class SaleOrderLine(models.Model):
              "formatted: the tank details, the site, the lab test. Left "
              "empty, the rest of the description is printed.",
     )
+    # The line's job frequency, when the contract's Job Type is Recurring:
+    # "4 / Year" is four jobs a year, one every three months; with Every
+    # ticked, "Every 3 / Month" is one job every three months.
+    fm_creates_job = fields.Boolean(
+        string="Create Job", default=True,
+        help="Whether this line becomes job(s) on the calendar. Untick it "
+             "for a fee or a charge that is not a visit.")
+    fm_frequency_count = fields.Integer(string="Frequency", default=1)
+    fm_frequency_unit = fields.Selection(
+        DURATION_UNITS, string="Frequency Unit", default="year")
+    fm_frequency_every = fields.Boolean(
+        string="Every",
+        help="Ticked: one job every N units (Every 3 Month). "
+             "Unticked: N jobs per unit (4 per Year).")
     fm_print_frequency = fields.Char(
         string="Frequency (printed)",
         help="Printed in the Frequency column of the client contract, e.g. Yearly Twice.",

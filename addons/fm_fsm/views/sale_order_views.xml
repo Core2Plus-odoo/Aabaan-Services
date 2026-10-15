@@ -12,9 +12,12 @@
         <field name="arch" type="xml">
 
             <xpath expr="//header" position="inside">
+                <button name="action_fm_open_create_job" type="object"
+                        string="Create Job" class="btn-primary"
+                        invisible="not is_fm_contract or fm_lifecycle != 'draft' or state not in ('sale', 'done')"/>
                 <button name="action_generate_visits" type="object"
                         string="Generate Visits" class="btn-secondary"
-                        invisible="not is_fm_contract or not fm_asset_ids"/>
+                        invisible="not is_fm_contract or not fm_asset_ids or fm_lifecycle == 'draft'"/>
             </xpath>
 
             <xpath expr="//div[@name='button_box']" position="inside">

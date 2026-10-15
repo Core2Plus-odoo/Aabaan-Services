@@ -87,14 +87,14 @@ class TestContractProfile(TransactionCase):
         self.assertTrue(order.fm_start_date, "a contract starts today by default")
         self.assertEqual(
             order.fm_end_date,
-            order.fm_start_date + relativedelta(months=24),
-            "24 months on from the start",
+            order.fm_start_date + relativedelta(months=24, days=-1),
+            "24 months on from the start, the last covered day",
         )
 
     def test_a_hand_set_start_date_still_drives_the_term(self):
         order = self._order(self.profile)
         order.fm_start_date = date(2027, 3, 1)
-        self.assertEqual(order.fm_end_date, date(2029, 3, 1))
+        self.assertEqual(order.fm_end_date, date(2029, 2, 28))
 
     def test_every_filled_field_stays_editable(self):
         """The readonly=False on the computes. Without it a profile is a
@@ -129,7 +129,7 @@ class TestContractProfile(TransactionCase):
         })
         order.sale_order_template_id = self.profile.id
         self.assertEqual(order.fm_start_date, date(2027, 6, 1))
-        self.assertEqual(order.fm_end_date, date(2029, 6, 1))
+        self.assertEqual(order.fm_end_date, date(2029, 5, 31))
 
     def test_a_non_profile_template_keeps_a_hand_ticked_contract(self):
         """Same defect, other direction: picking an ordinary template must

@@ -16,6 +16,23 @@ CONTRACT_TYPES = [
     ("project", "Project Contract"),
 ]
 
+# Units for the contract duration and for a service line's frequency.
+DURATION_UNITS = [
+    ("day", "Day"),
+    ("week", "Week"),
+    ("month", "Month"),
+    ("year", "Year"),
+]
+
+
+def duration_delta(count, unit):
+    """``count`` of ``unit`` as a relativedelta (calendar months and years)."""
+    return relativedelta(**{
+        "day": {"days": count}, "week": {"weeks": count},
+        "month": {"months": count}, "year": {"years": count},
+    }[unit])
+
+
 BILLING_FREQUENCIES = [
     ("monthly", "Monthly"),
     ("quarterly", "Quarterly"),
@@ -137,7 +154,11 @@ class SaleOrder(models.Model):
     # ------------------------------------------------------------------
     fm_lifecycle = fields.Selection(
         [
-            ("active", "Active"),
+            # The customer approved the quotation and it became a contract,
+            # but its jobs are not on the calendar yet. "Create Job" is what
+            # moves it on to Approved.
+            ("draft", "Draft"),
+            ("active", "Approved"),
             ("renewal_pipeline", "In Renewal Discussion"),
             ("expired", "Expired"),
             ("terminated", "Terminated"),
@@ -149,6 +170,60 @@ class SaleOrder(models.Model):
              "until confirmation — until then the order's own status "
              "(draft / sent) is the whole story.",
     )
+    # How the jobs are planned (the client's quotation screen): one job on
+    # the start date, or recurring at each service line's frequency, over a
+    # duration that also sets the contract end.
+    fm_job_type = fields.Selection(
+        [("one_off", "One Off"), ("recurring", "Recurring")],
+        string="Job Type", default="recurring", tracking=True,
+    )
+    fm_duration = fields.Integer(
+        string="Duration",
+        compute="_compute_fm_duration", store=True, readonly=False,
+        help="How long the contract runs from its start. The end date is "
+             "the start plus this, less one day: 1 Year from 14 Oct 2026 "
+             "ends on 13 Oct 2027.",
+    )
+    fm_duration_unit = fields.Selection(
+        DURATION_UNITS, string="Duration Unit",
+        compute="_compute_fm_duration", store=True, readonly=False,
+    )
+
+    @api.depends("sale_order_template_id")
+    def _compute_fm_duration(self):
+        for order in self:
+            saved = order._origin
+            profile = order.sale_order_template_id
+            term = profile.fm_term_months if profile and profile.fm_is_contract_profile else 0
+            if term:
+                years, months = divmod(term, 12)
+                order.fm_duration = years if not months else term
+                order.fm_duration_unit = "year" if not months else "month"
+            else:
+                order.fm_duration = saved.fm_duration or 1
+                order.fm_duration_unit = saved.fm_duration_unit or "year"
+
+    # The quotation's own status, in the words the client uses. Odoo's state
+    # says "Sales Order" once a quotation is confirmed; here a confirmed
+    # quotation is one the customer approved.
+    fm_quote_status = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("sent", "Sent"),
+            ("approved", "Approved"),
+            ("cancel", "Cancelled"),
+        ],
+        string="Quotation Status",
+        compute="_compute_fm_quote_status", store=True,
+    )
+
+    @api.depends("state")
+    def _compute_fm_quote_status(self):
+        for order in self:
+            order.fm_quote_status = {
+                "draft": "draft", "sent": "sent", "cancel": "cancel",
+            }.get(order.state, "approved")
+
     # Labelled "Contract Start/End", not "Start/End Date". sale_subscription
     # already puts start_date and end_date on sale.order, and two fields on one
     # model sharing a label is not cosmetic: Odoo warns about it at every
@@ -435,19 +510,22 @@ class SaleOrder(models.Model):
             order.fm_complaint_sla_hours = COMPLAINT_SLA_HOURS.get(
                 order.fm_complaint_sla, 0)
 
-    @api.depends("sale_order_template_id", "fm_start_date")
+    @api.depends("fm_start_date", "fm_duration", "fm_duration_unit")
     def _compute_fm_end_date(self):
-        """End date = start + the profile's term.
+        """End date = start + duration - 1 day: 1 Year from 14 Oct 2026 is
+        13 Oct 2027, the last day the contract covers.
 
         Separate from the profile compute because it also has to follow the
-        start date being changed by hand, which is the common edit: a
-        customer signs for the standard twelve months, starting in March.
+        start date and the duration being changed by hand, which is the
+        common edit: a customer signs for the standard year, starting in
+        March. The duration itself comes from the profile's term.
         """
         for order in self:
-            profile = order.sale_order_template_id
-            term = profile.fm_term_months if profile.fm_is_contract_profile else 0
-            if term and order.fm_start_date:
-                order.fm_end_date = order.fm_start_date + relativedelta(months=term)
+            if order.fm_start_date and order.fm_duration > 0 and order.fm_duration_unit:
+                order.fm_end_date = (
+                    order.fm_start_date
+                    + duration_delta(order.fm_duration, order.fm_duration_unit)
+                    - relativedelta(days=1))
             else:
                 order.fm_end_date = order.fm_end_date
 
@@ -677,6 +755,42 @@ class SaleOrder(models.Model):
         if contracts:
             contracts.write({"fm_lifecycle": "active"})
         return res
+
+    def action_fm_approve(self):
+        """The customer approved the quotation: it becomes a contract.
+
+        The order is confirmed, so it can be invoiced straight away, and it
+        moves from Quotations to Contracts as a Draft contract. No jobs are
+        made here — not Odoo's one-task-per-service-line, and not the visit
+        schedule. Those wait for "Create Job" on the contract, once its
+        dates and frequency are filled in.
+        """
+        not_open = self.filtered(lambda o: o.state not in ("draft", "sent"))
+        if not_open:
+            raise UserError(_(
+                "Only a draft or sent quotation can be approved: %s",
+                ", ".join(not_open.mapped("name")),
+            ))
+        self.write({"is_fm_contract": True, "fm_lifecycle": "draft"})
+        res = self.with_context(
+            disable_project_task_generation=True,
+            fm_skip_auto_schedule=True,
+        ).action_confirm()
+        self.message_post(body=_(
+            "Quotation approved by the customer. It is now a Draft contract: "
+            "fill in the contract details, then press Create Job."))
+        if isinstance(res, dict):
+            return res
+        if len(self) == 1:
+            action = self.env["ir.actions.act_window"]._for_xml_id(
+                "fm_contract.action_fm_contract_order")
+            action.update({
+                "res_id": self.id,
+                "views": [(self.env.ref("sale.view_order_form").id, "form")],
+                "view_mode": "form",
+            })
+            return action
+        return True
 
     def _fm_require_contract(self):
         non_contracts = self.filtered(lambda o: not o.is_fm_contract)

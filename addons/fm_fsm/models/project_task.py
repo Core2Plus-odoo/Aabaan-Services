@@ -174,6 +174,24 @@ class ProjectTask(models.Model):
                     ))
         return super().write(vals)
 
+    def action_fsm_validate(self, stop_running_timers=False):
+        """Mark as done puts an FM job in Completed; Signed Off stays a
+        separate, deliberate step (and is what the calendar shows green).
+
+        Odoo's own Mark as done only sets the done state and leaves the
+        stage where it was, so a job could read "done" while still sitting
+        in Assigned — and skip the service-document rule on Completed. Moving
+        the stage goes through ``write()``, so that rule applies here too.
+        """
+        completed = self.env.ref("fm_fsm.fsm_stage_completed", raise_if_not_found=False)
+        to_complete = self.filtered(
+            lambda t: completed and completed in t.project_id.type_ids
+            and t.stage_id.sequence < completed.sequence and not t.stage_id.fold)
+        res = super().action_fsm_validate(stop_running_timers=stop_running_timers)
+        if res is True and to_complete:
+            to_complete.write({"stage_id": completed.id, "state": "1_done"})
+        return res
+
 
     @api.depends("planned_date_begin")
     def _compute_fm_time_slot(self):
